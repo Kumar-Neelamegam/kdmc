@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="HistoryComponent">
+    <option name="urls">
+      <array>
+        <option value="http://192.168.137.143:1234/ExportMasters/kdmcPDF" />
+        <option value="http://182.18.161.229/KDMCDB_JSON/Service.asmx/Get_Masters_OtherTables?TableId=0&amp;IsUpdateMax=0" />
+      </array>
+    </option>
+  </component>
+</project>
