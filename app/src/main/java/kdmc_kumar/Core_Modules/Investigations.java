@@ -554,6 +554,7 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
             multiautoDiagnosis.setThreshold(1);
             multiautoDiagnosis.setTokenizer(new MultiAutoCompleteTextView.CommaTokenizer());
 
+
             LoadValues(multiautoDiagnosis, Investigations.this, "select distinct diagnosisdata as dvalue from diagonisdetails where (isactive='true' or isactive='1') order by id desc;", 1);
 
 
@@ -632,6 +633,7 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
         try {
             BaseConfig.loadSpinner(multiautoTreatmentfor, Loadlist1);
             BaseConfig.loadSpinner(multiautoXray, Loadlist3);
+            multiautoXray.setThreshold(1);
             BaseConfig.loadSpinner(autocompleteDiagcenterName, Loadlist4);
 
         } catch (Exception e) {
