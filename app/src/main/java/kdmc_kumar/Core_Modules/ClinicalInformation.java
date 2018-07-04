@@ -1379,8 +1379,8 @@ public class ClinicalInformation extends AppCompatActivity {
 
 
             String smoke = "", alcohol = "";
-            if (spinnerPhTobacco.getSelectedItemPosition() > 0) {
-                smoke = spinnerPhTobacco.getSelectedItem().toString();
+            if (spinnerPhSmoking.getSelectedItemPosition() > 0) {
+                smoke = spinnerPhSmoking.getSelectedItem().toString();
             }
             if (spinnerPhAlcohol.getSelectedItemPosition() > 0) {
                 alcohol = spinnerPhAlcohol.getSelectedItem().toString();

@@ -44,7 +44,6 @@ import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Utilities_Others.CircleImageView;
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
 import kdmc_kumar.Utilities_Others.KDMCRecyclerAdapter;
-import kdmc_kumar.Utilities_Others.Tools;
 import kdmc_kumar.Utilities_Others.ViewAnimation;
 
 
@@ -441,7 +440,8 @@ public class Inpatient_Inputs extends AppCompatActivity {
     private void toggleSectionInput(View view, View PrimaryLayout) {
         boolean show = toggleArrow(view);
         if (show) {
-            ViewAnimation.expand(PrimaryLayout, () -> Tools.nestedScrollTo(inpatiententryNesetedscrollview, PrimaryLayout));
+           // ViewAnimation.expand(PrimaryLayout, () -> Tools.nestedScrollTo(inpatiententryNesetedscrollview, PrimaryLayout));
+            ViewAnimation.expand(PrimaryLayout);
         } else {
             ViewAnimation.collapse(PrimaryLayout);
         }
@@ -613,7 +613,7 @@ public class Inpatient_Inputs extends AppCompatActivity {
                 String urinesgr_txt, lente_txt, insulinplain_txt, bloodsgr_txt, ketone_txt, ipdiab_time = "-";
 
 
-                urinesgr_txt = CheckEdittextIsEmpty(edittextDiabetichartBloodSugar);
+                urinesgr_txt = CheckEdittextIsEmpty(edittextInaptientchartUrine);
                 lente_txt = CheckEdittextIsEmpty(edittextDiabetichartLente);
                 insulinplain_txt = CheckEdittextIsEmpty(edittextDiabetichartInsulinPlain);
                 bloodsgr_txt = CheckEdittextIsEmpty(edittextDiabetichartBloodSugar);

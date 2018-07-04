@@ -1678,12 +1678,12 @@ public class CaseNotes extends AppCompatActivity {
             values.put("IsActive", 1);
             values.put("pagegen", patientAge + patientGender);
             values.put("Isupdate", 0);
-            values.put("Breathsound", BaseConfig.GetWidgetOperations(respiratory.spinnerBreathSound, 1));
             values.put("BreathSoundEqual", BaseConfig.GetWidgetOperations(respiratory.radiogroupBreathsoundequal, 1));
             values.put("BreathSoundEqualOptions", BaseConfig.GetWidgetOperations(respiratory.radiogroupBreathsoundequalOptns, 1));
+            values.put("Breathsound", BaseConfig.GetWidgetOperations(respiratory.spinnerBreathSound, 1));
             values.put("Trachea", BaseConfig.GetWidgetOperations(respiratory.spinner_Trachea, 1));
             values.put("Kyphosis_Scoliosis", BaseConfig.GetWidgetOperations(respiratory.checkBoxKyphosis, 1) +"\n"+ BaseConfig.GetWidgetOperations(respiratory.checkBoxScoliosis, 1));
-            values.put("Crepitation", BaseConfig.GetWidgetOperations(respiratory.rrbtnDecreaseonLeft, 1) +"\n"+ BaseConfig.GetWidgetOperations(respiratory.rrbtnDecreaseonright, 1));
+            values.put("Crepitation", BaseConfig.GetWidgetOperations(respiratory.checkBoxLeft, 1) +"\n"+ BaseConfig.GetWidgetOperations(respiratory.checkBoxRight, 1));
             values.put("Bronchi", BaseConfig.GetWidgetOperations(respiratory.checkBoxRhonchiLeft, 1) +"\n"+ BaseConfig.GetWidgetOperations(respiratory.checkBoxRhonchiRight, 1));
             values.put("Pulserate", "");
             values.put("Note", BaseConfig.GetWidgetOperations(respiratory.editTextRespiratoryRate, 1));
@@ -2646,7 +2646,6 @@ public class CaseNotes extends AppCompatActivity {
                     radiogroupBreathsoundequalOptns.setVisibility(View.GONE);
                 } else if (radioGroup.getCheckedRadioButtonId() == R.id.rbtn_no) {
                     radiogroupBreathsoundequalOptns.setVisibility(View.VISIBLE);
-                    //BaseConfig.SnackBar(CaseNotes.this, "Select below options..", current_view, 2);
                     Toast.makeText(CaseNotes.this, "Select below options if no breath sound found...", Toast.LENGTH_SHORT).show();
                 }
             });
