@@ -1085,13 +1085,39 @@ public class MedicinePrescription extends AppCompatActivity {
         _autocompleteMedicineName.addTextChangedListener(new TextWatcher() {
             public void afterTextChanged(Editable s) {
 
+
+
+                Drawable rightDrawable = AppCompatResources.getDrawable(_autocompleteMedicineName.getContext(), R.drawable.ic_clear_button);
                 if (_autocompleteMedicineName.getText().length() > 0) {
+                    _autocompleteMedicineName.setCompoundDrawablesWithIntrinsicBounds(null, null, rightDrawable, null);
 
-                    _autocompleteMedicineName.setCompoundDrawablesWithIntrinsicBounds(0, 0, R.drawable.ic_action_clear, 0);
+                    _autocompleteMedicineName.setOnTouchListener(new View.OnTouchListener() {
+                        @Override
+                        public boolean onTouch(View v, MotionEvent event) {
+                            final int DRAWABLE_LEFT = 0;
+                            final int DRAWABLE_TOP = 1;
+                            final int DRAWABLE_RIGHT = 2;
+                            final int DRAWABLE_BOTTOM = 3;
+
+                            if (event.getAction() == MotionEvent.ACTION_UP) {
+                                if (event.getRawX() >= (_autocompleteMedicineName.getRight() - _autocompleteMedicineName.getCompoundDrawables()[DRAWABLE_RIGHT].getBounds().width())) {
+
+                                    _autocompleteMedicineName.setText("");
+
+                                    return true;
+                                }
+                            }
+                            return false;
+                        }
+                    });
+
                 } else {
+                    _autocompleteMedicineName.setCompoundDrawablesWithIntrinsicBounds(null, null, null, null);
 
-                    _autocompleteMedicineName.setCompoundDrawablesWithIntrinsicBounds(0, 0, 0, 0);
+                    _autocompleteMedicineName.setOnTouchListener(null);
+
                 }
+
 
 
             }
@@ -2852,7 +2878,7 @@ public class MedicinePrescription extends AppCompatActivity {
         if (list.size() > 0) {
             for (int i = 0; i < list.size(); i++) {
 
-                if (Str.equalsIgnoreCase(list.get(i).trim())) {
+                if (Str.split("_")[0].trim().equalsIgnoreCase(list.get(i).split("_")[0].trim())) {
                     flag = 0;
                     break;
                 }

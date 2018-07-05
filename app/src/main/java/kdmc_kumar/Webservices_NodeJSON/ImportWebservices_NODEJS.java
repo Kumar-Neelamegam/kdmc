@@ -335,7 +335,6 @@ public class ImportWebservices_NODEJS {
                     Log.e("MobyDoctor BackGround", "Thread Import Service running 1");
                     Log.e("###########", "################");
 
-                    LoadInvestigation_Notification();
 
                     this.CheckDbUpdatesNodeJs(ctx);  // TODO: 1/24/2018 Completed
 
@@ -375,6 +374,8 @@ public class ImportWebservices_NODEJS {
                     this.ImportEEGDtls();                    // TODO: 1/24/2018 Completed
                     this.ImportECGDtls();                    // TODO: 1/24/2018 Completed
                     this.ImportAngiogram();                  // TODO: 1/24/2018 Completed
+
+
                     this.ImportMprescribed();                // TODO: 1/24/2018 Completed
 
 
@@ -415,6 +416,9 @@ public class ImportWebservices_NODEJS {
                     this.Import_ExaminationUrine_Test(); // TODO: 1/24/2018 Completed
                     this.Import_ExaminationANC_Test();   // TODO: 1/24/2018 Completed
                     this.Import_ExaminationHIV_Test();   // TODO: 1/24/2018 Completed
+
+
+                    LoadInvestigation_Notification(); // Investigation Notification
 
 
                 }
@@ -3041,7 +3045,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("fee", fee);
                     values1.put("mobnum", mobnum);
                     values1.put("imei", imei);
-                    values1.put("Isupdate", Isupdate);
+                    //values1.put("Isupdate", Isupdate);
                     values1.put("treatmentfor", treatmentfor);
                     //values1.put("upid", upid);
                     //values1.put("NVsms", NVsms);

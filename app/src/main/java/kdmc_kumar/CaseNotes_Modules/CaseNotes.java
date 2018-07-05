@@ -1145,11 +1145,11 @@ public class CaseNotes extends AppCompatActivity {
                     String str_cchkbxUr5 = CheckDentalSystem(dental.cchkbxUr5, 1);
                     String str_cchkbxUr4 = CheckDentalSystem(dental.cchkbxUr4, 1);
 
-                    String str_cchkbxUl1 = CheckDentalSystem(dental.chkbxUl1, 2);
-                    String str_cchkbxUl2 = CheckDentalSystem(dental.chkbxUl2, 2);
-                    String str_cchkbxUl3 = CheckDentalSystem(dental.chkbxUl3, 2);
-                    String str_cchkbxUl4 = CheckDentalSystem(dental.chkbxUl4, 2);
-                    String str_cchkbxUl5 = CheckDentalSystem(dental.chkbxUl5, 2);
+                    String str_cchkbxUl1 = CheckDentalSystem(dental.cchkbxUl1, 2);
+                    String str_cchkbxUl2 = CheckDentalSystem(dental.cchkbxUl2, 2);
+                    String str_cchkbxUl3 = CheckDentalSystem(dental.cchkbxUl3, 2);
+                    String str_cchkbxUl4 = CheckDentalSystem(dental.cchkbxUl4, 2);
+                    String str_cchkbxUl5 = CheckDentalSystem(dental.cchkbxUl5, 2);
 
 
                     //Lower Jaw line right/left
@@ -1483,7 +1483,7 @@ public class CaseNotes extends AppCompatActivity {
             values.put("Indirect", BaseConfig.GetWidgetOperations(clinical.editTextIndirect, 1));
             values.put("Totalprotein", BaseConfig.GetWidgetOperations(clinical.editTextTotalProtein, 1));
             values.put("Albumin", BaseConfig.GetWidgetOperations(clinical.editTextAlbumin, 1));
-            values.put("Globulin", BaseConfig.GetWidgetOperations(clinical.editTextHaemoglobinGDl, 1));
+            values.put("Globulin", BaseConfig.GetWidgetOperations(clinical.editTextGlobulin, 1));
             values.put("SGOT", BaseConfig.GetWidgetOperations(clinical.editTextSgot, 1));
             values.put("SGPT", BaseConfig.GetWidgetOperations(clinical.editTextSgpt, 1));
             values.put("AlkalinePhosphatase", BaseConfig.GetWidgetOperations(clinical.editTextAlkalinePhosphatase, 1));

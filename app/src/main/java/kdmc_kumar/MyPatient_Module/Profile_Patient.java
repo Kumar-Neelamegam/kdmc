@@ -523,10 +523,8 @@ public class Profile_Patient extends Fragment {
                 "                        <h6><i class=\"fa fa-money\" style=\"color:#3d5987;\"></i> <b>"+ getString(R.string.txt_income) +"</b></h6>\n" +
                 "                        <p>"+Income+"</p>\n" +
                 "                    </div>\n" +
-                "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-user\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_fee_exemption_reason)+"</b></h6>\n" +
-                "                        <p>"+FeeExemptionReasonStr+"</p>\n" +
-                "                    </div>\n" +
+
+
                 "\n" +
                 "                </div>\n" +
                 "\t\t\t\t\n" +

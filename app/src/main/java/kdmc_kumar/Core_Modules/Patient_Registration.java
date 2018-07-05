@@ -567,6 +567,8 @@ public class Patient_Registration extends AppCompatActivity {
             db.insert("Bind_Patient_Registration", null, value);
 
 
+
+            str_FeeExemption = str_FeeExemption.equalsIgnoreCase("Yes") ? "Yes" : "No";
             value = new ContentValues();
             value.put("Patid", str_PatientId);
             value.put("Docid", BaseConfig.doctorId);
@@ -589,6 +591,7 @@ public class Patient_Registration extends AppCompatActivity {
             value.put("altphone", str_MobileNo2);
             value.put("Actdate", BaseConfig.DeviceDate());
             value.put("Isupdate", 1);
+            value.put("inshosp", str_Authroized);
             value.put("Address1", str_Address1+","+str_Address2);
             value.put("email", str_Email);
             value.put("caretaker", str_CareTakerName);

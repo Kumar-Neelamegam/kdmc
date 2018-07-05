@@ -679,7 +679,6 @@ public class Login extends AppCompatActivity {
             @Override
             public void afterTextChanged(Editable s) {
 
-                // BaseConfig.setEdittextDrawable(Field_Username);
                 Drawable rightDrawable = AppCompatResources.getDrawable(Field_Username.getContext(), R.drawable.ic_clear_button);
                 if (Field_Username.getText().length() > 0) {
                     Field_Username.setCompoundDrawablesWithIntrinsicBounds(null, null, rightDrawable, null);

@@ -449,11 +449,11 @@ public class SettingActivity extends AppCompatActivity {
             public void onSwitched(LabeledSwitch labeledSwitch, boolean isOn) {
                 if (switchAppointments.isOn()) {
 
-                    switchAppointments.setVisibility(View.VISIBLE);
+                    Appointment_Slot.setVisibility(View.VISIBLE);
 
                 } else {
 
-                    switchAppointments.setVisibility(View.GONE);
+                    Appointment_Slot.setVisibility(View.GONE);
                 }
             }
         });
