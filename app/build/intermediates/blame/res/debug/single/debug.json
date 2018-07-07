@@ -192,6 +192,10 @@
         "source": "C:\\Users\\Android\\Desktop\\MOBYDOCTOR 2018\\KDMC_2018\\KDMC\\app\\src\\main\\res\\layout-v21\\new_login_screen.xml"
     },
     {
+        "merged": "C:\\Users\\Android\\Desktop\\MOBYDOCTOR 2018\\KDMC_2018\\KDMC\\app\\build\\intermediates\\res\\merged\\debug\\layout_list_item_onlineconsultation.xml.flat",
+        "source": "C:\\Users\\Android\\Desktop\\MOBYDOCTOR 2018\\KDMC_2018\\KDMC\\app\\src\\main\\res\\layout\\list_item_onlineconsultation.xml"
+    },
+    {
         "merged": "C:\\Users\\Android\\Desktop\\MOBYDOCTOR 2018\\KDMC_2018\\KDMC\\app\\build\\intermediates\\res\\merged\\debug\\drawable-xhdpi-v4_abc_list_pressed_holo_light.9.png.flat",
         "source": "C:\\Users\\Android\\.gradle\\caches\\transforms-1\\files-1.1\\appcompat-v7-27.1.1.aar\\d09e1048ab2f5be2066eff27b7bfa742\\res\\drawable-xhdpi-v4\\abc_list_pressed_holo_light.9.png"
     },

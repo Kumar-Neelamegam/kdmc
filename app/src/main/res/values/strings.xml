@@ -456,7 +456,7 @@
     <string name="odc_name">Doctor Name</string>
     <string name="prov_diag">Provisional Diagnosis:</string>
     <string name="my_patients">My Patients</string>
-    <string name="no_of_pat">No of patients : </string>
+    <string name="no_of_pat">No of patients</string>
     <string name="visited_on">Visited On</string>
     <string name="diagnosis_details">Diagnosis Details</string>
     <string name="weight_kg">Weight(Kg)</string>

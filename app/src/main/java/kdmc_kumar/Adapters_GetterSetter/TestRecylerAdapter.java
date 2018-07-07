@@ -59,7 +59,11 @@ public class TestRecylerAdapter extends RecyclerView.Adapter<TestRecylerAdapter.
 
             Report_Name.setText(item.getReport_Name());
             Report_Type.setText(item.getReport_Type());
-            Report_Date.setText(item.getReport_Date().split("T")[0]);
+            try {
+                Report_Date.setText(item.getReport_Date().split("T")[0]);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
             Report_Summary.setText(item.getReport_Summary());
 
             BaseConfig.Glide_LoadImageView( Photo_imgvw, item.getReport_Image() );

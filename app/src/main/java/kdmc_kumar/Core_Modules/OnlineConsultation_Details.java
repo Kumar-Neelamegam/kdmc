@@ -6,9 +6,10 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
-import android.graphics.Matrix;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,25 +17,19 @@ import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
 import android.webkit.WebView;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.ImageView;
-import android.widget.ListView;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
-import android.widget.ZoomControls;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import displ.mobydocmarathi.com.R;
 import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
-import kdmc_kumar.Adapters_GetterSetter.OnlineConsultation_Detailed_Adapter;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
+import kdmc_kumar.Adapters_GetterSetter.OnlineConsultation_Detailed_Adapter;
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
 import kdmc_kumar.Utilities_Others.Validation1;
 
@@ -55,9 +50,9 @@ public class OnlineConsultation_Details extends AppCompatActivity {
     private Button cancel = null;
     private Button reply = null;
     ArrayList<HashMap<String, String>> titles_list = null;
-    private ArrayAdapter<CommonDataObjects.OnlineConsultationReport> adapter = null;
-    private ListView listView = null;
-    private List<CommonDataObjects.OnlineConsultationReport> rowItems = null;
+    private OnlineConsultation_Detailed_Adapter adapter = null;
+    private RecyclerView listView = null;
+    private ArrayList<CommonDataObjects.OnlineConsultationReport> rowItems = null;
     private Bundle b = null;
     private String ServerId = null;
     private String PatientId = null;
@@ -289,7 +284,6 @@ public class OnlineConsultation_Details extends AppCompatActivity {
                         patient_name.setText(c1.getString(c1.getColumnIndex("pname")));
 
                         patient_query.setText(c1.getString(c1.getColumnIndex("healthsummary")));
-                        //Patient_photo.setImageBitmap(Convert64ToImage((c.getString(c.getColumnIndex("pphoto")))));
                         BaseConfig.LoadPatientImage(BaseConfig.GetValues("select PC as ret_values from Patreg where Patid='"+c1.getString(c1.getColumnIndex("pid"))+"'"), Patient_photo, 100);
                         Age.setText(c1.getString(c1.getColumnIndex("age")));
                         Gender.setText(c1.getString(c1.getColumnIndex("gender")));
@@ -336,9 +330,11 @@ public class OnlineConsultation_Details extends AppCompatActivity {
                 }
             }
 
-            adapter = new OnlineConsultation_Detailed_Adapter(OnlineConsultation_Details.this, R.layout.list_item, rowItems);
+            adapter = new OnlineConsultation_Detailed_Adapter(OnlineConsultation_Details.this, rowItems);
+            listView.setLayoutManager(new LinearLayoutManager(OnlineConsultation_Details.this));
             listView.setAdapter(adapter);
 
+            setRecylerViewListener();
 
             c.close();
             db.close();
@@ -423,12 +419,7 @@ e.printStackTrace();
             }
             return false;
         });
-        listView.setOnTouchListener((v, event) -> {
-            if (rowItems.size() > 5) {
-                v.getParent().requestDisallowInterceptTouchEvent(true);
-            }
-            return false;
-        });
+
         // //////////////////////////////////////////////////////////////////
 
 
@@ -467,23 +458,24 @@ e.printStackTrace();
 
 
         ///////////////////////////////////////////////////////////////////////////////
+
+
         final Context context = this;
-        listView.setOnItemClickListener((parent, view, position, id) -> {
-            // TODO Auto-generated method stub
 
 
-            CommonDataObjects.OnlineConsultationReport selectedRow = (CommonDataObjects.OnlineConsultationReport) parent.getAdapter().getItem(position);
+    }
 
-            //Log.e("ImageView", selectedRow.toString());
+    private void setRecylerViewListener() {
+        adapter.onClickItem((report,view) -> {
 
-            String ReportName = selectedRow.getReportName();
+            String ReportName = report.getReportName();
 
 
-            LayoutInflater layoutInflater = LayoutInflater.from(context);
+            LayoutInflater layoutInflater = LayoutInflater.from(view.getContext());
 
             View promptView = layoutInflater.inflate(R.layout.reportimageview_zoom_dialog2, null);
 
-            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(context);
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(view.getContext());
 
             alertDialogBuilder.setView(promptView);
 
@@ -498,75 +490,10 @@ e.printStackTrace();
             final TextView nameagegen1 = promptView.findViewById(R.id.nameagegen);
 
             final TextView patient_name = promptView.findViewById(R.id.amt);
-            patient_name.setVisibility(View.INVISIBLE);
-            final ZoomControls zoom = promptView.findViewById(R.id.zoomControls1);
-
-            final ImageButton rotate_left, rotate_right, rotate_reset;
-
-            rotate_left = promptView.findViewById(R.id.rotate_anticlock);
-            rotate_right = promptView.findViewById(R.id.rotate_clock);
-            rotate_reset = promptView.findViewById(R.id.rotate_reset);
 
 
-            nameagegen1.setText(getString(R.string.report_name) + ReportName);
+            nameagegen1.setText(getString(R.string.report_name) +": "+ ReportName);
             reportphoto.setImageBitmap(reportimg);
-
-
-            rotate_left.setOnClickListener(arg0 -> {
-                // TODO Auto-generated method stub
-                Matrix matrix = new Matrix();
-                Matrix mat = reportphoto.getImageMatrix();
-                matrix.set(mat);
-                matrix.setRotate(-90.0F);
-                reportimg = Bitmap.createBitmap(reportimg, 0, 0, reportimg.getWidth(), reportimg.getHeight(), matrix, true);
-                reportphoto.setImageBitmap(reportimg);
-
-            });
-
-
-            rotate_right.setOnClickListener(arg0 -> {
-                // TODO Auto-generated method stub
-                Matrix matrix = new Matrix();
-                Matrix mat = reportphoto.getImageMatrix();
-                matrix.set(mat);
-                matrix.setRotate(90.0F);
-                reportimg = Bitmap.createBitmap(reportimg, 0, 0, reportimg.getWidth(), reportimg.getHeight(), matrix, true);
-                reportphoto.setImageBitmap(reportimg);
-
-            });
-            rotate_reset.setOnClickListener(arg0 -> {
-                // TODO Auto-generated method stub
-                Matrix matrix = new Matrix();
-                matrix.postRotate(90.0F);
-                reportimg = Bitmap.createBitmap(reportimg, 0, 0, reportimg.getWidth(), reportimg.getHeight(), matrix, true);
-                reportphoto.setImageBitmap(reportimg);
-            });
-
-            zoom.setOnZoomInClickListener(v -> {
-                // TODO Auto-generated method stub
-
-                int w = reportphoto.getWidth();
-                int h = reportphoto.getHeight();
-
-                RelativeLayout.LayoutParams params =
-                        new RelativeLayout.LayoutParams(w + 10, h + 10);
-                params.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-                reportphoto.setLayoutParams(params);
-            });
-
-            zoom.setOnZoomOutClickListener(v -> {
-                // TODO Auto-generated method stub
-
-                int w = reportphoto.getWidth();
-                int h = reportphoto.getHeight();
-
-                RelativeLayout.LayoutParams params =
-                        new RelativeLayout.LayoutParams(w - 10, h - 10);
-                params.addRule(RelativeLayout.CENTER_IN_PARENT);
-
-                reportphoto.setLayoutParams(params);
-            });
 
 
             alertDialogBuilder.setCancelable(false).setPositiveButton(getString(R.string.ok),
@@ -579,9 +506,8 @@ e.printStackTrace();
             AlertDialog alertD = alertDialogBuilder.create();
             alertD.show();
 
+
         });
-
-
     }
 
     private final boolean checkValidation() {

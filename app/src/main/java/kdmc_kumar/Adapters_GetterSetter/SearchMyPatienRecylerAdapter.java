@@ -151,6 +151,7 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
                 ViewGroup.LayoutParams.MATCH_PARENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT));
 
+/*
         if (mValues.get(position).IsOnlinePatient) {
             holder.layout.setVisibility(View.VISIBLE);
             holder.closeOnlineButton.setVisibility(View.VISIBLE);
@@ -162,6 +163,7 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
 
 
         holder.closeOnlineButton.setOnClickListener(v -> ShowClosePatientDialog(v.getContext(), mValues, position));
+*/
 
 
     }
@@ -625,7 +627,7 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
-        final Button closeOnlineButton;
+      //  final Button closeOnlineButton;
         final ImageView imageView;
         final LinearLayout rootLayout;
 
@@ -648,7 +650,7 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
             imageView = view.findViewById(R.id.icon);
             rootLayout = view.findViewById(R.id.list_root);
             layout = view.findViewById(R.id.online_patient);
-            closeOnlineButton = view.findViewById(R.id.close_online_patient);
+           // closeOnlineButton = view.findViewById(R.id.close_online_patient);
             gender = view.findViewById(R.id.gender);
             pid = view.findViewById(R.id.pid);
             card_view = view.findViewById(R.id.card_view);

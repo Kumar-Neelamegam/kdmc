@@ -187,7 +187,7 @@ public class Inpatient_List extends AppCompatActivity {
                     }
                     SelectedGetPatientDetailsFilter(QueryInPatient, charSequence.toString(), istext);
                 } else {
-                    textvwPatientCount.setText(String.format("%s%d", getString(R.string.no_of_pat), rowItems.size()));
+                    textvwPatientCount.setText(String.format("%s: %d", getString(R.string.no_of_pat), rowItems.size()));
                 }
 
 
@@ -200,7 +200,7 @@ public class Inpatient_List extends AppCompatActivity {
 
                 } else {
                     SelectedGetPatientDetails(QueryInPatient);
-                    textvwPatientCount.setText(String.format("%s%d", getString(R.string.no_of_pat), rowItems.size()));
+                    textvwPatientCount.setText(String.format("%s: %d", getString(R.string.no_of_pat), rowItems.size()));
                 }
             }
 
@@ -233,7 +233,7 @@ public class Inpatient_List extends AppCompatActivity {
                 edittextSearch.setText("");
                 inpatientRecyclerAdapter = new InpatientRecyclerAdapter(rowItems);
                 inpatientFastscrollview.setAdapter(inpatientRecyclerAdapter);
-                textvwPatientCount.setText(String.format("%s %s", getString(R.string.noofpatient), String.valueOf(rowItems.size())));
+                textvwPatientCount.setText(String.format("%s:%s", getString(R.string.noofpatient), String.valueOf(rowItems.size())));
 
 
             }
@@ -444,7 +444,7 @@ public class Inpatient_List extends AppCompatActivity {
 
             inpatientFastscrollview.setAdapter(inpatientRecyclerAdapter);
 
-            textvwPatientCount.setText(String.format("%s%s", getString(R.string.no_of_pat), String.valueOf(rowItems.size())));
+            textvwPatientCount.setText(String.format("%s: %s", getString(R.string.no_of_pat), String.valueOf(rowItems.size())));
 
         } catch (RuntimeException e) {
             e.printStackTrace();

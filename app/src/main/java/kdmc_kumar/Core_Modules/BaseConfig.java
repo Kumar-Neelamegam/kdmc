@@ -1187,7 +1187,7 @@ public class BaseConfig {
                 }
                 System.gc();
             }
-        }, 0, 15, TimeUnit.SECONDS);
+        }, 0, 20, TimeUnit.SECONDS);
 
 
         //===============================
@@ -1208,7 +1208,7 @@ public class BaseConfig {
                 }
                 System.gc();
             }
-        }, 0, 20, TimeUnit.SECONDS);
+        }, 0, 15, TimeUnit.SECONDS);
 
 
     }
@@ -1233,7 +1233,7 @@ public class BaseConfig {
                 }
                 System.gc();
             }
-        }, 0, 25, TimeUnit.SECONDS);
+        }, 0, 10, TimeUnit.SECONDS);
 
     }
 

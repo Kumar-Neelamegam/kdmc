@@ -774,6 +774,33 @@ public class SettingActivity extends AppCompatActivity {
         autocompletePrefpharmacy.setThreshold(1);
         prefLabs.setThreshold(1);
 
+
+        //Settings default name and address
+        String address = BaseConfig.GetValues("select Address as ret_values from Mstr_MultipleHospital where ServerId='" + BaseConfig.HID + '\'');
+
+
+
+        if(autocompletePrefpharmacy.getText().length()==0)
+        {
+            autocompletePrefpharmacy.setText(String.valueOf(BaseConfig.HOSPITALNAME));
+            if (address.length() > 0) {
+                prefpharmacyAddress.setText(address);
+            }
+        }
+
+
+
+        if(prefLabs.getText().length()==0)
+        {
+            prefLabs.setText(String.valueOf(BaseConfig.HOSPITALNAME + ",LABORATORY"));
+            if (address.length() > 0) {
+                autocompletePrefLabsAddress.setText(address);
+            }
+        }
+
+
+
+
     }
 
     //*******************************************************************************************

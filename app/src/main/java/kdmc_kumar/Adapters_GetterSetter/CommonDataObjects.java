@@ -430,7 +430,7 @@ public class CommonDataObjects {
         private String Patient_Gender;
         private String Patient_Image;
         private String Patient_Prefix;
-
+//00003075
         public MyPatientGetSet(String patient_prefix, String patient_Name, String patient_Id, String patient_Age, String patient_Gender, String Patient_Image) {
             Patient_Prefix = patient_prefix;
             Patient_Name = patient_Name;

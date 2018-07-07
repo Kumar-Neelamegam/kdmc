@@ -564,6 +564,7 @@ public class SearchOnlinePatient extends AppCompatActivity {
                         .setLayoutColor(R.color.green_500)
                         .setImage(R.drawable.ic_success_done)
                         .setTitle("Success")
+                        .setNegativeButtonVisible(View.GONE)
                         .setDescription("Patient details received successfully.")
                         .setPossitiveButtonTitle(SearchOnlinePatient.this.getString(R.string.ok))
                         .setOnPossitiveListener(() -> {

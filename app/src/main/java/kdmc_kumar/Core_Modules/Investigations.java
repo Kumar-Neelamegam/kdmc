@@ -1597,6 +1597,7 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
                         Intent intent = new Intent(getApplicationContext(), MedicinePrescription.class);
 
                         if (autocompletePatientname.getText().length() > 0) {
+                            COMMON_DIAGNOSIS= multiautoDiagnosis.getText().toString();
                             intent.putExtra("CONTINUE_STATUS", "True");
                             intent.putExtra("INVESTIGATIONID", "");
                             intent.putExtra("PASSING_DIAGNOSISID", COMMON_DIAGNOSISID);
@@ -1823,6 +1824,7 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
 
             Toast.makeText(this, "Investigation Details - Submitted Successfully..", Toast.LENGTH_SHORT).show();
 
+            COMMON_DIAGNOSIS= multiautoDiagnosis.getText().toString();
             Investigations.this.finish();
             Intent intent = new Intent(getApplicationContext(), MedicinePrescription.class);
             intent.putExtra("CONTINUE_STATUS", "True");

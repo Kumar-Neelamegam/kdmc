@@ -347,7 +347,7 @@ public class ImportWebservices_NODEJS {
                     //Docid
                     this.ImportDoctorInfo();         // TODO: 1/24/2018 Completed
                     this.ImportReportGallery();      // TODO: 1/24/2018 Completed
-                    this.ImportPatientInfo();        // TODO: 1/24/2018 Completed
+                   // this.ImportPatientInfo();        // TODO: 1/24/2018 Completed
                     this.ImportAppointment();        // TODO: 1/24/2018 Completed
                     this.ImportOnlineConsultation(); // TODO: 1/24/2018 Completed
 
@@ -419,6 +419,9 @@ public class ImportWebservices_NODEJS {
 
 
                     LoadInvestigation_Notification(); // Investigation Notification
+
+
+
 
 
                 }
@@ -616,7 +619,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("Presentwithco", Presentwithco_data);
                     values1.put("doc_refer_name", doc_refer_name_data);
                     values1.put("doc_refer_no", doc_refer_no_data);
-                    values1.put("IsFeeExemp", IsFeeExemp_data);
+                    values1.put("IsFeeExemp", IsFeeExemp_data.toString().equalsIgnoreCase("true")? "Yes" : "No");
                     values1.put("FeeExempCateg", FeeExempCateg_data);
                     values1.put("bplCardNo", bplCardNo_data);
                     values1.put("AadharCardNo", AadharCardNo_data);
@@ -639,6 +642,10 @@ public class ImportWebservices_NODEJS {
                     } else {
 
                         db.update("Patreg", values1, "Patid ='" + Patid_data + '\'', null);
+
+                        String Update_Vaccination = "update  Vaccination set pname='"+name_data+ "',agegen='"+age_data+ '-'+ gender_data+ "',mobnum='"+phone_data+ "' where patid='"+Patid_data+ "';";
+                        BaseConfig.SaveData(Update_Vaccination);
+
                     }
 
 
@@ -650,7 +657,6 @@ public class ImportWebservices_NODEJS {
         }
 
         db.close();
-
 
     }
 
@@ -928,7 +934,7 @@ public class ImportWebservices_NODEJS {
 
                         String Update_Query = "update patreg set name='"
                                 + String.valueOf(objJson.getString("name")) + "',age='"
-                                + String.valueOf(objJson.getString("gender"))
+                                + String.valueOf(objJson.getString("age"))
                                 + "',gender='"
                                 + String.valueOf(objJson.getString("gender")) + "',DOB='"
                                 + String.valueOf(objJson.getString("dob"))
@@ -2553,9 +2559,9 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String Ptid = String.valueOf(objJson.getString("Ptid"));
+                    final String Ptid = String.valueOf(objJson.getString("ptid"));
                     final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("Docid"));
+                    final String docid = String.valueOf(objJson.getString("docid"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));

@@ -814,31 +814,35 @@ public class MedicinePrescription extends AppCompatActivity {
 
         _buttonAddMedicine.setOnClickListener(v -> {
 
-            //changing the layout for prescription
-            if (Medicine_Type.trim().equalsIgnoreCase("")) {
-                ADD_MEDICINE_LIST(1);
+            try {
+                //changing the layout for prescription
+                if (Medicine_Type.trim().equalsIgnoreCase("")) {
+                    ADD_MEDICINE_LIST(1);
 
-            } else {
-                if (Medicine_Type.equalsIgnoreCase(Medicine_Type_Array[0])) {
-                    ADD_MEDICINE_LIST(1);
-                } else if (Medicine_Type.equalsIgnoreCase(Medicine_Type_Array[4])) {
-                    ADD_MEDICINE_LIST(2);
-                } else if (Medicine_Type.equalsIgnoreCase(Medicine_Type_Array[1])) {
-                    ADD_MEDICINE_SYRUP();
-                } else if (Medicine_Type.equalsIgnoreCase(Medicine_Type_Array[2]) || Medicine_Type.equalsIgnoreCase(Medicine_Type_Array[3])) {
-                    ADD_MEDICINE_OINTMENT();
-                } else if (Medicine_Type.equalsIgnoreCase(Medicine_Type_Array[5])) {
-                    ADD_MEDICINE_LIST(3);
                 } else {
-                    ADD_MEDICINE_LIST(1);
+                    if (Medicine_Type.equalsIgnoreCase(Medicine_Type_Array[0])) {
+                        ADD_MEDICINE_LIST(1);
+                    } else if (Medicine_Type.equalsIgnoreCase(Medicine_Type_Array[4])) {
+                        ADD_MEDICINE_LIST(2);
+                    } else if (Medicine_Type.equalsIgnoreCase(Medicine_Type_Array[1])) {
+                        ADD_MEDICINE_SYRUP();
+                    } else if (Medicine_Type.equalsIgnoreCase(Medicine_Type_Array[2]) || Medicine_Type.equalsIgnoreCase(Medicine_Type_Array[3])) {
+                        ADD_MEDICINE_OINTMENT();
+                    } else if (Medicine_Type.equalsIgnoreCase(Medicine_Type_Array[5])) {
+                        ADD_MEDICINE_LIST(3);
+                    } else {
+                        ADD_MEDICINE_LIST(1);
+                    }
+
                 }
 
-            }
-
-            if (_recyclerMedicineList.getAdapter().getItemCount() > 0) {
-                SaveMedicineTemplate.setVisibility(View.VISIBLE);
-            } else {
-                SaveMedicineTemplate.setVisibility(View.GONE);
+                if (_recyclerMedicineList.getAdapter()!=null && _recyclerMedicineList.getAdapter().getItemCount() > 0) {
+                    SaveMedicineTemplate.setVisibility(View.VISIBLE);
+                } else {
+                    SaveMedicineTemplate.setVisibility(View.GONE);
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
 

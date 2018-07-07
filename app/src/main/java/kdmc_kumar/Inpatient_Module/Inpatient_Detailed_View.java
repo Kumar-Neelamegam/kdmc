@@ -157,8 +157,11 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
         dateFormatter = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
-        LoadWebview(sdf.format(new Date()));
-
+        try {
+            LoadWebview(sdf.format(new Date()));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -454,6 +457,9 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
                             if (admitTime.contains(" ") || admitTime.contains("T")) {
                                 admitTime = admitTime.contains(" ")? admitTime.split(" ")[1] : admitTime.split("T")[1];
                             }
+
+                                admitTime = admitTime.contains("Z")? admitTime.replace("Z","") : admitTime;
+
 
                         } catch (Exception e) {
                             e.printStackTrace();
@@ -1027,13 +1033,29 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        try {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
+            dateFormatter = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
+            try {
+                LoadWebview(sdf.format(new Date()));
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
     private void LoadSearch() {
 
         Calendar newCalendar = Calendar.getInstance();
         fromDatePickerDialog = new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {
             Calendar newDate = Calendar.getInstance();
             newDate.set(year, monthOfYear, dayOfMonth);
-            Toast.makeText(this, ""+ dateFormatter.format(newDate.getTime()), Toast.LENGTH_SHORT).show();
+            //Toast.makeText(this, ""+ dateFormatter.format(newDate.getTime()), Toast.LENGTH_SHORT).show();
 
             String Date = dateFormatter.format(newDate.getTime());
             LoadWebview(Date);

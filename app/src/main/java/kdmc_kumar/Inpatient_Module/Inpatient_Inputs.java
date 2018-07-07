@@ -236,7 +236,11 @@ public class Inpatient_Inputs extends AppCompatActivity {
         ButterKnife.bind(this);
 
 
-        loadInpatientDetails();
+        try {
+            loadInpatientDetails();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -613,7 +617,7 @@ public class Inpatient_Inputs extends AppCompatActivity {
                 String urinesgr_txt, lente_txt, insulinplain_txt, bloodsgr_txt, ketone_txt, ipdiab_time = "-";
 
 
-                urinesgr_txt = CheckEdittextIsEmpty(edittextInaptientchartUrine);
+                urinesgr_txt = CheckEdittextIsEmpty(autoCompleteTextViewDiabetichartUrineSugar);
                 lente_txt = CheckEdittextIsEmpty(edittextDiabetichartLente);
                 insulinplain_txt = CheckEdittextIsEmpty(edittextDiabetichartInsulinPlain);
                 bloodsgr_txt = CheckEdittextIsEmpty(edittextDiabetichartBloodSugar);

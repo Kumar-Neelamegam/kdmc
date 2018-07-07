@@ -211,7 +211,7 @@ public class Profile_Patient extends Fragment {
                     AmountInsured = checkNullEmpty(c.getString(c.getColumnIndex("amountinsured")));
                     ValidityStr = checkNullEmpty(c.getString(c.getColumnIndex("validity")));
                     AuthorisedHospitalsStr = checkNullEmpty(c.getString(c.getColumnIndex("inshosp")));
-                    FeeExemptionStr = checkTrueFalse(checkNullEmpty(c.getString(c.getColumnIndex("IsFeeExemp"))));
+                    FeeExemptionStr = checkNullEmpty(c.getString(c.getColumnIndex("IsFeeExemp")));
                     FeeExemptionCategoryStr = checkNullEmpty(c.getString(c.getColumnIndex("FeeExempCateg")));
 
                     if (FeeExemptionCategoryStr.equalsIgnoreCase("0")) {

@@ -1387,7 +1387,7 @@ public class ClinicalInformation extends AppCompatActivity {
             }
 
             String surgicalNotes = edtSurgicalRemarks.getText().toString();
-            if (surgicalNotes == null) {
+            if (surgicalNotes.length()==0) {
                 surgicalNotes = "";
             }
 

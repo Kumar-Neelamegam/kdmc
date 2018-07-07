@@ -457,7 +457,7 @@ public class Patient_Registration extends AppCompatActivity {
             str_State = BaseConfig.GetWidgetOperations(autocompleteState, 1);
             str_City = BaseConfig.GetWidgetOperations(autocompleteCity, 1);
             str_Willingtosms = BaseConfig.GetWidgetOperations(spinnerWillingReceive, 1);
-            str_FeeExemption = BaseConfig.GetWidgetOperations(spinnerFeeExemption, 1);
+            str_FeeExemption = spinnerFeeExemption.isOn()? "Yes":"No";//BaseConfig.GetWidgetOperations(spinnerFeeExemption, 1);
             str_FeeExemption = str_FeeExemption.equalsIgnoreCase("Yes") ? "1" : "0";
             str_Mobile1 = BaseConfig.GetWidgetOperations(edtMobile1, 1);
             str_FeeExemption_Category = BaseConfig.GetWidgetOperations(spinnerFeeExemption_category, 1);
@@ -567,8 +567,7 @@ public class Patient_Registration extends AppCompatActivity {
             db.insert("Bind_Patient_Registration", null, value);
 
 
-
-            str_FeeExemption = str_FeeExemption.equalsIgnoreCase("Yes") ? "Yes" : "No";
+            str_FeeExemption = spinnerFeeExemption.isOn()? "Yes":"No";
             value = new ContentValues();
             value.put("Patid", str_PatientId);
             value.put("Docid", BaseConfig.doctorId);

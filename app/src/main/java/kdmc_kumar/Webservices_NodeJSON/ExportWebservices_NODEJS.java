@@ -2221,7 +2221,6 @@ public class ExportWebservices_NODEJS {
                     do {
 
                         from_db_obj = new JSONObject();
-                        Local_Id = c.getString(c.getColumnIndex("id"));
 
                         from_db_obj.put("DiagId", c.getString(c.getColumnIndex("DiagId")));
                         from_db_obj.put("ptid", c.getString(c.getColumnIndex("ptid")));
@@ -2287,7 +2286,7 @@ public class ExportWebservices_NODEJS {
                     ContentValues values = new ContentValues();
                     values.put("Isupdate", "1");
                     values.put("ServerId", ServerId);
-                    db.update("Mprescribed", values, "id=" + Local_Id + "", null);
+                    db.update("Mprescribed", values, "id=" + LocalId + "", null);
 
 
                 }
