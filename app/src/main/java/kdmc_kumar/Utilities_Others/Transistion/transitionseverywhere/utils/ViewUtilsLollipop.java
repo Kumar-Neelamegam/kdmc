@@ -19,21 +19,24 @@ package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils;
 import android.annotation.TargetApi;
 import android.graphics.Matrix;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.view.View;
 import android.view.ViewGroup;
 
 import java.lang.reflect.Method;
 
+import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.ViewUtils.ViewUtilsKitKat;
+
 /**
  * Created by Andrey Kulikov on 20.10.14.
  */
-@TargetApi(Build.VERSION_CODES.LOLLIPOP)
-class ViewUtilsLollipop extends ViewUtils.ViewUtilsKitKat {
+@TargetApi(VERSION_CODES.LOLLIPOP)
+class ViewUtilsLollipop extends ViewUtilsKitKat {
 
     private static final Class CLASS_GhostView = ReflectionUtils.getClass("android.view.GhostView");
-    private static final Method METHOD_addGhost = ReflectionUtils.getMethod(CLASS_GhostView,
+    private static final Method METHOD_addGhost = ReflectionUtils.getMethod(ViewUtilsLollipop.CLASS_GhostView,
             "addGhost", View.class, ViewGroup.class, Matrix.class);
-    private static final Method METHOD_removeGhost = ReflectionUtils.getMethod(CLASS_GhostView,
+    private static final Method METHOD_removeGhost = ReflectionUtils.getMethod(ViewUtilsLollipop.CLASS_GhostView,
             "removeGhost", View.class);
     private static final Method METHOD_transformMatrixToGlobal =
             ReflectionUtils.getMethod(View.class, "transformMatrixToGlobal", Matrix.class);
@@ -44,27 +47,27 @@ class ViewUtilsLollipop extends ViewUtils.ViewUtilsKitKat {
 
     @Override
     public void transformMatrixToGlobal(View view, Matrix matrix) {
-        ReflectionUtils.invoke(view, null, METHOD_transformMatrixToGlobal, matrix);
+        ReflectionUtils.invoke(view, null, ViewUtilsLollipop.METHOD_transformMatrixToGlobal, matrix);
     }
 
     @Override
     public void transformMatrixToLocal(View view, Matrix matrix) {
-        ReflectionUtils.invoke(view, null, METHOD_transformMatrixToLocal, matrix);
+        ReflectionUtils.invoke(view, null, ViewUtilsLollipop.METHOD_transformMatrixToLocal, matrix);
     }
 
     @Override
     public void setAnimationMatrix(View view, Matrix matrix) {
-        ReflectionUtils.invoke(view, null, METHOD_setAnimationMatrix, matrix);
+        ReflectionUtils.invoke(view, null, ViewUtilsLollipop.METHOD_setAnimationMatrix, matrix);
     }
 
     @Override
     public View addGhostView(View view, ViewGroup viewGroup, Matrix matrix) {
-        return (View) ReflectionUtils.invoke(null, null, METHOD_addGhost, view, viewGroup, matrix);
+        return (View) ReflectionUtils.invoke(null, null, ViewUtilsLollipop.METHOD_addGhost, view, viewGroup, matrix);
     }
 
     @Override
     public void removeGhostView(View view) {
-        ReflectionUtils.invoke(view, null, METHOD_removeGhost, view);
+        ReflectionUtils.invoke(view, null, ViewUtilsLollipop.METHOD_removeGhost, view);
     }
 
     @Override

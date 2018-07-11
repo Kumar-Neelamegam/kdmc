@@ -14,15 +14,18 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.drawable;
+import displ.mobydocmarathi.com.R.id;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.ObjectDrawerItem;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
-public class DrawerItemCustomAdapter extends ArrayAdapter<CommonDataObjects.ObjectDrawerItem> {
+public class DrawerItemCustomAdapter extends ArrayAdapter<ObjectDrawerItem> {
 
     private final Context mContext;
     private final int layoutResourceId;
-    private CommonDataObjects.ObjectDrawerItem[] data = null;
+    private ObjectDrawerItem[] data;
 
-    public DrawerItemCustomAdapter(Context mContext, int layoutResourceId, CommonDataObjects.ObjectDrawerItem[] data) {
+    public DrawerItemCustomAdapter(Context mContext, int layoutResourceId, ObjectDrawerItem[] data) {
 
         super(mContext, layoutResourceId, data);
         this.layoutResourceId = layoutResourceId;
@@ -40,19 +43,19 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<CommonDataObjects.Obje
 
         if (convertView == null) {
             // inflate the listview_item_row.xml parent
-            LayoutInflater inflater = ((Activity) mContext).getLayoutInflater();
-            listItem = inflater.inflate(layoutResourceId, parent, false);
+            LayoutInflater inflater = ((Activity) this.mContext).getLayoutInflater();
+            listItem = inflater.inflate(this.layoutResourceId, parent, false);
         } else
             listItem = convertView;
-        final ViewHolder viewHolder = new ViewHolder();
+        DrawerItemCustomAdapter.ViewHolder viewHolder = new DrawerItemCustomAdapter.ViewHolder();
 
 
-        viewHolder.menuName = listItem.findViewById(R.id.menuName);
-        viewHolder.menuImage = listItem.findViewById(R.id.menuImage);
-        viewHolder.imgLayout = listItem.findViewById(R.id.imgLayout);
-        viewHolder.buttonLayout = listItem.findViewById(R.id.buttonLayout);
-        viewHolder.img_banner = listItem.findViewById(R.id.img_banner);
-        viewHolder.DoctorName = listItem.findViewById(R.id.title_doctorname);
+        viewHolder.menuName = listItem.findViewById(id.menuName);
+        viewHolder.menuImage = listItem.findViewById(id.menuImage);
+        viewHolder.imgLayout = listItem.findViewById(id.imgLayout);
+        viewHolder.buttonLayout = listItem.findViewById(id.buttonLayout);
+        viewHolder.img_banner = listItem.findViewById(id.img_banner);
+        viewHolder.DoctorName = listItem.findViewById(id.title_doctorname);
 
 
         viewHolder.DoctorName.setText(String.format("%s\n%s", BaseConfig.doctorname, BaseConfig.HOSPITALNAME));
@@ -68,13 +71,13 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<CommonDataObjects.Obje
 
         } else {
 
-            Bitmap bitmp = BitmapFactory.decodeResource(getContext().getResources(), R.drawable.image);
+            Bitmap bitmp = BitmapFactory.decodeResource(this.getContext().getResources(), drawable.image);
             viewHolder.img_banner.setImageBitmap(bitmp);
 
         }
 
 
-        CommonDataObjects.ObjectDrawerItem folder = data[position];
+        ObjectDrawerItem folder = this.data[position];
 
 
         if (position == 0) {
@@ -98,12 +101,12 @@ public class DrawerItemCustomAdapter extends ArrayAdapter<CommonDataObjects.Obje
 
     // /////////////////////////////////////////////////////////////////////////////
     static class ViewHolder {
-        TextView menuName = null;
-        ImageView menuImage = null;
-        LinearLayout buttonLayout = null;
-        LinearLayout imgLayout = null;
-        ImageView img_banner = null;
-        TextView DoctorName = null;
+        TextView menuName;
+        ImageView menuImage;
+        LinearLayout buttonLayout;
+        LinearLayout imgLayout;
+        ImageView img_banner;
+        TextView DoctorName;
 
         ViewHolder() {
         }

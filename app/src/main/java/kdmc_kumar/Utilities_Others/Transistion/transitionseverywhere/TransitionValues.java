@@ -60,10 +60,8 @@ public class TransitionValues {
     @Override
     public boolean equals(Object other) {
         if (other instanceof TransitionValues) {
-            if (view == ((TransitionValues) other).view) {
-                if (values.equals(((TransitionValues) other).values)) {
-                    return true;
-                }
+            if (this.view == ((TransitionValues) other).view) {
+                return this.values.equals(((TransitionValues) other).values);
             }
         }
         return false;
@@ -71,16 +69,16 @@ public class TransitionValues {
 
     @Override
     public int hashCode() {
-        return 31 * view.hashCode() + values.hashCode();
+        return 31 * this.view.hashCode() + this.values.hashCode();
     }
 
     @Override
     public String toString() {
-        String returnValue = "TransitionValues@" + Integer.toHexString(hashCode()) + ":\n";
-        returnValue += "    view = " + view + "\n";
+        String returnValue = "TransitionValues@" + Integer.toHexString(this.hashCode()) + ":\n";
+        returnValue += "    view = " + this.view + "\n";
         returnValue += "    values:";
-        for (String s : values.keySet()) {
-            returnValue += "    " + s + ": " + values.get(s) + "\n";
+        for (String s : this.values.keySet()) {
+            returnValue += "    " + s + ": " + this.values.get(s) + "\n";
         }
         return returnValue;
     }

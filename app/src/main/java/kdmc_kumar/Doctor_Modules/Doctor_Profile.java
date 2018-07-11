@@ -15,11 +15,16 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.anim;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
 
@@ -39,11 +44,11 @@ public class Doctor_Profile extends AppCompatActivity {
      *
      * @param savedInstanceState
      */
-    private ImageView ic_previous = null;
-    private ImageView doctor_photo = null;
-    private ImageView doctor_sign = null;
-    private WebView profile_webvw = null;
-    private Toolbar toolbar = null;
+    private ImageView ic_previous;
+    private ImageView doctor_photo;
+    private ImageView doctor_sign;
+    private WebView profile_webvw;
+    private Toolbar toolbar;
 
     public Doctor_Profile() {
     }
@@ -54,13 +59,13 @@ public class Doctor_Profile extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_doctor_profile);
+        this.setContentView(layout.new_doctor_profile);
 
         try {
 
-            GetInitialize();
+            this.GetInitialize();
 
-            Controllisteners();
+            this.Controllisteners();
 
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -71,27 +76,27 @@ public class Doctor_Profile extends AppCompatActivity {
     //#######################################################################################################
     private final void GetInitialize() {
 
-        setSupportActionBar(toolbar);
+        this.setSupportActionBar(this.toolbar);
 
-        profile_webvw = findViewById(R.id.webvw_profile);
+        this.profile_webvw = this.findViewById(id.webvw_profile);
 
-        profile_webvw.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        profile_webvw.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        profile_webvw.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        this.profile_webvw.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        this.profile_webvw.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        this.profile_webvw.getSettings().setRenderPriority(RenderPriority.HIGH);
 
-        profile_webvw.setOnLongClickListener(v -> true);
+        this.profile_webvw.setOnLongClickListener(v -> true);
 
-        profile_webvw.setLongClickable(false);
+        this.profile_webvw.setLongClickable(false);
 
-        toolbar = findViewById(R.id.toolbar);
-        ic_previous = toolbar.findViewById(R.id.ic_back);
+        this.toolbar = this.findViewById(id.toolbar);
+        this.ic_previous = this.toolbar.findViewById(id.ic_back);
 
 
-        doctor_photo = findViewById(R.id.imgvw_doctor_photo);
-        doctor_sign = findViewById(R.id.imgvw_doctor_sign);
+        this.doctor_photo = this.findViewById(id.imgvw_doctor_photo);
+        this.doctor_sign = this.findViewById(id.imgvw_doctor_sign);
 
         try {
-            LoadWebview();
+            this.LoadWebview();
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
@@ -102,13 +107,13 @@ public class Doctor_Profile extends AppCompatActivity {
     //#######################################################################################################
     private final void Controllisteners() {
 
-        ic_previous.setOnClickListener(view -> {
+        this.ic_previous.setOnClickListener(view -> {
 
 
-            Doctor_Profile.this.finish();
-            Intent taskselect = new Intent(Doctor_Profile.this, Dashboard_NavigationMenu.class);
-            startActivity(taskselect);
-            Doctor_Profile.this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);//Bottom to Top
+            finish();
+            Intent taskselect = new Intent(this, Dashboard_NavigationMenu.class);
+            this.startActivity(taskselect);
+            overridePendingTransition(anim.slide_in_left, anim.slide_out_right);//Bottom to Top
 
 
         });
@@ -117,31 +122,31 @@ public class Doctor_Profile extends AppCompatActivity {
 
     //#######################################################################################################
     private final void LoadWebview() {
-        profile_webvw.getSettings().setJavaScriptEnabled(true);
-        profile_webvw.setLayerType(View.LAYER_TYPE_NONE, null);
-        profile_webvw.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        profile_webvw.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-        profile_webvw.getSettings().setDefaultTextEncodingName("utf-8");
+        this.profile_webvw.getSettings().setJavaScriptEnabled(true);
+        this.profile_webvw.setLayerType(View.LAYER_TYPE_NONE, null);
+        this.profile_webvw.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        this.profile_webvw.getSettings().setRenderPriority(RenderPriority.HIGH);
+        this.profile_webvw.getSettings().setDefaultTextEncodingName("utf-8");
 
-        profile_webvw.setWebChromeClient(new MyWebChromeClient());
+        this.profile_webvw.setWebChromeClient(new Doctor_Profile.MyWebChromeClient());
 
-        profile_webvw.setBackgroundColor(0x00000000);
-        profile_webvw.setVerticalScrollBarEnabled(true);
-        profile_webvw.setHorizontalScrollBarEnabled(true);
+        this.profile_webvw.setBackgroundColor(0x00000000);
+        this.profile_webvw.setVerticalScrollBarEnabled(true);
+        this.profile_webvw.setHorizontalScrollBarEnabled(true);
 
        Toast.makeText(this, "Please wait doctor profile loading..", Toast.LENGTH_SHORT).show();
 
       //  BaseConfig.SnackBar(this,  "Please wait doctor profile loading..", profile_webvw);
 
 
-        profile_webvw.getSettings().setJavaScriptEnabled(true);
+        this.profile_webvw.getSettings().setJavaScriptEnabled(true);
 
-        profile_webvw.getSettings().setAllowContentAccess(true);
+        this.profile_webvw.getSettings().setAllowContentAccess(true);
 
-        profile_webvw.addJavascriptInterface(new WebAppInterface(this), "android");
+        this.profile_webvw.addJavascriptInterface(new Doctor_Profile.WebAppInterface(this), "android");
         try {
 
-            profile_webvw.loadDataWithBaseURL("file:///android_asset/", LoadDoctorProfile(), "text/html", "utf-8", null);
+            this.profile_webvw.loadDataWithBaseURL("file:///android_asset/", this.LoadDoctorProfile(), "text/html", "utf-8", null);
 
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -183,24 +188,24 @@ public class Doctor_Profile extends AppCompatActivity {
 
                     //String Set 1
                     HID = c.getString(c.getColumnIndex("HID"));
-                    Doc_ID = checkNullEmpty(c.getString(c.getColumnIndex("Docid")));
-                    Name = checkNullEmpty(c.getString(c.getColumnIndex("name")));
+                    Doc_ID = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("Docid")));
+                    Name = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("name")));
                     Gender = (c.getString(c.getColumnIndex("gender")));
-                    DOB = checkNullEmpty(c.getString(c.getColumnIndex("DOB"))).split("T")[0];
+                    DOB = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("DOB"))).split("T")[0];
 
                     if (DOB.contains("1900")) {
                         DOB = "-";
                     }
 
-                    Age = checkNullEmpty(c.getString(c.getColumnIndex("age")));
-                    Qualification = checkNullEmpty(c.getString(c.getColumnIndex("Academic")));
-                    Specialization = checkNullEmpty(c.getString(c.getColumnIndex("Specialization")));
-                    MCI = checkNullEmpty(c.getString(c.getColumnIndex("MCI")));
-                    PAN = checkNullEmpty(c.getString(c.getColumnIndex("PAN")));
-                    ServTax = checkNullEmpty(c.getString(c.getColumnIndex("TaxNo")));
-                    Mobile1 = checkNullEmpty(c.getString(c.getColumnIndex("Mobile")));
-                    Mobile2 = checkNullEmpty(c.getString(c.getColumnIndex("Homephone")));
-                    Email = checkNullEmpty(c.getString(c.getColumnIndex("emailid")));
+                    Age = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("age")));
+                    Qualification = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("Academic")));
+                    Specialization = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("Specialization")));
+                    MCI = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("MCI")));
+                    PAN = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("PAN")));
+                    ServTax = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("TaxNo")));
+                    Mobile1 = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("Mobile")));
+                    Mobile2 = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("Homephone")));
+                    Email = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("emailid")));
 
 
                     //String Set 3
@@ -218,19 +223,19 @@ public class Doctor_Profile extends AppCompatActivity {
                     String DoctorSign = c.getString(c.getColumnIndex("docsign"));
 
                     if (DoctorPhoto != null && DoctorPhoto.length() > 0) {
-                        BaseConfig.LoadPatientImage(DoctorPhoto, doctor_photo, 100);
+                        BaseConfig.LoadPatientImage(DoctorPhoto, this.doctor_photo, 100);
 
                     }
                     if (DoctorSign != null && DoctorSign.length() > 0) {
-                        BaseConfig.LoadPatientImage(DoctorSign, doctor_sign, 100);
+                        BaseConfig.LoadPatientImage(DoctorSign, this.doctor_sign, 100);
 
                     }
 
-                    str_Add1 = checkNullEmpty(c.getString(c.getColumnIndex("Address")));
-                    str_Country = checkNullEmpty(c.getString(c.getColumnIndex("Country")));
-                    str_State = checkNullEmpty(c.getString(c.getColumnIndex("State")));
-                    str_City = checkNullEmpty(c.getString(c.getColumnIndex("District")));
-                    str_Pincode = checkNullEmpty(c.getString(c.getColumnIndex("pincode")));
+                    str_Add1 = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("Address")));
+                    str_Country = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("Country")));
+                    str_State = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("State")));
+                    str_City = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("District")));
+                    str_Pincode = Doctor_Profile.checkNullEmpty(c.getString(c.getColumnIndex("pincode")));
 
 
                 } while (c.moveToNext());
@@ -253,14 +258,14 @@ public class Doctor_Profile extends AppCompatActivity {
                 do {
 
                     //String Set 2
-                    ClinicalName = checkNullEmpty(c1.getString(c1.getColumnIndex("Hospital_Name")));
-                    ClinicPhone = BaseConfig.CheckDBString(checkNullEmpty(c1.getString(c1.getColumnIndex("Number"))));
-                    ServTaxClinic = checkNullEmpty(c1.getString(c1.getColumnIndex("ServiceTax")));
-                    Add1 = checkNullEmpty(c1.getString(c1.getColumnIndex("Address")));
-                    Country = checkNullEmpty(c1.getString(c1.getColumnIndex("Country")));
-                    State = checkNullEmpty(c1.getString(c1.getColumnIndex("State")));
-                    City = checkNullEmpty(c1.getString(c1.getColumnIndex("City")));
-                    Pincode = checkNullEmpty(c1.getString(c1.getColumnIndex("Pincode")));
+                    ClinicalName = Doctor_Profile.checkNullEmpty(c1.getString(c1.getColumnIndex("Hospital_Name")));
+                    ClinicPhone = BaseConfig.CheckDBString(Doctor_Profile.checkNullEmpty(c1.getString(c1.getColumnIndex("Number"))));
+                    ServTaxClinic = Doctor_Profile.checkNullEmpty(c1.getString(c1.getColumnIndex("ServiceTax")));
+                    Add1 = Doctor_Profile.checkNullEmpty(c1.getString(c1.getColumnIndex("Address")));
+                    Country = Doctor_Profile.checkNullEmpty(c1.getString(c1.getColumnIndex("Country")));
+                    State = Doctor_Profile.checkNullEmpty(c1.getString(c1.getColumnIndex("State")));
+                    City = Doctor_Profile.checkNullEmpty(c1.getString(c1.getColumnIndex("City")));
+                    Pincode = Doctor_Profile.checkNullEmpty(c1.getString(c1.getColumnIndex("Pincode")));
 
 
                 } while (c1.moveToNext());
@@ -299,17 +304,17 @@ public class Doctor_Profile extends AppCompatActivity {
                 "\n" +
                 "        <div class=\"w3-card-4\" style=\"width:100%;\">\n" +
                 "            <header class=\"w3-container w3-blue\">\n" +
-                "                <h4><i class=\"fa fa-user-circle-o fa-la\"></i> "+getString(R.string.personal_details) +"</h4>\n" +
+                "                <h4><i class=\"fa fa-user-circle-o fa-la\"></i> "+ this.getString(string.personal_details) +"</h4>\n" +
                 "            </header>\n" +
                 "\n" +
                 "            <div class=\"w3-container\">\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-user-md fa-la\" style=\"color:#2196f3;\"></i> <b>"+ getString(R.string.practitioner_id)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-user-md fa-la\" style=\"color:#2196f3;\"></i> <b>"+ this.getString(string.practitioner_id)+"</b></h6>\n" +
                 "                        <p>"+Doc_ID +"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-user-md fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.practitioner_name)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-user-md fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.practitioner_name)+"</b></h6>\n" +
                 "                        <p>"+Name+"</p>\n" +
                 "                    </div>\n" +
                 "                  \n" +
@@ -317,77 +322,77 @@ public class Doctor_Profile extends AppCompatActivity {
                 "\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-mars-stroke fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.gender)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-mars-stroke fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.gender)+"</b></h6>\n" +
                 "                        <p>"+Gender +"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-birthday-cake fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.date_of_birth)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-birthday-cake fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.date_of_birth)+"</b></h6>\n" +
                 "                        <p>"+DOB +"</p>\n" +
                 "                    </div>\n" +
                 "                   \n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE; \">\n" +
-                "                        <h6><i class=\"fa fa-calendar fa-la\" style=\"color: #2196f3;\"></i> <b>"+ getString(R.string.age)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-calendar fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.age)+"</b></h6>\n" +
                 "                        <p>"+Age+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE; \">\n" +
-                "                        <h6><i class=\"fa fa-graduation-cap fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.academic_qualification)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-graduation-cap fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.academic_qualification)+"</b></h6>\n" +
                 "                        <p>"+Qualification+"</p>\n" +
                 "                    </div>\n" +
                 "                    \n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-book fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.splin)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-book fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.splin)+"</b></h6>\n" +
                 "                        <p>"+Specialization+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff\">\n" +
-                "                        <h6><i class=\"fa fa-registered fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.mci_registration_no)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-registered fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.mci_registration_no)+"</b></h6>\n" +
                 "                        <p>"+MCI+"</p>\n" +
                 "                    </div>\n" +
                 "                   \n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE; \">\n" +
-                "                        <h6><i class=\"fa fa-address-card-o fa-la\" style=\"color: #2196f3;\"></i> <b>"+ getString(R.string.pan)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-address-card-o fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.pan)+"</b></h6>\n" +
                 "                        <p>"+PAN+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE; \">\n" +
-                "                        <h6><i class=\"fa fa-money fa-la\" style=\"color: #2196f3;\"></i> <b>"+ getString(R.string.service_tax_no) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-money fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.service_tax_no) +"</b></h6>\n" +
                 "                        <p>"+ServTax+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-mobile fa-la\" style=\"color: #2196f3;\"></i> <b>"+ getString(R.string.mobile_no1) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-mobile fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.mobile_no1) +"</b></h6>\n" +
                 "                        <p>"+Mobile1+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff\">\n" +
-                "                        <h6><i class=\"fa fa-mobile fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.mobile_no2)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-mobile fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.mobile_no2)+"</b></h6>\n" +
                 "                        <p>"+Mobile2+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE; \">\n" +
-                "                        <h6><i class=\"fa fa-envelope fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.email)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-envelope fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.email)+"</b></h6>\n" +
                 "                        <p>"+Email+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE; \">\n" +
-                "                        <h6><i class=\"fa fa-address-card fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.address1)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-address-card fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.address1)+"</b></h6>\n" +
                 "                        <p>"+Add1+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-address-card fa-la\" style=\"color: #2196f3;\"></i> <b>"+ getString(R.string.address2)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-address-card fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.address2)+"</b></h6>\n" +
                 "                        <p>"+Add2+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff\">\n" +
-                "                        <h6><i class=\"fa fa-globe fa-la\" style=\"color: #2196f3;\"></i> <b>"+ getString(R.string.country)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-globe fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.country)+"</b></h6>\n" +
                 "                        <p>"+Country+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
@@ -395,11 +400,11 @@ public class Doctor_Profile extends AppCompatActivity {
                 "\t\t\t\t\n" +
                 "\t\t\t\t <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-address-card fa-la\" style=\"color: #2196f3;\"></i> <b>"+ getString(R.string.state) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-address-card fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.state) +"</b></h6>\n" +
                 "                        <p>"+State+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE\">\n" +
-                "                        <h6><i class=\"fa fa-globe fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.pincode)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-globe fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.pincode)+"</b></h6>\n" +
                 "                        <p>"+Pincode+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
@@ -423,17 +428,17 @@ public class Doctor_Profile extends AppCompatActivity {
                 "\n" +
                 "        <div class=\"w3-card-4\" style=\"width:100%;\">\n" +
                 "            <header class=\"w3-container w3-blue\">\n" +
-                "                <h4><i class=\"fa fa-address-card fa-la\"></i>"+getString(R.string.clinicaldetail)+"</h4>\n" +
+                "                <h4><i class=\"fa fa-address-card fa-la\"></i>"+ this.getString(string.clinicaldetail)+"</h4>\n" +
                 "            </header>\n" +
                 "\n" +
                 "            <div class=\"w3-container\">\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-arrow-right fa-la\" style=\"color:#2196f3;\"></i> <b>"+ getString(R.string.clinicname) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-arrow-right fa-la\" style=\"color:#2196f3;\"></i> <b>"+ this.getString(string.clinicname) +"</b></h6>\n" +
                 "                        <p>"+ClinicalName+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-phone fa-la\" style=\"color: #2196f3;\"></i> <b>"+ getString(R.string.clinicphnm) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-phone fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.clinicphnm) +"</b></h6>\n" +
                 "                        <p>"+ClinicPhone+"</p>\n" +
                 "                    </div>\n" +
                 "                  \n" +
@@ -441,40 +446,40 @@ public class Doctor_Profile extends AppCompatActivity {
                 "\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-arrow-right fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.service_tax_no)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-arrow-right fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.service_tax_no)+"</b></h6>\n" +
                 "                        <p>"+ServTaxClinic+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-address-card fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.address1)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-address-card fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.address1)+"</b></h6>\n" +
                 "                        <p>"+str_Add1+"</p>\n" +
                 "                    </div>\n" +
                 "                   \n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE; \">\n" +
-                "                        <h6><i class=\"fa fa-address-card fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.address2)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-address-card fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.address2)+"</b></h6>\n" +
                 "                        <p>"+str_Add2+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE; \">\n" +
-                "                        <h6><i class=\"fa fa-globe fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.country)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-globe fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.country)+"</b></h6>\n" +
                 "                        <p>"+str_Country+"</p>\n" +
                 "                    </div>\n" +
                 "                    \n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-globe fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.state) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-globe fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.state) +"</b></h6>\n" +
                 "                        <p>"+str_State+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff\">\n" +
-                "                        <h6><i class=\"fa fa-globe fa-la\" style=\"color: #2196f3;\"></i> <b>"+getString(R.string.city)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-globe fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.city)+"</b></h6>\n" +
                 "                        <p>"+str_City+"</p>\n" +
                 "                    </div>\n" +
                 "                   \n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE; \">\n" +
-                "                        <h6><i class=\"fa fa-map-pin fa-la\" style=\"color: #2196f3;\"></i> <b>"+ getString(R.string.pincode) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-map-pin fa-la\" style=\"color: #2196f3;\"></i> <b>"+ this.getString(string.pincode) +"</b></h6>\n" +
                 "                        <p>"+str_Pincode+"</p>\n" +
                 "                    </div>\n" +
                 "                    \n" +
@@ -547,10 +552,10 @@ public class Doctor_Profile extends AppCompatActivity {
     public final void onBackPressed() {
         super.onBackPressed();
         //
-        Doctor_Profile.this.finish();
-        Intent taskselect = new Intent(Doctor_Profile.this, Dashboard_NavigationMenu.class);
-        startActivity(taskselect);
-        Doctor_Profile.this.overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);//Bottom to Top
+        finish();
+        Intent taskselect = new Intent(this, Dashboard_NavigationMenu.class);
+        this.startActivity(taskselect);
+        overridePendingTransition(anim.slide_in_left, anim.slide_out_right);//Bottom to Top
 
     }
 
@@ -564,7 +569,7 @@ public class Doctor_Profile extends AppCompatActivity {
          * Instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
-            mContext = c;
+            this.mContext = c;
         }
 
         /**
@@ -587,7 +592,7 @@ public class Doctor_Profile extends AppCompatActivity {
          * Instantiate the interface and set the context
          */
         JavaScriptInterface(Context c) {
-            mContext = c;
+            this.mContext = c;
         }
 
         /**
@@ -595,7 +600,7 @@ public class Doctor_Profile extends AppCompatActivity {
          */
         @JavascriptInterface
         public final void showToast(String toast) {
-            Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.mContext, toast, Toast.LENGTH_SHORT).show();
 
         }
     }

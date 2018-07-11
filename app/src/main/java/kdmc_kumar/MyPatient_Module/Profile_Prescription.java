@@ -13,6 +13,7 @@ import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -25,6 +26,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 /**
@@ -32,34 +36,34 @@ import kdmc_kumar.Core_Modules.BaseConfig;
  */
 
 public class Profile_Prescription extends Fragment {
-    private TextView medicine_name = null;
-    TextView dose = null;
-    TextView freq = null;
-    TextView duration = null;
-    private TextView nextvisiton = null;
-    private TextView visitedon = null;
-    private TextView remarks = null;
-    private TextView symptomsValue = null;
-    private TextView diagnosisValue = null;
+    private final TextView medicine_name;
+    TextView dose;
+    TextView freq;
+    TextView duration;
+    private final TextView nextvisiton;
+    private final TextView visitedon;
+    private final TextView remarks;
+    private final TextView symptomsValue;
+    private final TextView diagnosisValue;
     private StringBuilder sbM = new StringBuilder();
     private String nxtdt = "";
-    private String[] visiteddt = null;
-    private ImageView next_btn = null;
-    private ImageView pre_btn = null;
-    private TextView ref_docname = null;
+    private String[] visiteddt;
+    private ImageView next_btn;
+    private ImageView pre_btn;
+    private final TextView ref_docname;
     private String refdocname = "";
-    private WebView profile_webvw = null;
-    private TextView PatientNameId = null;
-    private String SymptomsValue = null;
+    private WebView profile_webvw;
+    private TextView PatientNameId;
+    private String SymptomsValue;
 
-    private ImageView NoDataFound = null;
+    private ImageView NoDataFound;
 
-    private String BUNDLE_PATIENT_ID = null;
+    private String BUNDLE_PATIENT_ID;
 
-    ImageView pdfPrint = null;
-    private List<String> mypatientprevmedicinehistory_medid = null;
+    ImageView pdfPrint;
+    private List<String> mypatientprevmedicinehistory_medid;
     /////////////////////////////////////////////////////////////////////////////////
-    private int pos = 0;
+    private int pos;
 
     public Profile_Prescription() {
     }
@@ -75,34 +79,34 @@ public class Profile_Prescription extends Fragment {
         try {
 
 
-            rootView = inflater.inflate(R.layout.new_prescription_profile, container, false);
-            profile_webvw = rootView.findViewById(R.id.webvw_prescription_profile);
+            rootView = inflater.inflate(layout.new_prescription_profile, container, false);
+            this.profile_webvw = rootView.findViewById(id.webvw_prescription_profile);
 
-            Bundle args = getArguments();
-            BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
+            Bundle args = this.getArguments();
+            this.BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
 
 
-            profile_webvw.getSettings().setJavaScriptEnabled(true);
-            profile_webvw.setWebChromeClient(new WebChromeClient());
+            this.profile_webvw.getSettings().setJavaScriptEnabled(true);
+            this.profile_webvw.setWebChromeClient(new WebChromeClient());
             //Controllisteners();
-            NoDataFound = rootView.findViewById(R.id.img_nodata);
+            this.NoDataFound = rootView.findViewById(id.img_nodata);
 
-            PatientNameId = rootView.findViewById(R.id.patientid);
+            this.PatientNameId = rootView.findViewById(id.patientid);
 
-            String Query = "select name||' - '|| Patid as ret_values from Patreg where Patid='" + BUNDLE_PATIENT_ID + '\'';
-            PatientNameId.setText(BaseConfig.GetValues(Query));
+            String Query = "select name||' - '|| Patid as ret_values from Patreg where Patid='" + this.BUNDLE_PATIENT_ID + '\'';
+            this.PatientNameId.setText(BaseConfig.GetValues(Query));
 
-            next_btn = rootView.findViewById(R.id.next);
-            pre_btn = rootView.findViewById(R.id.prev);
+            this.next_btn = rootView.findViewById(id.next);
+            this.pre_btn = rootView.findViewById(id.prev);
 
-            LoadWebview(0);
+            this.LoadWebview(0);
 
-            Current();
+            this.Current();
 
 
-            next_btn.setOnClickListener(arg0 -> Next());
+            this.next_btn.setOnClickListener(arg0 -> this.Next());
 
-            pre_btn.setOnClickListener(arg0 -> Previous());
+            this.pre_btn.setOnClickListener(arg0 -> this.Previous());
 
 
         } catch (Exception e) {
@@ -113,37 +117,37 @@ public class Profile_Prescription extends Fragment {
 
     //#######################################################################################################
     private final void LoadWebview(int pos) {
-        profile_webvw.getSettings().setJavaScriptEnabled(true);
-        profile_webvw.setLayerType(View.LAYER_TYPE_NONE, null);
-        profile_webvw.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        profile_webvw.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-        profile_webvw.getSettings().setDefaultTextEncodingName("utf-8");
+        this.profile_webvw.getSettings().setJavaScriptEnabled(true);
+        this.profile_webvw.setLayerType(View.LAYER_TYPE_NONE, null);
+        this.profile_webvw.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        this.profile_webvw.getSettings().setRenderPriority(RenderPriority.HIGH);
+        this.profile_webvw.getSettings().setDefaultTextEncodingName("utf-8");
 
-        profile_webvw.setWebChromeClient(new MyWebChromeClient());
+        this.profile_webvw.setWebChromeClient(new Profile_Prescription.MyWebChromeClient());
 
-        profile_webvw.setBackgroundColor(0x00000000);
-        profile_webvw.setVerticalScrollBarEnabled(true);
-        profile_webvw.setHorizontalScrollBarEnabled(true);
+        this.profile_webvw.setBackgroundColor(0x00000000);
+        this.profile_webvw.setVerticalScrollBarEnabled(true);
+        this.profile_webvw.setHorizontalScrollBarEnabled(true);
 
 
-        Toast.makeText(getActivity(), getString(R.string.prev_med_history_loaded), Toast.LENGTH_SHORT).show();
+        Toast.makeText(this.getActivity(), this.getString(string.prev_med_history_loaded), Toast.LENGTH_SHORT).show();
 //        BaseConfig.SnackBar(this,  getString(R.string.prev_med_history_loaded) , parentLayout);
 
 
-        profile_webvw.getSettings().setJavaScriptEnabled(true);
+        this.profile_webvw.getSettings().setJavaScriptEnabled(true);
 
-        profile_webvw.getSettings().setAllowContentAccess(true);
-
-
-        profile_webvw.setOnLongClickListener(v -> true);
-
-        profile_webvw.setLongClickable(false);
+        this.profile_webvw.getSettings().setAllowContentAccess(true);
 
 
-        profile_webvw.addJavascriptInterface(new WebAppInterface(getActivity()), "android");
+        this.profile_webvw.setOnLongClickListener(v -> true);
+
+        this.profile_webvw.setLongClickable(false);
+
+
+        this.profile_webvw.addJavascriptInterface(new Profile_Prescription.WebAppInterface(this.getActivity()), "android");
         try {
 
-            profile_webvw.loadDataWithBaseURL("file:///android_asset/", LoadPrescriptionDetails(pos), "text/html", "utf-8", null);
+            this.profile_webvw.loadDataWithBaseURL("file:///android_asset/", this.LoadPrescriptionDetails(pos), "text/html", "utf-8", null);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -157,17 +161,17 @@ public class Profile_Prescription extends Fragment {
         SQLiteDatabase db = BaseConfig.GetDb();//getActivity());
 
         //********************************************
-        mypatientprevmedicinehistory_medid = new ArrayList<>();
+        this.mypatientprevmedicinehistory_medid = new ArrayList<>();
 
         Cursor c = db
                 .rawQuery(
-                        "select distinct Medid from Mprescribed where Ptid='" + BUNDLE_PATIENT_ID + "' order by Medid desc;",
+                        "select distinct Medid from Mprescribed where Ptid='" + this.BUNDLE_PATIENT_ID + "' order by Medid desc;",
                         null);
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
 
-                    mypatientprevmedicinehistory_medid.add(c.getString(c.getColumnIndex("Medid")));
+                    this.mypatientprevmedicinehistory_medid.add(c.getString(c.getColumnIndex("Medid")));
 
                 } while (c.moveToNext());
             }
@@ -182,7 +186,7 @@ public class Profile_Prescription extends Fragment {
         String Bowel = "", Micturition = "", PresentIllness = "", PastIllness = "", TreatmentforMedicineNamePeriod = "";
         String Obstetric = "", Gynaec = "";
 
-        ArrayList<PrescriptionGetSet> prescriptionGetSets = new ArrayList<>();
+        ArrayList<Profile_Prescription.PrescriptionGetSet> prescriptionGetSets = new ArrayList<>();
         StringBuilder stringBuilder = new StringBuilder();
         StringBuilder InjectionstringBuilder = new StringBuilder();
 
@@ -197,12 +201,12 @@ public class Profile_Prescription extends Fragment {
         String remarksStr, diagnosisStr = null, symStr;
 
 
-        Cursor c1 = db.rawQuery("select distinct remarks,refdocname,Medid,medicinename,treatmentfor,diagnosis,nextvisit,Actdate from Mprescribed where Ptid='" + BUNDLE_PATIENT_ID + "' and Medid='" + mypatientprevmedicinehistory_medid.get(pos_val) + "' order by Medid desc ;", null);
+        Cursor c1 = db.rawQuery("select distinct remarks,refdocname,Medid,medicinename,treatmentfor,diagnosis,nextvisit,Actdate from Mprescribed where Ptid='" + this.BUNDLE_PATIENT_ID + "' and Medid='" + this.mypatientprevmedicinehistory_medid.get(pos_val) + "' order by Medid desc ;", null);
 
         if (c1.getCount() > 0) {
-            NoDataFound.setVisibility(View.GONE);
+            this.NoDataFound.setVisibility(View.GONE);
         } else {
-            NoDataFound.setVisibility(View.VISIBLE);
+            this.NoDataFound.setVisibility(View.VISIBLE);
         }
 
 
@@ -220,22 +224,22 @@ public class Profile_Prescription extends Fragment {
 
                     stringBuilder.append("  <tr>\n" + "                  <th><font color=\"#000\">").append(Tabledata[0].replace("[", "").replace("]", "")).append("</font></th>\n \n").append("                    <th><font color=\"#000\">").append(Tabledata[1]).append("</font></th>\n \n").append("               \t <th><font color=\"#000\">").append(Tabledata[2]).append("</font></th>\n \n").append("              \t <th><font color=\"#000\">").append(Tabledata[3]).append("</font></th>\n\n").append("                 </tr>\n");
 
-                    sbM.append(c1.getString(c1.getColumnIndex("medicinename")));
-                    sbM.append('\n');
+                    this.sbM.append(c1.getString(c1.getColumnIndex("medicinename")));
+                    this.sbM.append('\n');
 
-                    nxtdt = c1.getString(c1.getColumnIndex("nextvisit"));
+                    this.nxtdt = c1.getString(c1.getColumnIndex("nextvisit"));
 
-                    if (nxtdt.contains("1900") || nxtdt.length() == 0)//If next visit date empty na set agum @Kumar
+                    if (this.nxtdt.contains("1900") || this.nxtdt.length() == 0)//If next visit date empty na set agum @Kumar
                     {
-                        nxtdt = "-";
+                        this.nxtdt = "-";
                     }
 
-                    visiteddt = c1.getString(c1.getColumnIndex("Actdate")).split(" ");
+                    this.visiteddt = c1.getString(c1.getColumnIndex("Actdate")).split(" ");
                     remarksStr = c1.getString(c1.getColumnIndex("remarks"));
 
-                    refdocname = c1.getString(c1.getColumnIndex("refdocname"));
+                    this.refdocname = c1.getString(c1.getColumnIndex("refdocname"));
                     diagnosisStr = c1.getString(c1.getColumnIndex("diagnosis"));
-                    SymptomsValue = c1.getString(c1.getColumnIndex("treatmentfor"));
+                    this.SymptomsValue = c1.getString(c1.getColumnIndex("treatmentfor"));
 
 
                     tableData=tableData+"<tr>\n" +
@@ -257,9 +261,9 @@ public class Profile_Prescription extends Fragment {
           Emergecny list
          */
         StringBuilder str = new StringBuilder();
-        boolean chk = BaseConfig.LoadReportsBooleanStatus("select distinct Id as dstatus1 from Bind_EmergencyCausality where Patid='" + BUNDLE_PATIENT_ID + "' and MPID='" + mypatientprevmedicinehistory_medid.get(pos_val) + "' order by Id desc ;");
+        boolean chk = BaseConfig.LoadReportsBooleanStatus("select distinct Id as dstatus1 from Bind_EmergencyCausality where Patid='" + this.BUNDLE_PATIENT_ID + "' and MPID='" + this.mypatientprevmedicinehistory_medid.get(pos_val) + "' order by Id desc ;");
         if (chk) {
-            c1 = db.rawQuery("select distinct Injection,Nebulization_Normal,Nebulization_Asthaline,Suturing,Plastering from Bind_EmergencyCausality where Patid='" + BUNDLE_PATIENT_ID + "' and MPID='" + mypatientprevmedicinehistory_medid.get(pos_val) + "' order by Id desc ;", null);
+            c1 = db.rawQuery("select distinct Injection,Nebulization_Normal,Nebulization_Asthaline,Suturing,Plastering from Bind_EmergencyCausality where Patid='" + this.BUNDLE_PATIENT_ID + "' and MPID='" + this.mypatientprevmedicinehistory_medid.get(pos_val) + "' order by Id desc ;", null);
 
             if (c1 != null) {
                 if (c1.moveToFirst()) {
@@ -324,7 +328,7 @@ public class Profile_Prescription extends Fragment {
 
             str.append("<font class=\"sub\"><i class=\"fa fa-calendar fa-2x\" aria-hidden=\"true\"></i> Emergency / Causality </font>\n" +
                     //Injection
-                    "<div class=\"table-responsive\">          \n" + "<table class=\"table table-bordered\">\n" + "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa\" aria-hidden=\"true\"></i><b> Injection </b></td> \n" + "  <tr>\n" + "    <th bgcolor=\"#3d5987\" width=\"50%\"><font color=\"#fff\"> Injection Name </font></th>\n" + "    <th bgcolor=\"#3d5987\" width=\"50%\"><font color=\"#fff\"> Dosage </font></th>\n" + "    <th bgcolor=\"#3d5987\" width=\"50%\"><font color=\"#fff\"> Quantity </font></th>\n" + "  </tr>\n" + " \n").append(InjectionstringBuilder.toString()).append(" \n").append("</table>\n").append("</div>\n").append(
+                    "<div class=\"table-responsive\">          \n" + "<table class=\"table table-bordered\">\n" + "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa\" aria-hidden=\"true\"></i><b> Injection </b></td> \n" + "  <tr>\n" + "    <th bgcolor=\"#3d5987\" width=\"50%\"><font color=\"#fff\"> Injection Name </font></th>\n" + "    <th bgcolor=\"#3d5987\" width=\"50%\"><font color=\"#fff\"> Dosage </font></th>\n" + "    <th bgcolor=\"#3d5987\" width=\"50%\"><font color=\"#fff\"> Quantity </font></th>\n" + "  </tr>\n" + " \n").append(InjectionstringBuilder).append(" \n").append("</table>\n").append("</div>\n").append(
 
 
                     //Nebulization
@@ -494,9 +498,9 @@ public class Profile_Prescription extends Fragment {
                 "<div class=\"table-responsive\">\n" +
                 "<table class=\"table\">\t\t \n" +
                 "<tbody><tr>\n" +
-                "<td width=\"50%\">"+getString(R.string.referred_doctor_name)+"</td>\n" +
+                "<td width=\"50%\">"+ this.getString(string.referred_doctor_name)+"</td>\n" +
                 "<td>:</td>\n" +
-                "<td>"+refdocname+"</td>\n" +
+                "<td>"+ this.refdocname +"</td>\n" +
                 "</tr>\n" +
                 " \n" +
                 "</tbody></table>\n" +
@@ -512,10 +516,10 @@ public class Profile_Prescription extends Fragment {
                 "<table class=\"table\">\t\t \n" +
                 "\n" +
                 "<tbody><tr>\n" +
-                "<th width=\"25%\">"+getString(R.string.treatment_for)+"</th>\n" +
-                "<th width=\"25%\">"+getString(R.string.medicine_name)+"</th>\n" +
-                "<th width=\"25%\">"+getString(R.string.period)+"</th>\n" +
-                "<th width=\"25%\">"+getString(R.string.duration)+"</th>\n" +
+                "<th width=\"25%\">"+ this.getString(string.treatment_for)+"</th>\n" +
+                "<th width=\"25%\">"+ this.getString(string.medicine_name)+"</th>\n" +
+                "<th width=\"25%\">"+ this.getString(string.period)+"</th>\n" +
+                "<th width=\"25%\">"+ this.getString(string.duration)+"</th>\n" +
                 "</tr>\n" +
                 "\n" +
                 "\n" +
@@ -539,13 +543,13 @@ public class Profile_Prescription extends Fragment {
                 "<div class=\"table-responsive\">\n" +
                 "<table class=\"table\">\t\t \n" +
                 "<tbody><tr>\n" +
-                "<td width=\"50%\">"+getString(R.string.symptoms)+"</td>\n" +
+                "<td width=\"50%\">"+ this.getString(string.symptoms)+"</td>\n" +
                 "<td>:</td>\n" +
-                "<td>"+SymptomsValue+"</td>\n" +
+                "<td>"+ this.SymptomsValue +"</td>\n" +
                 "</tr>\n" +
                 "\n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+getString(R.string.diagnosis)+"</td>\n" +
+                "<td width=\"50%\">"+ this.getString(string.diagnosis)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>"+diagnosisStr+"</td>\n" +
                 "</tr>\n" +
@@ -564,14 +568,14 @@ public class Profile_Prescription extends Fragment {
                 "<table class=\"table\">\t\t \n" +
                 "<tbody><tr>\n" +
                 "\n" +
-                "<td width=\"50%\"><font color=\"black\"><b>"+getString(R.string.visited_date)+"</b></font></td>\n" +
-                "<td width=\"50%\"><font color=\"black\"><b>"+getString(R.string.nextvisiton)+"</b></font></td>\n" +
+                "<td width=\"50%\"><font color=\"black\"><b>"+ this.getString(string.visited_date)+"</b></font></td>\n" +
+                "<td width=\"50%\"><font color=\"black\"><b>"+ this.getString(string.nextvisiton)+"</b></font></td>\n" +
                 "\n" +
                 "</tr>\n" +
                 "\n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+visiteddt[0]+"</td>\n" +
-                "<td width=\"50%\">"+nxtdt+"</td>\n" +
+                "<td width=\"50%\">"+ this.visiteddt[0]+"</td>\n" +
+                "<td width=\"50%\">"+ this.nxtdt +"</td>\n" +
                 "</tr>\n" +
                 "\n" +
                 "</tbody></table>\n" +
@@ -591,21 +595,21 @@ public class Profile_Prescription extends Fragment {
 
         db.close();
 
-       Toast.makeText(getActivity(), getString(R.string.prescription_profile_success), Toast.LENGTH_SHORT).show();
+       Toast.makeText(this.getActivity(), this.getString(string.prescription_profile_success), Toast.LENGTH_SHORT).show();
 
         return values;
     }
 
     public final void SelectedGetPrevMedicineHistory(int pos) {
         // TODO Auto-generated method stub
-        sbM = new StringBuilder();
+        this.sbM = new StringBuilder();
         String remarksStr = "";
         String diagnosisStr = "";
         String symStr = "";
 
         SQLiteDatabase db = BaseConfig.GetDb();
 
-        String QueryStr = "select remarks,refdocname,Medid,medicinename,treatmentfor,diagnosis,nextvisit,Actdate from Mprescribed where Ptid='" + BUNDLE_PATIENT_ID + "' and Medid='" + mypatientprevmedicinehistory_medid.get(pos) + "' order by Medid desc ;";
+        String QueryStr = "select remarks,refdocname,Medid,medicinename,treatmentfor,diagnosis,nextvisit,Actdate from Mprescribed where Ptid='" + this.BUNDLE_PATIENT_ID + "' and Medid='" + this.mypatientprevmedicinehistory_medid.get(pos) + "' order by Medid desc ;";
         Cursor c = db
                 .rawQuery(QueryStr,
                         null);
@@ -617,14 +621,14 @@ public class Profile_Prescription extends Fragment {
 
                 {
 
-                    sbM.append(c.getString(c.getColumnIndex("medicinename")));
-                    sbM.append('\n');
+                    this.sbM.append(c.getString(c.getColumnIndex("medicinename")));
+                    this.sbM.append('\n');
 
-                    nxtdt = c.getString(c.getColumnIndex("nextvisit"));
-                    visiteddt = c.getString(c.getColumnIndex("Actdate")).split(" ");
+                    this.nxtdt = c.getString(c.getColumnIndex("nextvisit"));
+                    this.visiteddt = c.getString(c.getColumnIndex("Actdate")).split(" ");
                     remarksStr = c.getString(c.getColumnIndex("remarks"));
 
-                    refdocname = c.getString(c.getColumnIndex("refdocname"));
+                    this.refdocname = c.getString(c.getColumnIndex("refdocname"));
                     diagnosisStr = c.getString(c.getColumnIndex("diagnosis"));
                     symStr = c.getString(c.getColumnIndex("treatmentfor"));
 
@@ -635,16 +639,16 @@ public class Profile_Prescription extends Fragment {
         db.close();
         c.close();
 
-        medicine_name.setText(sbM.toString());
-        nextvisiton.setText(nxtdt);
-        visitedon.setText(visiteddt[0]);
-        diagnosisValue.setText(diagnosisStr);
-        symptomsValue.setText(symStr);
-        ref_docname.setText(getString(R.string.referred_doctor_name) + ": " + refdocname);
+        this.medicine_name.setText(this.sbM.toString());
+        this.nextvisiton.setText(this.nxtdt);
+        this.visitedon.setText(this.visiteddt[0]);
+        this.diagnosisValue.setText(diagnosisStr);
+        this.symptomsValue.setText(symStr);
+        this.ref_docname.setText(this.getString(string.referred_doctor_name) + ": " + this.refdocname);
 
 
         try {
-            remarks.setText(BaseConfig.CheckDBString(remarksStr));
+            this.remarks.setText(BaseConfig.CheckDBString(remarksStr));
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -655,41 +659,41 @@ public class Profile_Prescription extends Fragment {
 
     /////////////////////////////////////////////////////////////////////////////////
     private final void Previous() {
-        pos += 1;
-        if (pos < mypatientprevmedicinehistory_medid.size()) {
-            LoadWebview(pos);
-            next_btn.setVisibility(View.VISIBLE);
+        this.pos += 1;
+        if (this.pos < this.mypatientprevmedicinehistory_medid.size()) {
+            this.LoadWebview(this.pos);
+            this.next_btn.setVisibility(View.VISIBLE);
         }
-        if (pos == mypatientprevmedicinehistory_medid.size() - 1) {
-            pre_btn.setVisibility(View.GONE);
-            next_btn.setVisibility(View.VISIBLE);
+        if (this.pos == this.mypatientprevmedicinehistory_medid.size() - 1) {
+            this.pre_btn.setVisibility(View.GONE);
+            this.next_btn.setVisibility(View.VISIBLE);
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////
     private final void Next() {
-        pos -= 1;
-        if (pos >= 0) {
+        this.pos -= 1;
+        if (this.pos >= 0) {
             //SelectedGetPrevMedicineHistory(pos);
-            LoadWebview(pos);
-            pre_btn.setVisibility(View.VISIBLE);
+            this.LoadWebview(this.pos);
+            this.pre_btn.setVisibility(View.VISIBLE);
         }
-        if (pos == 0) {
-            next_btn.setVisibility(View.GONE);
-            pre_btn.setVisibility(View.VISIBLE);
+        if (this.pos == 0) {
+            this.next_btn.setVisibility(View.GONE);
+            this.pre_btn.setVisibility(View.VISIBLE);
         }
     }
 
     /////////////////////////////////////////////////////////////////////////////////
     private final void Current() {
-        if (mypatientprevmedicinehistory_medid.size() > 0) {
+        if (this.mypatientprevmedicinehistory_medid.size() > 0) {
             //SelectedGetPrevMedicineHistory(0);
-            LoadWebview(0);
+            this.LoadWebview(0);
 
         }
-        if (mypatientprevmedicinehistory_medid.size() > 1) {
-            pre_btn.setVisibility(View.VISIBLE);
-            next_btn.setVisibility(View.GONE);
+        if (this.mypatientprevmedicinehistory_medid.size() > 1) {
+            this.pre_btn.setVisibility(View.VISIBLE);
+            this.next_btn.setVisibility(View.GONE);
         }
     }
 
@@ -710,7 +714,7 @@ public class Profile_Prescription extends Fragment {
         }
 
         public final String getMedicinename() {
-            return medicinename;
+            return this.medicinename;
         }
 
         public final void setMedicinename(String medicinename) {
@@ -718,7 +722,7 @@ public class Profile_Prescription extends Fragment {
         }
 
         public final String getInterval() {
-            return interval;
+            return this.interval;
         }
 
         public final void setInterval(String interval) {
@@ -726,7 +730,7 @@ public class Profile_Prescription extends Fragment {
         }
 
         public final String getFrequency() {
-            return frequency;
+            return this.frequency;
         }
 
         public final void setFrequency(String frequency) {
@@ -734,7 +738,7 @@ public class Profile_Prescription extends Fragment {
         }
 
         public final String getDuration() {
-            return duration;
+            return this.duration;
         }
 
         public final void setDuration(String duration) {
@@ -750,7 +754,7 @@ public class Profile_Prescription extends Fragment {
          * Instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
-            mContext = c;
+            this.mContext = c;
         }
 
         /**

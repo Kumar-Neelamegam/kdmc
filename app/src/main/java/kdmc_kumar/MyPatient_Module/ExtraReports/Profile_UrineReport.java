@@ -11,19 +11,23 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 public class Profile_UrineReport extends AppCompatActivity {
-    private WebView blood_report = null;
-    private Toolbar toolbar = null;
+    private WebView blood_report;
+    private Toolbar toolbar;
 
-    private ImageView ic_back = null;
+    private ImageView ic_back;
     private String MTESTID = "";
     private String PTID = "";
 
@@ -33,44 +37,44 @@ public class Profile_UrineReport extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile__blood__report);
-        toolbar = findViewById(R.id.toolbar);
-        TextView title = toolbar.findViewById(R.id.txvw_title);
-        title.setText(getString(R.string.report_urine));
+        this.setContentView(layout.activity_profile__blood__report);
+        this.toolbar = this.findViewById(id.toolbar);
+        TextView title = this.toolbar.findViewById(id.txvw_title);
+        title.setText(this.getString(string.report_urine));
 
-        ic_back = toolbar.findViewById(R.id.ic_back);
-        Bundle b = getIntent().getExtras();
+        this.ic_back = this.toolbar.findViewById(id.ic_back);
+        Bundle b = this.getIntent().getExtras();
 
-        PTID = b.getString("PTID");
-        MTESTID = b.getString("MTESTID");
+        this.PTID = b.getString("PTID");
+        this.MTESTID = b.getString("MTESTID");
 
-        ic_back.setOnClickListener(view -> Profile_UrineReport.this.finish());
+        this.ic_back.setOnClickListener(view -> finish());
 
-        blood_report = findViewById(R.id.blood_report);
+        this.blood_report = this.findViewById(id.blood_report);
 
-        blood_report.getSettings().setJavaScriptEnabled(true);
-        blood_report.setWebChromeClient(new WebChromeClient());
-        blood_report.getSettings().setJavaScriptEnabled(true);
-        blood_report.setLayerType(View.LAYER_TYPE_NONE, null);
-        blood_report.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        blood_report.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-        blood_report.getSettings().setDefaultTextEncodingName("utf-8");
+        this.blood_report.getSettings().setJavaScriptEnabled(true);
+        this.blood_report.setWebChromeClient(new WebChromeClient());
+        this.blood_report.getSettings().setJavaScriptEnabled(true);
+        this.blood_report.setLayerType(View.LAYER_TYPE_NONE, null);
+        this.blood_report.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        this.blood_report.getSettings().setRenderPriority(RenderPriority.HIGH);
+        this.blood_report.getSettings().setDefaultTextEncodingName("utf-8");
 
-        blood_report.setWebChromeClient(new MyWebChromeClient());
+        this.blood_report.setWebChromeClient(new Profile_UrineReport.MyWebChromeClient());
 
-        blood_report.setBackgroundColor(0x00000000);
-        blood_report.setVerticalScrollBarEnabled(true);
-        blood_report.setHorizontalScrollBarEnabled(true);
+        this.blood_report.setBackgroundColor(0x00000000);
+        this.blood_report.setVerticalScrollBarEnabled(true);
+        this.blood_report.setHorizontalScrollBarEnabled(true);
 
         //MyDynamicToast.informationMessage(this, getString(R.string.loading_blood_report));
-        blood_report.getSettings().setJavaScriptEnabled(true);
-        blood_report.getSettings().setAllowContentAccess(true);
+        this.blood_report.getSettings().setJavaScriptEnabled(true);
+        this.blood_report.getSettings().setAllowContentAccess(true);
 
 
-        blood_report.addJavascriptInterface(new WebAppInterface(this), "android");
+        this.blood_report.addJavascriptInterface(new Profile_UrineReport.WebAppInterface(this), "android");
         try {
 
-            blood_report.loadDataWithBaseURL("file:///android_asset/", LoadInvetigationData(), "text/html", "utf-8", null);
+            this.blood_report.loadDataWithBaseURL("file:///android_asset/", this.LoadInvetigationData(), "text/html", "utf-8", null);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -86,7 +90,7 @@ public class Profile_UrineReport extends AppCompatActivity {
 
 
         SQLiteDatabase db = BaseConfig.GetDb();
-        String Query = "select * from Bind_urine_test where Patid='" + PTID + "' and Mtestid='" + MTESTID + '\'';
+        String Query = "select * from Bind_urine_test where Patid='" + this.PTID + "' and Mtestid='" + this.MTESTID + '\'';
         //String Query = "select * from Bind_examination_blood_test where Patid='PID/2017/188/2870' and Mtestid='MTID/2017/188/DOCID/2017/05/81/4C19/2'";
         //Log.e("Load Invetigation Data: ", Query);
 
@@ -159,34 +163,34 @@ public class Profile_UrineReport extends AppCompatActivity {
                 "<font class=\"sub\">\n" +
                 "<i class=\"fa fa-puzzle-piece fa-2x\" \n" +
                 "aria-hidden=\"true\">\n" +
-                "</i> " + getString(R.string.profile_urine_physicalexam) + "</font>\n" +
+                "</i> " + this.getString(string.profile_urine_physicalexam) + "</font>\n" +
                 '\n' +
                 '\n' +
                 '\n' +
                 "<table class=\"table table-bordered\">\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>   " + getString(R.string.profile_urine_quantity) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>   " + this.getString(string.profile_urine_quantity) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + quantity + " </td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_sediment) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_sediment) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + sediment + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_colour) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_colour) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + colour + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_specificgravity) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_specificgravity) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + specific_gravity + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_appearance) + " </b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_appearance) + " </b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + appearance + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
@@ -205,37 +209,37 @@ public class Profile_UrineReport extends AppCompatActivity {
                 "<table class=\"table table-bordered\">\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_phreaction) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_phreaction) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + ph_reaction + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_acetone) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_acetone) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + acetone + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_proteins) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_proteins) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + proteins + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_bitesalf) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_bitesalf) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + bite_salf + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_sugar) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_sugar) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + sugar + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_bitepigment) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_bitepigment) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + bile_pigment + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_occultblood) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_occultblood) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + occult_blood + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
@@ -251,43 +255,43 @@ public class Profile_UrineReport extends AppCompatActivity {
                 "<font class=\"sub\">\n" +
                 "<i class=\"fa fa-snowflake-o fa-2x\" \n" +
                 "aria-hidden=\"true\">\n" +
-                "</i>  " + getString(R.string.profile_urine_microscopic) + "</font>\n" +
+                "</i>  " + this.getString(string.profile_urine_microscopic) + "</font>\n" +
                 '\n' +
                 '\n' +
                 "<table class=\"table table-bordered\">\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_epithellial) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_epithellial) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + epithelial_cells + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_amorphous) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_amorphous) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + amorphous_material + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_puscells) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_puscells) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + pus_cells + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b> " + getString(R.string.profile_urine_trichomansvaginalls) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b> " + this.getString(string.profile_urine_trichomansvaginalls) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + trichomans_vaginalis + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_redblood) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_redblood) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + red_blood_cells + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_casts) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_casts) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + casts + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_urine_anyother) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_urine_anyother) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + any_other_finding + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
@@ -319,13 +323,13 @@ public class Profile_UrineReport extends AppCompatActivity {
     @Override
     public final void onBackPressed() {
         //super.onBackPressed();
-        this.finish();
+        finish();
 
     }
 
     @Override
     public final boolean onOptionsItemSelected(MenuItem item) {
-        onBackPressed();
+        this.onBackPressed();
         return true;
     }
 
@@ -339,7 +343,7 @@ public class Profile_UrineReport extends AppCompatActivity {
          * Instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
-            mContext = c;
+            this.mContext = c;
         }
 
         /**
@@ -347,7 +351,7 @@ public class Profile_UrineReport extends AppCompatActivity {
          */
         @JavascriptInterface
         public final void showToast(String toast) {
-            Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.mContext, toast, Toast.LENGTH_SHORT).show();
 
 
         }

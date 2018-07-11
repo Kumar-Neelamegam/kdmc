@@ -21,6 +21,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.View;
@@ -33,7 +35,7 @@ import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.ViewU
  * ChangeClipBounds captures the {@link View#getClipBounds()} before and after the
  * scene change and animates those changes during the transition.
  */
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
 public class ChangeClipBounds extends Transition {
 
     private static final String TAG = "ChangeTransform";
@@ -42,13 +44,13 @@ public class ChangeClipBounds extends Transition {
     private static final String PROPNAME_BOUNDS = "android:clipBounds:bounds";
 
     private static final String[] sTransitionProperties = {
-            PROPNAME_CLIP,
+            ChangeClipBounds.PROPNAME_CLIP,
     };
 
     public static final Property<View, Rect> VIEW_CLIP_BOUNDS;
 
     static {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (VERSION.SDK_INT >= VERSION_CODES.ICE_CREAM_SANDWICH) {
             VIEW_CLIP_BOUNDS = new Property<View, Rect>(Rect.class, "clipBounds") {
 
                 @Override
@@ -75,7 +77,7 @@ public class ChangeClipBounds extends Transition {
 
     @Override
     public String[] getTransitionProperties() {
-        return sTransitionProperties;
+        return ChangeClipBounds.sTransitionProperties;
     }
 
     private void captureValues(TransitionValues values) {
@@ -85,41 +87,41 @@ public class ChangeClipBounds extends Transition {
         }
 
         Rect clip = ViewUtils.getClipBounds(view);
-        values.values.put(PROPNAME_CLIP, clip);
+        values.values.put(ChangeClipBounds.PROPNAME_CLIP, clip);
         if (clip == null) {
             Rect bounds = new Rect(0, 0, view.getWidth(), view.getHeight());
-            values.values.put(PROPNAME_BOUNDS, bounds);
+            values.values.put(ChangeClipBounds.PROPNAME_BOUNDS, bounds);
         }
     }
 
     @Override
     public void captureStartValues(TransitionValues transitionValues) {
-        captureValues(transitionValues);
+        this.captureValues(transitionValues);
     }
 
     @Override
     public void captureEndValues(TransitionValues transitionValues) {
-        captureValues(transitionValues);
+        this.captureValues(transitionValues);
     }
 
     @Override
-    public Animator createAnimator(final ViewGroup sceneRoot, TransitionValues startValues,
+    public Animator createAnimator(ViewGroup sceneRoot, TransitionValues startValues,
                                    TransitionValues endValues) {
         if (startValues == null || endValues == null
-                || !startValues.values.containsKey(PROPNAME_CLIP)
-                || !endValues.values.containsKey(PROPNAME_CLIP)) {
+                || !startValues.values.containsKey(ChangeClipBounds.PROPNAME_CLIP)
+                || !endValues.values.containsKey(ChangeClipBounds.PROPNAME_CLIP)) {
             return null;
         }
-        Rect start = (Rect) startValues.values.get(PROPNAME_CLIP);
-        Rect end = (Rect) endValues.values.get(PROPNAME_CLIP);
+        Rect start = (Rect) startValues.values.get(ChangeClipBounds.PROPNAME_CLIP);
+        Rect end = (Rect) endValues.values.get(ChangeClipBounds.PROPNAME_CLIP);
         if (start == null && end == null) {
             return null; // No animation required since there is no clip.
         }
 
         if (start == null) {
-            start = (Rect) startValues.values.get(PROPNAME_BOUNDS);
+            start = (Rect) startValues.values.get(ChangeClipBounds.PROPNAME_BOUNDS);
         } else if (end == null) {
-            end = (Rect) endValues.values.get(PROPNAME_BOUNDS);
+            end = (Rect) endValues.values.get(ChangeClipBounds.PROPNAME_BOUNDS);
         }
         if (start.equals(end)) {
             return null;
@@ -127,7 +129,7 @@ public class ChangeClipBounds extends Transition {
 
         ViewUtils.setClipBounds(endValues.view, start);
         RectEvaluator evaluator = new RectEvaluator(new Rect());
-        return ObjectAnimator.ofObject(endValues.view, VIEW_CLIP_BOUNDS, evaluator, start, end);
+        return ObjectAnimator.ofObject(endValues.view, ChangeClipBounds.VIEW_CLIP_BOUNDS, evaluator, start, end);
     }
 
 }

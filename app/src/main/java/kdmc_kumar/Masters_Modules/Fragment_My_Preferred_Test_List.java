@@ -17,7 +17,13 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.color;
+import displ.mobydocmarathi.com.R.drawable;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.Fav_TestList;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Masters_Modules.PreferredTestTemplate.Item;
 import kdmc_kumar.Masters_Modules.PreferredTestTemplate.ItemClickListener;
@@ -29,12 +35,12 @@ public class Fragment_My_Preferred_Test_List extends Fragment  {
 
     View root_view;
 
-    @BindView(R.id.recyler_View)
+    @BindView(id.recyler_View)
     RecyclerView recyclerView;
 
-    ArrayList<CommonDataObjects.Fav_TestList> Fav_TestList;
-    private SectionedExpandableLayoutHelper sectionedExpandableLayoutHelper = null;
-    private ArrayList<Item> arrayList = null;
+    ArrayList<Fav_TestList> Fav_TestList;
+    private SectionedExpandableLayoutHelper sectionedExpandableLayoutHelper;
+    private ArrayList<Item> arrayList;
 
     public Fragment_My_Preferred_Test_List() {
     }
@@ -47,27 +53,27 @@ public class Fragment_My_Preferred_Test_List extends Fragment  {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        root_view = inflater.inflate(R.layout.kdmc_layout_masters_main_recyler, container, false);
-        ButterKnife.bind(this, root_view);
+        this.root_view = inflater.inflate(layout.kdmc_layout_masters_main_recyler, container, false);
+        ButterKnife.bind(this, this.root_view);
 
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this.getActivity(), 2);
         gridLayoutManager.setSpanCount(1);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(gridLayoutManager);
+        this.recyclerView.setHasFixedSize(true);
+        this.recyclerView.setLayoutManager(gridLayoutManager);
 
 
-        LoadSectionRecycler();
+        this.LoadSectionRecycler();
 
 
-        return root_view;
+        return this.root_view;
     }
 
 
     private final void LoadSectionRecycler() {
         SQLiteDatabase db = BaseConfig.GetDb();
         //setting the recycler view
-        sectionedExpandableLayoutHelper = new SectionedExpandableLayoutHelper(getActivity(), recyclerView,itemClickListener, 3);
+        this.sectionedExpandableLayoutHelper = new SectionedExpandableLayoutHelper(this.getActivity(), this.recyclerView, this.itemClickListener, 3);
 
         String  Value_Id;
 
@@ -79,7 +85,7 @@ public class Fragment_My_Preferred_Test_List extends Fragment  {
 
                     Value_Id = c.getString(c.getColumnIndex("id"));
                     String TemplateName = c.getString(c.getColumnIndex("TemplateName"));
-                    sectionedExpandableLayoutHelper.addSection(TemplateName, getTestTemplates(TemplateName));
+                    this.sectionedExpandableLayoutHelper.addSection(TemplateName, this.getTestTemplates(TemplateName));
 
                 } while (c.moveToNext());
             }
@@ -87,7 +93,7 @@ public class Fragment_My_Preferred_Test_List extends Fragment  {
 
         c.close();
 
-        sectionedExpandableLayoutHelper.notifyDataSetChanged();
+        this.sectionedExpandableLayoutHelper.notifyDataSetChanged();
 
         db.close();
 
@@ -98,7 +104,7 @@ public class Fragment_My_Preferred_Test_List extends Fragment  {
     private final ArrayList<Item> getTestTemplates(String TemplateName) {
 
 
-        arrayList = new ArrayList<>();
+        this.arrayList = new ArrayList<>();
         SQLiteDatabase sqLiteDatabase = BaseConfig.GetDb();
 
         Cursor cursor = sqLiteDatabase.rawQuery("select distinct TemplateName,Testname,SubTest,id from MyFavTest where Isupdate='1' and TemplateName='" + TemplateName + "' order by id desc", null);
@@ -111,7 +117,7 @@ public class Fragment_My_Preferred_Test_List extends Fragment  {
 
                     //String years=cursor.getString(cursor.getColumnIndex("YearPublished"));
 
-                    arrayList.add(new
+                    this.arrayList.add(new
                             Item(cursor.getString(cursor.getColumnIndex("Testname")),
                             cursor.getString(cursor.getColumnIndex("SubTest")),
                             Integer.parseInt(cursor.getString(cursor.getColumnIndex("id")))));
@@ -126,7 +132,7 @@ public class Fragment_My_Preferred_Test_List extends Fragment  {
         cursor.close();
         sqLiteDatabase.close();
 
-        return arrayList;
+        return this.arrayList;
 
 
     }
@@ -139,24 +145,24 @@ public class Fragment_My_Preferred_Test_List extends Fragment  {
             //Toast.makeText(getActivity(), "Item: " + item.getId() + '/' + item.getTestName() + " clicked", Toast.LENGTH_SHORT).show();
 
 
-            new CustomKDMCDialog(getActivity())
-                    .setLayoutColor(R.color.red_500)
-                    .setImage(R.drawable.ic_delete_forever_black_24dp)
-                    .setTitle(getActivity().getString(R.string.information))
+            new CustomKDMCDialog(Fragment_My_Preferred_Test_List.this.getActivity())
+                    .setLayoutColor(color.red_500)
+                    .setImage(drawable.ic_delete_forever_black_24dp)
+                    .setTitle(Fragment_My_Preferred_Test_List.this.getActivity().getString(string.information))
                     .setDescription("Are you sure want to delete\nthis test template?")
                     .setPossitiveButtonTitle("Yes, delete it")
                     .setNegativeButtonTitle("No")
                     .setOnPossitiveListener(() -> {
-                        LoadDelete(item.getId());
+                        this.LoadDelete(item.getId());
 
-                        new CustomKDMCDialog(getActivity())
-                                .setLayoutColor(R.color.green_500)
-                                .setImage(R.drawable.ic_success_done)
+                        new CustomKDMCDialog(Fragment_My_Preferred_Test_List.this.getActivity())
+                                .setLayoutColor(color.green_500)
+                                .setImage(drawable.ic_success_done)
                                 .setTitle("OK").setNegativeButtonVisible(View.GONE)
                                 .setDescription("Deleted")
-                                .setPossitiveButtonTitle(getActivity().getString(R.string.ok));
+                                .setPossitiveButtonTitle(Fragment_My_Preferred_Test_List.this.getActivity().getString(string.ok));
 
-                        LoadSectionRecycler();
+                        Fragment_My_Preferred_Test_List.this.LoadSectionRecycler();
                     });
         }
 
@@ -173,7 +179,7 @@ public class Fragment_My_Preferred_Test_List extends Fragment  {
         @Override
         public final void itemClicked(Section section) {
 
-            Toast.makeText(getActivity(), "Section: " + section.getName() + " clicked", Toast.LENGTH_SHORT).show();
+            Toast.makeText(Fragment_My_Preferred_Test_List.this.getActivity(), "Section: " + section.getName() + " clicked", Toast.LENGTH_SHORT).show();
 
         }
     };

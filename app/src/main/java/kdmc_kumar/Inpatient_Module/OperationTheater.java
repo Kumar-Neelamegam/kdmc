@@ -1,6 +1,7 @@
 package kdmc_kumar.Inpatient_Module;
 
 import android.app.Activity;
+import android.app.AlertDialog.Builder;
 import android.app.Dialog;
 import android.content.ActivityNotFoundException;
 import android.content.Context;
@@ -9,23 +10,30 @@ import android.database.Cursor;
 import android.database.SQLException;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.graphics.drawable.BitmapDrawable;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
+import android.provider.MediaStore.Images.Media;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
+import android.support.v7.widget.RecyclerView.LayoutManager;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.util.Base64;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,8 +49,12 @@ import java.io.IOException;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.drawable;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
+import kdmc_kumar.Inpatient_Module.OperationTheater.OperationListViewAdapter.DataObjectHolder;
 import kdmc_kumar.Utilities_Others.CircleImageView;
 
 public class OperationTheater extends AppCompatActivity {
@@ -52,11 +64,11 @@ public class OperationTheater extends AppCompatActivity {
     private static final int REQUEST_CODE_GALLERY = 0x4;
     private static final int REQUEST_CODE_TAKE_PICTURE = 0x2;
     public static final int REQUEST_CODE_CROP_IMAGE = 0x3;
-    private RecyclerView mRecyclerview = null;
-    private LinearLayout imageNoData = null;
-    private ImageView remark_image_view = null;
-    private RecyclerView.LayoutManager mLayoutManager = null;
-    private File mFileTemp = null;
+    private RecyclerView mRecyclerview;
+    private LinearLayout imageNoData;
+    private ImageView remark_image_view;
+    private LayoutManager mLayoutManager;
+    private File mFileTemp;
 
     public OperationTheater() {
     }
@@ -65,7 +77,7 @@ public class OperationTheater extends AppCompatActivity {
     protected final void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_operation_theater);
+        this.setContentView(layout.activity_operation_theater);
 
        // getActionBar();
 
@@ -73,39 +85,39 @@ public class OperationTheater extends AppCompatActivity {
 //        bar.setBackgroundDrawable(new ColorDrawable(Color.parseColor("#3d5987")));
 
 
-        GetInitialize();
+        this.GetInitialize();
 
-        ControlListener();
+        this.ControlListener();
 
 
     }
 
     private void GetInitialize() {
 
-        imageNoData =
-                findViewById(R.id.no_data_image);
+        this.imageNoData =
+                this.findViewById(id.no_data_image);
 
-        mRecyclerview = findViewById(R.id.my_recycler_view);
+        this.mRecyclerview = this.findViewById(id.my_recycler_view);
 // Camera
         String state = Environment.getExternalStorageState();
-        mFileTemp = Environment.MEDIA_MOUNTED.equals(state) ? new File(Environment.getExternalStorageDirectory(),
-                TEMP_PHOTO_FILE_NAME) : new File(getFilesDir(), TEMP_PHOTO_FILE_NAME);
+        this.mFileTemp = Environment.MEDIA_MOUNTED.equals(state) ? new File(Environment.getExternalStorageDirectory(),
+                OperationTheater.TEMP_PHOTO_FILE_NAME) : new File(this.getFilesDir(), OperationTheater.TEMP_PHOTO_FILE_NAME);
 
     }
 
 
     private void ControlListener() {
-        mRecyclerview.setHasFixedSize(true);
-        mLayoutManager = new LinearLayoutManager(this);
-        mRecyclerview.setLayoutManager(mLayoutManager);
-        mRecyclerview.setLayoutManager(mLayoutManager);
-        ArrayList<DietItem> items = getDataSet();
-        OperationListViewAdapter mAdapter = new OperationListViewAdapter(items, this);
-        mRecyclerview.setAdapter(mAdapter);
+        this.mRecyclerview.setHasFixedSize(true);
+        this.mLayoutManager = new LinearLayoutManager(this);
+        this.mRecyclerview.setLayoutManager(this.mLayoutManager);
+        this.mRecyclerview.setLayoutManager(this.mLayoutManager);
+        ArrayList<OperationTheater.DietItem> items = this.getDataSet();
+        OperationTheater.OperationListViewAdapter mAdapter = new OperationTheater.OperationListViewAdapter(items, this);
+        this.mRecyclerview.setAdapter(mAdapter);
         if (items.size() == 0) {
-            imageNoData.setVisibility(View.VISIBLE);
+            this.imageNoData.setVisibility(View.VISIBLE);
         } else if (items.size() > 0) {
-            imageNoData.setVisibility(View.GONE);
+            this.imageNoData.setVisibility(View.GONE);
         }
 
 
@@ -113,7 +125,7 @@ public class OperationTheater extends AppCompatActivity {
 
     private ArrayList getDataSet() {
 
-        ArrayList results = new ArrayList<DietItem>();
+        ArrayList results = new ArrayList<OperationTheater.DietItem>();
 
         String Query = "select  * from operation_details ";
 
@@ -131,7 +143,7 @@ public class OperationTheater extends AppCompatActivity {
                 do {
 
 
-                    DietItem item1 = new DietItem();
+                    OperationTheater.DietItem item1 = new OperationTheater.DietItem();
                     item1.operation_name = c.getString(c.getColumnIndex("operation_name"));
                     item1.patient_name = c.getString(c.getColumnIndex("patient_name"));
                     item1.operation_date = c.getString(c.getColumnIndex("operation_date"));
@@ -159,23 +171,23 @@ public class OperationTheater extends AppCompatActivity {
     public final void onBackPressed() {
         // Do Here what ever you want do on back press;
 
-        OperationTheater.this.finish();
-        Intent in = new Intent(OperationTheater.this, Inpatient_List.class);
-        startActivity(in);
+        finish();
+        Intent in = new Intent(this, Inpatient_List.class);
+        this.startActivity(in);
     }
 
     @Override
     public final boolean onOptionsItemSelected(MenuItem item) {
 
-        return MenuSelecciona(item);
+        return this.MenuSelecciona(item);
 
     }
 
     @Override
     public final boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater();
+        this.getMenuInflater();
 
-        CreateMenu(menu);
+        OperationTheater.CreateMenu(menu);
         return true;
     }
 
@@ -184,14 +196,14 @@ public class OperationTheater extends AppCompatActivity {
         MenuItem item1 = menu.add(0, 0, 0, "Item 1");
         {
             // --Copio las imagenes que van en cada item
-            item1.setIcon(R.drawable.prev_icon);
+            item1.setIcon(drawable.prev_icon);
             item1.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
         MenuItem item2 = menu.add(0, 1, 1, "Item 2");
         {
 
-            item2.setIcon(R.drawable.home_ico);
+            item2.setIcon(drawable.home_ico);
             item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         }
@@ -205,13 +217,13 @@ public class OperationTheater extends AppCompatActivity {
 
             case 0:
 
-                BaseConfig.globalStartIntent(OperationTheater.this, Inpatient_List.class, null);
+                BaseConfig.globalStartIntent(this, Inpatient_List.class, null);
 
 
                 return true;
             case 1:
 
-                BaseConfig.globalStartIntent(OperationTheater.this, Dashboard_NavigationMenu.class, null);
+                BaseConfig.globalStartIntent(this, Dashboard_NavigationMenu.class, null);
 
                 return true;
 
@@ -223,23 +235,23 @@ public class OperationTheater extends AppCompatActivity {
         return false;
     }
 
-    private void showPopup(final Activity context, final String operation_nam, final String time, final String valuess) {
+    private void showPopup(Activity context, String operation_nam, String time, String valuess) {
 //      LayoutInflater factory = LayoutInflater.from(this);
 
         LayoutInflater factory = LayoutInflater.from(this);
-        final View deleteDialogView = factory.inflate(
-                R.layout.operation_remarks_layout, null);
-        final AlertDialog deleteDialog = new AlertDialog.Builder(this).create();
+        View deleteDialogView = factory.inflate(
+                layout.operation_remarks_layout, null);
+        AlertDialog deleteDialog = new AlertDialog.Builder(this).create();
         deleteDialog.setView(deleteDialogView);
 
         deleteDialog.setTitle("Operation Remarks");
-        TextView operation_name = deleteDialogView.findViewById(R.id.operation_name);
-        TextView scheduleValue = deleteDialogView.findViewById(R.id.scheduleValue);
+        TextView operation_name = deleteDialogView.findViewById(id.operation_name);
+        TextView scheduleValue = deleteDialogView.findViewById(id.scheduleValue);
 
         operation_name.setText(operation_nam);
         scheduleValue.setText(time);
 
-        final EditText remarks = deleteDialogView.findViewById(R.id.operation_remarks_value);
+        EditText remarks = deleteDialogView.findViewById(id.operation_remarks_value);
 
         /**
          @Ponnusamy
@@ -248,13 +260,13 @@ public class OperationTheater extends AppCompatActivity {
           * ***/
 
         //new Fields
-        final EditText pre_operation_diagnosis_value = deleteDialogView.findViewById(R.id.pre_operation_diagnosis_value);
-        final EditText operation_notes_value = deleteDialogView.findViewById(R.id.operation_notes_value);
-        final EditText position_value = deleteDialogView.findViewById(R.id.position_value);
-        final EditText procedure_value = deleteDialogView.findViewById(R.id.procedure_value);
-        final EditText closure_value = deleteDialogView.findViewById(R.id.closure_value);
-        final EditText post_operative_diagnosis_value = deleteDialogView.findViewById(R.id.post_operative_diagnosis_value);
-        final EditText post_operative_instruction = deleteDialogView.findViewById(R.id.post_operative_instruction);
+        EditText pre_operation_diagnosis_value = deleteDialogView.findViewById(id.pre_operation_diagnosis_value);
+        EditText operation_notes_value = deleteDialogView.findViewById(id.operation_notes_value);
+        EditText position_value = deleteDialogView.findViewById(id.position_value);
+        EditText procedure_value = deleteDialogView.findViewById(id.procedure_value);
+        EditText closure_value = deleteDialogView.findViewById(id.closure_value);
+        EditText post_operative_diagnosis_value = deleteDialogView.findViewById(id.post_operative_diagnosis_value);
+        EditText post_operative_instruction = deleteDialogView.findViewById(id.post_operative_instruction);
 
         /*****
          @Ponnusamy
@@ -262,20 +274,20 @@ public class OperationTheater extends AppCompatActivity {
           * Time 2:00
           *
           * *******/
-        remark_image_view = deleteDialogView.findViewById(R.id.remark_image_view);
+        this.remark_image_view = deleteDialogView.findViewById(id.remark_image_view);
 
 
-        remark_image_view.setOnClickListener(view -> {
+        this.remark_image_view.setOnClickListener(view -> {
             //ImagePicker Code
-            add_image();
+            this.add_image();
 
         });
 
-        Button button_submit = deleteDialogView.findViewById(R.id.submit_pop);
-        Button button_cancel = deleteDialogView.findViewById(R.id.cancel_pop);
+        Button button_submit = deleteDialogView.findViewById(id.submit_pop);
+        Button button_cancel = deleteDialogView.findViewById(id.cancel_pop);
 
 
-        getPopupData(remarks, pre_operation_diagnosis_value, operation_notes_value, position_value, procedure_value, closure_value, post_operative_diagnosis_value, post_operative_instruction, valuess);
+        this.getPopupData(remarks, pre_operation_diagnosis_value, operation_notes_value, position_value, procedure_value, closure_value, post_operative_diagnosis_value, post_operative_instruction, valuess);
 
         button_cancel.setOnClickListener(view -> deleteDialog.dismiss());
 
@@ -320,22 +332,22 @@ public class OperationTheater extends AppCompatActivity {
                      @Ponnusamy
                       * Date 22.11.2016
                       * *****/
-                    BitmapDrawable drawable = (BitmapDrawable) remark_image_view.getDrawable();
+                    BitmapDrawable drawable = (BitmapDrawable) this.remark_image_view.getDrawable();
                     Bitmap bm = drawable.getBitmap();
                     ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                    bm.compress(Bitmap.CompressFormat.JPEG, 100, baos);
+                    bm.compress(CompressFormat.JPEG, 100, baos);
                     byte[] b = baos.toByteArray();
                     String Remark_image_base64 = Base64.encodeToString(b, Base64.DEFAULT);
 
 
-                    String Query = "UPDATE operation_details SET Remarks = '" + remarks.getText().toString() + "' , IsUpdateLocal =  '0',Pre_Oper_Diagnosis='" + pre_operation_diagnosis_value.getText().toString() + '\'' +
-                            ",Oper_Notes='" + operation_notes_value.getText().toString() + "',Position='" + position_value.getText().toString() + "',Procedure='" + procedure_value.getText().toString() + '\'' +
-                            ",Closure='" + closure_value.getText().toString() + "',Post_Oper_Diagnosis='" + post_operative_diagnosis_value.getText().toString() + "',Post_Oper_Instruction='" + post_operative_instruction.getText().toString() + "' , Remark_Image='" + Remark_image_base64 + "' WHERE  operation_no='" + valuess + "' ";
+                    String Query = "UPDATE operation_details SET Remarks = '" + remarks.getText() + "' , IsUpdateLocal =  '0',Pre_Oper_Diagnosis='" + pre_operation_diagnosis_value.getText() + '\'' +
+                            ",Oper_Notes='" + operation_notes_value.getText() + "',Position='" + position_value.getText() + "',Procedure='" + procedure_value.getText() + '\'' +
+                            ",Closure='" + closure_value.getText() + "',Post_Oper_Diagnosis='" + post_operative_diagnosis_value.getText() + "',Post_Oper_Instruction='" + post_operative_instruction.getText() + "' , Remark_Image='" + Remark_image_base64 + "' WHERE  operation_no='" + valuess + "' ";
 
                     db.execSQL(Query);
                     //Log.e("delete Query", Query);
 
-                    Toast.makeText(OperationTheater.this, "Successfully Updated Remarks", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(this, "Successfully Updated Remarks", Toast.LENGTH_SHORT).show();
 //                        BaseConfig.SnackBar(this,  "Successfully Updated Remarks" , parentLayout);
 
                     deleteDialog.dismiss();
@@ -404,7 +416,7 @@ public class OperationTheater extends AppCompatActivity {
 
                         byte[] decodedString = Base64.decode(image_value, Base64.DEFAULT);
                         Bitmap decodedByte = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
-                        remark_image_view.setImageBitmap(decodedByte);
+                        this.remark_image_view.setImageBitmap(decodedByte);
 
 
                         //  c.getString(c.getColumnIndex("acdate"));
@@ -442,9 +454,9 @@ public class OperationTheater extends AppCompatActivity {
      ************/
     private void add_image() {
 
-        final CharSequence[] items = {"Take Photo", "Choose from Library"};
+        CharSequence[] items = {"Take Photo", "Choose from Library"};
 
-        android.app.AlertDialog.Builder builder = new android.app.AlertDialog.Builder(OperationTheater.this);
+        Builder builder = new Builder(this);
 
         builder.setTitle("Select Image");
         builder.setItems(items, (dialog, item) -> {
@@ -454,11 +466,11 @@ public class OperationTheater extends AppCompatActivity {
 
                 if (item == 0) {
                     // camera
-                    takePicture();
+                    this.takePicture();
 
                 } else {
                     // gallery
-                    openGallery();
+                    this.openGallery();
                 }
 
             } catch (RuntimeException e) {
@@ -468,7 +480,7 @@ public class OperationTheater extends AppCompatActivity {
 
         });
         //builder.show();
-        final android.app.AlertDialog dialog = builder.create();
+        android.app.AlertDialog dialog = builder.create();
         // Change the title divider
         dialog.show();
 
@@ -495,7 +507,7 @@ public class OperationTheater extends AppCompatActivity {
             intent.putExtra(android.provider.MediaStore.EXTRA_OUTPUT, mImageCaptureUri);
             intent.putExtra("return-data", true);*/
 
-            startActivityForResult(intent, REQUEST_CODE_TAKE_PICTURE);
+            this.startActivityForResult(intent, OperationTheater.REQUEST_CODE_TAKE_PICTURE);
         } catch (ActivityNotFoundException e) {
 
             Log.d("Image Picker", "cannot take picture", e);
@@ -508,7 +520,7 @@ public class OperationTheater extends AppCompatActivity {
             Intent intent = new Intent();
             intent.setType("image/*");
             intent.setAction(Intent.ACTION_GET_CONTENT);
-            startActivityForResult(Intent.createChooser(intent, "Select Picture"), REQUEST_CODE_GALLERY);
+            this.startActivityForResult(Intent.createChooser(intent, "Select Picture"), OperationTheater.REQUEST_CODE_GALLERY);
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
@@ -518,14 +530,14 @@ public class OperationTheater extends AppCompatActivity {
     protected final void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if (requestCode == REQUEST_CODE_GALLERY && resultCode == RESULT_OK && data != null && data.getData() != null) {
+        if (requestCode == OperationTheater.REQUEST_CODE_GALLERY && resultCode == Activity.RESULT_OK && data != null && data.getData() != null) {
 
             Uri uri = data.getData();
 
             try {
-                Bitmap bitmap = MediaStore.Images.Media.getBitmap(getContentResolver(), uri);
+                Bitmap bitmap = Media.getBitmap(this.getContentResolver(), uri);
                 // Log.d(TAG, String.valueOf(bitmap));
-                remark_image_view.setImageBitmap(bitmap);
+                this.remark_image_view.setImageBitmap(bitmap);
             } catch (FileNotFoundException e) {
                 e.printStackTrace();
             } catch (IOException e) {
@@ -533,10 +545,10 @@ public class OperationTheater extends AppCompatActivity {
             }
         }
 
-        if (requestCode == REQUEST_CODE_TAKE_PICTURE && resultCode == RESULT_OK) {
+        if (requestCode == OperationTheater.REQUEST_CODE_TAKE_PICTURE && resultCode == Activity.RESULT_OK) {
             try {
                 Bitmap photo = (Bitmap) data.getExtras().get("data");
-                remark_image_view.setImageBitmap(photo);
+                this.remark_image_view.setImageBitmap(photo);
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
@@ -544,47 +556,45 @@ public class OperationTheater extends AppCompatActivity {
     }
 
     static class DietItem {
-        String operation_name = null;
-        String patient_name = null;
-        String operation_date = null;
-        String from_time = null;
-        String to_time = null;
-        String doctors = null;
-        String Actate = null;
-        Bitmap image = null;
-        String operation_no = null;
+        String operation_name;
+        String patient_name;
+        String operation_date;
+        String from_time;
+        String to_time;
+        String doctors;
+        String Actate;
+        Bitmap image;
+        String operation_no;
 
         DietItem() {
         }
     }
 
-    public class OperationListViewAdapter extends RecyclerView
-            .Adapter<OperationListViewAdapter
-            .DataObjectHolder> {
-        View view = null;
-        private String LOG_TAG = "MyRecyclerViewAdapter";
-        private final ArrayList<DietItem> mDataset;
+    public class OperationListViewAdapter extendsAdapter<DataObjectHolder> {
+        View view;
+        private final String LOG_TAG = "MyRecyclerViewAdapter";
+        private final ArrayList<OperationTheater.DietItem> mDataset;
 
 
-        OperationListViewAdapter(ArrayList<DietItem> myDataset, Context context) {
-            mDataset = myDataset;
+        OperationListViewAdapter(ArrayList<OperationTheater.DietItem> myDataset, Context context) {
+            this.mDataset = myDataset;
 
         }
 
         @NonNull
         @Override
-        public final DataObjectHolder onCreateViewHolder(@NonNull ViewGroup parent,
+        public final OperationTheater.OperationListViewAdapter.DataObjectHolder onCreateViewHolder(@NonNull ViewGroup parent,
                                                          int viewType) {
             View view = LayoutInflater.from(parent.getContext())
-                    .inflate(R.layout.each_operation_layout, parent, false);
+                    .inflate(layout.each_operation_layout, parent, false);
             this.view = view;
-            return new DataObjectHolder(view);
+            return new OperationTheater.OperationListViewAdapter.DataObjectHolder(view);
         }
 
         @Override
-        public final void onBindViewHolder(@NonNull final DataObjectHolder holder, final int position) {
+        public final void onBindViewHolder(@NonNull OperationTheater.OperationListViewAdapter.DataObjectHolder holder, int position) {
 
-            final DietItem movie = mDataset.get(position);
+            OperationTheater.DietItem movie = this.mDataset.get(position);
             holder.Operation_name_textview.setText(movie.operation_name);
             String OperationDate = movie.operation_date;
             String finalDate = "";
@@ -592,7 +602,7 @@ public class OperationTheater extends AppCompatActivity {
                 String OpDate[] = OperationDate.split("T");
                 // holder.operation_date_time.setText(movie.operation_date+" / "+movie.from_time+" - "+movie.to_time);
 
-                finalDate = String.valueOf(OpDate[0]);
+                finalDate = OpDate[0];
             }
 
             String fromDTime = "";
@@ -616,7 +626,7 @@ public class OperationTheater extends AppCompatActivity {
             }
 
             String finalTime = "";
-            String finalTime1 = String.valueOf(fromDTime + " to " + toDTime);
+            String finalTime1 = fromDTime + " to " + toDTime;
             holder.operation_date_time.setText(finalDate + " / " + finalTime1);
 
             if (movie.doctors.contains(",")) {
@@ -628,7 +638,7 @@ public class OperationTheater extends AppCompatActivity {
                 for (int i = 0; i <= drnames.length - 1; i++) {
                     if (drnames[i].contains("Dr")) {
 
-                        DrNames.append(drnames[i]).append(String.valueOf(","));
+                        DrNames.append(drnames[i]).append(",");
 
                     } else {
                         nurseName.append(drnames[i]);
@@ -636,7 +646,7 @@ public class OperationTheater extends AppCompatActivity {
 
                 }
 
-                String wholeString = String.valueOf(DrNames + "\n" + nurseName);
+                String wholeString = DrNames + "\n" + nurseName;
                 holder.Operation_doctor_name.setText(wholeString);
 
             } else {
@@ -657,7 +667,7 @@ public class OperationTheater extends AppCompatActivity {
 
 
             });
-            holder.rooLayout.setOnClickListener(view -> showPopup(OperationTheater.this, String.valueOf(holder.Operation_name_textview.getText()), String.valueOf(holder.operation_date_time.getText()), movie.operation_no));
+            holder.rooLayout.setOnClickListener(view -> OperationTheater.this.showPopup(OperationTheater.this, String.valueOf(holder.Operation_name_textview.getText()), String.valueOf(holder.operation_date_time.getText()), movie.operation_no));
 
 
 
@@ -691,43 +701,42 @@ public class OperationTheater extends AppCompatActivity {
 
         }
 
-        public final void addItem(DietItem dataObj, int index) {
-            mDataset.add(index, dataObj);
-            notifyItemInserted(index);
+        public final void addItem(OperationTheater.DietItem dataObj, int index) {
+            this.mDataset.add(index, dataObj);
+            this.notifyItemInserted(index);
         }
 
         public final void deleteItem(int index) {
-            mDataset.remove(index);
-            notifyItemRemoved(index);
+            this.mDataset.remove(index);
+            this.notifyItemRemoved(index);
         }
 
         @Override
         public final int getItemCount() {
-            return mDataset.size();
+            return this.mDataset.size();
         }
 
-        public class DataObjectHolder extends RecyclerView.ViewHolder
-                implements View
-                .OnClickListener {
+        public class DataObjectHolder extends ViewHolder
+                implementsOnClickListener {
             final TextView Operation_name_textview;
             final TextView operation_date_time;
             final TextView Operation_doctor_name;
             final TextView Operation_patient_name;
-            CircleImageView imageView = null;
+            CircleImageView imageView;
             final Button reportBtn;
             final LinearLayout rooLayout;
 
-            LinearLayout outerLayout = null;
+            LinearLayout outerLayout;
 
 
             DataObjectHolder(View itemView) {
                 super(itemView);
-                reportBtn = itemView.findViewById(R.id.report_btn);
-                Operation_name_textview = itemView.findViewById(R.id.Operation_name_textview);
-                operation_date_time = itemView.findViewById(R.id.operation_date_time);
-                Operation_doctor_name = itemView.findViewById(R.id.Operation_doctor_name);
-                Operation_patient_name = itemView.findViewById(R.id.Operation_patient_name);
-                rooLayout = itemView.findViewById(R.id.layout_root);
+                this.reportBtn = itemView.findViewById(id.report_btn);
+                this.Operation_name_textview = itemView.findViewById(id.Operation_name_textview);
+                this.operation_date_time = itemView.findViewById(id.operation_date_time);
+                this.Operation_doctor_name = itemView.findViewById(id.Operation_doctor_name);
+                this.Operation_patient_name = itemView.findViewById(id.Operation_patient_name);
+                this.rooLayout = itemView.findViewById(id.layout_root);
             }
 
             @Override

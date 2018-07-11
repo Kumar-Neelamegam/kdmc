@@ -12,9 +12,12 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -25,33 +28,40 @@ import java.util.ArrayList;
 import java.util.List;
 
 import displ.mobydocmarathi.com.R;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.RowItem;
+import displ.mobydocmarathi.com.R.anim;
+import displ.mobydocmarathi.com.R.color;
+import displ.mobydocmarathi.com.R.drawable;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
+import kdmc_kumar.Masters_Modules.templates_list.TemplateRecylerAdapter.MyViewHolder;
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
 
-public class templates_list extends AppCompatActivity implements View.OnClickListener {
+public class templates_list extends AppCompatActivity implements OnClickListener {
 
 
     protected static final int RESULT_SPEECH = 1;
 
-    private ImageView imgNoMedia = null;
-    ArrayAdapter<RowItem> adapter = null;
+    private ImageView imgNoMedia;
+    ArrayAdapter<CommonDataObjects.RowItem> adapter;
 
-    private ListView listView = null;
-    private List<RowItem> rowItems = null;
+    private ListView listView;
+    private List<CommonDataObjects.RowItem> rowItems;
 
-    private RecyclerView recyler_view = null;
-    private GridLayoutManager gridLayoutManager = null;
+    private RecyclerView recyler_view;
+    private GridLayoutManager gridLayoutManager;
 
-    private TemplateRecylerAdapter templateRecylerAdapter = null;
+    private templates_list.TemplateRecylerAdapter templateRecylerAdapter;
 
-    private Toolbar toolbar = null;
+    private Toolbar toolbar;
 
-    private ImageView back = null;
-    private ImageView home = null;
-    private ImageView exit = null;
-    private ImageView add_template = null;
+    private ImageView back;
+    private ImageView home;
+    private ImageView exit;
+    private ImageView add_template;
 
     public templates_list() {
     }
@@ -59,44 +69,44 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.templates_list);
+        this.setContentView(layout.templates_list);
 
-        toolbar = findViewById(R.id.toolbar);
+        this.toolbar = this.findViewById(id.toolbar);
 
-        back = toolbar.findViewById(R.id.ic_back);
-        home = toolbar.findViewById(R.id.ic_home);
-        exit = toolbar.findViewById(R.id.ic_exit);
-        add_template = toolbar.findViewById(R.id.ic_add);
-        back.setOnClickListener(this);
-        home.setOnClickListener(this);
-        exit.setOnClickListener(this);
+        this.back = this.toolbar.findViewById(id.ic_back);
+        this.home = this.toolbar.findViewById(id.ic_home);
+        this.exit = this.toolbar.findViewById(id.ic_exit);
+        this.add_template = this.toolbar.findViewById(id.ic_add);
+        this.back.setOnClickListener(this);
+        this.home.setOnClickListener(this);
+        this.exit.setOnClickListener(this);
 
-        add_template.setOnClickListener(view -> {
+        this.add_template.setOnClickListener(view -> {
 
-            templates_list.this.finish();
-            Intent add = new Intent(getApplicationContext(), templates_addnew.class);
+            finish();
+            Intent add = new Intent(this.getApplicationContext(), templates_addnew.class);
             BaseConfig.temp_flag = "True";
-            startActivity(add);
+            this.startActivity(add);
 
         });
 
-        recyler_view = findViewById(R.id.recyler_view);
+        this.recyler_view = this.findViewById(id.recyler_view);
 
-        gridLayoutManager = new GridLayoutManager(this, 2);
-        gridLayoutManager.setSpanCount(1);
-        recyler_view.setHasFixedSize(true);
-        recyler_view.setLayoutManager(gridLayoutManager);
+        this.gridLayoutManager = new GridLayoutManager(this, 2);
+        this.gridLayoutManager.setSpanCount(1);
+        this.recyler_view.setHasFixedSize(true);
+        this.recyler_view.setLayoutManager(this.gridLayoutManager);
 
 
         BaseConfig.welcometoast = 0;
 
-        rowItems = new ArrayList<>();
+        this.rowItems = new ArrayList<>();
 
-        SelectedGetPatientDetails();
+        this.SelectedGetPatientDetails();
 
-        imgNoMedia = findViewById(R.id.imgNoMedia);
-        imgNoMedia.setVisibility(View.GONE);
-        listView = findViewById(R.id.list);
+        this.imgNoMedia = this.findViewById(id.imgNoMedia);
+        this.imgNoMedia.setVisibility(View.GONE);
+        this.listView = this.findViewById(id.list);
 
 
     }
@@ -104,7 +114,7 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
     ///////////////////////////////////////////////////////////////////////////////////////////////
     // =================================
     private final void SelectedGetPatientDetails() {
-        ArrayList<TemplateGetSet> templateGetSets = new ArrayList<>();
+        ArrayList<templates_list.TemplateGetSet> templateGetSets = new ArrayList<>();
         SQLiteDatabase db = BaseConfig.GetDb();
         String pimg64 = "";
         int i = 1;
@@ -118,12 +128,12 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
                     String pdtls = c.getString(c.getColumnIndex("TemplateName"));
 
 
-                    Bitmap img = BitmapFactory.decodeResource(getResources(), R.drawable.medical_history_icon);
+                    Bitmap img = BitmapFactory.decodeResource(this.getResources(), drawable.medical_history_icon);
 
                     // RowItem item = new RowItem(img, pdtls, "", "");
                     //rowItems.add(item);
 
-                    templateGetSets.add(new TemplateGetSet(c.getString(c.getColumnIndex("TemplateName")), c.getString(c.getColumnIndex("id"))));
+                    templateGetSets.add(new templates_list.TemplateGetSet(c.getString(c.getColumnIndex("TemplateName")), c.getString(c.getColumnIndex("id"))));
 
 
                     ++i;
@@ -132,16 +142,16 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
             }
         }
 
-        listView = findViewById(R.id.list);
+        this.listView = this.findViewById(id.list);
 
         //adapter = new CustomListViewAdapter(this, R.layout.list_item, rowItems);
         //listView.setAdapter(adapter);
 
 
-        templateRecylerAdapter = new TemplateRecylerAdapter(templateGetSets);
+        this.templateRecylerAdapter = new templates_list.TemplateRecylerAdapter(templateGetSets);
 
-        recyler_view.setLayoutManager(new GridLayoutManager(recyler_view.getContext(), 2));
-        recyler_view.setAdapter(templateRecylerAdapter);
+        this.recyler_view.setLayoutManager(new GridLayoutManager(this.recyler_view.getContext(), 2));
+        this.recyler_view.setAdapter(this.templateRecylerAdapter);
 
         c.close();
 
@@ -150,22 +160,22 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
     @Override
     public final void onClick(View view) {
         switch (view.getId()) {
-            case R.id.ic_back:
-                templates_list.this.finish();
-                Intent task1 = new Intent(getApplicationContext(), Masters_New.class);
-                startActivity(task1);
+            case id.ic_back:
+                finish();
+                Intent task1 = new Intent(this.getApplicationContext(), Masters_New.class);
+                this.startActivity(task1);
                 break;
-            case R.id.ic_home:
-                templates_list.this.finish();
-                Intent task = new Intent(getApplicationContext(), Dashboard_NavigationMenu.class);
-                startActivityForResult(task, 500);
-                overridePendingTransition(R.anim.abc_slide_in_top,
-                        R.anim.abc_slide_in_top);
+            case id.ic_home:
+                finish();
+                Intent task = new Intent(this.getApplicationContext(), Dashboard_NavigationMenu.class);
+                this.startActivityForResult(task, 500);
+                this.overridePendingTransition(anim.abc_slide_in_top,
+                        anim.abc_slide_in_top);
                 break;
-            case R.id.ic_exit:
+            case id.ic_exit:
 
 
-                BaseConfig.ExitSweetDialog(templates_list.this, null);
+                BaseConfig.ExitSweetDialog(this, null);
 
 
                 break;
@@ -183,7 +193,7 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
         }
 
         final String getName() {
-            return name;
+            return this.name;
         }
 
         public final void setName(String name) {
@@ -191,7 +201,7 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
         }
 
         final String getSno() {
-            return sno;
+            return this.sno;
         }
 
         public final void setSno(String sno) {
@@ -199,25 +209,25 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
         }
     }
 
-    public class TemplateRecylerAdapter extends RecyclerView.Adapter<TemplateRecylerAdapter.MyViewHolder> {
-        ArrayList<TemplateGetSet> templateGetSets = new ArrayList<>();
+    public class TemplateRecylerAdapter extends Adapter<MyViewHolder> {
+        ArrayList<templates_list.TemplateGetSet> templateGetSets = new ArrayList<>();
 
-        TemplateRecylerAdapter(ArrayList<TemplateGetSet> templateGetSets) {
+        TemplateRecylerAdapter(ArrayList<templates_list.TemplateGetSet> templateGetSets) {
             this.templateGetSets = templateGetSets;
         }
 
         @NonNull
         @Override
-        public final MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.template_list_row, parent, false);
+        public final templates_list.TemplateRecylerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(layout.template_list_row, parent, false);
 
-            return new MyViewHolder(view);
+            return new templates_list.TemplateRecylerAdapter.MyViewHolder(view);
         }
 
         @Override
-        public final void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+        public final void onBindViewHolder(@NonNull templates_list.TemplateRecylerAdapter.MyViewHolder holder, int position) {
 
-            final TemplateGetSet item = templateGetSets.get(position);
+            templates_list.TemplateGetSet item = this.templateGetSets.get(position);
 
             holder.sno.setText(item.getSno());
             //holder.template_name.setText("" + item.getName().split(":")[1]);
@@ -226,9 +236,9 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
             holder.card_view.setOnClickListener(v -> {
                 BaseConfig.selectedtemplate = item.getName();
                 BaseConfig.temp_flag = "false";
-                templates_list.this.finish();
+                finish();
                 Intent lib = new Intent(v.getContext(), templates_addnew.class);
-                startActivity(lib);
+                templates_list.this.startActivity(lib);
             });
 
             holder.Delete.setOnClickListener(view -> {
@@ -238,12 +248,12 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
 
 
                 new CustomKDMCDialog(templates_list.this)
-                        .setLayoutColor(R.color.orange_500)
-                        .setImage(R.drawable.ic_warning_black_24dp)
-                        .setTitle(templates_list.this.getString(R.string.close_online))
+                        .setLayoutColor(color.orange_500)
+                        .setImage(drawable.ic_warning_black_24dp)
+                        .setTitle(getString(string.close_online))
                         .setDescription("Are you sure want to delete?")
-                        .setPossitiveButtonTitle(templates_list.this.getString(R.string.yes))
-                        .setNegativeButtonTitle(templates_list.this.getString(R.string.no))
+                        .setPossitiveButtonTitle(getString(string.yes))
+                        .setNegativeButtonTitle(getString(string.no))
                         .setOnPossitiveListener(() -> {
 
                             try {
@@ -251,7 +261,7 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
                                 db.execSQL("delete from TemplateDtls where TemplateName='" + item.getName() + '\'');
                                 db.close();
 
-                                SelectedGetPatientDetails();
+                                templates_list.this.SelectedGetPatientDetails();
 
                             } catch (SQLException e) {
                                 e.printStackTrace();
@@ -260,7 +270,7 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
                             }
 
                             new CustomKDMCDialog(templates_list.this).setNegativeButtonVisible(View.GONE)
-                                    .setImage(R.drawable.ic_success_done)
+                                    .setImage(drawable.ic_success_done)
                                     .setTitle("Deleted").setNegativeButtonVisible(View.GONE)
                                     .setPossitiveButtonTitle("OK");
 
@@ -275,10 +285,10 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
 
         @Override
         public final int getItemCount() {
-            return templateGetSets.size();
+            return this.templateGetSets.size();
         }
 
-        public class MyViewHolder extends RecyclerView.ViewHolder {
+        public class MyViewHolder extends ViewHolder {
             final TextView sno;
             final TextView template_name;
             final CardView card_view;
@@ -286,10 +296,10 @@ public class templates_list extends AppCompatActivity implements View.OnClickLis
 
             MyViewHolder(View itemView) {
                 super(itemView);
-                sno = itemView.findViewById(R.id.serial_no);
-                template_name = itemView.findViewById(R.id.template_name);
-                card_view = itemView.findViewById(R.id.card_view);
-                Delete = itemView.findViewById(R.id.ic_delete);
+                this.sno = itemView.findViewById(id.serial_no);
+                this.template_name = itemView.findViewById(id.template_name);
+                this.card_view = itemView.findViewById(id.card_view);
+                this.Delete = itemView.findViewById(id.ic_delete);
             }
         }
     }

@@ -2,6 +2,7 @@ package kdmc_kumar.Webservices_NodeJSON;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.Notification.Builder;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.content.ContentValues;
@@ -11,6 +12,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.os.Environment;
 import android.util.Log;
 import android.widget.RemoteViews;
@@ -33,7 +35,12 @@ import java.util.UUID;
 import java.util.concurrent.ExecutionException;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.drawable;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
 import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.NotificationGetSet;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.NotificationListGetSet;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.MyPatient_Module.MyPatientDrawer;
 import kdmc_kumar.Webservices_NodeJSON.importREST_Services.getPatientMapping.controller.api.PatientMapping;
@@ -79,7 +86,7 @@ import static kdmc_kumar.Core_Modules.BaseConfig.LoadDoctorValues;
 
 public class ImportWebservices_NODEJS {
 
-    private static Context ctx = null;
+    private static Context ctx;
     /**
      * Ponnu
      * Notification - kdmc for investigation
@@ -96,16 +103,15 @@ public class ImportWebservices_NODEJS {
     private String patient_Id = "";
     private String MedId = "";
 
-    public ImportWebservices_NODEJS(final Context ctx) {
-        super();
-        this.ctx = ctx;
+    public ImportWebservices_NODEJS(Context ctx) {
+        ImportWebservices_NODEJS.ctx = ctx;
     }
 
-    public static void LoadForVaccination(final String pid, final String pname, final String agegen, final String mob) {
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
-        final int upid = 0;
+    public static void LoadForVaccination(String pid, String pname, String agegen, String mob) {
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        int upid = 0;
 
-        final Cursor c = db
+        Cursor c = db
                 .rawQuery(
                         "select distinct vaccinename,schedule from listofvaccine",
                         null);
@@ -114,7 +120,7 @@ public class ImportWebservices_NODEJS {
             if (c.moveToFirst()) {
                 do {
 
-                    final String InsertQuery = "Insert into Vaccination(patid,pname,agegen,mobnum,drid,vaccinename,schedule,Isupdate,isactive) values"
+                    String InsertQuery = "Insert into Vaccination(patid,pname,agegen,mobnum,drid,vaccinename,schedule,Isupdate,isactive) values"
                             + "('"
                             + pid
                             + "','"
@@ -141,18 +147,18 @@ public class ImportWebservices_NODEJS {
     }
 
     private static String getPatientList() throws JSONException {
-        final String Query = "select  Patid from  Patreg ";
+        String Query = "select  Patid from  Patreg ";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         db.isOpen();
-        final Cursor c = db.rawQuery(Query, null);
-        final JSONArray patientIdList = new JSONArray();
-        final JSONObject singleobj = new JSONObject();
+        Cursor c = db.rawQuery(Query, null);
+        JSONArray patientIdList = new JSONArray();
+        JSONObject singleobj = new JSONObject();
         if (null != c) {
             if (c.moveToFirst()) {
                 do {
-                    final String PatientId = c.getString(c.getColumnIndex("Patid"));
+                    String PatientId = c.getString(c.getColumnIndex("Patid"));
 
                     patientIdList.put(new JSONObject().put("PatientId", PatientId));
 
@@ -171,10 +177,10 @@ public class ImportWebservices_NODEJS {
         String str = "";
 
         try {
-            final SQLiteDatabase db = BaseConfig.GetDb();
+            SQLiteDatabase db = BaseConfig.GetDb();
 
             // database = dbHelper.getWritableDatabase();
-            final Cursor c = db.rawQuery("Select distinct Docid from Drreg", null);
+            Cursor c = db.rawQuery("Select distinct Docid from Drreg", null);
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -194,21 +200,21 @@ public class ImportWebservices_NODEJS {
                 c.close();
                 db.close();
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
             // TODO: handle exception
         }
         return str;
     }
 
-    private static String GetCurrentSeenValue(final String patId, final String mTestId, final String allTest) {
+    private static String GetCurrentSeenValue(String patId, String mTestId, String allTest) {
 
 
         String bedIdStr = "";
         try {
 
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final Cursor c = db.rawQuery("select * from Medicaltestdtls where Ptid ='" + patId.trim() + "' and alltest = '" + allTest + "' and mTestId = '" + mTestId + '\'', null);
+            SQLiteDatabase db = BaseConfig.GetDb();
+            Cursor c = db.rawQuery("select * from Medicaltestdtls where Ptid ='" + patId.trim() + "' and alltest = '" + allTest + "' and mTestId = '" + mTestId + '\'', null);
 
 
             if (c != null) {
@@ -225,7 +231,7 @@ public class ImportWebservices_NODEJS {
             Objects.requireNonNull(c).close();
 
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         if (bedIdStr == null) {
@@ -261,35 +267,35 @@ public class ImportWebservices_NODEJS {
     public static void CheckDbUpdatesNodeJs(Context context) {
         try {
 
-            final UpdateDB updateDB;
-            final String DoctorID = ImportWebservices_NODEJS.GetDocid();
+            UpdateDB updateDB;
+            String DoctorID = GetDocid();
 
 
-            final SQLiteDatabase db = BaseConfig.GetDb();
+            SQLiteDatabase db = BaseConfig.GetDb();
 
             // Instantiate a controller
-            final MagnetMobileClient magnetClient = MagnetMobileClient.getInstance(context);
-            final UpdateDBFactory controllerFactory = new UpdateDBFactory(magnetClient);
+            MagnetMobileClient magnetClient = MagnetMobileClient.getInstance(context);
+            UpdateDBFactory controllerFactory = new UpdateDBFactory(magnetClient);
             updateDB = controllerFactory.obtainInstance();
 
 
             // FIXME : set proper value for the parameters
-            final String contentType = "application/json";
-            final GetUpdateDBRequest body = new GetUpdateDBRequest();
+            String contentType = "application/json";
+            GetUpdateDBRequest body = new GetUpdateDBRequest();
             body.setDocid(DoctorID);
             body.setImei(BaseConfig.Imeinum);
             body.setMac(BaseConfig.MacId);
 
-            final Call<UpdateDBResult> callObject = updateDB.getUpdateDB(
+            Call<UpdateDBResult> callObject = updateDB.getUpdateDB(
                     contentType,
                     body, null);
 
-            final UpdateDBResult result = callObject.get();
+            UpdateDBResult result = callObject.get();
 
-            final String res = result.getResults();
+            String res = result.getResults();
 
 
-            final JSONArray jsonArray = new JSONArray(res);
+            JSONArray jsonArray = new JSONArray(res);
 
 
             for (int i = 0; i < jsonArray.length(); i++) {
@@ -301,7 +307,7 @@ public class ImportWebservices_NODEJS {
 
             db.close();
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -322,11 +328,11 @@ public class ImportWebservices_NODEJS {
     @SuppressLint("LongLogTag")
     public final void ExecuteAll() {
 
-        if (BaseConfig.CheckNetwork(this.ctx)) {
+        if (BaseConfig.CheckNetwork(ctx)) {
 
             try {
 
-                if (CheckNodeServer()) {
+                if (ImportWebservices_NODEJS.CheckNodeServer()) {
 
 
                     Log.e("###########", "################");
@@ -336,96 +342,96 @@ public class ImportWebservices_NODEJS {
                     Log.e("###########", "################");
 
 
-                    this.CheckDbUpdatesNodeJs(ctx);  // TODO: 1/24/2018 Completed
+                    CheckDbUpdatesNodeJs(ImportWebservices_NODEJS.ctx);  // TODO: 1/24/2018 Completed
 
                     LoadDoctorValues();// TODO: 1/24/2018 Note Used
 
                     //HID IsUpdateMax
-                    this.InsertPatientMapping(); // TODO: 1/24/2018 Completed
+                    InsertPatientMapping(); // TODO: 1/24/2018 Completed
 
 
                     //Docid
-                    this.ImportDoctorInfo();         // TODO: 1/24/2018 Completed
-                    this.ImportReportGallery();      // TODO: 1/24/2018 Completed
+                    ImportDoctorInfo();         // TODO: 1/24/2018 Completed
+                    ImportReportGallery();      // TODO: 1/24/2018 Completed
                    // this.ImportPatientInfo();        // TODO: 1/24/2018 Completed
-                    this.ImportAppointment();        // TODO: 1/24/2018 Completed
-                    this.ImportOnlineConsultation(); // TODO: 1/24/2018 Completed
+                    ImportAppointment();        // TODO: 1/24/2018 Completed
+                    ImportOnlineConsultation(); // TODO: 1/24/2018 Completed
 
 
                     //IsUpdateMax
-                    this.ImportScanMaster();           // TODO: 1/24/2018 Completed
-                    this.ImportDoctorsList();          // TODO: 1/24/2018 Completed
-                    this.ImportTest();                 // TODO: 1/24/2018 Completed
-                    this.ImportPharmacyDtls();         // TODO: 1/24/2018 Completed -- waste
-                    this.ImportDiagnosticCentreDtls(); // TODO: 1/24/2018 Completed -- waste
+                    ImportScanMaster();           // TODO: 1/24/2018 Completed
+                    ImportDoctorsList();          // TODO: 1/24/2018 Completed
+                    ImportTest();                 // TODO: 1/24/2018 Completed
+                    ImportPharmacyDtls();         // TODO: 1/24/2018 Completed -- waste
+                    ImportDiagnosticCentreDtls(); // TODO: 1/24/2018 Completed -- waste
 
                     //IsUpdateMax DocId
-                    this.ImportOperationSchedule();          // TODO: 1/24/2018 Completed
+                    ImportOperationSchedule();          // TODO: 1/24/2018 Completed
 
                     //PatientIdList
-                    this.ImportBind_ClinicalInformation();   // TODO: 1/24/2018 Completed
+                    ImportBind_ClinicalInformation();   // TODO: 1/24/2018 Completed
 
 
                     //Investigation
-                    this.ImportBind_MedicalTestDtls();       // TODO: 1/24/2018 Completed
-                    this.ImportBind_MedicalTest();           // TODO: 1/24/2018 Completed
-                    this.ImportScanDtls();                   // TODO: 1/24/2018 Completed
-                    this.ImportXrayDtls();                   // TODO: 1/24/2018 Completed
-                    this.ImportEEGDtls();                    // TODO: 1/24/2018 Completed
-                    this.ImportECGDtls();                    // TODO: 1/24/2018 Completed
-                    this.ImportAngiogram();                  // TODO: 1/24/2018 Completed
+                    ImportBind_MedicalTestDtls();       // TODO: 1/24/2018 Completed
+                    ImportBind_MedicalTest();           // TODO: 1/24/2018 Completed
+                    ImportScanDtls();                   // TODO: 1/24/2018 Completed
+                    ImportXrayDtls();                   // TODO: 1/24/2018 Completed
+                    ImportEEGDtls();                    // TODO: 1/24/2018 Completed
+                    ImportECGDtls();                    // TODO: 1/24/2018 Completed
+                    ImportAngiogram();                  // TODO: 1/24/2018 Completed
 
 
-                    this.ImportMprescribed();                // TODO: 1/24/2018 Completed
+                    ImportMprescribed();                // TODO: 1/24/2018 Completed
 
 
                     //Casenotes
-                    this.ImportBind_Diagnosis();             // TODO: 1/24/2018 Completed
-                    this.ImportBind_GeneralExamination();    // TODO: 1/24/2018 Completed
-                    this.ImportBind_Cardiovascular();        // TODO: 1/24/2018 Completed
-                    this.ImportBind_RespiratorySystem();     // TODO: 1/24/2018 Completed
-                    this.ImportBind_Gastrointestinal();      // TODO: 1/24/2018 Completed
-                    this.ImportBind_Neurology();             // TODO: 1/24/2018 Completed
-                    this.ImportCaseNote_Renal();             // TODO: 1/24/2018 Completed
-                    this.ImportCaseNote_Endocrine();         // TODO: 1/24/2018 Completed
-                    this.ImportCaseNote_ClinicalData();      // TODO: 1/24/2018 Completed
-                    this.ImportCaseNote_Locomotor();         // TODO: 1/24/2018 Completed
-                    this.ImportBind_CaseNote_OtherSystem();  // TODO: 1/24/2018 Completed
-                    this.ImportCaseNote_Dental();  // TODO: 1/24/2018 Completed
+                    ImportBind_Diagnosis();             // TODO: 1/24/2018 Completed
+                    ImportBind_GeneralExamination();    // TODO: 1/24/2018 Completed
+                    ImportBind_Cardiovascular();        // TODO: 1/24/2018 Completed
+                    ImportBind_RespiratorySystem();     // TODO: 1/24/2018 Completed
+                    ImportBind_Gastrointestinal();      // TODO: 1/24/2018 Completed
+                    ImportBind_Neurology();             // TODO: 1/24/2018 Completed
+                    ImportCaseNote_Renal();             // TODO: 1/24/2018 Completed
+                    ImportCaseNote_Endocrine();         // TODO: 1/24/2018 Completed
+                    ImportCaseNote_ClinicalData();      // TODO: 1/24/2018 Completed
+                    ImportCaseNote_Locomotor();         // TODO: 1/24/2018 Completed
+                    ImportBind_CaseNote_OtherSystem();  // TODO: 1/24/2018 Completed
+                    ImportCaseNote_Dental();  // TODO: 1/24/2018 Completed
 
                     //Docid Ptid
-                    this.InsertImmunizationInformation();  // TODO: 1/24/2018 Completed
+                    InsertImmunizationInformation();  // TODO: 1/24/2018 Completed
 
                     //Docid Patid Mtest id list
-                    this.ImportupdatedTestDtls();  // TODO: 1/24/2018 Completed
-                    this.ImportupdatedScanDtls();  // TODO: 1/24/2018 Completed
-                    this.ImportupdatedXrayDtls();  // TODO: 1/24/2018 Completed
-                    this.ImportupdatedEEGDtls();   // TODO: 1/24/2018 Completed //err
-                    this.ImportupdatedECGDtls();   // TODO: 1/24/2018 Completed
-                    this.ImportupdatedAngiogram(); // TODO: 1/24/2018 Completed
+                    ImportupdatedTestDtls();  // TODO: 1/24/2018 Completed
+                    ImportupdatedScanDtls();  // TODO: 1/24/2018 Completed
+                    ImportupdatedXrayDtls();  // TODO: 1/24/2018 Completed
+                    ImportupdatedEEGDtls();   // TODO: 1/24/2018 Completed //err
+                    ImportupdatedECGDtls();   // TODO: 1/24/2018 Completed
+                    ImportupdatedAngiogram(); // TODO: 1/24/2018 Completed
 
 
                     //Patid
-                    this.Importmast_Operations(); // TODO: 1/24/2018 Completed
+                    Importmast_Operations(); // TODO: 1/24/2018 Completed
 
 
                     //Patid Mtestid
-                    this.Importmast_Upload();            // TODO: 1/24/2018 Completed
-                    this.Import_ExaminationBlood_Test(); // TODO: 1/24/2018 Completed
-                    this.Import_ExaminationStool_Test(); // TODO: 1/24/2018 Completed
-                    this.Import_ExaminationUrine_Test(); // TODO: 1/24/2018 Completed
-                    this.Import_ExaminationANC_Test();   // TODO: 1/24/2018 Completed
-                    this.Import_ExaminationHIV_Test();   // TODO: 1/24/2018 Completed
+                    Importmast_Upload();            // TODO: 1/24/2018 Completed
+                    Import_ExaminationBlood_Test(); // TODO: 1/24/2018 Completed
+                    Import_ExaminationStool_Test(); // TODO: 1/24/2018 Completed
+                    Import_ExaminationUrine_Test(); // TODO: 1/24/2018 Completed
+                    Import_ExaminationANC_Test();   // TODO: 1/24/2018 Completed
+                    Import_ExaminationHIV_Test();   // TODO: 1/24/2018 Completed
 
 
-                    LoadInvestigation_Notification(); // Investigation Notification
+                    this.LoadInvestigation_Notification(); // Investigation Notification
 
 
 
 
 
                 }
-            } catch (final Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
@@ -437,7 +443,7 @@ public class ImportWebservices_NODEJS {
     private void InsertPatientMapping() {
 
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
         ContentValues values1;
@@ -445,74 +451,74 @@ public class ImportWebservices_NODEJS {
         try {
 
 
-            final MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(this.ctx);
-            final PatientMappingFactory patientMappingFactory = new PatientMappingFactory(magnetMobileClient);
-            final PatientMapping patientMapping = patientMappingFactory.obtainInstance();
+            MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(ctx);
+            PatientMappingFactory patientMappingFactory = new PatientMappingFactory(magnetMobileClient);
+            PatientMapping patientMapping = patientMappingFactory.obtainInstance();
 
-            final GetPatientMappingRequest getPatientMappingRequest = new GetPatientMappingRequest();
+            GetPatientMappingRequest getPatientMappingRequest = new GetPatientMappingRequest();
             getPatientMappingRequest.sethID(BaseConfig.doctorId);
             getPatientMappingRequest.setIsUpdateMax("0");
 
-            final Call<PatientMappingResult> resultCall = patientMapping.getPatientMapping(getPatientMappingRequest, null);
+            Call<PatientMappingResult> resultCall = patientMapping.getPatientMapping(getPatientMappingRequest, null);
 
-            final String resultsRequestSOAP = resultCall.get().getResults();
+            String resultsRequestSOAP = resultCall.get().getResults();
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     objJson = jsonArray.getJSONObject(i);
 
-                    final String id_data = String.valueOf(objJson.getString("id"));
-                    final String Patid_data = String.valueOf(objJson.getString("Patid"));
-                    final String Docid_data = String.valueOf(objJson.getString("Docid"));
-                    final String reffered_data = String.valueOf(objJson.getString("reffered"));
-                    final String name_data = String.valueOf(objJson.getString("name"));
-                    final String age_data = String.valueOf(objJson.getString("age"));
-                    final String gender_data = String.valueOf(objJson.getString("gender"));
-                    final String DOB_data = String.valueOf(objJson.getString("DOB"));
-                    final String weight_data = String.valueOf(objJson.getString("weight"));
-                    final String Country_data = String.valueOf(objJson.getString("Country"));
-                    final String State_data = String.valueOf(objJson.getString("State"));
-                    final String District_data = String.valueOf(objJson.getString("District"));
-                    final String Address_data = String.valueOf(objJson.getString("Address"));
-                    final String pincode_data = String.valueOf(objJson.getString("pincode"));
-                    final String phone_data = String.valueOf(objJson.getString("phone"));
-                    final String PMH_data = String.valueOf(objJson.getString("PMH"));
+                    String id_data = String.valueOf(objJson.getString("id"));
+                    String Patid_data = String.valueOf(objJson.getString("Patid"));
+                    String Docid_data = String.valueOf(objJson.getString("Docid"));
+                    String reffered_data = String.valueOf(objJson.getString("reffered"));
+                    String name_data = String.valueOf(objJson.getString("name"));
+                    String age_data = String.valueOf(objJson.getString("age"));
+                    String gender_data = String.valueOf(objJson.getString("gender"));
+                    String DOB_data = String.valueOf(objJson.getString("DOB"));
+                    String weight_data = String.valueOf(objJson.getString("weight"));
+                    String Country_data = String.valueOf(objJson.getString("Country"));
+                    String State_data = String.valueOf(objJson.getString("State"));
+                    String District_data = String.valueOf(objJson.getString("District"));
+                    String Address_data = String.valueOf(objJson.getString("Address"));
+                    String pincode_data = String.valueOf(objJson.getString("pincode"));
+                    String phone_data = String.valueOf(objJson.getString("phone"));
+                    String PMH_data = String.valueOf(objJson.getString("PMH"));
                     //String PC_data = String.valueOf(objJson.getString("PC"));//Commented because to save base64 into images
 
-                    final String Allergy_data = String.valueOf(objJson.getString("Allergy"));
-                    final String IsActive_data = String.valueOf(objJson.getString("IsActive"));
-                    final String imei_data = String.valueOf(objJson.getString("imei"));
-                    final String city_data = String.valueOf(objJson.getString("city"));
-                    final String altphone_data = String.valueOf(objJson.getString("altphone"));
-                    final String Actdate_data = String.valueOf(objJson.getString("Actdate"));
-                    final String Isupdate_data = String.valueOf(objJson.getString("Isupdate"));
-                    final String Address1_data = String.valueOf(objJson.getString("Address1"));
-                    final String email_data = String.valueOf(objJson.getString("email"));
-                    final String caretaker_data = String.valueOf(objJson.getString("caretaker"));
-                    final String crtknum_data = String.valueOf(objJson.getString("crtknum"));
-                    final String relationship_data = String.valueOf(objJson.getString("relationship"));
-                    final String willingsms_data = String.valueOf(objJson.getString("willingsms"));
-                    final String smsto_data = String.valueOf(objJson.getString("smsto"));
-                    final String smsfor_data = String.valueOf(objJson.getString("smsfor"));
-                    final String willingblood_data = String.valueOf(objJson.getString("willingblood"));
-                    final String willingeye_data = String.valueOf(objJson.getString("willingeye"));
-                    final String hereditary_data = String.valueOf(objJson.getString("hereditary"));
-                    final String mbid_data = String.valueOf(objJson.getString("mbid"));
-                    final String pinno_data = String.valueOf(objJson.getString("pinno"));
-                    final String issms_data = String.valueOf(objJson.getString("issms"));
-                    final String bloodgroup_data = String.valueOf(objJson.getString("bloodgroup"));
-                    final String Policyname_data = String.valueOf(objJson.getString("Policyname"));
-                    final String Inscompany_data = String.valueOf(objJson.getString("Inscompany"));
-                    final String Insamount_data = String.valueOf(objJson.getString("Insamount"));
-                    final String Insvalidity_data = String.valueOf(objJson.getString("Insvalidity"));
-                    final String Authorhospital_data = String.valueOf(objJson.getString("Authorhospital"));
-                    final String Isprfupdate_data = String.valueOf(objJson.getString("Isprfupdate"));
-                    final String Pages_data = String.valueOf(objJson.getString("Pages"));
-                    final String docReferName_data = String.valueOf(objJson.getString("docReferName"));
-                    final String docReferNo_data = String.valueOf(objJson.getString("docReferNo"));
+                    String Allergy_data = String.valueOf(objJson.getString("Allergy"));
+                    String IsActive_data = String.valueOf(objJson.getString("IsActive"));
+                    String imei_data = String.valueOf(objJson.getString("imei"));
+                    String city_data = String.valueOf(objJson.getString("city"));
+                    String altphone_data = String.valueOf(objJson.getString("altphone"));
+                    String Actdate_data = String.valueOf(objJson.getString("Actdate"));
+                    String Isupdate_data = String.valueOf(objJson.getString("Isupdate"));
+                    String Address1_data = String.valueOf(objJson.getString("Address1"));
+                    String email_data = String.valueOf(objJson.getString("email"));
+                    String caretaker_data = String.valueOf(objJson.getString("caretaker"));
+                    String crtknum_data = String.valueOf(objJson.getString("crtknum"));
+                    String relationship_data = String.valueOf(objJson.getString("relationship"));
+                    String willingsms_data = String.valueOf(objJson.getString("willingsms"));
+                    String smsto_data = String.valueOf(objJson.getString("smsto"));
+                    String smsfor_data = String.valueOf(objJson.getString("smsfor"));
+                    String willingblood_data = String.valueOf(objJson.getString("willingblood"));
+                    String willingeye_data = String.valueOf(objJson.getString("willingeye"));
+                    String hereditary_data = String.valueOf(objJson.getString("hereditary"));
+                    String mbid_data = String.valueOf(objJson.getString("mbid"));
+                    String pinno_data = String.valueOf(objJson.getString("pinno"));
+                    String issms_data = String.valueOf(objJson.getString("issms"));
+                    String bloodgroup_data = String.valueOf(objJson.getString("bloodgroup"));
+                    String Policyname_data = String.valueOf(objJson.getString("Policyname"));
+                    String Inscompany_data = String.valueOf(objJson.getString("Inscompany"));
+                    String Insamount_data = String.valueOf(objJson.getString("Insamount"));
+                    String Insvalidity_data = String.valueOf(objJson.getString("Insvalidity"));
+                    String Authorhospital_data = String.valueOf(objJson.getString("Authorhospital"));
+                    String Isprfupdate_data = String.valueOf(objJson.getString("Isprfupdate"));
+                    String Pages_data = String.valueOf(objJson.getString("Pages"));
+                    String docReferName_data = String.valueOf(objJson.getString("docReferName"));
+                    String docReferNo_data = String.valueOf(objJson.getString("docReferNo"));
                     String enable_inpatient_data = String.valueOf(objJson.getString("enable_inpatient"));
                     if ("true".equalsIgnoreCase(enable_inpatient_data)) {
                         enable_inpatient_data = "1";
@@ -520,29 +526,29 @@ public class ImportWebservices_NODEJS {
                         enable_inpatient_data = "0";
                     }
 
-                    final String admitdt_data = String.valueOf(objJson.getString("admitdt"));
-                    final String admittime_data = String.valueOf(objJson.getString("admittime"));
-                    final String Ward_data = String.valueOf(objJson.getString("Ward"));
-                    final String Bed_data = String.valueOf(objJson.getString("Bed"));
-                    final String roomno_data = String.valueOf(objJson.getString("roomno"));
-                    final String dischargedt_data = String.valueOf(objJson.getString("dischargedt"));
-                    final String HospitalId_data = String.valueOf(objJson.getString("HospitalId"));
-                    final String Presentwithco_data = String.valueOf(objJson.getString("Presentwithco"));
-                    final String doc_refer_name_data = String.valueOf(objJson.getString("doc_refer_name"));
-                    final String doc_refer_no_data = String.valueOf(objJson.getString("doc_refer_no"));
-                    final String IsFeeExemp_data = String.valueOf(objJson.getString("IsFeeExemp"));
-                    final String FeeExempCateg_data = String.valueOf(objJson.getString("FeeExempCateg"));
-                    final String bplCardNo_data = String.valueOf(objJson.getString("bplCardNo"));
-                    final String AadharCardNo_data = String.valueOf(objJson.getString("AadharCardNo"));
-                    final String FeeExempReason_data = String.valueOf(objJson.getString("FeeExempReason"));
-                    final String caste_data = String.valueOf(objJson.getString("caste"));
-                    final String income_data = String.valueOf(objJson.getString("income"));
-                    final String under_care_of_data = String.valueOf(objJson.getString("under_care_of"));
-                    final String Occupation_data = String.valueOf(objJson.getString("Occupation"));
-                    final String distime = String.valueOf(objJson.getString("distime"));
-                    final String disdate = String.valueOf(objJson.getString("disdate"));
-                    final String Fathername_data = String.valueOf(objJson.getString("Fathername"));
-                    final String spouse = String.valueOf(objJson.getString("spouse"));
+                    String admitdt_data = String.valueOf(objJson.getString("admitdt"));
+                    String admittime_data = String.valueOf(objJson.getString("admittime"));
+                    String Ward_data = String.valueOf(objJson.getString("Ward"));
+                    String Bed_data = String.valueOf(objJson.getString("Bed"));
+                    String roomno_data = String.valueOf(objJson.getString("roomno"));
+                    String dischargedt_data = String.valueOf(objJson.getString("dischargedt"));
+                    String HospitalId_data = String.valueOf(objJson.getString("HospitalId"));
+                    String Presentwithco_data = String.valueOf(objJson.getString("Presentwithco"));
+                    String doc_refer_name_data = String.valueOf(objJson.getString("doc_refer_name"));
+                    String doc_refer_no_data = String.valueOf(objJson.getString("doc_refer_no"));
+                    String IsFeeExemp_data = String.valueOf(objJson.getString("IsFeeExemp"));
+                    String FeeExempCateg_data = String.valueOf(objJson.getString("FeeExempCateg"));
+                    String bplCardNo_data = String.valueOf(objJson.getString("bplCardNo"));
+                    String AadharCardNo_data = String.valueOf(objJson.getString("AadharCardNo"));
+                    String FeeExempReason_data = String.valueOf(objJson.getString("FeeExempReason"));
+                    String caste_data = String.valueOf(objJson.getString("caste"));
+                    String income_data = String.valueOf(objJson.getString("income"));
+                    String under_care_of_data = String.valueOf(objJson.getString("under_care_of"));
+                    String Occupation_data = String.valueOf(objJson.getString("Occupation"));
+                    String distime = String.valueOf(objJson.getString("distime"));
+                    String disdate = String.valueOf(objJson.getString("disdate"));
+                    String Fathername_data = String.valueOf(objJson.getString("Fathername"));
+                    String spouse = String.valueOf(objJson.getString("spouse"));
 
                     values1 = new ContentValues();
 
@@ -552,21 +558,21 @@ public class ImportWebservices_NODEJS {
                     values1.put("name", name_data);
                     try {
                         if (name_data.contains(".")) {
-                            final String[] prefixData = name_data.split("\\.");
+                            String[] prefixData = name_data.split("\\.");
                             values1.put("prefix", prefixData[0]);
                             values1.put("patientname", prefixData[1].trim());
                         }
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
                     String PatientPhoto = "";
                     try {
-                        final Bitmap theBitmap = BaseConfig.Glide_GetBitmap(ctx, String.valueOf(objJson.getString("PC")));//Glide.with(this.ctx).load(String.valueOf(objJson.getString("PC"))).asBitmap().into(-1, -1).get();
+                        Bitmap theBitmap = BaseConfig.Glide_GetBitmap(ImportWebservices_NODEJS.ctx, String.valueOf(objJson.getString("PC")));//Glide.with(this.ctx).load(String.valueOf(objJson.getString("PC"))).asBitmap().into(-1, -1).get();
 
                         PatientPhoto = BaseConfig.saveURLImagetoSDcard(theBitmap, Patid_data.replace("/", "-"));
 
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -632,12 +638,12 @@ public class ImportWebservices_NODEJS {
                     values1.put("Fathername", Fathername_data);
                     values1.put("spouse", spouse);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where Patid='" + Patid_data + '\'');
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where Patid='" + Patid_data + '\'');
 
                     if (!GetStatus) {
 
                         db.insert("Patreg", null, values1);
-                        ImportWebservices_NODEJS.LoadForVaccination(Patid_data, name_data, age_data + "-" + gender_data, phone_data);
+                        LoadForVaccination(Patid_data, name_data, age_data + "-" + gender_data, phone_data);
 
                     } else {
 
@@ -652,7 +658,7 @@ public class ImportWebservices_NODEJS {
                 }
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -663,14 +669,14 @@ public class ImportWebservices_NODEJS {
     private void ImportDoctorInfo() {
         try {
 
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final String DoctorID = ImportWebservices_NODEJS.GetDocid();
-            final String MethodName = "infodrupdateJSON";
+            SQLiteDatabase db = BaseConfig.GetDb();
+            String DoctorID = GetDocid();
+            String MethodName = "infodrupdateJSON";
             try {
-                final String resultsRequestSOAP = this.getDoctorIdRESTCALL(DoctorID, MethodName);
+                String resultsRequestSOAP = getDoctorIdRESTCALL(DoctorID, MethodName);
 
                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                     JSONObject objJson;
 
 
@@ -678,73 +684,73 @@ public class ImportWebservices_NODEJS {
 
 
                         objJson = jsonArray.getJSONObject(i);
-                        final String Id = String.valueOf(objJson.getString("Id"));
-                        final String Docid = String.valueOf(objJson.getString("Docid"));
-                        final String name = String.valueOf(objJson.getString("name"));
-                        final String age = String.valueOf(objJson.getString("age"));
-                        final String gender = String.valueOf(objJson.getString("gender"));
-                        final String DOB = String.valueOf(objJson.getString("DOB"));
-                        final String RegId = String.valueOf(objJson.getString("RegId"));
-                        final String TaxNo = String.valueOf(objJson.getString("TaxNo"));
-                        final String Academic = String.valueOf(objJson.getString("Academic"));
-                        final String Academic_text = String.valueOf(objJson.getString("Academic_text"));
-                        final String Specialization = String.valueOf(objJson.getString("Specialization"));
-                        final String Specialization_text = String.valueOf(objJson.getString("Specialization_text"));
-                        final String Country = String.valueOf(objJson.getString("Country"));
-                        final String State = String.valueOf(objJson.getString("State"));
-                        final String District = String.valueOf(objJson.getString("District"));
-                        final String Username = String.valueOf(objJson.getString("Username"));
-                        final String Password = String.valueOf(objJson.getString("Password"));
-                        final String Address = String.valueOf(objJson.getString("Address"));
-                        final String pincode = String.valueOf(objJson.getString("pincode"));
-                        final String Lanline = String.valueOf(objJson.getString("Lanline"));
-                        final String Mobile = String.valueOf(objJson.getString("Mobile"));
-                        final String Time = String.valueOf(objJson.getString("Time"));
-                        final String consultation = String.valueOf(objJson.getString("consultation"));
-                        final String clinicname = String.valueOf(objJson.getString("clinicname"));
-                        final String photo = String.valueOf(objJson.getString("photo"));
-                        final String mail = String.valueOf(objJson.getString("mail"));
-                        final String Ismail = String.valueOf(objJson.getString("Ismail"));
-                        final String homephone = String.valueOf(objJson.getString("homephone"));
-                        final String IsActive = String.valueOf(objJson.getString("IsActive"));
-                        final String Actdate = String.valueOf(objJson.getString("InsertedDt"));
-                        final String Imei = String.valueOf(objJson.getString("Imei"));
+                        String Id = String.valueOf(objJson.getString("Id"));
+                        String Docid = String.valueOf(objJson.getString("Docid"));
+                        String name = String.valueOf(objJson.getString("name"));
+                        String age = String.valueOf(objJson.getString("age"));
+                        String gender = String.valueOf(objJson.getString("gender"));
+                        String DOB = String.valueOf(objJson.getString("DOB"));
+                        String RegId = String.valueOf(objJson.getString("RegId"));
+                        String TaxNo = String.valueOf(objJson.getString("TaxNo"));
+                        String Academic = String.valueOf(objJson.getString("Academic"));
+                        String Academic_text = String.valueOf(objJson.getString("Academic_text"));
+                        String Specialization = String.valueOf(objJson.getString("Specialization"));
+                        String Specialization_text = String.valueOf(objJson.getString("Specialization_text"));
+                        String Country = String.valueOf(objJson.getString("Country"));
+                        String State = String.valueOf(objJson.getString("State"));
+                        String District = String.valueOf(objJson.getString("District"));
+                        String Username = String.valueOf(objJson.getString("Username"));
+                        String Password = String.valueOf(objJson.getString("Password"));
+                        String Address = String.valueOf(objJson.getString("Address"));
+                        String pincode = String.valueOf(objJson.getString("pincode"));
+                        String Lanline = String.valueOf(objJson.getString("Lanline"));
+                        String Mobile = String.valueOf(objJson.getString("Mobile"));
+                        String Time = String.valueOf(objJson.getString("Time"));
+                        String consultation = String.valueOf(objJson.getString("consultation"));
+                        String clinicname = String.valueOf(objJson.getString("clinicname"));
+                        String photo = String.valueOf(objJson.getString("photo"));
+                        String mail = String.valueOf(objJson.getString("mail"));
+                        String Ismail = String.valueOf(objJson.getString("Ismail"));
+                        String homephone = String.valueOf(objJson.getString("homephone"));
+                        String IsActive = String.valueOf(objJson.getString("IsActive"));
+                        String Actdate = String.valueOf(objJson.getString("InsertedDt"));
+                        String Imei = String.valueOf(objJson.getString("Imei"));
                         String docsign = String.valueOf(objJson.getString("docsign"));
-                        final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
-                        final String Issms = String.valueOf(objJson.getString("Issms"));
-                        final String paymenttype = String.valueOf(objJson.getString("paymenttype"));
-                        final String pay = String.valueOf(objJson.getString("pay"));
-                        final String paymentdate = String.valueOf(objJson.getString("paymentdate"));
-                        final String IsPaid = String.valueOf(objJson.getString("IsPaid"));
-                        final String MCI_No = String.valueOf(objJson.getString("MCI_No"));
-                        final String panno = String.valueOf(objJson.getString("panno"));
-                        final String Dr_serviceno = String.valueOf(objJson.getString("Dr_serviceno"));
-                        final String promotion = String.valueOf(objJson.getString("promotion"));
-                        final String editdate = String.valueOf(objJson.getString("editdate"));
-                        final String MAC = String.valueOf(objJson.getString("MAC"));
-                        final String AppLicenseCode = String.valueOf(objJson.getString("AppLicenseCode"));
-                        final String OnlineFee = String.valueOf(objJson.getString("OnlineFee"));
-                        final String OnlineFeeOthers = String.valueOf(objJson.getString("OnlineFeeOthers"));
-                        final String Isprfupdate = String.valueOf(objJson.getString("Isprfupdate"));
-                        final String HID = String.valueOf(objJson.getString("HID"));
-                        final String InsertedDt = String.valueOf(objJson.getString("InsertedDt"));
-                        final String Insertedby = String.valueOf(objJson.getString("Insertedby"));
+                        String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                        String Issms = String.valueOf(objJson.getString("Issms"));
+                        String paymenttype = String.valueOf(objJson.getString("paymenttype"));
+                        String pay = String.valueOf(objJson.getString("pay"));
+                        String paymentdate = String.valueOf(objJson.getString("paymentdate"));
+                        String IsPaid = String.valueOf(objJson.getString("IsPaid"));
+                        String MCI_No = String.valueOf(objJson.getString("MCI_No"));
+                        String panno = String.valueOf(objJson.getString("panno"));
+                        String Dr_serviceno = String.valueOf(objJson.getString("Dr_serviceno"));
+                        String promotion = String.valueOf(objJson.getString("promotion"));
+                        String editdate = String.valueOf(objJson.getString("editdate"));
+                        String MAC = String.valueOf(objJson.getString("MAC"));
+                        String AppLicenseCode = String.valueOf(objJson.getString("AppLicenseCode"));
+                        String OnlineFee = String.valueOf(objJson.getString("OnlineFee"));
+                        String OnlineFeeOthers = String.valueOf(objJson.getString("OnlineFeeOthers"));
+                        String Isprfupdate = String.valueOf(objJson.getString("Isprfupdate"));
+                        String HID = String.valueOf(objJson.getString("HID"));
+                        String InsertedDt = String.valueOf(objJson.getString("InsertedDt"));
+                        String Insertedby = String.valueOf(objJson.getString("Insertedby"));
 
 
                         Bitmap theBitmap = null;
                         try {
                             theBitmap = Glide.
-                                    with(this.ctx).asBitmap().
+                                    with(ctx).asBitmap().
                                     load(photo).
                                     into(150, 150). // Width and height
                                     get();
-                        } catch (final InterruptedException e) {
+                        } catch (InterruptedException e) {
                             e.printStackTrace();
-                        } catch (final Exception e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
 
-                        final ContentValues cv = new ContentValues();
+                        ContentValues cv = new ContentValues();
 
                         //cv.put("id",);
                         cv.put("Docid", Docid);
@@ -781,11 +787,11 @@ public class ImportWebservices_NODEJS {
 
                         try {
 
-                            final Bitmap theBitmap1 = BaseConfig.Glide_GetBitmap(ctx, docsign);
+                            Bitmap theBitmap1 = BaseConfig.Glide_GetBitmap(ImportWebservices_NODEJS.ctx, docsign);
 
                             docsign = BaseConfig.saveURLImagetoSDcard(theBitmap1, Docid.replace("/", "") + "_sign");
 
-                        } catch (final Exception e) {
+                        } catch (Exception e) {
 
                         }
 
@@ -812,7 +818,7 @@ public class ImportWebservices_NODEJS {
 
                         // BaseConfig.GetDb().insert("Drreg", null , cv);
 
-                        final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Drreg where Docid='" + Docid + '\'');
+                        boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Drreg where Docid='" + Docid + '\'');
 
                         if (!GetStatus) {
                             db.insert("Drreg", null, cv);
@@ -831,13 +837,13 @@ public class ImportWebservices_NODEJS {
                 }
 
 
-            } catch (final Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
 
             }
             db.close();
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -845,31 +851,31 @@ public class ImportWebservices_NODEJS {
     private void ImportReportGallery() {
         try {
 
-            final String DoctorID = ImportWebservices_NODEJS.GetDocid();
+            String DoctorID = GetDocid();
 
-            final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+            SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
-            final String MethodName = "infoBindUpload";
+            String MethodName = "infoBindUpload";
             try {
-                final String resultsRequestSOAP = this.getDoctorIdRESTCALL(DoctorID, MethodName);
+                String resultsRequestSOAP = getDoctorIdRESTCALL(DoctorID, MethodName);
 
                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
 
-                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        final JSONObject objJson = jsonArray.getJSONObject(i);
+                        JSONObject objJson = jsonArray.getJSONObject(i);
                         String returnid = String.valueOf(objJson.getString("id"));
 
-                        final ContentValues values;
+                        ContentValues values;
 
                         String PatientPhoto = null;
                         try {
                             Log.e("Report Image URL: ", objJson.getString("Upload"));
-                            final Bitmap theBitmap = BaseConfig.Glide_GetBitmap(ctx, String.valueOf(objJson.getString("Upload")));//Glide.with(this.ctx).load(String.valueOf(objJson.getString("Upload"))).asBitmap().into(-1, -1).get();
+                            Bitmap theBitmap = BaseConfig.Glide_GetBitmap(ImportWebservices_NODEJS.ctx, String.valueOf(objJson.getString("Upload")));//Glide.with(this.ctx).load(String.valueOf(objJson.getString("Upload"))).asBitmap().into(-1, -1).get();
                             PatientPhoto = BaseConfig.saveURLImagetoSDcard(theBitmap, String.valueOf(objJson.getString("Patid")).replace("/", ""));
 
-                        } catch (final Exception e) {
+                        } catch (Exception e) {
 
                         }
 
@@ -889,8 +895,8 @@ public class ImportWebservices_NODEJS {
                         values.put("ServerId", returnid);
                         // db.insert(BaseConfig.TABLE_REPORTGALLERY, null, values);
 
-                        final String Query = "select Docid as dstatus1 from ReportGallery where ServerId='" + returnid + '\'';
-                        final boolean q = BaseConfig.LoadReportsBooleanStatus(Query);
+                        String Query = "select Docid as dstatus1 from ReportGallery where ServerId='" + returnid + '\'';
+                        boolean q = BaseConfig.LoadReportsBooleanStatus(Query);
 
                         if (!q) {
                             db.insert(BaseConfig.TABLE_REPORTGALLERY, null, values);
@@ -905,10 +911,10 @@ public class ImportWebservices_NODEJS {
 
                 db.close();
 
-            } catch (final Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -918,19 +924,19 @@ public class ImportWebservices_NODEJS {
         try {
 
 
-            final String DoctorID = ImportWebservices_NODEJS.GetDocid();
+            String DoctorID = GetDocid();
 
-            final SQLiteDatabase db = BaseConfig.GetDb();
+            SQLiteDatabase db = BaseConfig.GetDb();
             try {
 
-                final String MethodName = "infopatupdate";
-                final String resultsRequestSOAP = this.getDoctorIdRESTCALL(DoctorID, MethodName);
+                String MethodName = "infopatupdate";
+                String resultsRequestSOAP = getDoctorIdRESTCALL(DoctorID, MethodName);
 
                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
 
-                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        final JSONObject objJson = jsonArray.getJSONObject(i);
+                        JSONObject objJson = jsonArray.getJSONObject(i);
 
                         String Update_Query = "update patreg set name='"
                                 + String.valueOf(objJson.getString("name")) + "',age='"
@@ -978,32 +984,32 @@ public class ImportWebservices_NODEJS {
                     db.close();
 
                 }
-            } catch (final Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
     private void ImportAppointment() {
 
-        final String DoctorID = ImportWebservices_NODEJS.GetDocid();
+        String DoctorID = GetDocid();
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         try {
 
             ContentValues values;
 
-            final String MethodName = "infobookappoinment";
-            final String resultsRequestSOAP = this.getDoctorIdRESTCALL(DoctorID, MethodName);
+            String MethodName = "infobookappoinment";
+            String resultsRequestSOAP = getDoctorIdRESTCALL(DoctorID, MethodName);
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
 
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    final JSONObject objJson = jsonArray.getJSONObject(i);
+                    JSONObject objJson = jsonArray.getJSONObject(i);
                     values = new ContentValues();
                     values.put("ServerId", String.valueOf(objJson.getString("Id")));
                     values.put("patid", String.valueOf(objJson.getString("PatId")));
@@ -1018,21 +1024,21 @@ public class ImportWebservices_NODEJS {
 
                     Bitmap theBitmap = null;
                     try {
-                        theBitmap = BaseConfig.Glide_GetBitmap(ctx, String.valueOf(objJson.getString("Patphoto")));//Glide.with(this.ctx).load(String.valueOf(objJson.getString("Patphoto"))).asBitmap().into(-1, -1).get();
+                        theBitmap = BaseConfig.Glide_GetBitmap(ImportWebservices_NODEJS.ctx, String.valueOf(objJson.getString("Patphoto")));//Glide.with(this.ctx).load(String.valueOf(objJson.getString("Patphoto"))).asBitmap().into(-1, -1).get();
 
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
-                    final String PatientPhoto = BaseConfig.saveURLImagetoSDcard(theBitmap, String.valueOf(objJson.getString("PatId")).replace("/", ""));//+System.currentTimeMillis());
+                    String PatientPhoto = BaseConfig.saveURLImagetoSDcard(theBitmap, String.valueOf(objJson.getString("PatId")).replace("/", ""));//+System.currentTimeMillis());
 
                     values.put("photo", PatientPhoto);
                     values.put("Iscancel", "False");
 
-                    final String Query = "select Id as dstatus1 from Appoinment where ServerId='" + String.valueOf(objJson.getString("Id")) + "' " +
+                    String Query = "select Id as dstatus1 from Appoinment where ServerId='" + String.valueOf(objJson.getString("Id")) + "' " +
                             "and patid='" + String.valueOf(objJson.getString("PatId")) + "' " +
                             "and Appoimentdt='" + String.valueOf(objJson.getString("Appdate")) + '\'';
 
-                    final boolean q = BaseConfig.LoadReportsBooleanStatus(Query);
+                    boolean q = BaseConfig.LoadReportsBooleanStatus(Query);
 
                     if (!q) {
                         db.insert(BaseConfig.TABLE_APPOINTMENTS, null, values);
@@ -1047,20 +1053,20 @@ public class ImportWebservices_NODEJS {
             }
             db.close();
 
-        } catch (final InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (final ExecutionException e) {
+        } catch (ExecutionException e) {
             e.printStackTrace();
-        } catch (final JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
-        } catch (final SchemaException e) {
+        } catch (SchemaException e) {
             e.printStackTrace();
         }
     }
 
     private void ImportOnlineConsultation() {
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         ContentValues values1;
 
@@ -1068,21 +1074,21 @@ public class ImportWebservices_NODEJS {
         try {
 
             String MethodName = "GetOnlinesharePatdetails";
-            String resultsRequestSOAP = this.getDoctorIdRESTCALL(BaseConfig.doctorId, MethodName);
+            String resultsRequestSOAP = getDoctorIdRESTCALL(BaseConfig.doctorId, MethodName);
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
                 flag = 1;
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    final JSONObject objJson = jsonArray.getJSONObject(i);
+                    JSONObject objJson = jsonArray.getJSONObject(i);
 
-                    this.sndserverid = String.valueOf(objJson.getString("Id"));
-                    this.patient_Id = String.valueOf(objJson.getString("Patid"));
-                    this.MedId = String.valueOf(objJson.getString("medid"));
+                    sndserverid = String.valueOf(objJson.getString("Id"));
+                    patient_Id = String.valueOf(objJson.getString("Patid"));
+                    MedId = String.valueOf(objJson.getString("medid"));
 
 
-                    final Bitmap theBitmap = BaseConfig.Glide_GetBitmap(ctx, String.valueOf(objJson.getString("PC")));//Glide.with(this.ctx).load(String.valueOf(objJson.getString("PC"))).asBitmap().into(-1, -1).get();
-                    final String PatientPhoto = BaseConfig.saveURLImagetoSDcard(theBitmap, String.valueOf(objJson.getString("Patid")).replace("/", ""));//+System.currentTimeMillis());
+                    Bitmap theBitmap = BaseConfig.Glide_GetBitmap(ImportWebservices_NODEJS.ctx, String.valueOf(objJson.getString("PC")));//Glide.with(this.ctx).load(String.valueOf(objJson.getString("PC"))).asBitmap().into(-1, -1).get();
+                    String PatientPhoto = BaseConfig.saveURLImagetoSDcard(theBitmap, String.valueOf(objJson.getString("Patid")).replace("/", ""));//+System.currentTimeMillis());
 
 
                     values1 = new ContentValues();
@@ -1097,7 +1103,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("Actdt", String.valueOf(objJson.getString("dates")));
                     values1.put("IsActive", "True");
                     values1.put("Medid", String.valueOf(objJson.getString("medid")));
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from OnlineConsultancy where ServerId='" + String.valueOf(objJson.getString("Id")) + '\'');
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from OnlineConsultancy where ServerId='" + String.valueOf(objJson.getString("Id")) + '\'');
 
                     if (!GetStatus) {
                         db.insert("OnlineConsultancy", null, values1);
@@ -1116,7 +1122,7 @@ public class ImportWebservices_NODEJS {
             if (1 == flag) {
 
                 //New Method is UPdated
-                final String IsUpdateMax = this.sndserverid;
+                String IsUpdateMax = sndserverid;
                // String updateOnlinesharePatdetails = "UpdateOnlinesharePatdetails";
                // this.postIsUpdateMaxRESTMethod(IsUpdateMax, updateOnlinesharePatdetails);
 
@@ -1125,18 +1131,18 @@ public class ImportWebservices_NODEJS {
 
 
                     String updateOnlinesharePatdetails = "GetOnlineshareMprescribed";
-                    final String PatId = this.patient_Id;
-                    final String MtestId = this.MedId;
-                    resultsRequestSOAP = this.postPatidMtestId(PatId, MtestId, updateOnlinesharePatdetails);
+                    String PatId = patient_Id;
+                    String MtestId = MedId;
+                    resultsRequestSOAP = postPatidMtestId(PatId, MtestId, updateOnlinesharePatdetails);
 
 
                     if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                        final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                        JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                         JSONObject objJson;
 
                         for (int i = 0; i < jsonArray.length(); i++) {
                             objJson = jsonArray.getJSONObject(i);
-                            final String ServerId = objJson.getString("Id");
+                            String ServerId = objJson.getString("Id");
 
                             values1 = new ContentValues();
 
@@ -1147,9 +1153,9 @@ public class ImportWebservices_NODEJS {
                             values1.put("TreatmentFor", String.valueOf(objJson.getString("treatmentfor")));
                             values1.put("Medicinename", String.valueOf(objJson.getString("medicinename")));
                             values1.put("Actdt", String.valueOf(objJson.getString("Actdate")));
-                            values1.put("pphoto", this.sndserverid);
+                            values1.put("pphoto", sndserverid);
 
-                            final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from OnlineSharedMedicine where pphoto='" + String.valueOf(objJson.getString("Id")) +"'");
+                            boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from OnlineSharedMedicine where pphoto='" + String.valueOf(objJson.getString("Id")) +"'");
 
                             if (GetStatus) {
 
@@ -1162,7 +1168,7 @@ public class ImportWebservices_NODEJS {
                             }
                         }
                     }
-                } catch (final Exception e) {
+                } catch (Exception e) {
 
                     e.printStackTrace();
                 }
@@ -1171,19 +1177,19 @@ public class ImportWebservices_NODEJS {
                 //inserting report from server
 
                 String getOnlineshareReports = "GetOnlineshareReports";
-                final String DoctorID = this.patient_Id + "##" + BaseConfig.doctorId + "##" + this.sndserverid;
-                String doctorIdRESTCALL = this.getDoctorIdRESTCALL(DoctorID, getOnlineshareReports);
+                String DoctorID = patient_Id + "##" + BaseConfig.doctorId + "##" + sndserverid;
+                String doctorIdRESTCALL = getDoctorIdRESTCALL(DoctorID, getOnlineshareReports);
 
                 if (!"[]".equalsIgnoreCase(doctorIdRESTCALL) && !"".equalsIgnoreCase(doctorIdRESTCALL)) {
 
-                    final JSONArray jsonArray = new JSONArray(doctorIdRESTCALL);
+                    JSONArray jsonArray = new JSONArray(doctorIdRESTCALL);
                     for (int i = 0; i < jsonArray.length(); i++) {
-                        final JSONObject objJson = jsonArray.getJSONObject(i);
+                        JSONObject objJson = jsonArray.getJSONObject(i);
 
                         values1 = new ContentValues();
 
-                        final Bitmap theBitmap = BaseConfig.Glide_GetBitmap(ctx, String.valueOf(objJson.getString("Upload")));//Glide.with(this.ctx).load(objJson.getString("Upload")).asBitmap().into(-1, -1).get();
-                        final String ReportPhoto = BaseConfig.saveURLImagetoSDcard1(theBitmap, UUID.randomUUID() + objJson.getString("ptid").replace("/", ""));//+System.currentTimeMillis();
+                        Bitmap theBitmap = BaseConfig.Glide_GetBitmap(ImportWebservices_NODEJS.ctx, String.valueOf(objJson.getString("Upload")));//Glide.with(this.ctx).load(objJson.getString("Upload")).asBitmap().into(-1, -1).get();
+                        String ReportPhoto = BaseConfig.saveURLImagetoSDcard1(theBitmap, UUID.randomUUID() + objJson.getString("ptid").replace("/", ""));//+System.currentTimeMillis();
 
                         values1.put("ServerId", objJson.getString("shid"));
                         values1.put("pid", objJson.getString("ptid"));
@@ -1193,7 +1199,7 @@ public class ImportWebservices_NODEJS {
                         values1.put("FileName", objJson.getString("Fname"));
                         values1.put("FileType", objJson.getString("Filetype"));
 
-                        final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from OnlineConsultancyDtls where ServerId='" + String.valueOf(objJson.getString("shid")) +"'");
+                        boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from OnlineConsultancyDtls where ServerId='" + String.valueOf(objJson.getString("shid")) +"'");
 
                         if (GetStatus) {
 
@@ -1211,7 +1217,7 @@ public class ImportWebservices_NODEJS {
             }
 
             db.close();
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -1223,11 +1229,11 @@ public class ImportWebservices_NODEJS {
         String IsActive;
         String str = "";
 
-        final String Query = "select IFNULL(max(IsUpdate),'0') as IsUpdateMax from scan";
+        String Query = "select IFNULL(max(IsUpdate),'0') as IsUpdateMax from scan";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
-        final Cursor c = db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (null != c) {
             if (c.moveToFirst()) {
@@ -1244,8 +1250,8 @@ public class ImportWebservices_NODEJS {
             }
         }
 
-        final String IsUpdateMax = str;
-        final String MethodName = "ImportMstrScan";
+        String IsUpdateMax = str;
+        String MethodName = "ImportMstrScan";
 
 
         ContentValues values1;
@@ -1253,21 +1259,21 @@ public class ImportWebservices_NODEJS {
         try {
 
 
-            final String resultsRequestSOAP = this.postIsUpdateMaxRESTMethod(IsUpdateMax, MethodName);
+            String resultsRequestSOAP = postIsUpdateMaxRESTMethod(IsUpdateMax, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     objJson = jsonArray.getJSONObject(i);
                     ///{ "Id": "1", "ScanFor": "Head", "IsActive": "True", "IsUpdate": "1" }
-                    final String ServerId = String.valueOf(objJson.getString("Id"));
-                    final String ScanFor = String.valueOf(objJson.getString("Scan"));
-                    final String IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
+                    String ServerId = String.valueOf(objJson.getString("Id"));
+                    String ScanFor = String.valueOf(objJson.getString("Scan"));
+                    String IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
 
-                    final String e = objJson.getString("IsActive");
+                    String e = objJson.getString("IsActive");
 
                     if ("true".equalsIgnoreCase(e)) {
                         IsActive = "1";
@@ -1281,7 +1287,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("IsUpdate", IsUpdate);
                     values1.put("IsActive", IsActive);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from scan where ServerId='" + ServerId + '\'');
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from scan where ServerId='" + ServerId + '\'');
 
                     if (!GetStatus) {
                         db.insert("scan", null, values1);
@@ -1293,7 +1299,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -1306,11 +1312,11 @@ public class ImportWebservices_NODEJS {
 
         String str = "";
 
-        final String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_DoctorsList";
+        String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_DoctorsList";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
-        final Cursor c = db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -1330,37 +1336,37 @@ public class ImportWebservices_NODEJS {
 
         ContentValues values1;
 
-        final String IsUpdateMax = str;
-        final String MethodName = "ImportMstrDoctorsList";
+        String IsUpdateMax = str;
+        String MethodName = "ImportMstrDoctorsList";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postIsUpdateMaxRESTMethod(IsUpdateMax, MethodName);
+            String resultsRequestSOAP = postIsUpdateMaxRESTMethod(IsUpdateMax, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     objJson = jsonArray.getJSONObject(i);
 
                     //Id,Docid,name,Academic_text,Specialization_text,Country,[State],District,Address,pincode,Mobile,clinicname,mail,HID
-                    final String ServerId = String.valueOf(objJson.getString("Id"));
-                    final String Docid = String.valueOf(objJson.getString("Docid"));
-                    final String name = String.valueOf(objJson.getString("name"));
-                    final String Academic_text = String.valueOf(objJson.getString("Academic_text"));
-                    final String Specialization_text = String.valueOf(objJson.getString("Specialization_text"));
-                    final String Country = String.valueOf(objJson.getString("Country"));
-                    final String State = String.valueOf(objJson.getString("State"));
-                    final String District = String.valueOf(objJson.getString("District"));
-                    final String Address = String.valueOf(objJson.getString("Address"));
-                    final String pincode = String.valueOf(objJson.getString("pincode"));
-                    final String Mobile = String.valueOf(objJson.getString("Mobile"));
-                    final String clinicname = String.valueOf(objJson.getString("clinicname"));
-                    final String mail = String.valueOf(objJson.getString("mail"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
+                    String ServerId = String.valueOf(objJson.getString("Id"));
+                    String Docid = String.valueOf(objJson.getString("Docid"));
+                    String name = String.valueOf(objJson.getString("name"));
+                    String Academic_text = String.valueOf(objJson.getString("Academic_text"));
+                    String Specialization_text = String.valueOf(objJson.getString("Specialization_text"));
+                    String Country = String.valueOf(objJson.getString("Country"));
+                    String State = String.valueOf(objJson.getString("State"));
+                    String District = String.valueOf(objJson.getString("District"));
+                    String Address = String.valueOf(objJson.getString("Address"));
+                    String pincode = String.valueOf(objJson.getString("pincode"));
+                    String Mobile = String.valueOf(objJson.getString("Mobile"));
+                    String clinicname = String.valueOf(objJson.getString("clinicname"));
+                    String mail = String.valueOf(objJson.getString("mail"));
+                    String HID = String.valueOf(objJson.getString("HID"));
 
                     String IsActive;
 
@@ -1388,7 +1394,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("mail", mail);
                     values1.put("HID", HID);
                     values1.put("IsActive", isActive);
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_DoctorsList where ServerId='" + ServerId + '\'');
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_DoctorsList where ServerId='" + ServerId + '\'');
 
                     if (!GetStatus) {
                         db.insert("Mstr_DoctorsList", null, values1);
@@ -1400,7 +1406,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         Objects.requireNonNull(c).close();
@@ -1414,11 +1420,11 @@ public class ImportWebservices_NODEJS {
         String IsActive;
         String str = "";
 
-        final String Query = "select IFNULL(max(IsUpdate),'0') as IsUpdateMax from testname";
+        String Query = "select IFNULL(max(IsUpdate),'0') as IsUpdateMax from testname";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
-        final Cursor c = db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -1438,32 +1444,32 @@ public class ImportWebservices_NODEJS {
 
         ContentValues values1;
 
-        final String IsUpdateMax = str;
-        final String MethodName = "ImportMstrTest";
+        String IsUpdateMax = str;
+        String MethodName = "ImportMstrTest";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postIsUpdateMaxRESTMethod(IsUpdateMax, MethodName);
+            String resultsRequestSOAP = postIsUpdateMaxRESTMethod(IsUpdateMax, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
 
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     objJson = jsonArray.getJSONObject(i);
                     ///{ "IsActive": "True", "IsUpdate": "1", "SubTest": "HiB 3D", "Id": "1", "TestName": "HiB", "TestFor": "Hand" }
-                    final String ServerId = String.valueOf(objJson.getString("Id"));
-                    final String SubTest = String.valueOf(objJson.getString("SubTest"));
+                    String ServerId = String.valueOf(objJson.getString("Id"));
+                    String SubTest = String.valueOf(objJson.getString("SubTest"));
                     //String TestFor = String.valueOf(objJson.getString("TestFor"));
-                    final String testName = String.valueOf(objJson.getString("TestName"));
-                    final String IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
-                    final String e = objJson.getString("IsActive");
-                    final String Unit = objJson.getString("Unit");
-                    final String NormalRange = objJson.getString("NormalRange");
-                    final String TemplateName = objJson.getString("TemplateName");
+                    String testName = String.valueOf(objJson.getString("TestName"));
+                    String IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
+                    String e = objJson.getString("IsActive");
+                    String Unit = objJson.getString("Unit");
+                    String NormalRange = objJson.getString("NormalRange");
+                    String TemplateName = objJson.getString("TemplateName");
 
                     if ("true".equalsIgnoreCase(e)) {
                         IsActive = "1";
@@ -1482,7 +1488,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("NormalRange", NormalRange);
 
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Testname where ServerId='" + ServerId + '\'');
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Testname where ServerId='" + ServerId + '\'');
 
                     if (!GetStatus) {
                         db.insert("Testname", null, values1);
@@ -1491,12 +1497,12 @@ public class ImportWebservices_NODEJS {
                     }
 
                     // TODO: 8/23/2017  Insert Fav Subtest names in MyFavTable
-                    final String IsFav = objJson.getString("IsFav");
+                    String IsFav = objJson.getString("IsFav");
 
 
                     if ("True".equalsIgnoreCase(IsFav) || "1".equalsIgnoreCase(IsFav)) {
                         //Insert My Fav Table Details
-                        final ContentValues values22 = new ContentValues();
+                        ContentValues values22 = new ContentValues();
                         values22.put("Testname", testName);
                         values22.put("SubTest", SubTest);
                         values22.put("IsUpdate", IsUpdate);
@@ -1510,7 +1516,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         Objects.requireNonNull(c).close();
@@ -1521,13 +1527,13 @@ public class ImportWebservices_NODEJS {
     private void ImportPharmacyDtls() {
         try {
 
-            final StringBuilder str = new StringBuilder();
-            final String Query = "select IFNULL(max(ServerId),'0') as ServerId from Pharmacy";
+            StringBuilder str = new StringBuilder();
+            String Query = "select IFNULL(max(ServerId),'0') as ServerId from Pharmacy";
 
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final int upid = 0;
+            SQLiteDatabase db = BaseConfig.GetDb();
+            int upid = 0;
             // database = dbHelper.getWritableDatabase();
-            final Cursor c = db.rawQuery(Query, null);
+            Cursor c = db.rawQuery(Query, null);
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -1554,21 +1560,21 @@ public class ImportWebservices_NODEJS {
 
                 try {
 
-                    final String IsUpdateMax = str.toString();
-                    final String MethodName = "pharmachyname_select";
+                    String IsUpdateMax = str.toString();
+                    String MethodName = "pharmachyname_select";
 
-                    final String resultsRequestSOAP = this.postIsUpdateMaxRESTMethod(IsUpdateMax, MethodName);
+                    String resultsRequestSOAP = postIsUpdateMaxRESTMethod(IsUpdateMax, MethodName);
 
 
                     if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                        final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                        JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
 
                         JSONObject objJson;
 
                         for (int i = 0; i < jsonArray.length(); i++) {
                             objJson = jsonArray.getJSONObject(i);
 
-                            final ContentValues values;
+                            ContentValues values;
                             values = new ContentValues();
                             values.put("ServerId", String.valueOf(objJson.getString("Id")));
                             values.put("pharmacyname", String.valueOf(objJson.getString("pharmacyname")));
@@ -1580,17 +1586,17 @@ public class ImportWebservices_NODEJS {
 
                     }
 
-                } catch (final InterruptedException e) {
+                } catch (InterruptedException e) {
                     e.printStackTrace();
-                } catch (final ExecutionException e) {
+                } catch (ExecutionException e) {
                     e.printStackTrace();
-                } catch (final JSONException e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
-                } catch (final SchemaException e) {
+                } catch (SchemaException e) {
                     e.printStackTrace();
                 }
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1598,13 +1604,13 @@ public class ImportWebservices_NODEJS {
     private void ImportDiagnosticCentreDtls() {
         try {
 
-            final StringBuilder str = new StringBuilder();
-            final String Query = "select IFNULL(max(ServerId),'0') as ServerId from Laboratory";
+            StringBuilder str = new StringBuilder();
+            String Query = "select IFNULL(max(ServerId),'0') as ServerId from Laboratory";
 
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final int upid = 0;
+            SQLiteDatabase db = BaseConfig.GetDb();
+            int upid = 0;
             // database = dbHelper.getWritableDatabase();
-            final Cursor c = db.rawQuery(Query, null);
+            Cursor c = db.rawQuery(Query, null);
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -1627,14 +1633,14 @@ public class ImportWebservices_NODEJS {
 
                 try {
 
-                    final String IsUpdateMax = str.toString();
-                    final String MethodName = "labname_select";
+                    String IsUpdateMax = str.toString();
+                    String MethodName = "labname_select";
 
-                    final String resultsRequestSOAP = this.postIsUpdateMaxRESTMethod(IsUpdateMax, MethodName);
+                    String resultsRequestSOAP = postIsUpdateMaxRESTMethod(IsUpdateMax, MethodName);
 
 
                     if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                        final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                        JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
 
                         JSONObject objJson;
                         ContentValues values;
@@ -1653,17 +1659,17 @@ public class ImportWebservices_NODEJS {
 
                     }
 
-                } catch (final InterruptedException e) {
+                } catch (InterruptedException e) {
                     e.printStackTrace();
-                } catch (final ExecutionException e) {
+                } catch (ExecutionException e) {
                     e.printStackTrace();
-                } catch (final JSONException e) {
+                } catch (JSONException e) {
                     e.printStackTrace();
-                } catch (final SchemaException e) {
+                } catch (SchemaException e) {
                     e.printStackTrace();
                 }
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -1679,11 +1685,11 @@ public class ImportWebservices_NODEJS {
 
         String str = "";
 
-        final String Query = "select IFNULL(max(IsUpdate),'0') as IsUpdateMax from operation_details";
+        String Query = "select IFNULL(max(IsUpdate),'0') as IsUpdateMax from operation_details";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
-        final Cursor c = db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -1706,42 +1712,42 @@ public class ImportWebservices_NODEJS {
         try {
 
 
-            final MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(this.ctx);
-            final PostIsUpdateMaxDocIdFactory postDoctorIdFactory = new PostIsUpdateMaxDocIdFactory(magnetMobileClient);
-            final PostIsUpdateMaxDocId postDoctorId = postDoctorIdFactory.obtainInstance();
+            MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(ctx);
+            PostIsUpdateMaxDocIdFactory postDoctorIdFactory = new PostIsUpdateMaxDocIdFactory(magnetMobileClient);
+            PostIsUpdateMaxDocId postDoctorId = postDoctorIdFactory.obtainInstance();
 
             //Set Body Data
-            final PostIsUpdateMaxDocIdRequest body = new PostIsUpdateMaxDocIdRequest();
+            PostIsUpdateMaxDocIdRequest body = new PostIsUpdateMaxDocIdRequest();
             body.setDocId(BaseConfig.doctorId);
             body.setIsUpdateMax(str);
 
-            final Call<IsUpdateMaxDocIdResult> resultCall = postDoctorId.postIsUpdateMaxDocId(body, null);
+            Call<IsUpdateMaxDocIdResult> resultCall = postDoctorId.postIsUpdateMaxDocId(body, null);
 
-            final String resultsRequestSOAP = resultCall.get().getResults();
+            String resultsRequestSOAP = resultCall.get().getResults();
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
                     //{ "FoodItems": [ { "Expr1": 1, "Docid": "23", "operationId": 1, "OperationNo": "234", "OperationName": "Appendicitis", "patid": "PID/2014/1511/13353", "PatientName": "Kiran", "Gender": "Male", "ScheduleDate": "2016-09-19T19:15:23.557", "Fromtime": null, "Totime": null, "Rate": null, "IsActive": true, "curdate": "2016-09-19T19:15:23.557", "IsUpdate": 1, "Status": "Completed" } ] }
                     objJson = jsonArray.getJSONObject(i);
 
-                    final String ServerId = String.valueOf(objJson.getString("operationId"));
-                    final String DocList = String.valueOf(objJson.getString("Doctors"));
-                    final String DocId = String.valueOf(objJson.getString("docref"));
-                    final String OperationNo = objJson.getString("OperationNo");
-                    final String OperationName = objJson.getString("OperationName");
-                    final String patid = objJson.getString("patid");
-                    final String PatientName = objJson.getString("PatientName");
-                    final String ScheduleDate = objJson.getString("ScheduleDate");
-                    final String Fromtime = objJson.getString("Fromtime");
-                    final String rate = objJson.getString("Rate");
-                    final String Totime = objJson.getString("Totime");
-                    final String Status = objJson.getString("Status");
-                    final String IsActive = objJson.getString("IsActive");
-                    final String IsUpdate = objJson.getString("IsUpdate");
+                    String ServerId = String.valueOf(objJson.getString("operationId"));
+                    String DocList = String.valueOf(objJson.getString("Doctors"));
+                    String DocId = String.valueOf(objJson.getString("docref"));
+                    String OperationNo = objJson.getString("OperationNo");
+                    String OperationName = objJson.getString("OperationName");
+                    String patid = objJson.getString("patid");
+                    String PatientName = objJson.getString("PatientName");
+                    String ScheduleDate = objJson.getString("ScheduleDate");
+                    String Fromtime = objJson.getString("Fromtime");
+                    String rate = objJson.getString("Rate");
+                    String Totime = objJson.getString("Totime");
+                    String Status = objJson.getString("Status");
+                    String IsActive = objJson.getString("IsActive");
+                    String IsUpdate = objJson.getString("IsUpdate");
 
 
                     values1 = new ContentValues();
@@ -1766,7 +1772,7 @@ public class ImportWebservices_NODEJS {
                         else
                     serverid ilana insert*/
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from operation_details where ServerId='" + ServerId + '\'');
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from operation_details where ServerId='" + ServerId + '\'');
 
                     if (!GetStatus) {
                         db.insert("operation_details", null, values1);
@@ -1779,7 +1785,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         Objects.requireNonNull(c).close();
@@ -1791,23 +1797,23 @@ public class ImportWebservices_NODEJS {
 
 
         String IsActive;
-        final String str = "";
+        String str = "";
 
-        final String Query = "select  Patid from  Patreg ";
+        String Query = "select  Patid from  Patreg ";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         db.isOpen();
 
-        final Cursor c = db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
 
-        final JSONArray patientIdList = new JSONArray();
-        final JSONObject singleobj = new JSONObject();
+        JSONArray patientIdList = new JSONArray();
+        JSONObject singleobj = new JSONObject();
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    final String PatientId = c.getString(c.getColumnIndex("Patid"));
+                    String PatientId = c.getString(c.getColumnIndex("Patid"));
 
                     patientIdList.put(new JSONObject().put("PatientId", PatientId));
 
@@ -1818,17 +1824,17 @@ public class ImportWebservices_NODEJS {
 
         ContentValues values1;
 
-        final String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
-        final String MethodName = "ImportBind_ClinicalInformation";
+        String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
+        String MethodName = "ImportBind_ClinicalInformation";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -1837,41 +1843,41 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String Id = String.valueOf(objJson.getString("Id"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
-                    final String Previous_MedicalHistory = String.valueOf(objJson.getString("Previous_MedicalHistory"));
-                    final String Hereditary = String.valueOf(objJson.getString("Hereditary"));
-                    final String AllergicTo = String.valueOf(objJson.getString("AllergicTo"));
-                    final String Perhis_Smoking = String.valueOf(objJson.getString("Perhis_Smoking"));
-                    final String Perhis_Alcohol = String.valueOf(objJson.getString("Perhis_Alcohol"));
-                    final String Perhis_Tobacco = String.valueOf(objJson.getString("Perhis_Tobacco"));
-                    final String Perhis_Others = String.valueOf(objJson.getString("Perhis_Others"));
-                    final String Medication_History = String.valueOf(objJson.getString("Medication_History"));
-                    final String Family_Med_History = String.valueOf(objJson.getString("Family_Med_History"));
+                    String Id = String.valueOf(objJson.getString("Id"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String Previous_MedicalHistory = String.valueOf(objJson.getString("Previous_MedicalHistory"));
+                    String Hereditary = String.valueOf(objJson.getString("Hereditary"));
+                    String AllergicTo = String.valueOf(objJson.getString("AllergicTo"));
+                    String Perhis_Smoking = String.valueOf(objJson.getString("Perhis_Smoking"));
+                    String Perhis_Alcohol = String.valueOf(objJson.getString("Perhis_Alcohol"));
+                    String Perhis_Tobacco = String.valueOf(objJson.getString("Perhis_Tobacco"));
+                    String Perhis_Others = String.valueOf(objJson.getString("Perhis_Others"));
+                    String Medication_History = String.valueOf(objJson.getString("Medication_History"));
+                    String Family_Med_History = String.valueOf(objJson.getString("Family_Med_History"));
                     String Actdate = String.valueOf(objJson.getString("Actdate"));
                     try {
 
                         Actdate = BaseConfig.DateFormatter3(Actdate);
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     //
                     IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String Upid = String.valueOf(objJson.getString("Upid"));
-                    final String Perhis_BowelHabits = String.valueOf(objJson.getString("Perhis_BowelHabits"));
-                    final String Perhis_Micturition = String.valueOf(objJson.getString("Perhis_Micturition"));
-                    final String present_illness = String.valueOf(objJson.getString("present_illness"));
-                    final String past_illness = String.valueOf(objJson.getString("past_illness"));
-                    final String any_medication = String.valueOf(objJson.getString("any_medication"));
-                    final String obstetric = String.valueOf(objJson.getString("obstetric"));
-                    final String gynaec = String.valueOf(objJson.getString("gynaec"));
-                    final String surgical_notes = String.valueOf(objJson.getString("surgical_notes"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
+                    String Upid = String.valueOf(objJson.getString("Upid"));
+                    String Perhis_BowelHabits = String.valueOf(objJson.getString("Perhis_BowelHabits"));
+                    String Perhis_Micturition = String.valueOf(objJson.getString("Perhis_Micturition"));
+                    String present_illness = String.valueOf(objJson.getString("present_illness"));
+                    String past_illness = String.valueOf(objJson.getString("past_illness"));
+                    String any_medication = String.valueOf(objJson.getString("any_medication"));
+                    String obstetric = String.valueOf(objJson.getString("obstetric"));
+                    String gynaec = String.valueOf(objJson.getString("gynaec"));
+                    String surgical_notes = String.valueOf(objJson.getString("surgical_notes"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
 
                     values1 = new ContentValues();
                     values1.put("ServerId", Id);
@@ -1905,7 +1911,7 @@ public class ImportWebservices_NODEJS {
 
                     values1.put("ServerId", Id);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from ClinicalInformation where ServerId=" + Id);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from ClinicalInformation where ServerId=" + Id);
 
                     if (GetStatus) {
                         db.update("ClinicalInformation", values1, "ServerId=" + Id, null);
@@ -1919,7 +1925,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -1932,19 +1938,19 @@ public class ImportWebservices_NODEJS {
     private void ImportBind_MedicalTestDtls() throws JSONException {
 
 
-        final String str = "";
+        String str = "";
 
-        final String Query = "select  Patid from  Patreg ";
+        String Query = "select  Patid from  Patreg ";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         db.isOpen();
-        final Cursor c = db.rawQuery(Query, null);
-        final JSONArray patientIdList = new JSONArray();
+        Cursor c = db.rawQuery(Query, null);
+        JSONArray patientIdList = new JSONArray();
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    final String PatientId = c.getString(c.getColumnIndex("Patid"));
+                    String PatientId = c.getString(c.getColumnIndex("Patid"));
 
                     patientIdList.put(new JSONObject().put("PatientId", PatientId));
 
@@ -1952,18 +1958,18 @@ public class ImportWebservices_NODEJS {
             }
         }
 
-        final String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
-        final String MethodName = "ImportBind_MedicalTestDtls";
+        String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
+        String MethodName = "ImportBind_MedicalTestDtls";
 
         ContentValues values1;
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -1972,48 +1978,48 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String Id = String.valueOf(objJson.getString("id"));
-                    final String Ptid = String.valueOf(objJson.getString("Ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docname = String.valueOf(objJson.getString("docname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
-                    final String clinicname = String.valueOf(objJson.getString("clinicname"));
+                    String Id = String.valueOf(objJson.getString("id"));
+                    String Ptid = String.valueOf(objJson.getString("Ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docname = String.valueOf(objJson.getString("docname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
+                    String clinicname = String.valueOf(objJson.getString("clinicname"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    final String IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String alltest = String.valueOf(objJson.getString("alltest"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String diagid = String.valueOf(objJson.getString("diagid"));
-                    final String pmobnum = String.valueOf(objJson.getString("pmobnum"));
-                    final String dsign = String.valueOf(objJson.getString("dsign"));
-                    final String mtestid = String.valueOf(objJson.getString("mtestid"));
-                    final String imei = String.valueOf(objJson.getString("imei"));
-                    final String testname = String.valueOf(objJson.getString("testname"));
-                    final String subtestname = String.valueOf(objJson.getString("subtestname"));
-                    final String testvalue = String.valueOf(objJson.getString("testvalue"));
-                    final String testsummary = String.valueOf(objJson.getString("testsummary"));
-                    final String treatmentfor = String.valueOf(objJson.getString("treatmentfor"));
-                    final String testreportimg = String.valueOf(objJson.getString("testreportimg"));
-                    final String scanname = String.valueOf(objJson.getString("scanname"));
-                    final String subscanname = String.valueOf(objJson.getString("subscanname"));
-                    final String scanvalue = String.valueOf(objJson.getString("scanvalue"));
-                    final String scansummary = String.valueOf(objJson.getString("scansummary"));
-                    final String scanreportimg = String.valueOf(objJson.getString("scanreportimg"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
-                    final String upid = String.valueOf(objJson.getString("upid"));
-                    final String WUP = String.valueOf(objJson.getString("WUP"));
-                    final String subtestid = String.valueOf(objJson.getString("subtestid"));
-                    final String bps = String.valueOf(objJson.getString("bps"));
-                    final String bpd = String.valueOf(objJson.getString("bpd"));
-                    final String temperature = String.valueOf(objJson.getString("temperature"));
-                    final String weight = String.valueOf(objJson.getString("weight"));
-                    final String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsPaid = String.valueOf(objJson.getString("IsPaid"));
+                    String IsActive = String.valueOf(objJson.getString("IsActive"));
+                    String alltest = String.valueOf(objJson.getString("alltest"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String diagid = String.valueOf(objJson.getString("diagid"));
+                    String pmobnum = String.valueOf(objJson.getString("pmobnum"));
+                    String dsign = String.valueOf(objJson.getString("dsign"));
+                    String mtestid = String.valueOf(objJson.getString("mtestid"));
+                    String imei = String.valueOf(objJson.getString("imei"));
+                    String testname = String.valueOf(objJson.getString("testname"));
+                    String subtestname = String.valueOf(objJson.getString("subtestname"));
+                    String testvalue = String.valueOf(objJson.getString("testvalue"));
+                    String testsummary = String.valueOf(objJson.getString("testsummary"));
+                    String treatmentfor = String.valueOf(objJson.getString("treatmentfor"));
+                    String testreportimg = String.valueOf(objJson.getString("testreportimg"));
+                    String scanname = String.valueOf(objJson.getString("scanname"));
+                    String subscanname = String.valueOf(objJson.getString("subscanname"));
+                    String scanvalue = String.valueOf(objJson.getString("scanvalue"));
+                    String scansummary = String.valueOf(objJson.getString("scansummary"));
+                    String scanreportimg = String.valueOf(objJson.getString("scanreportimg"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String upid = String.valueOf(objJson.getString("upid"));
+                    String WUP = String.valueOf(objJson.getString("WUP"));
+                    String subtestid = String.valueOf(objJson.getString("subtestid"));
+                    String bps = String.valueOf(objJson.getString("bps"));
+                    String bpd = String.valueOf(objJson.getString("bpd"));
+                    String temperature = String.valueOf(objJson.getString("temperature"));
+                    String weight = String.valueOf(objJson.getString("weight"));
+                    String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsPaid = String.valueOf(objJson.getString("IsPaid"));
 
 
                     String ResultValue = "0";
@@ -2059,7 +2065,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("IsNew", 1);
 
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Medicaltestdtls where ServerId=" + Id);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Medicaltestdtls where ServerId=" + Id);
 
                     if (GetStatus) {
 
@@ -2098,7 +2104,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -2111,21 +2117,21 @@ public class ImportWebservices_NODEJS {
     private void ImportBind_MedicalTest() throws JSONException {
 
 
-        final String str = "";
+        String str = "";
 
-        final String Query = "select  Patid from  Patreg ";
+        String Query = "select  Patid from  Patreg ";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         db.isOpen();
 
-        final Cursor c = db.rawQuery(Query, null);
-        final JSONArray patientIdList = new JSONArray();
-        final JSONObject singleobj = new JSONObject();
+        Cursor c = db.rawQuery(Query, null);
+        JSONArray patientIdList = new JSONArray();
+        JSONObject singleobj = new JSONObject();
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    final String PatientId = c.getString(c.getColumnIndex("Patid"));
+                    String PatientId = c.getString(c.getColumnIndex("Patid"));
 
                     patientIdList.put(new JSONObject().put("PatientId", PatientId));
 
@@ -2134,17 +2140,17 @@ public class ImportWebservices_NODEJS {
         }
 
         ContentValues values1;
-        final String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
-        final String MethodName = "ImportBind_MedicalTest";
+        String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
+        String MethodName = "ImportBind_MedicalTest";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -2153,44 +2159,44 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String Id = String.valueOf(objJson.getString("id"));
-                    final String Ptid = String.valueOf(objJson.getString("Ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docname = String.valueOf(objJson.getString("docname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
-                    final String clinicname = String.valueOf(objJson.getString("clinicname"));
+                    String Id = String.valueOf(objJson.getString("id"));
+                    String Ptid = String.valueOf(objJson.getString("Ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docname = String.valueOf(objJson.getString("docname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
+                    String clinicname = String.valueOf(objJson.getString("clinicname"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    final String IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String diagid = String.valueOf(objJson.getString("diagid"));
-                    final String pmobnum = String.valueOf(objJson.getString("pmobnum"));
-                    final String dsign = String.valueOf(objJson.getString("dsign"));
-                    final String mtestid = String.valueOf(objJson.getString("mtestid"));
-                    final String imei = String.valueOf(objJson.getString("imei"));
-                    final String testname = String.valueOf(objJson.getString("testname"));
-                    final String subtestname = String.valueOf(objJson.getString("subtestname"));
-                    final String testvalue = String.valueOf(objJson.getString("testvalue"));
-                    final String testsummary = String.valueOf(objJson.getString("testsummar" +
+                    String IsActive = String.valueOf(objJson.getString("IsActive"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String diagid = String.valueOf(objJson.getString("diagid"));
+                    String pmobnum = String.valueOf(objJson.getString("pmobnum"));
+                    String dsign = String.valueOf(objJson.getString("dsign"));
+                    String mtestid = String.valueOf(objJson.getString("mtestid"));
+                    String imei = String.valueOf(objJson.getString("imei"));
+                    String testname = String.valueOf(objJson.getString("testname"));
+                    String subtestname = String.valueOf(objJson.getString("subtestname"));
+                    String testvalue = String.valueOf(objJson.getString("testvalue"));
+                    String testsummary = String.valueOf(objJson.getString("testsummar" +
                             'y'));
                     // String treatmentfor = String.valueOf(objJson.getString("treatmentfor"));
-                    final String testreportimg = String.valueOf(objJson.getString("testreportimg"));
-                    final String scanname = String.valueOf(objJson.getString("scanname"));
-                    final String subscanname = String.valueOf(objJson.getString("subscanname"));
-                    final String scanvalue = String.valueOf(objJson.getString("scanvalue"));
-                    final String scansummary = String.valueOf(objJson.getString("scansummary"));
-                    final String scanreportimg = String.valueOf(objJson.getString("scanreportimg"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
-                    final String upid = String.valueOf(objJson.getString("upid"));
-                    final String Dig_Center = String.valueOf(objJson.getString("Dig_Center"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
+                    String testreportimg = String.valueOf(objJson.getString("testreportimg"));
+                    String scanname = String.valueOf(objJson.getString("scanname"));
+                    String subscanname = String.valueOf(objJson.getString("subscanname"));
+                    String scanvalue = String.valueOf(objJson.getString("scanvalue"));
+                    String scansummary = String.valueOf(objJson.getString("scansummary"));
+                    String scanreportimg = String.valueOf(objJson.getString("scanreportimg"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String upid = String.valueOf(objJson.getString("upid"));
+                    String Dig_Center = String.valueOf(objJson.getString("Dig_Center"));
+                    String HID = String.valueOf(objJson.getString("HID"));
 
-                    final String Diagnosis = String.valueOf(objJson.getString("Diagnosis"));
-                    final String treatmentfor = String.valueOf(objJson.getString("treatmentfor"));
+                    String Diagnosis = String.valueOf(objJson.getString("Diagnosis"));
+                    String treatmentfor = String.valueOf(objJson.getString("treatmentfor"));
 
 
                     values1 = new ContentValues();
@@ -2220,7 +2226,7 @@ public class ImportWebservices_NODEJS {
 
                     values1.put("ServerId", Id);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Medicaltest where (ServerId=" + Id + " or ServerId!=null) and Ptid='" + Ptid + "' and mtestid='" + mtestid + '\'');
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Medicaltest where (ServerId=" + Id + " or ServerId!=null) and Ptid='" + Ptid + "' and mtestid='" + mtestid + '\'');
 
                     if (GetStatus) {
                         db.update("Medicaltest", values1, "ServerId=" + Id + ' ', null);
@@ -2234,7 +2240,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -2247,21 +2253,21 @@ public class ImportWebservices_NODEJS {
     private void ImportScanDtls() throws JSONException {
 
 
-        final String str = "";
+        String str = "";
 
-        final String Query = "select  Patid from  Patreg ";
+        String Query = "select  Patid from  Patreg ";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         db.isOpen();
 
-        final Cursor c = db.rawQuery(Query, null);
-        final JSONArray patientIdList = new JSONArray();
-        final JSONObject singleobj = new JSONObject();
+        Cursor c = db.rawQuery(Query, null);
+        JSONArray patientIdList = new JSONArray();
+        JSONObject singleobj = new JSONObject();
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    final String PatientId = c.getString(c.getColumnIndex("Patid"));
+                    String PatientId = c.getString(c.getColumnIndex("Patid"));
 
                     patientIdList.put(new JSONObject().put("PatientId", PatientId));
 
@@ -2270,17 +2276,17 @@ public class ImportWebservices_NODEJS {
         }
 
         ContentValues values1;
-        final String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
-        final String MethodName = "ImportBind_ScanDetailsJSON";
+        String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
+        String MethodName = "ImportBind_ScanDetailsJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -2289,33 +2295,33 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String Ptid = String.valueOf(objJson.getString("Ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docname = String.valueOf(objJson.getString("docname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
-                    final String clinicname = String.valueOf(objJson.getString("clinicname"));
+                    String Ptid = String.valueOf(objJson.getString("Ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docname = String.valueOf(objJson.getString("docname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
+                    String clinicname = String.valueOf(objJson.getString("clinicname"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    final String IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String pmobnum = String.valueOf(objJson.getString("pmobnum"));
-                    final String dsign = String.valueOf(objJson.getString("dsign"));
-                    final String mtestid = String.valueOf(objJson.getString("mtestid"));
-                    final String imei = String.valueOf(objJson.getString("imei"));
-                    final String scanname = String.valueOf(objJson.getString("scanname"));
-                    final String subscanname = String.valueOf(objJson.getString("subscanname"));
-                    final String scanvalue = String.valueOf(objJson.getString("scanvalue"));
-                    final String scansummary = String.valueOf(objJson.getString("scansummary"));
-                    final String scanreportimg = String.valueOf(objJson.getString("scanreportimg"));
+                    String IsActive = String.valueOf(objJson.getString("IsActive"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String pmobnum = String.valueOf(objJson.getString("pmobnum"));
+                    String dsign = String.valueOf(objJson.getString("dsign"));
+                    String mtestid = String.valueOf(objJson.getString("mtestid"));
+                    String imei = String.valueOf(objJson.getString("imei"));
+                    String scanname = String.valueOf(objJson.getString("scanname"));
+                    String subscanname = String.valueOf(objJson.getString("subscanname"));
+                    String scanvalue = String.valueOf(objJson.getString("scanvalue"));
+                    String scansummary = String.valueOf(objJson.getString("scansummary"));
+                    String scanreportimg = String.valueOf(objJson.getString("scanreportimg"));
                     //String Isupdate = String.valueOf(objJson.getString("Isupdate"));
                     //String ReadytoUpdate = String.valueOf(objJson.getString("ReadytoUpdate"));
                     //String ValueUpdated = String.valueOf(objJson.getString("ValueUpdated"));
-                    final String testid = String.valueOf(objJson.getString("testid"));
-                    final String ServerId = String.valueOf(objJson.getString("id"));
+                    String testid = String.valueOf(objJson.getString("testid"));
+                    String ServerId = String.valueOf(objJson.getString("id"));
 
                     values1 = new ContentValues();
                     // values1.put("id", id);
@@ -2353,7 +2359,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("ServerId", ServerId);
 
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Scantest where ServerId=" + ServerId);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Scantest where ServerId=" + ServerId);
 
                     if (GetStatus) {
                         db.update("Scantest", values1, "ServerId=" + ServerId + ' ', null);
@@ -2367,7 +2373,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -2381,22 +2387,22 @@ public class ImportWebservices_NODEJS {
     private void ImportXrayDtls() throws JSONException {
 
 
-        final String str = "";
+        String str = "";
 
-        final String Query = "select  Patid from  Patreg ";
+        String Query = "select  Patid from  Patreg ";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         db.isOpen();
 
 
-        final Cursor c = db.rawQuery(Query, null);
-        final JSONArray patientIdList = new JSONArray();
-        final JSONObject singleobj = new JSONObject();
+        Cursor c = db.rawQuery(Query, null);
+        JSONArray patientIdList = new JSONArray();
+        JSONObject singleobj = new JSONObject();
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    final String PatientId = c.getString(c.getColumnIndex("Patid"));
+                    String PatientId = c.getString(c.getColumnIndex("Patid"));
 
                     patientIdList.put(new JSONObject().put("PatientId", PatientId));
 
@@ -2407,17 +2413,17 @@ public class ImportWebservices_NODEJS {
 
         ContentValues values1;
 
-        final String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
-        final String MethodName = "ImportBind_XrayDetailsJSON";
+        String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
+        String MethodName = "ImportBind_XrayDetailsJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -2426,30 +2432,30 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String Ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docname = String.valueOf(objJson.getString("docname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
-                    final String clinicname = String.valueOf(objJson.getString("clinicname"));
+                    String Ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docname = String.valueOf(objJson.getString("docname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
+                    String clinicname = String.valueOf(objJson.getString("clinicname"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    final String IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String pmobnum = String.valueOf(objJson.getString("pmobnum"));
-                    final String dsign = String.valueOf(objJson.getString("dsign"));
-                    final String mtestid = String.valueOf(objJson.getString("mtestid"));
-                    final String imei = String.valueOf(objJson.getString("imei"));
+                    String IsActive = String.valueOf(objJson.getString("IsActive"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String pmobnum = String.valueOf(objJson.getString("pmobnum"));
+                    String dsign = String.valueOf(objJson.getString("dsign"));
+                    String mtestid = String.valueOf(objJson.getString("mtestid"));
+                    String imei = String.valueOf(objJson.getString("imei"));
 
-                    final String xray = String.valueOf(objJson.getString("xray"));
-                    final String xrayvalue = String.valueOf(objJson.getString("xrayvalue"));
-                    final String xraysummary = String.valueOf(objJson.getString("xraysummary"));
-                    final String xrayimg = String.valueOf(objJson.getString("xrayimg"));
-                    final String xrayid = String.valueOf(objJson.getString("xrayid"));
-                    final String ServerId = String.valueOf(objJson.getString("Id"));
+                    String xray = String.valueOf(objJson.getString("xray"));
+                    String xrayvalue = String.valueOf(objJson.getString("xrayvalue"));
+                    String xraysummary = String.valueOf(objJson.getString("xraysummary"));
+                    String xrayimg = String.valueOf(objJson.getString("xrayimg"));
+                    String xrayid = String.valueOf(objJson.getString("xrayid"));
+                    String ServerId = String.valueOf(objJson.getString("Id"));
 
                     values1 = new ContentValues();
 
@@ -2488,7 +2494,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("ServerId", ServerId);
 
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1   from XRAY where ServerId=" + ServerId);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1   from XRAY where ServerId=" + ServerId);
 
                     if (GetStatus) {
                         db.update("XRAY", values1, "ServerId=" + ServerId + ' ', null);
@@ -2502,7 +2508,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -2516,22 +2522,22 @@ public class ImportWebservices_NODEJS {
     private void ImportEEGDtls() throws JSONException {
 
 
-        final String str = "";
+        String str = "";
 
-        final String Query = "select  Patid from  Patreg ";
+        String Query = "select  Patid from  Patreg ";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         db.isOpen();
 
 
-        final Cursor c = db.rawQuery(Query, null);
-        final JSONArray patientIdList = new JSONArray();
-        final JSONObject singleobj = new JSONObject();
+        Cursor c = db.rawQuery(Query, null);
+        JSONArray patientIdList = new JSONArray();
+        JSONObject singleobj = new JSONObject();
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    final String PatientId = c.getString(c.getColumnIndex("Patid"));
+                    String PatientId = c.getString(c.getColumnIndex("Patid"));
 
                     patientIdList.put(new JSONObject().put("PatientId", PatientId));
 
@@ -2540,17 +2546,17 @@ public class ImportWebservices_NODEJS {
         }
 
         ContentValues values1;
-        final String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
-        final String MethodName = "ImportBind_EEGDetailsJSON";
+        String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
+        String MethodName = "ImportBind_EEGDetailsJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -2559,24 +2565,24 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String Ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
+                    String Ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    final String IsActive = String.valueOf(objJson.getString("IsActive"));
+                    String IsActive = String.valueOf(objJson.getString("IsActive"));
 //                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String ECGfor = String.valueOf(objJson.getString("ECGfor"));
-                    final String Comment = String.valueOf(objJson.getString("Comment"));
-                    final String mtestid = String.valueOf(objJson.getString("mtestid"));
-                    final String Summary = String.valueOf(objJson.getString("Summary"));
-                    final String Valuedate = String.valueOf(objJson.getString("Valuedate"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String ServerId = String.valueOf(objJson.getString("id"));
+                    String ECGfor = String.valueOf(objJson.getString("ECGfor"));
+                    String Comment = String.valueOf(objJson.getString("Comment"));
+                    String mtestid = String.valueOf(objJson.getString("mtestid"));
+                    String Summary = String.valueOf(objJson.getString("Summary"));
+                    String Valuedate = String.valueOf(objJson.getString("Valuedate"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String ServerId = String.valueOf(objJson.getString("id"));
 
                     values1 = new ContentValues();
 
@@ -2611,7 +2617,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("ServerId", ServerId);
 
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from EEG where ServerId=" + ServerId);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from EEG where ServerId=" + ServerId);
 
                     if (GetStatus) {
                         db.update("EEG", values1, "ServerId=" + ServerId + ' ', null);
@@ -2625,7 +2631,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -2639,22 +2645,22 @@ public class ImportWebservices_NODEJS {
     private void ImportECGDtls() throws JSONException {
 
 
-        final String str = "";
+        String str = "";
 
-        final String Query = "select  Patid from  Patreg ";
+        String Query = "select  Patid from  Patreg ";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         db.isOpen();
 
 
-        final Cursor c = db.rawQuery(Query, null);
-        final JSONArray patientIdList = new JSONArray();
-        final JSONObject singleobj = new JSONObject();
+        Cursor c = db.rawQuery(Query, null);
+        JSONArray patientIdList = new JSONArray();
+        JSONObject singleobj = new JSONObject();
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    final String PatientId = c.getString(c.getColumnIndex("Patid"));
+                    String PatientId = c.getString(c.getColumnIndex("Patid"));
 
                     patientIdList.put(new JSONObject().put("PatientId", PatientId));
 
@@ -2663,17 +2669,17 @@ public class ImportWebservices_NODEJS {
         }
 
         ContentValues values1;
-        final String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
-        final String MethodName = "ImportBind_ECGDetailsJSON";
+        String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
+        String MethodName = "ImportBind_ECGDetailsJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -2682,51 +2688,51 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String ServerId = String.valueOf(objJson.getString("id"));
-                    final String Docid = String.valueOf(objJson.getString("Docid"));
-                    final String Ptid = String.valueOf(objJson.getString("Ptid"));
-                    final String mtestid = String.valueOf(objJson.getString("mtestid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String gender = String.valueOf(objJson.getString("gender"));
-                    final String age = String.valueOf(objJson.getString("age"));
-                    final String mobnum = String.valueOf(objJson.getString("mobnum"));
-                    final String ECGTestFor = String.valueOf(objJson.getString("ECGTestFor"));
-                    final String Comment = String.valueOf(objJson.getString("Comment"));
-                    final String clinicname = String.valueOf(objJson.getString("clinicname"));
-                    final String PRate = String.valueOf(objJson.getString("PRate"));
-                    final String Ecg = String.valueOf(objJson.getString("Ecg"));
-                    final String Ecgfile = String.valueOf(objJson.getString("Ecgfile"));
-                    final String Scan = String.valueOf(objJson.getString("Scan"));
-                    final String Scanfile = String.valueOf(objJson.getString("Scanfile"));
-                    final String Treadmill = String.valueOf(objJson.getString("Treadmill"));
+                    String ServerId = String.valueOf(objJson.getString("id"));
+                    String Docid = String.valueOf(objJson.getString("Docid"));
+                    String Ptid = String.valueOf(objJson.getString("Ptid"));
+                    String mtestid = String.valueOf(objJson.getString("mtestid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String gender = String.valueOf(objJson.getString("gender"));
+                    String age = String.valueOf(objJson.getString("age"));
+                    String mobnum = String.valueOf(objJson.getString("mobnum"));
+                    String ECGTestFor = String.valueOf(objJson.getString("ECGTestFor"));
+                    String Comment = String.valueOf(objJson.getString("Comment"));
+                    String clinicname = String.valueOf(objJson.getString("clinicname"));
+                    String PRate = String.valueOf(objJson.getString("PRate"));
+                    String Ecg = String.valueOf(objJson.getString("Ecg"));
+                    String Ecgfile = String.valueOf(objJson.getString("Ecgfile"));
+                    String Scan = String.valueOf(objJson.getString("Scan"));
+                    String Scanfile = String.valueOf(objJson.getString("Scanfile"));
+                    String Treadmill = String.valueOf(objJson.getString("Treadmill"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    final String IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String treatmentfor = String.valueOf(objJson.getString("treatmentfor"));
-                    final String bloodgroup = String.valueOf(objJson.getString("bloodgroup"));
-                    final String ecgrate = String.valueOf(objJson.getString("ecgrate"));
-                    final String ecgqrs = String.valueOf(objJson.getString("ecgqrs"));
-                    final String ecgst = String.valueOf(objJson.getString("ecgst"));
-                    final String ecgt = String.valueOf(objJson.getString("ecgt"));
-                    final String ecgrhyrhm = String.valueOf(objJson.getString("ecgrhyrhm"));
-                    final String ecgaxis = String.valueOf(objJson.getString("ecgaxis"));
-                    final String ecgpulse = String.valueOf(objJson.getString("ecgpulse"));
-                    final String imeino = String.valueOf(objJson.getString("imeino"));
-                    final String docsign = String.valueOf(objJson.getString("docsign"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
-                    final String Bundlebranchblock = String.valueOf(objJson.getString("Bundlebranchblock"));
-                    final String Conductiondefects = String.valueOf(objJson.getString("Conductiondefects"));
-                    final String PR = String.valueOf(objJson.getString("PR"));
-                    final String uid = String.valueOf(objJson.getString("uid"));
-                    final String WUP = String.valueOf(objJson.getString("WUP"));
-                    final String ecgText = String.valueOf(objJson.getString("ecgText"));
-                    final String ecgTreadmillText = String.valueOf(objJson.getString("ecgTreadmillText"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsPaid = String.valueOf(objJson.getString("IsPaid"));
+                    String IsActive = String.valueOf(objJson.getString("IsActive"));
+                    String treatmentfor = String.valueOf(objJson.getString("treatmentfor"));
+                    String bloodgroup = String.valueOf(objJson.getString("bloodgroup"));
+                    String ecgrate = String.valueOf(objJson.getString("ecgrate"));
+                    String ecgqrs = String.valueOf(objJson.getString("ecgqrs"));
+                    String ecgst = String.valueOf(objJson.getString("ecgst"));
+                    String ecgt = String.valueOf(objJson.getString("ecgt"));
+                    String ecgrhyrhm = String.valueOf(objJson.getString("ecgrhyrhm"));
+                    String ecgaxis = String.valueOf(objJson.getString("ecgaxis"));
+                    String ecgpulse = String.valueOf(objJson.getString("ecgpulse"));
+                    String imeino = String.valueOf(objJson.getString("imeino"));
+                    String docsign = String.valueOf(objJson.getString("docsign"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String Bundlebranchblock = String.valueOf(objJson.getString("Bundlebranchblock"));
+                    String Conductiondefects = String.valueOf(objJson.getString("Conductiondefects"));
+                    String PR = String.valueOf(objJson.getString("PR"));
+                    String uid = String.valueOf(objJson.getString("uid"));
+                    String WUP = String.valueOf(objJson.getString("WUP"));
+                    String ecgText = String.valueOf(objJson.getString("ecgText"));
+                    String ecgTreadmillText = String.valueOf(objJson.getString("ecgTreadmillText"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsPaid = String.valueOf(objJson.getString("IsPaid"));
 
                     values1 = new ContentValues();
 
@@ -2786,7 +2792,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("ServerId", ServerId);
 
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1   from ECGTEST where ServerId=" + ServerId);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1   from ECGTEST where ServerId=" + ServerId);
 
                     if (GetStatus) {
                         db.update("ECGTEST", values1, "ServerId=" + ServerId + ' ', null);
@@ -2800,7 +2806,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -2814,22 +2820,22 @@ public class ImportWebservices_NODEJS {
     private void ImportAngiogram() throws JSONException {
 
 
-        final String str = "";
+        String str = "";
 
-        final String Query = "select  Patid from  Patreg ";
+        String Query = "select  Patid from  Patreg ";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         db.isOpen();
 
 
-        final Cursor c = db.rawQuery(Query, null);
-        final JSONArray patientIdList = new JSONArray();
-        final JSONObject singleobj = new JSONObject();
+        Cursor c = db.rawQuery(Query, null);
+        JSONArray patientIdList = new JSONArray();
+        JSONObject singleobj = new JSONObject();
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    final String PatientId = c.getString(c.getColumnIndex("Patid"));
+                    String PatientId = c.getString(c.getColumnIndex("Patid"));
 
                     patientIdList.put(new JSONObject().put("PatientId", PatientId));
 
@@ -2838,17 +2844,17 @@ public class ImportWebservices_NODEJS {
         }
 
         ContentValues values1;
-        final String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
-        final String MethodName = "ImportBind_AngiogramDetailsJSON";
+        String PatientIdLIst = patientIdList.toString();//.replaceAll("\"","\\\"");
+        String MethodName = "ImportBind_AngiogramDetailsJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -2856,36 +2862,36 @@ public class ImportWebservices_NODEJS {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    final String ServerId = String.valueOf(objJson.getString("id"));
-                    final String mtestid = String.valueOf(objJson.getString("mtestid"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
+                    String ServerId = String.valueOf(objJson.getString("id"));
+                    String mtestid = String.valueOf(objJson.getString("mtestid"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
-                    final String IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
-                    final String AngioFor = String.valueOf(objJson.getString("AngioFor"));
-                    final String Comment = String.valueOf(objJson.getString("Comment"));
-                    final String Coronary = String.valueOf(objJson.getString("Coronary"));
-                    final String Brain = String.valueOf(objJson.getString("Brain"));
-                    final String Upperlimb = String.valueOf(objJson.getString("Upperlimb"));
-                    final String Lowerlimb = String.valueOf(objJson.getString("Lowerlimb"));
-                    final String Mesenteric = String.valueOf(objJson.getString("Mesenteric"));
-                    final String uid = String.valueOf(objJson.getString("uid"));
-                    final String WUP = String.valueOf(objJson.getString("WUP"));
-                    final String CoronaryText = String.valueOf(objJson.getString("CoronaryText"));
-                    final String BrainText = String.valueOf(objJson.getString("BrainText"));
-                    final String UpperlimbText = String.valueOf(objJson.getString("UpperlimbText"));
-                    final String LowerlimbText = String.valueOf(objJson.getString("LowerlimbText"));
-                    final String MesentericText = String.valueOf(objJson.getString("MesentericText"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsPaid = String.valueOf(objJson.getString("IsPaid"));
+                    String IsActive = String.valueOf(objJson.getString("IsActive"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String AngioFor = String.valueOf(objJson.getString("AngioFor"));
+                    String Comment = String.valueOf(objJson.getString("Comment"));
+                    String Coronary = String.valueOf(objJson.getString("Coronary"));
+                    String Brain = String.valueOf(objJson.getString("Brain"));
+                    String Upperlimb = String.valueOf(objJson.getString("Upperlimb"));
+                    String Lowerlimb = String.valueOf(objJson.getString("Lowerlimb"));
+                    String Mesenteric = String.valueOf(objJson.getString("Mesenteric"));
+                    String uid = String.valueOf(objJson.getString("uid"));
+                    String WUP = String.valueOf(objJson.getString("WUP"));
+                    String CoronaryText = String.valueOf(objJson.getString("CoronaryText"));
+                    String BrainText = String.valueOf(objJson.getString("BrainText"));
+                    String UpperlimbText = String.valueOf(objJson.getString("UpperlimbText"));
+                    String LowerlimbText = String.valueOf(objJson.getString("LowerlimbText"));
+                    String MesentericText = String.valueOf(objJson.getString("MesentericText"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsPaid = String.valueOf(objJson.getString("IsPaid"));
 
 
                     values1 = new ContentValues();
@@ -2931,7 +2937,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("ServerId", ServerId);
 
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1   from Angiogram where ServerId=" + ServerId);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1   from Angiogram where ServerId=" + ServerId);
 
                     if (GetStatus) {
                         db.update("Angiogram", values1, "ServerId=" + ServerId + ' ', null);
@@ -2945,7 +2951,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -2960,72 +2966,72 @@ public class ImportWebservices_NODEJS {
 
 
         String IsActive;
-        final String str = "";
+        String str = "";
 
-        final String Query = "select  Patid from  Patreg";
+        String Query = "select  Patid from  Patreg";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         ContentValues values1;
-        final String PatientIdLIst = ImportWebservices_NODEJS.getPatientList();//.replaceAll("\"","\\\"");
-        final String MethodName = "ImportMprescribedJSON";
+        String PatientIdLIst = getPatientList();//.replaceAll("\"","\\\"");
+        String MethodName = "ImportMprescribedJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
 
                     objJson = jsonArray.getJSONObject(i);
-                    final String id = String.valueOf(objJson.getString("id"));
-                    final String DiagId = String.valueOf(objJson.getString("DiagId"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String refdocname = String.valueOf(objJson.getString("refdocname"));
-                    final String clinicname = String.valueOf(objJson.getString("clinicname"));
-                    final String Medid = String.valueOf(objJson.getString("Medid"));
-                    final String Dose = String.valueOf(objJson.getString("Dose"));
-                    final String Freq = String.valueOf(objJson.getString("Freq"));
-                    final String Duration = String.valueOf(objJson.getString("Duration"));
-                    final String remarks = String.valueOf(objJson.getString("remarks"));
-                    final String dsign = String.valueOf(objJson.getString("dsign"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
+                    String id = String.valueOf(objJson.getString("id"));
+                    String DiagId = String.valueOf(objJson.getString("DiagId"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String refdocname = String.valueOf(objJson.getString("refdocname"));
+                    String clinicname = String.valueOf(objJson.getString("clinicname"));
+                    String Medid = String.valueOf(objJson.getString("Medid"));
+                    String Dose = String.valueOf(objJson.getString("Dose"));
+                    String Freq = String.valueOf(objJson.getString("Freq"));
+                    String Duration = String.valueOf(objJson.getString("Duration"));
+                    String remarks = String.valueOf(objJson.getString("remarks"));
+                    String dsign = String.valueOf(objJson.getString("dsign"));
+                    String docid = String.valueOf(objJson.getString("docid"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final JSONException e) {
+                    } catch (JSONException e) {
                         e.printStackTrace();
                     }
                     IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String medicinename = String.valueOf(objJson.getString("medicinename"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String diagnosis = String.valueOf(objJson.getString("diagnosis"));
-                    final String diagnosisdtls = String.valueOf(objJson.getString("diagnosisdtls"));
-                    final String nextvisit = String.valueOf(objJson.getString("nextvisit"));
-                    final String fee = String.valueOf(objJson.getString("fee"));
-                    final String mobnum = String.valueOf(objJson.getString("mobnum"));
-                    final String imei = String.valueOf(objJson.getString("imei"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
-                    final String treatmentfor = String.valueOf(objJson.getString("treatmentfor"));
-                    final String upid = String.valueOf(objJson.getString("upid"));
-                    final String NVsms = String.valueOf(objJson.getString("NVsms"));
-                    final String MPsms = String.valueOf(objJson.getString("MPsms"));
-                    final String Diabeticdiet = String.valueOf(objJson.getString("Diabeticdiet"));
-                    final String Diabeticrenaldiet = String.valueOf(objJson.getString("Diabeticrenaldiet"));
-                    final String Lowcholesterol_Cardiacdiet = String.valueOf(objJson.getString("Lowcholesterol_Cardiacdiet"));
-                    final String Hypertensivediet = String.valueOf(objJson.getString("Hypertensivediet"));
-                    final String Diet_Warfarin = String.valueOf(objJson.getString("Diet_Warfarin"));
-                    final String prepharma = String.valueOf(objJson.getString("prepharma"));
-                    final String medicineId = String.valueOf(objJson.getString("medicineId"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsIssued = String.valueOf(objJson.getString("IsIssued"));
+                    String medicinename = String.valueOf(objJson.getString("medicinename"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String diagnosis = String.valueOf(objJson.getString("diagnosis"));
+                    String diagnosisdtls = String.valueOf(objJson.getString("diagnosisdtls"));
+                    String nextvisit = String.valueOf(objJson.getString("nextvisit"));
+                    String fee = String.valueOf(objJson.getString("fee"));
+                    String mobnum = String.valueOf(objJson.getString("mobnum"));
+                    String imei = String.valueOf(objJson.getString("imei"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String treatmentfor = String.valueOf(objJson.getString("treatmentfor"));
+                    String upid = String.valueOf(objJson.getString("upid"));
+                    String NVsms = String.valueOf(objJson.getString("NVsms"));
+                    String MPsms = String.valueOf(objJson.getString("MPsms"));
+                    String Diabeticdiet = String.valueOf(objJson.getString("Diabeticdiet"));
+                    String Diabeticrenaldiet = String.valueOf(objJson.getString("Diabeticrenaldiet"));
+                    String Lowcholesterol_Cardiacdiet = String.valueOf(objJson.getString("Lowcholesterol_Cardiacdiet"));
+                    String Hypertensivediet = String.valueOf(objJson.getString("Hypertensivediet"));
+                    String Diet_Warfarin = String.valueOf(objJson.getString("Diet_Warfarin"));
+                    String prepharma = String.valueOf(objJson.getString("prepharma"));
+                    String medicineId = String.valueOf(objJson.getString("medicineId"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsIssued = String.valueOf(objJson.getString("IsIssued"));
 
                     values1 = new ContentValues();
                     // values1.put("id", id);
@@ -3075,7 +3081,7 @@ public class ImportWebservices_NODEJS {
                     // values1.put("IsIssued", IsIssued);
 
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mprescribed where ServerId=" + id);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mprescribed where ServerId=" + id);
 
                     if (GetStatus) {
                         db.update("Mprescribed", values1, "ServerId=" + id, null);
@@ -3089,7 +3095,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -3101,22 +3107,22 @@ public class ImportWebservices_NODEJS {
     private void ImportBind_Diagnosis() {
         try {
 
-            final String Query = "select  Patid from  Patreg";
+            String Query = "select  Patid from  Patreg";
 
-            final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+            SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
             ContentValues values1;
-            final String PatientIdLIst = ImportWebservices_NODEJS.getPatientList();
-            final String MethodName = "ImportBind_DiagnosisJSON";
+            String PatientIdLIst = getPatientList();
+            String MethodName = "ImportBind_DiagnosisJSON";
 
             try {
 
 
-                final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+                String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                     JSONObject objJson;
 
                     for (int i = 0; i < jsonArray.length(); i++) {
@@ -3125,31 +3131,31 @@ public class ImportWebservices_NODEJS {
                         objJson = jsonArray.getJSONObject(i);
 
 
-                        final String Id = String.valueOf(objJson.getString("id"));
-                        final String Ptid = String.valueOf(objJson.getString("Ptid"));
-                        final String DiagId = String.valueOf(objJson.getString("DiagId"));
-                        final String pname = String.valueOf(objJson.getString("pname"));
-                        final String gender = String.valueOf(objJson.getString("gender"));
-                        final String age = String.valueOf(objJson.getString("age"));
-                        final String mobnum = String.valueOf(objJson.getString("mobnum"));
-                        final String refdocname = String.valueOf(objJson.getString("refdocname"));
-                        final String clinicname = String.valueOf(objJson.getString("clinicname"));
-                        final String Diagnosis = String.valueOf(objJson.getString("Diagnosis"));
-                        final String Bp = String.valueOf(objJson.getString("Bp"));
-                        final String FBS = String.valueOf(objJson.getString("FBS"));
-                        final String PPS = String.valueOf(objJson.getString("PPS"));
-                        final String RBS = String.valueOf(objJson.getString("RBS"));
-                        final String PWeight = String.valueOf(objJson.getString("PWeight"));
-                        final String temperature = String.valueOf(objJson.getString("temperature"));
-                        final String Actdate = String.valueOf(objJson.getString("Actdate"));
-                        final String IsActive = String.valueOf(objJson.getString("IsActive"));
-                        final String treatmentfor = String.valueOf(objJson.getString("treatmentfor"));
-                        final String Docid = String.valueOf(objJson.getString("Docid"));
-                        final String BPD = String.valueOf(objJson.getString("BPD"));
-                        final String bmi = String.valueOf(objJson.getString("bmi"));
-                        final String height = String.valueOf(objJson.getString("height"));
-                        final String HID = String.valueOf(objJson.getString("HID"));
-                        final String Signs = String.valueOf(objJson.getString("Signs"));
+                        String Id = String.valueOf(objJson.getString("id"));
+                        String Ptid = String.valueOf(objJson.getString("Ptid"));
+                        String DiagId = String.valueOf(objJson.getString("DiagId"));
+                        String pname = String.valueOf(objJson.getString("pname"));
+                        String gender = String.valueOf(objJson.getString("gender"));
+                        String age = String.valueOf(objJson.getString("age"));
+                        String mobnum = String.valueOf(objJson.getString("mobnum"));
+                        String refdocname = String.valueOf(objJson.getString("refdocname"));
+                        String clinicname = String.valueOf(objJson.getString("clinicname"));
+                        String Diagnosis = String.valueOf(objJson.getString("Diagnosis"));
+                        String Bp = String.valueOf(objJson.getString("Bp"));
+                        String FBS = String.valueOf(objJson.getString("FBS"));
+                        String PPS = String.valueOf(objJson.getString("PPS"));
+                        String RBS = String.valueOf(objJson.getString("RBS"));
+                        String PWeight = String.valueOf(objJson.getString("PWeight"));
+                        String temperature = String.valueOf(objJson.getString("temperature"));
+                        String Actdate = String.valueOf(objJson.getString("Actdate"));
+                        String IsActive = String.valueOf(objJson.getString("IsActive"));
+                        String treatmentfor = String.valueOf(objJson.getString("treatmentfor"));
+                        String Docid = String.valueOf(objJson.getString("Docid"));
+                        String BPD = String.valueOf(objJson.getString("BPD"));
+                        String bmi = String.valueOf(objJson.getString("bmi"));
+                        String height = String.valueOf(objJson.getString("height"));
+                        String HID = String.valueOf(objJson.getString("HID"));
+                        String Signs = String.valueOf(objJson.getString("Signs"));
 
 
                         values1 = new ContentValues();
@@ -3180,7 +3186,7 @@ public class ImportWebservices_NODEJS {
                         values1.put("HID", HID);
                         values1.put("Signs", Signs);
 
-                        final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Diagonis where  Ptid='" + Ptid + "' and DiagId='" + DiagId + "' and ServerId='" + Id + '\'');//(ServerId=" + Id + " or ServerId!=null)
+                        boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Diagonis where  Ptid='" + Ptid + "' and DiagId='" + DiagId + "' and ServerId='" + Id + '\'');//(ServerId=" + Id + " or ServerId!=null)
 
                         if (GetStatus == false) {
 
@@ -3195,14 +3201,14 @@ public class ImportWebservices_NODEJS {
 
                 }
 
-            } catch (final Exception e) {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
 
 
             db.close();
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
 
         }
@@ -3214,25 +3220,25 @@ public class ImportWebservices_NODEJS {
 
 
         String IsActive;
-        final String str = "";
+        String str = "";
 
-        final String Query = "select  Patid from  Patreg";
+        String Query = "select  Patid from  Patreg";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
         ContentValues values1;
-        final String PatientIdLIst = ImportWebservices_NODEJS.getPatientList();
-        final String MethodName = "ImportBind_GeneralExaminationJSON";
+        String PatientIdLIst = getPatientList();
+        String MethodName = "ImportBind_GeneralExaminationJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -3241,32 +3247,32 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String Id = String.valueOf(objJson.getString("Id"));
-                    final String DiagId = String.valueOf(objJson.getString("DiagId"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String Anaemic = String.valueOf(objJson.getString("Anaemic"));
-                    final String Icterus = String.valueOf(objJson.getString("Icterus"));
-                    final String Stenosis = String.valueOf(objJson.getString("Stenosis"));
-                    final String Clubbing = String.valueOf(objJson.getString("Clubbing"));
-                    final String Limbphantom = String.valueOf(objJson.getString("Limbphantom"));
-                    final String Vericoveins = String.valueOf(objJson.getString("Vericoveins"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String Id = String.valueOf(objJson.getString("Id"));
+                    String DiagId = String.valueOf(objJson.getString("DiagId"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String Anaemic = String.valueOf(objJson.getString("Anaemic"));
+                    String Icterus = String.valueOf(objJson.getString("Icterus"));
+                    String Stenosis = String.valueOf(objJson.getString("Stenosis"));
+                    String Clubbing = String.valueOf(objJson.getString("Clubbing"));
+                    String Limbphantom = String.valueOf(objJson.getString("Limbphantom"));
+                    String Vericoveins = String.valueOf(objJson.getString("Vericoveins"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String Upid = String.valueOf(objJson.getString("Upid"));
-                    final String Pedal_edema = String.valueOf(objJson.getString("Pedal_edema"));
-                    final String built = String.valueOf(objJson.getString("built"));
-                    final String extra_generalexam = String.valueOf(objJson.getString("extra_generalexam"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
+                    String Upid = String.valueOf(objJson.getString("Upid"));
+                    String Pedal_edema = String.valueOf(objJson.getString("Pedal_edema"));
+                    String built = String.valueOf(objJson.getString("built"));
+                    String extra_generalexam = String.valueOf(objJson.getString("extra_generalexam"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
                     values1 = new ContentValues();
                     //values1.put("Id", Id);
                     values1.put("DiagId", DiagId);
@@ -3291,7 +3297,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("IsUpdateMax", IsUpdateMax);
                     values1.put("ServerId", Id);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_GeneralExamination where ServerId=" + Id);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_GeneralExamination where ServerId=" + Id);
 
                     if (!GetStatus) {
 
@@ -3307,7 +3313,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -3320,20 +3326,20 @@ public class ImportWebservices_NODEJS {
 
         String IsActive;
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         ContentValues values1;
-        final String PatientIdLIst = ImportWebservices_NODEJS.getPatientList();
-        final String MethodName = "ImportBind_CardiovascularJSON";
+        String PatientIdLIst = getPatientList();
+        String MethodName = "ImportBind_CardiovascularJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -3342,28 +3348,28 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String Id = String.valueOf(objJson.getString("Id"));
-                    final String DiagId = String.valueOf(objJson.getString("DiagId"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String Beat = String.valueOf(objJson.getString("Beat"));
-                    final String Murmur = String.valueOf(objJson.getString("Murmur"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String Id = String.valueOf(objJson.getString("Id"));
+                    String DiagId = String.valueOf(objJson.getString("DiagId"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String Beat = String.valueOf(objJson.getString("Beat"));
+                    String Murmur = String.valueOf(objJson.getString("Murmur"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String Upid = String.valueOf(objJson.getString("Upid"));
-                    final String Pericardial_Rub = String.valueOf(objJson.getString("Pericardial_Rub"));
-                    final String Pulserate = String.valueOf(objJson.getString("Pulserate"));
-                    final String heartrate = String.valueOf(objJson.getString("heartrate"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
+                    String Upid = String.valueOf(objJson.getString("Upid"));
+                    String Pericardial_Rub = String.valueOf(objJson.getString("Pericardial_Rub"));
+                    String Pulserate = String.valueOf(objJson.getString("Pulserate"));
+                    String heartrate = String.valueOf(objJson.getString("heartrate"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
                     values1 = new ContentValues();
                     ///values1.put("Id", Id);
                     values1.put("DiagId", DiagId);
@@ -3384,7 +3390,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("IsUpdateMax", IsUpdateMax);
                     values1.put("ServerId", Id);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_Cardiovascular where ServerId=" + Id);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_Cardiovascular where ServerId=" + Id);
 
                     if (!GetStatus) {
 
@@ -3399,7 +3405,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -3412,21 +3418,21 @@ public class ImportWebservices_NODEJS {
 
 
         String IsActive;
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
         ContentValues values1;
-        final String PatientIdLIst = ImportWebservices_NODEJS.getPatientList();
-        final String MethodName = "ImportBind_RespiratorySystemJSON";
+        String PatientIdLIst = getPatientList();
+        String MethodName = "ImportBind_RespiratorySystemJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -3435,32 +3441,32 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String Id = String.valueOf(objJson.getString("Id"));
-                    final String DiagId = String.valueOf(objJson.getString("DiagId"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String Breathsound = String.valueOf(objJson.getString("Breathsound"));
-                    final String Trachea = String.valueOf(objJson.getString("Trachea"));
-                    final String Kyphosis = String.valueOf(objJson.getString("Kyphosis"));
-                    final String Crepitation = String.valueOf(objJson.getString("Crepitation"));
-                    final String Bronchi = String.valueOf(objJson.getString("Bronchi"));
-                    final String Pulserate = String.valueOf(objJson.getString("Pulserate"));
-                    final String Note = String.valueOf(objJson.getString("Note"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String Id = String.valueOf(objJson.getString("Id"));
+                    String DiagId = String.valueOf(objJson.getString("DiagId"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String Breathsound = String.valueOf(objJson.getString("Breathsound"));
+                    String Trachea = String.valueOf(objJson.getString("Trachea"));
+                    String Kyphosis = String.valueOf(objJson.getString("Kyphosis"));
+                    String Crepitation = String.valueOf(objJson.getString("Crepitation"));
+                    String Bronchi = String.valueOf(objJson.getString("Bronchi"));
+                    String Pulserate = String.valueOf(objJson.getString("Pulserate"));
+                    String Note = String.valueOf(objJson.getString("Note"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String Upid = String.valueOf(objJson.getString("Upid"));
-                    final String shapeofchest = String.valueOf(objJson.getString("shapeofchest"));
-                    final String spo2 = String.valueOf(objJson.getString("spo2"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
+                    String Upid = String.valueOf(objJson.getString("Upid"));
+                    String shapeofchest = String.valueOf(objJson.getString("shapeofchest"));
+                    String spo2 = String.valueOf(objJson.getString("spo2"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
                     values1 = new ContentValues();
                     // values1.put("Id", Id);
                     values1.put("DiagId", DiagId);
@@ -3486,7 +3492,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("ServerId", Id);
 
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_RespiratorySystem where ServerId=" + Id);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_RespiratorySystem where ServerId=" + Id);
 
                     if (!GetStatus) {
 
@@ -3502,7 +3508,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -3516,20 +3522,20 @@ public class ImportWebservices_NODEJS {
 
         String IsActive;
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         ContentValues values1;
-        final String PatientIdLIst = ImportWebservices_NODEJS.getPatientList();
-        final String MethodName = "ImportBind_GastrointestinalJSON";
+        String PatientIdLIst = getPatientList();
+        String MethodName = "ImportBind_GastrointestinalJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -3538,40 +3544,40 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String Id = String.valueOf(objJson.getString("Id"));
-                    final String DiagId = String.valueOf(objJson.getString("DiagId"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String Abdomen = String.valueOf(objJson.getString("Abdomen"));
-                    final String Bowelsound = String.valueOf(objJson.getString("Bowelsound"));
-                    final String Spleen = String.valueOf(objJson.getString("Spleen"));
-                    final String Liver = String.valueOf(objJson.getString("Liver"));
-                    final String PalpableMasses = String.valueOf(objJson.getString("PalpableMasses"));
-                    final String Hernial = String.valueOf(objJson.getString("Hernial"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String Id = String.valueOf(objJson.getString("Id"));
+                    String DiagId = String.valueOf(objJson.getString("DiagId"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String Abdomen = String.valueOf(objJson.getString("Abdomen"));
+                    String Bowelsound = String.valueOf(objJson.getString("Bowelsound"));
+                    String Spleen = String.valueOf(objJson.getString("Spleen"));
+                    String Liver = String.valueOf(objJson.getString("Liver"));
+                    String PalpableMasses = String.valueOf(objJson.getString("PalpableMasses"));
+                    String Hernial = String.valueOf(objJson.getString("Hernial"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String Upid = String.valueOf(objJson.getString("Upid"));
-                    final String shapeofabdomen = String.valueOf(objJson.getString("shapeofabdomen"));
-                    final String Visible_Pulsations = String.valueOf(objJson.getString("Visible_Pulsations"));
-                    final String Visual_Peristalsis = String.valueOf(objJson.getString("Visual_Peristalsis"));
-                    final String Abdominal_Palpation = String.valueOf(objJson.getString("Abdominal_Palpation"));
-                    final String Splenomegaly = String.valueOf(objJson.getString("Splenomegaly"));
-                    final String Hepatomegaly = String.valueOf(objJson.getString("Hepatomegaly"));
-                    final String organomegely = String.valueOf(objJson.getString("organomegely"));
-                    final String freefuild = String.valueOf(objJson.getString("freefuild"));
-                    final String distension = String.valueOf(objJson.getString("distension"));
-                    final String tenderness = String.valueOf(objJson.getString("tenderness"));
-                    final String scrotum = String.valueOf(objJson.getString("scrotum"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
+                    String Upid = String.valueOf(objJson.getString("Upid"));
+                    String shapeofabdomen = String.valueOf(objJson.getString("shapeofabdomen"));
+                    String Visible_Pulsations = String.valueOf(objJson.getString("Visible_Pulsations"));
+                    String Visual_Peristalsis = String.valueOf(objJson.getString("Visual_Peristalsis"));
+                    String Abdominal_Palpation = String.valueOf(objJson.getString("Abdominal_Palpation"));
+                    String Splenomegaly = String.valueOf(objJson.getString("Splenomegaly"));
+                    String Hepatomegaly = String.valueOf(objJson.getString("Hepatomegaly"));
+                    String organomegely = String.valueOf(objJson.getString("organomegely"));
+                    String freefuild = String.valueOf(objJson.getString("freefuild"));
+                    String distension = String.valueOf(objJson.getString("distension"));
+                    String tenderness = String.valueOf(objJson.getString("tenderness"));
+                    String scrotum = String.valueOf(objJson.getString("scrotum"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
                     values1 = new ContentValues();
                     // values1.put("Id", Id);
                     values1.put("DiagId", DiagId);
@@ -3604,7 +3610,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("IsUpdateMax", IsUpdateMax);
                     values1.put("ServerId", Id);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_Gastrointestinal where ServerId=" + Id);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_Gastrointestinal where ServerId=" + Id);
 
                     if (!GetStatus) {
 
@@ -3619,7 +3625,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -3632,21 +3638,21 @@ public class ImportWebservices_NODEJS {
 
 
         String IsActive;
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
         ContentValues values1;
-        final String PatientIdLIst = ImportWebservices_NODEJS.getPatientList();
-        final String MethodName = "ImportBind_NeurologyJSON";
+        String PatientIdLIst = getPatientList();
+        String MethodName = "ImportBind_NeurologyJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -3655,45 +3661,45 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String Id = String.valueOf(objJson.getString("Id"));
-                    final String DiagId = String.valueOf(objJson.getString("DiagId"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String Pupilsize = String.valueOf(objJson.getString("Pupilsize"));
-                    final String Speech = String.valueOf(objJson.getString("Speech"));
-                    final String Carodit = String.valueOf(objJson.getString("Carodit"));
-                    final String Amnesia = String.valueOf(objJson.getString("Amnesia"));
-                    final String Apraxia = String.valueOf(objJson.getString("Apraxia"));
-                    final String Cognitive_Function = String.valueOf(objJson.getString("Cognitive_Function"));
-                    final String Bulkdata = String.valueOf(objJson.getString("Bulkdata"));
-                    final String Tone = String.valueOf(objJson.getString("Tone"));
-                    final String Power_LUL = String.valueOf(objJson.getString("Power_LUL"));
-                    final String Power_RUL = String.valueOf(objJson.getString("Power_RUL"));
-                    final String Power_LLL = String.valueOf(objJson.getString("Power_LLL"));
-                    final String Power_RLL = String.valueOf(objJson.getString("Power_RLL"));
-                    final String Sensory = String.valueOf(objJson.getString("Sensory"));
-                    final String Reflexes_Corneal = String.valueOf(objJson.getString("Reflexes_Corneal"));
-                    final String Reflexes_Biceps = String.valueOf(objJson.getString("Reflexes_Biceps"));
-                    final String Reflexes_Triceps = String.valueOf(objJson.getString("Reflexes_Triceps"));
-                    final String Reflexes_Supinator = String.valueOf(objJson.getString("Reflexes_Supinator"));
-                    final String Reflexes_Knee = String.valueOf(objJson.getString("Reflexes_Knee"));
-                    final String Reflexes_Ankle = String.valueOf(objJson.getString("Reflexes_Ankle"));
-                    final String Reflexes_Plantor = String.valueOf(objJson.getString("Reflexes_Plantor"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String Id = String.valueOf(objJson.getString("Id"));
+                    String DiagId = String.valueOf(objJson.getString("DiagId"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String Pupilsize = String.valueOf(objJson.getString("Pupilsize"));
+                    String Speech = String.valueOf(objJson.getString("Speech"));
+                    String Carodit = String.valueOf(objJson.getString("Carodit"));
+                    String Amnesia = String.valueOf(objJson.getString("Amnesia"));
+                    String Apraxia = String.valueOf(objJson.getString("Apraxia"));
+                    String Cognitive_Function = String.valueOf(objJson.getString("Cognitive_Function"));
+                    String Bulkdata = String.valueOf(objJson.getString("Bulkdata"));
+                    String Tone = String.valueOf(objJson.getString("Tone"));
+                    String Power_LUL = String.valueOf(objJson.getString("Power_LUL"));
+                    String Power_RUL = String.valueOf(objJson.getString("Power_RUL"));
+                    String Power_LLL = String.valueOf(objJson.getString("Power_LLL"));
+                    String Power_RLL = String.valueOf(objJson.getString("Power_RLL"));
+                    String Sensory = String.valueOf(objJson.getString("Sensory"));
+                    String Reflexes_Corneal = String.valueOf(objJson.getString("Reflexes_Corneal"));
+                    String Reflexes_Biceps = String.valueOf(objJson.getString("Reflexes_Biceps"));
+                    String Reflexes_Triceps = String.valueOf(objJson.getString("Reflexes_Triceps"));
+                    String Reflexes_Supinator = String.valueOf(objJson.getString("Reflexes_Supinator"));
+                    String Reflexes_Knee = String.valueOf(objJson.getString("Reflexes_Knee"));
+                    String Reflexes_Ankle = String.valueOf(objJson.getString("Reflexes_Ankle"));
+                    String Reflexes_Plantor = String.valueOf(objJson.getString("Reflexes_Plantor"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String Upid = String.valueOf(objJson.getString("Upid"));
-                    final String congentail_abnormality = String.valueOf(objJson.getString("congentail_abnormality"));
-                    final String mentalstatus = String.valueOf(objJson.getString("mentalstatus"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
+                    String Upid = String.valueOf(objJson.getString("Upid"));
+                    String congentail_abnormality = String.valueOf(objJson.getString("congentail_abnormality"));
+                    String mentalstatus = String.valueOf(objJson.getString("mentalstatus"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
 
                     values1 = new ContentValues();
                     //values1.put("Id", Id);
@@ -3732,7 +3738,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("IsUpdateMax", IsUpdateMax);
                     values1.put("ServerId", Id);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_Neurology where ServerId=" + Id);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_Neurology where ServerId=" + Id);
 
                     if (!GetStatus) {
 
@@ -3747,7 +3753,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -3760,20 +3766,20 @@ public class ImportWebservices_NODEJS {
 
 
         String IsActive;
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         ContentValues values1;
-        final String PatientIdLIst = ImportWebservices_NODEJS.getPatientList();
-        final String MethodName = "ImportCaseNote_RenalJSON";
+        String PatientIdLIst = getPatientList();
+        String MethodName = "ImportCaseNote_RenalJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -3782,32 +3788,32 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String id = String.valueOf(objJson.getString("id"));
-                    final String DiagId = String.valueOf(objJson.getString("DiagId"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
+                    String id = String.valueOf(objJson.getString("id"));
+                    String DiagId = String.valueOf(objJson.getString("DiagId"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
-                    final String dysuria = String.valueOf(objJson.getString("dysuria"));
-                    final String pyuria = String.valueOf(objJson.getString("pyuria"));
-                    final String haematuria = String.valueOf(objJson.getString("haematuria"));
-                    final String oliguria = String.valueOf(objJson.getString("oliguria"));
-                    final String polyuria = String.valueOf(objJson.getString("polyuria"));
-                    final String anuria = String.valueOf(objJson.getString("anuria"));
-                    final String nocturia = String.valueOf(objJson.getString("nocturia"));
-                    final String urethraldischarge = String.valueOf(objJson.getString("urethraldischarge"));
-                    final String prostate = String.valueOf(objJson.getString("prostate"));
-                    final String upid = String.valueOf(objJson.getString("upid"));
-                    final String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String dysuria = String.valueOf(objJson.getString("dysuria"));
+                    String pyuria = String.valueOf(objJson.getString("pyuria"));
+                    String haematuria = String.valueOf(objJson.getString("haematuria"));
+                    String oliguria = String.valueOf(objJson.getString("oliguria"));
+                    String polyuria = String.valueOf(objJson.getString("polyuria"));
+                    String anuria = String.valueOf(objJson.getString("anuria"));
+                    String nocturia = String.valueOf(objJson.getString("nocturia"));
+                    String urethraldischarge = String.valueOf(objJson.getString("urethraldischarge"));
+                    String prostate = String.valueOf(objJson.getString("prostate"));
+                    String upid = String.valueOf(objJson.getString("upid"));
+                    String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
+                    String HID = String.valueOf(objJson.getString("HID"));
                     values1 = new ContentValues();
                     //values1.put("id", id);
                     values1.put("DiagId", DiagId);
@@ -3832,7 +3838,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("IsUpdateMax", IsUpdateMax);
                     values1.put("ServerId", id);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_Renal where ServerId=" + id);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_Renal where ServerId=" + id);
 
                     if (!GetStatus) {
 
@@ -3847,7 +3853,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -3860,20 +3866,20 @@ public class ImportWebservices_NODEJS {
 
 
         String IsActive;
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         ContentValues values1;
-        final String PatientIdLIst = ImportWebservices_NODEJS.getPatientList();
-        final String MethodName = "ImportCaseNote_EndocrineJSON";
+        String PatientIdLIst = getPatientList();
+        String MethodName = "ImportCaseNote_EndocrineJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -3882,24 +3888,24 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String id = String.valueOf(objJson.getString("id"));
-                    final String DiagId = String.valueOf(objJson.getString("DiagId"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
+                    String id = String.valueOf(objJson.getString("id"));
+                    String DiagId = String.valueOf(objJson.getString("DiagId"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
-                    final String Endocrine = String.valueOf(objJson.getString("Endocrine"));
-                    final String upid = String.valueOf(objJson.getString("upid"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String Endocrine = String.valueOf(objJson.getString("Endocrine"));
+                    String upid = String.valueOf(objJson.getString("upid"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
 
                     values1 = new ContentValues();
                     // values1.put("id", id);
@@ -3917,7 +3923,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("IsUpdateMax", IsUpdateMax);
                     values1.put("ServerId", id);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_Endocrine where ServerId=" + id);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_Endocrine where ServerId=" + id);
 
                     if (!GetStatus) {
 
@@ -3932,7 +3938,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -3945,20 +3951,20 @@ public class ImportWebservices_NODEJS {
 
 
         String IsActive;
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         ContentValues values1;
-        final String PatientIdLIst = ImportWebservices_NODEJS.getPatientList();
-        final String MethodName = "ImportCaseNote_ClinicalDataJSON";
+        String PatientIdLIst = getPatientList();
+        String MethodName = "ImportCaseNote_ClinicalDataJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -3967,55 +3973,55 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String id = String.valueOf(objJson.getString("id"));
-                    final String DiagId = String.valueOf(objJson.getString("DiagId"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
+                    String id = String.valueOf(objJson.getString("id"));
+                    String DiagId = String.valueOf(objJson.getString("DiagId"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String Heamoglobin = String.valueOf(objJson.getString("Heamoglobin"));
-                    final String wbc = String.valueOf(objJson.getString("wbc"));
-                    final String rbc = String.valueOf(objJson.getString("rbc"));
-                    final String esr = String.valueOf(objJson.getString("esr"));
-                    final String polymorphs = String.valueOf(objJson.getString("polymorphs"));
-                    final String lymphocytes = String.valueOf(objJson.getString("lymphocytes"));
-                    final String monocytes = String.valueOf(objJson.getString("monocytes"));
-                    final String basophils = String.valueOf(objJson.getString("basophils"));
-                    final String eosinophils = String.valueOf(objJson.getString("eosinophils"));
-                    final String urea = String.valueOf(objJson.getString("urea"));
-                    final String creatinine = String.valueOf(objJson.getString("creatinine"));
-                    final String UricAcid = String.valueOf(objJson.getString("UricAcid"));
-                    final String Sodium = String.valueOf(objJson.getString("Sodium"));
-                    final String Potassium = String.valueOf(objJson.getString("Potassium"));
-                    final String Chloride = String.valueOf(objJson.getString("Chloride"));
-                    final String Bicarbonate = String.valueOf(objJson.getString("Bicarbonate"));
-                    final String TotalCholesterol = String.valueOf(objJson.getString("TotalCholesterol"));
-                    final String LDL = String.valueOf(objJson.getString("LDL"));
-                    final String HDL = String.valueOf(objJson.getString("HDL"));
-                    final String VLDL = String.valueOf(objJson.getString("VLDL"));
-                    final String Triglycerides = String.valueOf(objJson.getString("Triglycerides"));
-                    final String Serumbilirubin = String.valueOf(objJson.getString("Serumbilirubin"));
-                    final String Direct = String.valueOf(objJson.getString("Direct"));
-                    final String Indirect = String.valueOf(objJson.getString("Indirect"));
-                    final String Totalprotein = String.valueOf(objJson.getString("Totalprotein"));
-                    final String Albumin = String.valueOf(objJson.getString("Albumin"));
-                    final String Globulin = String.valueOf(objJson.getString("Globulin"));
-                    final String SGOT = String.valueOf(objJson.getString("SGOT"));
-                    final String SGPT = String.valueOf(objJson.getString("SGPT"));
-                    final String AlkalinePhosphatase = String.valueOf(objJson.getString("AlkalinePhosphatase"));
-                    final String FreeT3 = String.valueOf(objJson.getString("FreeT3"));
-                    final String FreeT4 = String.valueOf(objJson.getString("FreeT4"));
-                    final String TSH = String.valueOf(objJson.getString("TSH"));
-                    final String upid = String.valueOf(objJson.getString("upid"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String Heamoglobin = String.valueOf(objJson.getString("Heamoglobin"));
+                    String wbc = String.valueOf(objJson.getString("wbc"));
+                    String rbc = String.valueOf(objJson.getString("rbc"));
+                    String esr = String.valueOf(objJson.getString("esr"));
+                    String polymorphs = String.valueOf(objJson.getString("polymorphs"));
+                    String lymphocytes = String.valueOf(objJson.getString("lymphocytes"));
+                    String monocytes = String.valueOf(objJson.getString("monocytes"));
+                    String basophils = String.valueOf(objJson.getString("basophils"));
+                    String eosinophils = String.valueOf(objJson.getString("eosinophils"));
+                    String urea = String.valueOf(objJson.getString("urea"));
+                    String creatinine = String.valueOf(objJson.getString("creatinine"));
+                    String UricAcid = String.valueOf(objJson.getString("UricAcid"));
+                    String Sodium = String.valueOf(objJson.getString("Sodium"));
+                    String Potassium = String.valueOf(objJson.getString("Potassium"));
+                    String Chloride = String.valueOf(objJson.getString("Chloride"));
+                    String Bicarbonate = String.valueOf(objJson.getString("Bicarbonate"));
+                    String TotalCholesterol = String.valueOf(objJson.getString("TotalCholesterol"));
+                    String LDL = String.valueOf(objJson.getString("LDL"));
+                    String HDL = String.valueOf(objJson.getString("HDL"));
+                    String VLDL = String.valueOf(objJson.getString("VLDL"));
+                    String Triglycerides = String.valueOf(objJson.getString("Triglycerides"));
+                    String Serumbilirubin = String.valueOf(objJson.getString("Serumbilirubin"));
+                    String Direct = String.valueOf(objJson.getString("Direct"));
+                    String Indirect = String.valueOf(objJson.getString("Indirect"));
+                    String Totalprotein = String.valueOf(objJson.getString("Totalprotein"));
+                    String Albumin = String.valueOf(objJson.getString("Albumin"));
+                    String Globulin = String.valueOf(objJson.getString("Globulin"));
+                    String SGOT = String.valueOf(objJson.getString("SGOT"));
+                    String SGPT = String.valueOf(objJson.getString("SGPT"));
+                    String AlkalinePhosphatase = String.valueOf(objJson.getString("AlkalinePhosphatase"));
+                    String FreeT3 = String.valueOf(objJson.getString("FreeT3"));
+                    String FreeT4 = String.valueOf(objJson.getString("FreeT4"));
+                    String TSH = String.valueOf(objJson.getString("TSH"));
+                    String upid = String.valueOf(objJson.getString("upid"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
                     values1 = new ContentValues();
                     //values1.put("id", id);
                     values1.put("DiagId", DiagId);
@@ -4063,7 +4069,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("IsUpdateMax", IsUpdateMax);
                     values1.put("ServerId", id);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_ClinicalData where ServerId=" + id);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_ClinicalData where ServerId=" + id);
 
                     if (!GetStatus) {
 
@@ -4078,7 +4084,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -4090,21 +4096,21 @@ public class ImportWebservices_NODEJS {
     private void ImportCaseNote_Locomotor() throws JSONException {
 
         String IsActive;
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
         ContentValues values1;
-        final String PatientIdLIst = ImportWebservices_NODEJS.getPatientList();
-        final String MethodName = "ImportCaseNote_LocomotorJSON";
+        String PatientIdLIst = getPatientList();
+        String MethodName = "ImportCaseNote_LocomotorJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -4113,41 +4119,41 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String id = String.valueOf(objJson.getString("id"));
-                    final String DiagId = String.valueOf(objJson.getString("DiagId"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
+                    String id = String.valueOf(objJson.getString("id"));
+                    String DiagId = String.valueOf(objJson.getString("DiagId"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String symmetry = String.valueOf(objJson.getString("symmetry"));
-                    final String smooth_movement = String.valueOf(objJson.getString("smooth_movement"));
-                    final String arms_swing = String.valueOf(objJson.getString("arms_swing"));
-                    final String pelvic_tilt = String.valueOf(objJson.getString("pelvic_tilt"));
-                    final String stride_length = String.valueOf(objJson.getString("stride_length"));
-                    final String cervical_lordosis = String.valueOf(objJson.getString("cervical_lordosis"));
-                    final String lumbar_lordosis = String.valueOf(objJson.getString("lumbar_lordosis"));
-                    final String kyphosis = String.valueOf(objJson.getString("kyphosis"));
-                    final String scoliosis = String.valueOf(objJson.getString("scoliosis"));
-                    final String llswelling = String.valueOf(objJson.getString("llswelling"));
-                    final String lldeformity = String.valueOf(objJson.getString("lldeformity"));
-                    final String lllimbshortening = String.valueOf(objJson.getString("lllimbshortening"));
-                    final String llmuscle_wasting = String.valueOf(objJson.getString("llmuscle_wasting"));
-                    final String llremarks = String.valueOf(objJson.getString("llremarks"));
-                    final String ulswelling = String.valueOf(objJson.getString("ulswelling"));
-                    final String uldeformity = String.valueOf(objJson.getString("uldeformity"));
-                    final String ullimbshortening = String.valueOf(objJson.getString("ullimbshortening"));
-                    final String ulmuscle_wasting = String.valueOf(objJson.getString("ulmuscle_wasting"));
-                    final String ulremarks = String.valueOf(objJson.getString("ulremarks"));
-                    final String upid = String.valueOf(objJson.getString("upid"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String symmetry = String.valueOf(objJson.getString("symmetry"));
+                    String smooth_movement = String.valueOf(objJson.getString("smooth_movement"));
+                    String arms_swing = String.valueOf(objJson.getString("arms_swing"));
+                    String pelvic_tilt = String.valueOf(objJson.getString("pelvic_tilt"));
+                    String stride_length = String.valueOf(objJson.getString("stride_length"));
+                    String cervical_lordosis = String.valueOf(objJson.getString("cervical_lordosis"));
+                    String lumbar_lordosis = String.valueOf(objJson.getString("lumbar_lordosis"));
+                    String kyphosis = String.valueOf(objJson.getString("kyphosis"));
+                    String scoliosis = String.valueOf(objJson.getString("scoliosis"));
+                    String llswelling = String.valueOf(objJson.getString("llswelling"));
+                    String lldeformity = String.valueOf(objJson.getString("lldeformity"));
+                    String lllimbshortening = String.valueOf(objJson.getString("lllimbshortening"));
+                    String llmuscle_wasting = String.valueOf(objJson.getString("llmuscle_wasting"));
+                    String llremarks = String.valueOf(objJson.getString("llremarks"));
+                    String ulswelling = String.valueOf(objJson.getString("ulswelling"));
+                    String uldeformity = String.valueOf(objJson.getString("uldeformity"));
+                    String ullimbshortening = String.valueOf(objJson.getString("ullimbshortening"));
+                    String ulmuscle_wasting = String.valueOf(objJson.getString("ulmuscle_wasting"));
+                    String ulremarks = String.valueOf(objJson.getString("ulremarks"));
+                    String upid = String.valueOf(objJson.getString("upid"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
 
                     values1 = new ContentValues();
                     //values1.put("id", id);
@@ -4182,7 +4188,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("IsUpdateMax", IsUpdateMax);
                     values1.put("ServerId", id);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_Locomotor where ServerId=" + id);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_Locomotor where ServerId=" + id);
 
                     if (!GetStatus) {
 
@@ -4197,7 +4203,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -4210,20 +4216,20 @@ public class ImportWebservices_NODEJS {
 
 
         String IsActive;
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         ContentValues values1;
-        final String PatientIdLIst = ImportWebservices_NODEJS.getPatientList();
-        final String MethodName = "ImportBind_CaseNote_OtherSystemJSON";
+        String PatientIdLIst = getPatientList();
+        String MethodName = "ImportBind_CaseNote_OtherSystemJSON";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -4232,25 +4238,25 @@ public class ImportWebservices_NODEJS {
                     objJson = jsonArray.getJSONObject(i);
 
 
-                    final String Id = String.valueOf(objJson.getString("Id"));
-                    final String DiagId = String.valueOf(objJson.getString("DiagId"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String Othersystem = String.valueOf(objJson.getString("Othersystem"));
-                    final String AdditionalInfo = String.valueOf(objJson.getString("AdditionalInfo"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String Id = String.valueOf(objJson.getString("Id"));
+                    String DiagId = String.valueOf(objJson.getString("DiagId"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String docid = String.valueOf(objJson.getString("docid"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String Othersystem = String.valueOf(objJson.getString("Othersystem"));
+                    String AdditionalInfo = String.valueOf(objJson.getString("AdditionalInfo"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
                     IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String Upid = String.valueOf(objJson.getString("Upid"));
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
+                    String Upid = String.valueOf(objJson.getString("Upid"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
                     values1 = new ContentValues();
                     //values1.put("Id", Id);
                     values1.put("DiagId", DiagId);
@@ -4268,7 +4274,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("IsUpdateMax", IsUpdateMax);
                     values1.put("ServerId", Id);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_OtherSystem where ServerId=" + Id);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_OtherSystem where ServerId=" + Id);
 
                     if (!GetStatus) {
 
@@ -4283,7 +4289,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -4295,20 +4301,20 @@ public class ImportWebservices_NODEJS {
     private void ImportCaseNote_Dental() throws JSONException {
 
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
         ContentValues values1;
-        final String PatientIdLIst = ImportWebservices_NODEJS.getPatientList();
-        final String MethodName = "ImportCaseNote_Dental";
+        String PatientIdLIst = getPatientList();
+        String MethodName = "ImportCaseNote_Dental";
 
         try {
 
 
-            final String resultsRequestSOAP = this.postPatientIdListRESTMethod(PatientIdLIst, MethodName);
+            String resultsRequestSOAP = postPatientIdListRESTMethod(PatientIdLIst, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -4316,27 +4322,27 @@ public class ImportWebservices_NODEJS {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    final String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
-                    final String upper_right_jaw = String.valueOf(objJson.getString("upper_right_jaw"));
-                    final String upper_left_jaw = String.valueOf(objJson.getString("upper_left_jaw"));
-                    final String upid = String.valueOf(objJson.getString("upid"));
-                    final String pagegen = String.valueOf(objJson.getString("pagegen"));
-                    final String DiagId = String.valueOf(objJson.getString("DiagId"));
+                    String IsUpdateMax = String.valueOf(objJson.getString("IsUpdateMax"));
+                    String upper_right_jaw = String.valueOf(objJson.getString("upper_right_jaw"));
+                    String upper_left_jaw = String.valueOf(objJson.getString("upper_left_jaw"));
+                    String upid = String.valueOf(objJson.getString("upid"));
+                    String pagegen = String.valueOf(objJson.getString("pagegen"));
+                    String DiagId = String.valueOf(objJson.getString("DiagId"));
 
-                    final String HID = String.valueOf(objJson.getString("HID"));
-                    final String lower_left_jaw = String.valueOf(objJson.getString("lower_left_jaw"));
-                    final String id = String.valueOf(objJson.getString("id"));
-                    final String docid = String.valueOf(objJson.getString("docid"));
-                    final String ptid = String.valueOf(objJson.getString("ptid"));
+                    String HID = String.valueOf(objJson.getString("HID"));
+                    String lower_left_jaw = String.valueOf(objJson.getString("lower_left_jaw"));
+                    String id = String.valueOf(objJson.getString("id"));
+                    String docid = String.valueOf(objJson.getString("docid"));
+                    String ptid = String.valueOf(objJson.getString("ptid"));
                     // String Actdate = String.valueOf(objJson.getString("Actdate"));
-                    final String IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String pname = String.valueOf(objJson.getString("pname"));
-                    final String lower_right_jaw = String.valueOf(objJson.getString("lower_right_jaw"));
-                    final String Isupdate = String.valueOf(objJson.getString("Isupdate"));
+                    String IsActive = String.valueOf(objJson.getString("IsActive"));
+                    String pname = String.valueOf(objJson.getString("pname"));
+                    String lower_right_jaw = String.valueOf(objJson.getString("lower_right_jaw"));
+                    String Isupdate = String.valueOf(objJson.getString("Isupdate"));
                     String Actdate = "";
                     try {
                         Actdate = BaseConfig.DateFormatter3(String.valueOf(objJson.getString("Actdate")));
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -4358,7 +4364,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("Isupdate", Isupdate);
                     values1.put("Actdate", Actdate);
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_OtherSystem where ServerId=" + IsUpdateMax);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from CaseNote_OtherSystem where ServerId=" + IsUpdateMax);
 
                     if (!GetStatus) {
 
@@ -4373,7 +4379,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -4385,16 +4391,16 @@ public class ImportWebservices_NODEJS {
     private void InsertImmunizationInformation() {
         try {
 
-            final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+            SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
-            final StringBuilder str = new StringBuilder();
+            StringBuilder str = new StringBuilder();
 
-            final String Query = "select ptid,docid from ClinicalInformation where vaccine_update='1'";
+            String Query = "select ptid,docid from ClinicalInformation where vaccine_update='1'";
 
             String DocId = "";
             String PatId = "";
 
-            final Cursor c = db.rawQuery(Query, null);
+            Cursor c = db.rawQuery(Query, null);
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -4419,29 +4425,29 @@ public class ImportWebservices_NODEJS {
 
             String resultsRequestSOAP = null;
             try {
-                final MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(this.ctx);
-                final PostImmunizationInfoFactory postDoctorIdFactory = new PostImmunizationInfoFactory(magnetMobileClient);
-                final PostImmunizationInfo postDoctorId = postDoctorIdFactory.obtainInstance();
+                MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(ctx);
+                PostImmunizationInfoFactory postDoctorIdFactory = new PostImmunizationInfoFactory(magnetMobileClient);
+                PostImmunizationInfo postDoctorId = postDoctorIdFactory.obtainInstance();
 
                 //Set Body Data
-                final PosImmunizationInfoRequest body = new PosImmunizationInfoRequest();
+                PosImmunizationInfoRequest body = new PosImmunizationInfoRequest();
                 body.setDocId(DocId);
                 body.setPatId(PatId);
 
-                final Call<PosImmunizationInfoResult> resultCall = postDoctorId.posImmunizationInfo(body, null);
+                Call<PosImmunizationInfoResult> resultCall = postDoctorId.posImmunizationInfo(body, null);
 
                 resultsRequestSOAP = resultCall.get().getResults();
-            } catch (final SchemaException e) {
+            } catch (SchemaException e) {
                 e.printStackTrace();
-            } catch (final InterruptedException e) {
+            } catch (InterruptedException e) {
                 e.printStackTrace();
-            } catch (final ExecutionException e) {
+            } catch (ExecutionException e) {
                 e.printStackTrace();
             }
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
 
                 JSONObject objJson;
 
@@ -4470,7 +4476,7 @@ public class ImportWebservices_NODEJS {
             }
 
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -4486,15 +4492,15 @@ public class ImportWebservices_NODEJS {
 
         try {
 
-            final StringBuilder str = new StringBuilder();
+            StringBuilder str = new StringBuilder();
 
-            final String Query = "select mtestid,docid,Ptid from medicaltestdtls where ReadytoUpdate='0'";
+            String Query = "select mtestid,docid,Ptid from medicaltestdtls where ReadytoUpdate='0'";
 
-            final SQLiteDatabase db = BaseConfig.GetDb();
+            SQLiteDatabase db = BaseConfig.GetDb();
 
-            final int upid = 0;
+            int upid = 0;
 
-            final Cursor c = db.rawQuery(Query, null);
+            Cursor c = db.rawQuery(Query, null);
             String MethodName;
 
             if (c != null) {
@@ -4511,14 +4517,14 @@ public class ImportWebservices_NODEJS {
 
                             String resultsRequestSOAP = "";
 
-                            resultsRequestSOAP = this.postMtestIdDidPId(mtestid, docid, ptid, MethodName, resultsRequestSOAP);
+                            resultsRequestSOAP = postMtestIdDidPId(mtestid, docid, ptid, MethodName, resultsRequestSOAP);
 
 
                             try {
 
 
                                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
 
                                     JSONObject objJson;
 
@@ -4542,8 +4548,8 @@ public class ImportWebservices_NODEJS {
 
                                         try {
 
-                                            seenInt = Integer.parseInt(ImportWebservices_NODEJS.GetCurrentSeenValue(ptid, mtestid, objJson.getString("alltest")));
-                                        } catch (final Exception e) {
+                                            seenInt = Integer.parseInt(GetCurrentSeenValue(ptid, mtestid, objJson.getString("alltest")));
+                                        } catch (Exception e) {
                                             e.printStackTrace();
 
                                             //Log.e("SEEN VALUE EXCEPTION WARNING", e.getMessage());
@@ -4560,7 +4566,7 @@ public class ImportWebservices_NODEJS {
                                         }
 
 
-                                        final ContentValues values = new ContentValues();
+                                        ContentValues values = new ContentValues();
                                         values.put("testvalue", objJson.getString("testvalue"));
                                         values.put("testsummary", objJson.getString("testsummary"));
                                         values.put("IsActive", "0");
@@ -4574,7 +4580,10 @@ public class ImportWebservices_NODEJS {
                                         values.put("result", ResultValue);
                                         db.update("Medicaltestdtls", values, "Ptid='" + ptid + "' and alltest='" + objJson.getString("alltest") + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
 
-                                        this.UpdateInCaseNotes(ptid, mtestid, objJson.getString("alltest"));
+                                       db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='"+ptid+"' and mtestid='"+mtestid+"'");
+
+                                        UpdateInCaseNotes(ptid, mtestid, objJson.getString("alltest"));
+
 
 
                                     }
@@ -4582,7 +4591,7 @@ public class ImportWebservices_NODEJS {
                                 }
 
                                 //Log.e("Testing", String.valueOf(upid));
-                            } catch (final JSONException e) {
+                            } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
@@ -4598,7 +4607,7 @@ public class ImportWebservices_NODEJS {
             }
 
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -4615,12 +4624,12 @@ public class ImportWebservices_NODEJS {
         try {
             //Log.e("Data Sent", "Entered ImportupdatedScanDtls");
 
-            final String Query = "select mtestid,docid,Ptid  from Scantest where ReadytoUpdate='0'";
+            String Query = "select mtestid,docid,Ptid  from Scantest where ReadytoUpdate='0'";
 
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final int upid = 0;
+            SQLiteDatabase db = BaseConfig.GetDb();
+            int upid = 0;
 
-            final Cursor c = db.rawQuery(Query, null);
+            Cursor c = db.rawQuery(Query, null);
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -4632,17 +4641,17 @@ public class ImportWebservices_NODEJS {
 
                         if (!"".equals(mtestid)) {
 
-                            final String MethodName = "fromlab_Scantest";
+                            String MethodName = "fromlab_Scantest";
 
 
                             try {
 
                                 String resultsRequestSOAP = "";
 
-                                resultsRequestSOAP = this.postMtestIdDidPId(mtestid, docid, ptid, MethodName, resultsRequestSOAP);
+                                resultsRequestSOAP = postMtestIdDidPId(mtestid, docid, ptid, MethodName, resultsRequestSOAP);
 
                                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
 
                                     JSONObject objJson;
 
@@ -4662,7 +4671,7 @@ public class ImportWebservices_NODEJS {
                                         // 0->on update
                                         // 1->updated
                                         // 2->web update
-                                        final ContentValues values = new ContentValues();
+                                        ContentValues values = new ContentValues();
                                         values.put("scanvalue", objJson.getString("scanvalue"));
                                         values.put("scansummary", objJson.getString("scansummary"));
                                         values.put("IsActive", "0");
@@ -4670,12 +4679,14 @@ public class ImportWebservices_NODEJS {
                                         values.put("ValueUpdated", "0");
                                         db.update("Scantest", values, "where Ptid='" + ptid + "' and scanname='" + objJson.getString("scanname") + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
 
+                                       db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='"+ptid+"' and mtestid='"+mtestid+"'");
+
 
                                     }
                                 }
 
                                 //Log.e("Testing", String.valueOf(upid));
-                            } catch (final JSONException e) {
+                            } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
@@ -4688,7 +4699,7 @@ public class ImportWebservices_NODEJS {
                 }
 
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -4705,12 +4716,12 @@ public class ImportWebservices_NODEJS {
         try {
             //Log.e("Data Sent", "Entered ImportupdatedXrayDtls");
 
-            final String Query = "select mtestid,docid,Ptid  from XRAY where ReadytoUpdate='0'";
+            String Query = "select mtestid,docid,Ptid  from XRAY where ReadytoUpdate='0'";
 
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final int upid = 0;
+            SQLiteDatabase db = BaseConfig.GetDb();
+            int upid = 0;
 
-            final Cursor c = db.rawQuery(Query, null);
+            Cursor c = db.rawQuery(Query, null);
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -4722,15 +4733,15 @@ public class ImportWebservices_NODEJS {
 
                         if (!"".equals(mtestid)) {
 
-                            final String MethodName = "fromlab_XRAY";
+                            String MethodName = "fromlab_XRAY";
 
                             String resultsRequestSOAP = "";
-                            resultsRequestSOAP = this.postMtestIdDidPId(mtestid, docid, ptid, MethodName, resultsRequestSOAP);
+                            resultsRequestSOAP = postMtestIdDidPId(mtestid, docid, ptid, MethodName, resultsRequestSOAP);
 
                             try {
 
                                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
 
                                     JSONObject objJson;
 
@@ -4750,7 +4761,7 @@ public class ImportWebservices_NODEJS {
                                         // 2->web update
 
 
-                                        final ContentValues values = new ContentValues();
+                                        ContentValues values = new ContentValues();
                                         values.put("xrayvalue", objJson.getString("xrayvalue"));
                                         values.put("xraysummary", objJson.getString("xraysummary"));
                                         values.put("IsActive", "0");
@@ -4758,13 +4769,15 @@ public class ImportWebservices_NODEJS {
                                         values.put("ValueUpdated", "0");
                                         db.update("XRAY", values, "where Ptid='" + ptid + "' and xray='" + objJson.getString("xray") + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
 
+                                       db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='"+ptid+"' and mtestid='"+mtestid+"'");
+
                                     }
 
                                 }
 
 
                                 //Log.e("Testing", String.valueOf(upid));
-                            } catch (final Exception e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
@@ -4778,7 +4791,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -4794,12 +4807,12 @@ public class ImportWebservices_NODEJS {
         try {
             //Log.e("Data Sent", "Entered ImportupdatedEEGDtls");
 
-            final String Query = "select mtestid,docid,ptid  from EEG where ReadytoUpdate='0'";
+            String Query = "select mtestid,docid,ptid  from EEG where ReadytoUpdate='0'";
 
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final int upid = 0;
+            SQLiteDatabase db = BaseConfig.GetDb();
+            int upid = 0;
 
-            final Cursor c = db.rawQuery(Query, null);
+            Cursor c = db.rawQuery(Query, null);
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -4811,15 +4824,15 @@ public class ImportWebservices_NODEJS {
 
                         if (!"".equals(mtestid)) {
 
-                            final String MethodName = "fromlab_EEG";
+                            String MethodName = "fromlab_EEG";
 
                             String resultsRequestSOAP = "";
-                            resultsRequestSOAP = this.postMtestIdDidPId(mtestid, docid, ptid, MethodName, resultsRequestSOAP);
+                            resultsRequestSOAP = postMtestIdDidPId(mtestid, docid, ptid, MethodName, resultsRequestSOAP);
 
                             try {
 
                                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
 
                                     JSONObject objJson;
 
@@ -4838,13 +4851,14 @@ public class ImportWebservices_NODEJS {
                                         // 0->on update
                                         // 1->updated
                                         // 2->web update
-                                        final ContentValues values = new ContentValues();
+                                        ContentValues values = new ContentValues();
                                         values.put("Summary", objJson.getString("Summary"));
                                         values.put("IsActive", "0");
                                         values.put("ReadytoUpdate", "2");
                                         values.put("ValueUpdated", "0");
                                         db.update("EEG", values, "Ptid='" + ptid + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
 
+                                       db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='"+ptid+"' and mtestid='"+mtestid+"'");
 
                                     }
 
@@ -4852,7 +4866,7 @@ public class ImportWebservices_NODEJS {
 
 
                                 //Log.e("Testing", String.valueOf(upid));
-                            } catch (final Exception e) {
+                            } catch (Exception e) {
                                 e.printStackTrace();
                             }
 
@@ -4866,7 +4880,7 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -4882,12 +4896,12 @@ public class ImportWebservices_NODEJS {
         try {
             //Log.e("Data Sent", "Entered ImportupdatedECGDtls");
 
-            final String Query = "select mtestid,Docid,Ptid  from ECGTEST where ReadytoUpdate='0'";
+            String Query = "select mtestid,Docid,Ptid  from ECGTEST where ReadytoUpdate='0'";
 
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final int upid = 0;
+            SQLiteDatabase db = BaseConfig.GetDb();
+            int upid = 0;
 
-            final Cursor c = db.rawQuery(Query, null);
+            Cursor c = db.rawQuery(Query, null);
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -4901,16 +4915,16 @@ public class ImportWebservices_NODEJS {
                         if (!"".equals(mtestid)) {
 
 
-                            final String MethodName = "fromlab_ECGTEST";
+                            String MethodName = "fromlab_ECGTEST";
 
 
                             String resultsRequestSOAP = "";
-                            resultsRequestSOAP = this.postMtestIdDidPId(mtestid, docid, ptid, MethodName, resultsRequestSOAP);
+                            resultsRequestSOAP = postMtestIdDidPId(mtestid, docid, ptid, MethodName, resultsRequestSOAP);
 
                             try {
 
                                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
 
                                     JSONObject objJson;
 
@@ -4933,7 +4947,7 @@ public class ImportWebservices_NODEJS {
                                         // Ecg,Treadmill,ecgrate, ecgqrs,ecgst,ecgt,
                                         // ecgrhyrhm,ecgaxis,
                                         // Bundlebranchblock,Conductiondefects,PR
-                                        final ContentValues values = new ContentValues();
+                                        ContentValues values = new ContentValues();
                                         values.put("Ecg", objJson.getString("Ecg"));
                                         values.put("Treadmill", objJson.getString("Treadmill"));
                                         values.put("ecgrate", objJson.getString("ecgrate"));
@@ -4950,12 +4964,14 @@ public class ImportWebservices_NODEJS {
                                         values.put("ValueUpdated", "0");
                                         db.update("ECGTEST", values, " Ptid='" + ptid + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
 
+                                       db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='"+ptid+"' and mtestid='"+mtestid+"'");
+
                                     }
 
                                 }
 
                                 //Log.e("Testing", String.valueOf(upid));
-                            } catch (final JSONException e) {
+                            } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
@@ -4969,7 +4985,7 @@ public class ImportWebservices_NODEJS {
                 }
 
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -4986,12 +5002,12 @@ public class ImportWebservices_NODEJS {
         try {
             //Log.e("Data Sent", "Entered ImportupdatedAngiogram");
 
-            final String Query = "select mtestid,docid,ptid from Angiogram where ReadytoUpdate='0'";
+            String Query = "select mtestid,docid,ptid from Angiogram where ReadytoUpdate='0'";
 
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final int upid = 0;
+            SQLiteDatabase db = BaseConfig.GetDb();
+            int upid = 0;
 
-            final Cursor c = db.rawQuery(Query, null);
+            Cursor c = db.rawQuery(Query, null);
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -5003,16 +5019,16 @@ public class ImportWebservices_NODEJS {
 
                         if (!"".equals(mtestid)) {
 
-                            final String MethodName = "fromlab_Angiogram";
+                            String MethodName = "fromlab_Angiogram";
 
 
                             String resultsRequestSOAP = "";
-                            resultsRequestSOAP = this.postMtestIdDidPId(mtestid, docid, ptid, MethodName, resultsRequestSOAP);
+                            resultsRequestSOAP = postMtestIdDidPId(mtestid, docid, ptid, MethodName, resultsRequestSOAP);
 
                             try {
 
                                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
 
                                     JSONObject objJson;
 
@@ -5035,7 +5051,7 @@ public class ImportWebservices_NODEJS {
                                         // Ecg,Treadmill,ecgrate, ecgqrs,ecgst,ecgt,
                                         // ecgrhyrhm,ecgaxis,
                                         // Bundlebranchblock,Conductiondefects,PR
-                                        final ContentValues values = new ContentValues();
+                                        ContentValues values = new ContentValues();
                                         values.put("Coronary", objJson.getString("Coronary"));
                                         values.put("Brain", objJson.getString("Brain"));
                                         values.put("Upperlimb", objJson.getString("Upperlimb"));
@@ -5046,6 +5062,8 @@ public class ImportWebservices_NODEJS {
                                         values.put("ValueUpdated", "0");
                                         db.update("Angiogram", values, "where Ptid='" + ptid + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
 
+                                       db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='"+ptid+"' and mtestid='"+mtestid+"'");
+
 
                                     }
 
@@ -5053,7 +5071,7 @@ public class ImportWebservices_NODEJS {
 
 
                                 //Log.e("Testing", String.valueOf(upid));
-                            } catch (final JSONException e) {
+                            } catch (JSONException e) {
                                 e.printStackTrace();
                             }
 
@@ -5066,7 +5084,7 @@ public class ImportWebservices_NODEJS {
                 }
 
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -5075,20 +5093,20 @@ public class ImportWebservices_NODEJS {
     private void Importmast_Operations() {
 
 
-        final String str = "";
+        String str = "";
 
-        final String Query = "select  Patid from  Patreg";
+        String Query = "select  Patid from  Patreg";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
-        final Cursor c = db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    final String PatientId = c.getString(c.getColumnIndex("Patid"));
+                    String PatientId = c.getString(c.getColumnIndex("Patid"));
 
-                    this.getOperationDetails(PatientId);
+                    getOperationDetails(PatientId);
 
 
                 } while (c.moveToNext());
@@ -5109,21 +5127,21 @@ public class ImportWebservices_NODEJS {
     private void Importmast_Upload() {
 
 
-        final String str = "";
+        String str = "";
 
-        final String Query = "select Ptid,mtestid from Medicaltest  group by mtestid";
+        String Query = "select Ptid,mtestid from Medicaltest  group by mtestid";
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
-        final Cursor c = db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    final String Ptid = c.getString(c.getColumnIndex("Ptid"));
-                    final String mtestid = c.getString(c.getColumnIndex("mtestid"));
+                    String Ptid = c.getString(c.getColumnIndex("Ptid"));
+                    String mtestid = c.getString(c.getColumnIndex("mtestid"));
 
-                    this.getBindUpload(Ptid, mtestid);
+                    getBindUpload(Ptid, mtestid);
 
 
                 } while (c.moveToNext());
@@ -5140,17 +5158,17 @@ public class ImportWebservices_NODEJS {
     private void Import_ExaminationBlood_Test() throws JSONException {
         String PatId = "";
         String MtestId = "";
-        final String MethodName = "Import_ExaminationBlood_Test";
+        String MethodName = "Import_ExaminationBlood_Test";
         try {
             JSONObject from_db_obj = new JSONObject();
-            final JSONArray export_jsonarray = new JSONArray();
+            JSONArray export_jsonarray = new JSONArray();
 
             //getting data from server
             String Query;
             String s = "select b.Ptid,b.mtestid from Patreg a inner join Medicaltest b on a.Patid=b.Ptid where b.Isupdate='1' and (b.IsActive='True' or b.IsActive='1')";
             //Query = "select Patid,b.mtestid from Patreg a inner join Medicaltest b on a.Patid=b.Ptid where b.Isupdate='1' and (b.IsActive='True' or b.IsActive='1')";
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final Cursor c;
+            SQLiteDatabase db = BaseConfig.GetDb();
+            Cursor c;
             c = db.rawQuery(s, null);
             if (c != null) {
 
@@ -5176,50 +5194,50 @@ public class ImportWebservices_NODEJS {
             }
             Objects.requireNonNull(c).close();
 
-            final JSONObject parentData = new JSONObject();
+            JSONObject parentData = new JSONObject();
             parentData.put("MtestIdList", export_jsonarray);
 
             //Sending data
             if ((parentData != null) && (parentData.length() > 0)) {
 
 
-                final String resultsRequestSOAP = this.postPatidMtestId(PatId, MtestId, MethodName);
+                String resultsRequestSOAP = postPatidMtestId(PatId, MtestId, MethodName);
 
 
                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                     JSONObject objJson;
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         objJson = jsonArray.getJSONObject(i);
-                        final String ServerId = objJson.getString("Id");
-                        final String Patid = objJson.getString("Patid");
-                        final String Docid = objJson.getString("Docid");
-                        final String Actdate = objJson.getString("Actdate");
-                        final String IsActive = objJson.getString("IsActive");
-                        final String IsUpdate = objJson.getString("IsUpdate");
-                        final String Mtestid = objJson.getString("Mtestid");
-                        final String Testid = objJson.getString("Testid");
-                        final String Subtestid = objJson.getString("Subtestid");
-                        final String HID = objJson.getString("HID");
-                        final String IsPaid = objJson.getString("IsPaid");
-                        final String maemogiobin = objJson.getString("Haemogiobin");
-                        final String packed_cell_volume = objJson.getString("packed_cell_volume");
-                        final String total_count = objJson.getString("total_count");
-                        final String rbc_count = objJson.getString("rbc_count");
-                        final String polymorphs = objJson.getString("polymorphs");
-                        final String lymphocytes = objJson.getString("lymphocytes");
-                        final String eosinophilis = objJson.getString("eosinophilis");
-                        final String monocytes = objJson.getString("monocytes");
-                        final String basophils = objJson.getString("basophils");
-                        final String band_from = objJson.getString("band_from");
-                        final String platelets_count = objJson.getString("platelets_count");
-                        final String psmp = objJson.getString("psmp");
-                        final String esr = objJson.getString("esr");
-                        final String STyphi_O = objJson.getString("STyphi_O");
-                        final String STyphi_H = objJson.getString("STyphi_H");
-                        final String SParatyphi_AH = objJson.getString("SParatyphi_AH");
-                        final String SParatyphi_BH = objJson.getString("SParatyphi_BH");
+                        String ServerId = objJson.getString("Id");
+                        String Patid = objJson.getString("Patid");
+                        String Docid = objJson.getString("Docid");
+                        String Actdate = objJson.getString("Actdate");
+                        String IsActive = objJson.getString("IsActive");
+                        String IsUpdate = objJson.getString("IsUpdate");
+                        String Mtestid = objJson.getString("Mtestid");
+                        String Testid = objJson.getString("Testid");
+                        String Subtestid = objJson.getString("Subtestid");
+                        String HID = objJson.getString("HID");
+                        String IsPaid = objJson.getString("IsPaid");
+                        String maemogiobin = objJson.getString("Haemogiobin");
+                        String packed_cell_volume = objJson.getString("packed_cell_volume");
+                        String total_count = objJson.getString("total_count");
+                        String rbc_count = objJson.getString("rbc_count");
+                        String polymorphs = objJson.getString("polymorphs");
+                        String lymphocytes = objJson.getString("lymphocytes");
+                        String eosinophilis = objJson.getString("eosinophilis");
+                        String monocytes = objJson.getString("monocytes");
+                        String basophils = objJson.getString("basophils");
+                        String band_from = objJson.getString("band_from");
+                        String platelets_count = objJson.getString("platelets_count");
+                        String psmp = objJson.getString("psmp");
+                        String esr = objJson.getString("esr");
+                        String STyphi_O = objJson.getString("STyphi_O");
+                        String STyphi_H = objJson.getString("STyphi_H");
+                        String SParatyphi_AH = objJson.getString("SParatyphi_AH");
+                        String SParatyphi_BH = objJson.getString("SParatyphi_BH");
                         String Result_Status = objJson.getString("Blood_Result");
 
                         if ("0".equalsIgnoreCase(Result_Status))//Nil
@@ -5233,7 +5251,7 @@ public class ImportWebservices_NODEJS {
                             Result_Status = "Negative";
                         }
 
-                        final ContentValues values = new ContentValues();
+                        ContentValues values = new ContentValues();
                         values.put("ServerId", ServerId);
                         values.put("Patid", Patid);
                         values.put("Docid", Docid);
@@ -5265,7 +5283,7 @@ public class ImportWebservices_NODEJS {
                         values.put("Result_Status", Result_Status);
 
                         //data iruntha update else insert
-                        final boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Bind_examination_blood_test where Mtestid='" + Mtestid + "' and ServerId='" + ServerId + "' and Patid='" + Patid + '\'');
+                        boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Bind_examination_blood_test where Mtestid='" + Mtestid + "' and ServerId='" + ServerId + "' and Patid='" + Patid + '\'');
                         if (q) //update
                         {
                             db.update("Bind_examination_blood_test", values, "ServerId='" + ServerId + "' and Patid='" + Patid + '\'', null);
@@ -5296,11 +5314,11 @@ public class ImportWebservices_NODEJS {
             }
 
 
-        } catch (final InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (final ExecutionException e) {
+        } catch (ExecutionException e) {
             e.printStackTrace();
-        } catch (final SchemaException e) {
+        } catch (SchemaException e) {
             e.printStackTrace();
         }
 
@@ -5309,16 +5327,16 @@ public class ImportWebservices_NODEJS {
     private void Import_ExaminationStool_Test() {
         String PatId = "";
         String MtestId = "";
-        final String MethodName = "Import_ExaminationStool_Test";
+        String MethodName = "Import_ExaminationStool_Test";
         try {
             JSONObject from_db_obj = new JSONObject();
-            final JSONArray export_jsonarray = new JSONArray();
+            JSONArray export_jsonarray = new JSONArray();
 
             //getting data from server
             String Query;
             String s = "select b.Ptid,b.mtestid from Patreg a inner join Medicaltest b on a.Patid=b.Ptid where b.Isupdate='1' and (b.IsActive='True' or b.IsActive='1')";
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final Cursor c;
+            SQLiteDatabase db = BaseConfig.GetDb();
+            Cursor c;
             c = db.rawQuery(s, null);
             if (c != null) {
 
@@ -5345,57 +5363,57 @@ public class ImportWebservices_NODEJS {
             }
             Objects.requireNonNull(c).close();
 
-            final JSONObject parentData = new JSONObject();
+            JSONObject parentData = new JSONObject();
             parentData.put("MtestIdList", export_jsonarray);
 
             //Sending data
             if ((parentData != null) && (parentData.length() > 0)) {
 
 
-                final String resultsRequestSOAP = this.postPatidMtestId(PatId, MtestId, MethodName);
+                String resultsRequestSOAP = postPatidMtestId(PatId, MtestId, MethodName);
 
 
                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                     JSONObject objJson;
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         objJson = jsonArray.getJSONObject(i);
 
 
-                        final String Id = objJson.getString("Id");
-                        final String Patid = objJson.getString("Patid");
-                        final String Docid = objJson.getString("Docid");
-                        final String Actdate = objJson.getString("Actdate");
-                        final String IsActive = objJson.getString("IsActive");
-                        final String IsUpdate = objJson.getString("IsUpdate");
-                        final String ServerId = objJson.getString("Id");
-                        final String Mtestid = objJson.getString("Mtestid");
-                        final String Testid = objJson.getString("Mtestid");
-                        final String Subtestid = objJson.getString("Subtestid");
-                        final String HID = objJson.getString("HID");
-                        final String IsPaid = objJson.getString("IsPaid");
-                        final String colour = objJson.getString("colour");
-                        final String consistency = objJson.getString("consistency");
-                        final String musus = objJson.getString("musus");
-                        final String blood = objJson.getString("blood");
-                        final String parasites = objJson.getString("parasites");
-                        final String occult_blood_test = objJson.getString("occult_blood_test");
-                        final String cpi_cells = objJson.getString("cpi_cells");
-                        final String pus_cells = objJson.getString("pus_cells");
-                        final String red_blood_cells = objJson.getString("red_blood_cells");
-                        final String macrophages = objJson.getString("macrophages");
-                        final String fat = objJson.getString("fat");
-                        final String starch = objJson.getString("starch");
-                        final String undigeted_food = objJson.getString("undigeted_food_matter");
-                        final String any_other_finding = objJson.getString("any_other_finding");
-                        final String vegetative_forms = objJson.getString("vegetative_forms");
-                        final String protozoa = objJson.getString("protozoa");
-                        final String flagellates = objJson.getString("flagellates");
-                        final String cyst = objJson.getString("cyst");
-                        final String ova = objJson.getString("ova");
-                        final String larvae = objJson.getString("larvae");
-                        final String result = objJson.getString("result");
+                        String Id = objJson.getString("Id");
+                        String Patid = objJson.getString("Patid");
+                        String Docid = objJson.getString("Docid");
+                        String Actdate = objJson.getString("Actdate");
+                        String IsActive = objJson.getString("IsActive");
+                        String IsUpdate = objJson.getString("IsUpdate");
+                        String ServerId = objJson.getString("Id");
+                        String Mtestid = objJson.getString("Mtestid");
+                        String Testid = objJson.getString("Mtestid");
+                        String Subtestid = objJson.getString("Subtestid");
+                        String HID = objJson.getString("HID");
+                        String IsPaid = objJson.getString("IsPaid");
+                        String colour = objJson.getString("colour");
+                        String consistency = objJson.getString("consistency");
+                        String musus = objJson.getString("musus");
+                        String blood = objJson.getString("blood");
+                        String parasites = objJson.getString("parasites");
+                        String occult_blood_test = objJson.getString("occult_blood_test");
+                        String cpi_cells = objJson.getString("cpi_cells");
+                        String pus_cells = objJson.getString("pus_cells");
+                        String red_blood_cells = objJson.getString("red_blood_cells");
+                        String macrophages = objJson.getString("macrophages");
+                        String fat = objJson.getString("fat");
+                        String starch = objJson.getString("starch");
+                        String undigeted_food = objJson.getString("undigeted_food_matter");
+                        String any_other_finding = objJson.getString("any_other_finding");
+                        String vegetative_forms = objJson.getString("vegetative_forms");
+                        String protozoa = objJson.getString("protozoa");
+                        String flagellates = objJson.getString("flagellates");
+                        String cyst = objJson.getString("cyst");
+                        String ova = objJson.getString("ova");
+                        String larvae = objJson.getString("larvae");
+                        String result = objJson.getString("result");
                         String Result_Status = objJson.getString("Stool_Result");
 
                         if ("0".equalsIgnoreCase(Result_Status))//Nil
@@ -5409,7 +5427,7 @@ public class ImportWebservices_NODEJS {
                             Result_Status = "Negative";
                         }
 
-                        final ContentValues values = new ContentValues();
+                        ContentValues values = new ContentValues();
                         values.put("Id", Id);
                         values.put("Patid", Patid);
                         values.put("Docid", Docid);
@@ -5446,7 +5464,7 @@ public class ImportWebservices_NODEJS {
                         values.put("Result_Status", Result_Status);
 
                         //data iruntha update else insert
-                        final boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Bind_stool_report where Mtestid='" + Mtestid + "' and ServerId='" + ServerId + "' and Patid='" + Patid + '\'');
+                        boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Bind_stool_report where Mtestid='" + Mtestid + "' and ServerId='" + ServerId + "' and Patid='" + Patid + '\'');
                         if (q) //update
                         {
                             db.update("Bind_stool_report", values, "ServerId='" + ServerId + "' and Patid='" + Patid + '\'', null);
@@ -5476,13 +5494,13 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (final ExecutionException e) {
+        } catch (ExecutionException e) {
             e.printStackTrace();
-        } catch (final JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
-        } catch (final SchemaException e) {
+        } catch (SchemaException e) {
             e.printStackTrace();
         }
     }
@@ -5490,16 +5508,16 @@ public class ImportWebservices_NODEJS {
     private void Import_ExaminationUrine_Test() {
         String PatId = "";
         String MtestId = "";
-        final String MethodName = "Import_ExaminationUrine_Test";
+        String MethodName = "Import_ExaminationUrine_Test";
         try {
             JSONObject from_db_obj = new JSONObject();
-            final JSONArray export_jsonarray = new JSONArray();
+            JSONArray export_jsonarray = new JSONArray();
 
             //getting data from server
             String Query;
             String s = "select b.Ptid,b.mtestid from Patreg a inner join Medicaltest b on a.Patid=b.Ptid where b.Isupdate='1' and (b.IsActive='True' or b.IsActive='1')";
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final Cursor c;
+            SQLiteDatabase db = BaseConfig.GetDb();
+            Cursor c;
             c = db.rawQuery(s, null);
             if (c != null) {
 
@@ -5525,52 +5543,52 @@ public class ImportWebservices_NODEJS {
             }
             Objects.requireNonNull(c).close();
 
-            final JSONObject parentData = new JSONObject();
+            JSONObject parentData = new JSONObject();
             parentData.put("MtestIdList", export_jsonarray);
 
             //Sending data
             if ((parentData != null) && (parentData.length() > 0)) {
 
-                final String resultsRequestSOAP = this.postPatidMtestId(PatId, MtestId, MethodName);
+                String resultsRequestSOAP = postPatidMtestId(PatId, MtestId, MethodName);
 
 
                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                     JSONObject objJson;
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         objJson = jsonArray.getJSONObject(i);
-                        final String ServerId = objJson.getString("Id");
-                        final String Patid = objJson.getString("Patid");
-                        final String Docid = objJson.getString("Docid");
-                        final String Actdate = objJson.getString("Actdate");
-                        final String IsActive = objJson.getString("IsActive");
-                        final String IsUpdate = objJson.getString("IsUpdate");
-                        final String Mtestid = objJson.getString("Mtestid");
-                        final String Testid = objJson.getString("Testid");
-                        final String Subtestid = objJson.getString("Subtestid");
-                        final String HID = objJson.getString("HID");
-                        final String IsPaid = objJson.getString("IsPaid");
+                        String ServerId = objJson.getString("Id");
+                        String Patid = objJson.getString("Patid");
+                        String Docid = objJson.getString("Docid");
+                        String Actdate = objJson.getString("Actdate");
+                        String IsActive = objJson.getString("IsActive");
+                        String IsUpdate = objJson.getString("IsUpdate");
+                        String Mtestid = objJson.getString("Mtestid");
+                        String Testid = objJson.getString("Testid");
+                        String Subtestid = objJson.getString("Subtestid");
+                        String HID = objJson.getString("HID");
+                        String IsPaid = objJson.getString("IsPaid");
 
-                        final String quantity = objJson.getString("Quantity");
-                        final String colour = objJson.getString("colour");
-                        final String appearance = objJson.getString("appearance");
-                        final String sediment = objJson.getString("sediment");
-                        final String specific_gravity = objJson.getString("specific_gravity");
-                        final String ph_reaction = objJson.getString("ph_reaction");
-                        final String proteins = objJson.getString("proteins");
-                        final String sugar = objJson.getString("sugar");
-                        final String occult_blood = objJson.getString("occult_blood");
-                        final String acetone = objJson.getString("acetone");
-                        final String bite_salf = objJson.getString("bite_salf");
-                        final String bile_pigment = objJson.getString("bile_pigment");
-                        final String epithelial_cells = objJson.getString("epithelial_cells");
-                        final String pus_cells = objJson.getString("pus_cells");
-                        final String red_blood_cells = objJson.getString("red_blood_cells");
-                        final String any_other_finding = objJson.getString("any_other_finding");
-                        final String amorphous_material = objJson.getString("amorphous_material");
-                        final String trichomans_vaginalis = objJson.getString("trichomans_vaginalis");
-                        final String casts = objJson.getString("casts");
+                        String quantity = objJson.getString("Quantity");
+                        String colour = objJson.getString("colour");
+                        String appearance = objJson.getString("appearance");
+                        String sediment = objJson.getString("sediment");
+                        String specific_gravity = objJson.getString("specific_gravity");
+                        String ph_reaction = objJson.getString("ph_reaction");
+                        String proteins = objJson.getString("proteins");
+                        String sugar = objJson.getString("sugar");
+                        String occult_blood = objJson.getString("occult_blood");
+                        String acetone = objJson.getString("acetone");
+                        String bite_salf = objJson.getString("bite_salf");
+                        String bile_pigment = objJson.getString("bile_pigment");
+                        String epithelial_cells = objJson.getString("epithelial_cells");
+                        String pus_cells = objJson.getString("pus_cells");
+                        String red_blood_cells = objJson.getString("red_blood_cells");
+                        String any_other_finding = objJson.getString("any_other_finding");
+                        String amorphous_material = objJson.getString("amorphous_material");
+                        String trichomans_vaginalis = objJson.getString("trichomans_vaginalis");
+                        String casts = objJson.getString("casts");
                         String Result_Status = objJson.getString("Urine_Result");
 
                         if ("0".equalsIgnoreCase(Result_Status))//Nil
@@ -5584,7 +5602,7 @@ public class ImportWebservices_NODEJS {
                             Result_Status = "Negative";
                         }
 
-                        final ContentValues values = new ContentValues();
+                        ContentValues values = new ContentValues();
                         values.put("ServerId", ServerId);
                         values.put("Patid", Patid);
                         values.put("Docid", Docid);
@@ -5619,7 +5637,7 @@ public class ImportWebservices_NODEJS {
 
 
                         //data iruntha update else insert
-                        final boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Bind_urine_test where Mtestid='" + Mtestid + "' and ServerId='" + ServerId + "' and Patid='" + Patid + '\'');
+                        boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Bind_urine_test where Mtestid='" + Mtestid + "' and ServerId='" + ServerId + "' and Patid='" + Patid + '\'');
                         if (q) //update
                         {
                             db.update("Bind_urine_test", values, "ServerId='" + ServerId + "' and Patid='" + Patid + '\'', null);
@@ -5649,13 +5667,13 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (final ExecutionException e) {
+        } catch (ExecutionException e) {
             e.printStackTrace();
-        } catch (final JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
-        } catch (final SchemaException e) {
+        } catch (SchemaException e) {
             e.printStackTrace();
         }
     }
@@ -5663,16 +5681,16 @@ public class ImportWebservices_NODEJS {
     private void Import_ExaminationANC_Test() {
         String PatId = "";
         String MtestId = "";
-        final String MethodName = "Import_ExaminationANC_Test";
+        String MethodName = "Import_ExaminationANC_Test";
         try {
             JSONObject from_db_obj = new JSONObject();
-            final JSONArray export_jsonarray = new JSONArray();
+            JSONArray export_jsonarray = new JSONArray();
 
             //getting data from server
             String Query;
             String s = "select b.Ptid,b.mtestid from Patreg a inner join Medicaltest b on a.Patid=b.Ptid where b.Isupdate='1' and (b.IsActive='True' or b.IsActive='1')";
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final Cursor c;
+            SQLiteDatabase db = BaseConfig.GetDb();
+            Cursor c;
             c = db.rawQuery(s, null);
             if (c != null) {
 
@@ -5698,58 +5716,58 @@ public class ImportWebservices_NODEJS {
             }
             Objects.requireNonNull(c).close();
 
-            final JSONObject parentData = new JSONObject();
+            JSONObject parentData = new JSONObject();
             parentData.put("MtestIdList", export_jsonarray);
 
             //Sending data
             if ((parentData != null) && (parentData.length() > 0)) {
 
 
-                final String resultsRequestSOAP = this.postPatidMtestId(PatId, MtestId, MethodName);
+                String resultsRequestSOAP = postPatidMtestId(PatId, MtestId, MethodName);
 
 
                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                     JSONObject objJson;
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         objJson = jsonArray.getJSONObject(i);
-                        final String ServerId = objJson.getString("Id");
-                        final String Patid = objJson.getString("Patid");
-                        final String Docid = objJson.getString("Docid");
-                        final String Actdate = objJson.getString("Actdate");
-                        final String IsActive = objJson.getString("IsActive");
-                        final String IsUpdate = objJson.getString("IsUpdate");
-                        final String Mtestid = objJson.getString("Mtestid");
-                        final String Testid = objJson.getString("Testid");
-                        final String Subtestid = objJson.getString("Subtestid");
-                        final String HID = objJson.getString("HID");
-                        final String IsPaid = objJson.getString("IsPaid");
+                        String ServerId = objJson.getString("Id");
+                        String Patid = objJson.getString("Patid");
+                        String Docid = objJson.getString("Docid");
+                        String Actdate = objJson.getString("Actdate");
+                        String IsActive = objJson.getString("IsActive");
+                        String IsUpdate = objJson.getString("IsUpdate");
+                        String Mtestid = objJson.getString("Mtestid");
+                        String Testid = objJson.getString("Testid");
+                        String Subtestid = objJson.getString("Subtestid");
+                        String HID = objJson.getString("HID");
+                        String IsPaid = objJson.getString("IsPaid");
 
-                        final String haemogiobin = objJson.getString("Haemogiobin");
-                        final String bloodgroup = objJson.getString("bloodgroup");
-                        final String vdpl = objJson.getString("vdpl");
-                        final String colour = objJson.getString("colour");
-                        final String apperance = objJson.getString("apperance");
-                        final String albumin = objJson.getString("albumin");
-                        final String sugar = objJson.getString("sugar");
-                        final String bsbp = objJson.getString("bsbp");
-                        final String epithelialcells = objJson.getString("epithelialcells");
-                        final String puscells = objJson.getString("puscells");
-                        final String redcells = objJson.getString("redcells");
-                        final String yeastcells = objJson.getString("redcells");
-                        final String bacteria = objJson.getString("bacteria");
-                        final String amarphousmatenal = objJson.getString("amarphousmatenal");
-                        final String trichomonas = objJson.getString("trichomonas");
-                        final String casts = objJson.getString("casts");
-                        final String crystals = objJson.getString("crystals");
-                        final String australia_antigen = objJson.getString("australia_antigen");
-                        final String upt = objJson.getString("upt");
-                        final String tc = objJson.getString("tc");
-                        final String dcn = objJson.getString("dcn");
-                        final String dcl = objJson.getString("dcl");
-                        final String dce = objJson.getString("dce");
-                        final String dcm = objJson.getString("dcm");
+                        String haemogiobin = objJson.getString("Haemogiobin");
+                        String bloodgroup = objJson.getString("bloodgroup");
+                        String vdpl = objJson.getString("vdpl");
+                        String colour = objJson.getString("colour");
+                        String apperance = objJson.getString("apperance");
+                        String albumin = objJson.getString("albumin");
+                        String sugar = objJson.getString("sugar");
+                        String bsbp = objJson.getString("bsbp");
+                        String epithelialcells = objJson.getString("epithelialcells");
+                        String puscells = objJson.getString("puscells");
+                        String redcells = objJson.getString("redcells");
+                        String yeastcells = objJson.getString("redcells");
+                        String bacteria = objJson.getString("bacteria");
+                        String amarphousmatenal = objJson.getString("amarphousmatenal");
+                        String trichomonas = objJson.getString("trichomonas");
+                        String casts = objJson.getString("casts");
+                        String crystals = objJson.getString("crystals");
+                        String australia_antigen = objJson.getString("australia_antigen");
+                        String upt = objJson.getString("upt");
+                        String tc = objJson.getString("tc");
+                        String dcn = objJson.getString("dcn");
+                        String dcl = objJson.getString("dcl");
+                        String dce = objJson.getString("dce");
+                        String dcm = objJson.getString("dcm");
                         String Result_Status = objJson.getString("ANC_Result");
 
                         if ("0".equalsIgnoreCase(Result_Status))//Nil
@@ -5763,7 +5781,7 @@ public class ImportWebservices_NODEJS {
                             Result_Status = "Negative";
                         }
 
-                        final ContentValues values = new ContentValues();
+                        ContentValues values = new ContentValues();
                         values.put("ServerId", ServerId);
                         values.put("Patid", Patid);
                         values.put("Docid", Docid);
@@ -5804,7 +5822,7 @@ public class ImportWebservices_NODEJS {
 
 
                         //data iruntha update else insert
-                        final boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Bind_anc_fp_test where Mtestid='" + Mtestid + "' and ServerId='" + ServerId + "' and Patid='" + Patid + '\'');
+                        boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Bind_anc_fp_test where Mtestid='" + Mtestid + "' and ServerId='" + ServerId + "' and Patid='" + Patid + '\'');
                         if (q) //update
                         {
                             db.update("Bind_anc_fp_test", values, "ServerId='" + ServerId + "' and Patid='" + Patid + '\'', null);
@@ -5834,13 +5852,13 @@ public class ImportWebservices_NODEJS {
 
             }
 
-        } catch (final InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (final ExecutionException e) {
+        } catch (ExecutionException e) {
             e.printStackTrace();
-        } catch (final JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
-        } catch (final SchemaException e) {
+        } catch (SchemaException e) {
             e.printStackTrace();
         }
     }
@@ -5848,16 +5866,16 @@ public class ImportWebservices_NODEJS {
     private void Import_ExaminationHIV_Test() {
         String PatId = "";
         String MtestId = "";
-        final String MethodName = "Import_ExaminationHIV_Test";
+        String MethodName = "Import_ExaminationHIV_Test";
         try {
             JSONObject from_db_obj = new JSONObject();
-            final JSONArray export_jsonarray = new JSONArray();
+            JSONArray export_jsonarray = new JSONArray();
 
             //getting data from server
             String Query;
             String s = "select b.Ptid,b.mtestid from Patreg a inner join Medicaltest b on a.Patid=b.Ptid where b.Isupdate='1' and (b.IsActive='True' or b.IsActive='1')";
-            final SQLiteDatabase db = BaseConfig.GetDb();
-            final Cursor c;
+            SQLiteDatabase db = BaseConfig.GetDb();
+            Cursor c;
             c = db.rawQuery(s, null);
             if (c != null) {
 
@@ -5882,64 +5900,64 @@ public class ImportWebservices_NODEJS {
             }
             Objects.requireNonNull(c).close();
 
-            final JSONObject parentData = new JSONObject();
+            JSONObject parentData = new JSONObject();
             parentData.put("MtestIdList", export_jsonarray);
 
             //Sending data
             if ((parentData != null) && (parentData.length() > 0)) {
 
 
-                final String resultsRequestSOAP = this.postPatidMtestId(PatId, MtestId, MethodName);
+                String resultsRequestSOAP = postPatidMtestId(PatId, MtestId, MethodName);
 
 
                 if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                    final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                    JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                     JSONObject objJson;
 
                     for (int i = 0; i < jsonArray.length(); i++) {
                         objJson = jsonArray.getJSONObject(i);
-                        final String ServerId = objJson.getString("Id");
-                        final String Patid = objJson.getString("Patid");
-                        final String Docid = objJson.getString("Docid");
-                        final String Actdate = objJson.getString("Actdate");
-                        final String IsActive = objJson.getString("IsActive");
-                        final String IsUpdate = objJson.getString("IsUpdate");
-                        final String Mtestid = objJson.getString("Mtestid");
-                        final String Testid = objJson.getString("Testid");
-                        final String Subtestid = objJson.getString("Subtestid");
-                        final String HID = objJson.getString("HID");
-                        final String IsPaid = objJson.getString("IsPaid");
+                        String ServerId = objJson.getString("Id");
+                        String Patid = objJson.getString("Patid");
+                        String Docid = objJson.getString("Docid");
+                        String Actdate = objJson.getString("Actdate");
+                        String IsActive = objJson.getString("IsActive");
+                        String IsUpdate = objJson.getString("IsUpdate");
+                        String Mtestid = objJson.getString("Mtestid");
+                        String Testid = objJson.getString("Testid");
+                        String Subtestid = objJson.getString("Subtestid");
+                        String HID = objJson.getString("HID");
+                        String IsPaid = objJson.getString("IsPaid");
 
 
                         //String date_time= objJson.getString("date_time");
-                        final String LabId = objJson.getString("LabId");
-                        final String blood_datetime = objJson.getString("blood_datetime");
+                        String LabId = objJson.getString("LabId");
+                        String blood_datetime = objJson.getString("blood_datetime");
 
-                        final String NameHIVTestKit1 = objJson.getString("NameHIVTestKit1");
-                        final String BatchNo1 = objJson.getString("BatchNo1");
-                        final String ExpDate1 = objJson.getString("ExpDate1");
-                        final String Antibodies11 = objJson.getString("Antibodies11");
-                        final String Antibodies21 = objJson.getString("Antibodies21");
-                        final String Antibodies31 = objJson.getString("Antibodies31");
+                        String NameHIVTestKit1 = objJson.getString("NameHIVTestKit1");
+                        String BatchNo1 = objJson.getString("BatchNo1");
+                        String ExpDate1 = objJson.getString("ExpDate1");
+                        String Antibodies11 = objJson.getString("Antibodies11");
+                        String Antibodies21 = objJson.getString("Antibodies21");
+                        String Antibodies31 = objJson.getString("Antibodies31");
 
-                        final String NameHIVTestKit2 = objJson.getString("NameHIVTestKit2");
-                        final String BatchNo2 = objJson.getString("BatchNo2");
-                        final String ExpDate2 = objJson.getString("ExpDate2");
-                        final String Antibodies12 = objJson.getString("Antibodies12");
-                        final String Antibodies22 = objJson.getString("Antibodies22");
-                        final String Antibodies32 = objJson.getString("Antibodies32");
+                        String NameHIVTestKit2 = objJson.getString("NameHIVTestKit2");
+                        String BatchNo2 = objJson.getString("BatchNo2");
+                        String ExpDate2 = objJson.getString("ExpDate2");
+                        String Antibodies12 = objJson.getString("Antibodies12");
+                        String Antibodies22 = objJson.getString("Antibodies22");
+                        String Antibodies32 = objJson.getString("Antibodies32");
 
-                        final String NameHIVTestKit3 = objJson.getString("NameHIVTestKit3");
-                        final String BatchNo3 = objJson.getString("BatchNo3");
-                        final String ExpDate3 = objJson.getString("ExpDate3");
-                        final String Antibodies13 = objJson.getString("Antibodies13");
-                        final String Antibodies23 = objJson.getString("Antibodies23");
-                        final String Antibodies33 = objJson.getString("Antibodies33");
+                        String NameHIVTestKit3 = objJson.getString("NameHIVTestKit3");
+                        String BatchNo3 = objJson.getString("BatchNo3");
+                        String ExpDate3 = objJson.getString("ExpDate3");
+                        String Antibodies13 = objJson.getString("Antibodies13");
+                        String Antibodies23 = objJson.getString("Antibodies23");
+                        String Antibodies33 = objJson.getString("Antibodies33");
 
-                        final String negative_HIV = objJson.getString("negative_HIV");
-                        final String positive_HIV_1 = objJson.getString("positive_HIV_1");
-                        final String positive_HIV = objJson.getString("positive_HIV");
-                        final String HIV_Anitibodies = objJson.getString("HIV_Anitibodies");
+                        String negative_HIV = objJson.getString("negative_HIV");
+                        String positive_HIV_1 = objJson.getString("positive_HIV_1");
+                        String positive_HIV = objJson.getString("positive_HIV");
+                        String HIV_Anitibodies = objJson.getString("HIV_Anitibodies");
 
                         String Result_Status = objJson.getString("HIV_Result");
 
@@ -5954,7 +5972,7 @@ public class ImportWebservices_NODEJS {
                             Result_Status = "Negative";
                         }
 
-                        final ContentValues values = new ContentValues();
+                        ContentValues values = new ContentValues();
                         values.put("ServerId", ServerId);
                         values.put("Patid", Patid);
                         values.put("Docid", Docid);
@@ -6000,7 +6018,7 @@ public class ImportWebservices_NODEJS {
 
 
                         //data iruntha update else insert
-                        final boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Bind_HIV_Report where Mtestid='" + Mtestid + "' and ServerId='" + ServerId + "' and Patid='" + Patid + '\'');
+                        boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Bind_HIV_Report where Mtestid='" + Mtestid + "' and ServerId='" + ServerId + "' and Patid='" + Patid + '\'');
                         if (q) //update
                         {
                             db.update("Bind_HIV_Report", values, "ServerId='" + ServerId + "' and Patid='" + Patid + '\'', null);
@@ -6029,93 +6047,93 @@ public class ImportWebservices_NODEJS {
 
 
             }
-        } catch (final InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (final ExecutionException e) {
+        } catch (ExecutionException e) {
             e.printStackTrace();
-        } catch (final JSONException e) {
+        } catch (JSONException e) {
             e.printStackTrace();
-        } catch (final SchemaException e) {
+        } catch (SchemaException e) {
             e.printStackTrace();
         }
 
     }
 
-    private String postIsUpdateMaxRESTMethod(final String isUpdateMax, final String methodName) throws SchemaException, InterruptedException, ExecutionException {
-        final MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(this.ctx);
-        final PostIsUpdateMaxFactory postDoctorIdFactory = new PostIsUpdateMaxFactory(magnetMobileClient);
-        final PostIsUpdateMax postDoctorId = postDoctorIdFactory.obtainInstance();
+    private String postIsUpdateMaxRESTMethod(String isUpdateMax, String methodName) throws SchemaException, InterruptedException, ExecutionException {
+        MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(ctx);
+        PostIsUpdateMaxFactory postDoctorIdFactory = new PostIsUpdateMaxFactory(magnetMobileClient);
+        PostIsUpdateMax postDoctorId = postDoctorIdFactory.obtainInstance();
 
         //Set Body Data
-        final PostIsUpdateMaxRequest body = new PostIsUpdateMaxRequest();
+        PostIsUpdateMaxRequest body = new PostIsUpdateMaxRequest();
         body.setIsUpdateMax(isUpdateMax);
         body.setMethodName(methodName);
 
-        final Call<IsUpdateMaxResult> resultCall = postDoctorId.postIsUpdateMax(body, null);
+        Call<IsUpdateMaxResult> resultCall = postDoctorId.postIsUpdateMax(body, null);
 
         return resultCall.get().getResults();
     }
 
-    private String postPatientIdListRESTMethod(final String patientIdLIst, final String methodName) throws SchemaException, InterruptedException, ExecutionException {
-        final MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(this.ctx);
-        final PostPatientIdListFactory postDoctorIdFactory = new PostPatientIdListFactory(magnetMobileClient);
-        final PostPatientIdList postDoctorId = postDoctorIdFactory.obtainInstance();
+    private String postPatientIdListRESTMethod(String patientIdLIst, String methodName) throws SchemaException, InterruptedException, ExecutionException {
+        MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(ctx);
+        PostPatientIdListFactory postDoctorIdFactory = new PostPatientIdListFactory(magnetMobileClient);
+        PostPatientIdList postDoctorId = postDoctorIdFactory.obtainInstance();
 
         //Set Body Data
-        final PostPatientIdListRequest body = new PostPatientIdListRequest();
+        PostPatientIdListRequest body = new PostPatientIdListRequest();
         body.setPatientList(patientIdLIst);
         body.setMethodName(methodName);
 
-        final Call<PatientIdListResult> resultCall = postDoctorId.postPatientIdList(body, null);
+        Call<PatientIdListResult> resultCall = postDoctorId.postPatientIdList(body, null);
 
         return resultCall.get().getResults();
     }
 
-    private String getDoctorIdRESTCALL(final String doctorID, final String methodName) throws SchemaException, InterruptedException, ExecutionException {
-        final MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(this.ctx);
-        final PostDoctorIdFactory postDoctorIdFactory = new PostDoctorIdFactory(magnetMobileClient);
-        final PostDoctorId postDoctorId = postDoctorIdFactory.obtainInstance();
+    private String getDoctorIdRESTCALL(String doctorID, String methodName) throws SchemaException, InterruptedException, ExecutionException {
+        MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(ctx);
+        PostDoctorIdFactory postDoctorIdFactory = new PostDoctorIdFactory(magnetMobileClient);
+        PostDoctorId postDoctorId = postDoctorIdFactory.obtainInstance();
 
         //Set Body Data
-        final PostDoctorIdRequest body = new PostDoctorIdRequest();
+        PostDoctorIdRequest body = new PostDoctorIdRequest();
         body.setDoctorID(doctorID);
         body.setMethodName(methodName);
 
-        final Call<DoctorIdResult> resultCall = postDoctorId.postDoctorId(body, null);
+        Call<DoctorIdResult> resultCall = postDoctorId.postDoctorId(body, null);
 
         return resultCall.get().getResults();
     }
 
-    private String postMtestIdDidPId(final String mtestid, final String docid, final String ptid, final String methodName, String resultsRequestSOAP) {
+    private String postMtestIdDidPId(String mtestid, String docid, String ptid, String methodName, String resultsRequestSOAP) {
         try {
-            final PosPatIdDocIdMtestIdNew posPatIdDocIdMtestIdNew;
-            final MagnetMobileClient magnetClient = MagnetMobileClient.getInstance(this.ctx);
-            final PosPatIdDocIdMtestIdNewFactory controllerFactory = new PosPatIdDocIdMtestIdNewFactory(magnetClient);
+            PosPatIdDocIdMtestIdNew posPatIdDocIdMtestIdNew;
+            MagnetMobileClient magnetClient = MagnetMobileClient.getInstance(ctx);
+            PosPatIdDocIdMtestIdNewFactory controllerFactory = new PosPatIdDocIdMtestIdNewFactory(magnetClient);
             posPatIdDocIdMtestIdNew = controllerFactory.obtainInstance();
-            final String contentType = "application/json";
+            String contentType = "application/json";
             //Set Body Data
-            final kdmc_kumar.Webservices_NodeJSON.importREST_Services.newPosPatIdDocIdMtestIdNew.beans.PosPatIdDocIdMtestIdRequest body = new kdmc_kumar.Webservices_NodeJSON.importREST_Services.newPosPatIdDocIdMtestIdNew.beans.PosPatIdDocIdMtestIdRequest();
+            kdmc_kumar.Webservices_NodeJSON.importREST_Services.newPosPatIdDocIdMtestIdNew.beans.PosPatIdDocIdMtestIdRequest body = new kdmc_kumar.Webservices_NodeJSON.importREST_Services.newPosPatIdDocIdMtestIdNew.beans.PosPatIdDocIdMtestIdRequest();
             body.setDocId(docid);
             body.setMethodName(methodName);
             body.setPatId(ptid);
             body.setMtestId(mtestid);
 
-            final Call<kdmc_kumar.Webservices_NodeJSON.importREST_Services.newPosPatIdDocIdMtestIdNew.beans.PosPatIdDocIdMtestIdResult> resultCall = posPatIdDocIdMtestIdNew.posPatIdDocIdMtestId(
+            Call<kdmc_kumar.Webservices_NodeJSON.importREST_Services.newPosPatIdDocIdMtestIdNew.beans.PosPatIdDocIdMtestIdResult> resultCall = posPatIdDocIdMtestIdNew.posPatIdDocIdMtestId(
                     contentType,
                     body, null);
 
             resultsRequestSOAP = resultCall.get().getResults();
-        } catch (final SchemaException e) {
+        } catch (SchemaException e) {
             e.printStackTrace();
-        } catch (final InterruptedException e) {
+        } catch (InterruptedException e) {
             e.printStackTrace();
-        } catch (final ExecutionException e) {
+        } catch (ExecutionException e) {
             e.printStackTrace();
         }
         return resultsRequestSOAP;
     }
 
-    private void UpdateInCaseNotes(final String PatId, final String mTestId, final String alltest) {
+    private void UpdateInCaseNotes(String PatId, String mTestId, String alltest) {
         String subtestName = "";
         String subtestValue = "";
         String bps = "0";
@@ -6124,8 +6142,8 @@ public class ImportWebservices_NODEJS {
         String weight = "0";
 
         try {
-            final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
-            final Cursor c = db.rawQuery("select subtestname,IFNULL(testvalue,'0')as testvalue,IFNULL(bps,'0')as bps,IFNULL(bpd,'0')as bpd,IFNULL(temperature,'0')as temperature,weight from Medicaltestdtls where Ptid = '" + PatId + "' and mtestid = '" + mTestId + "' and alltest = '" + alltest + "' ", null);
+            SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+            Cursor c = db.rawQuery("select subtestname,IFNULL(testvalue,'0')as testvalue,IFNULL(bps,'0')as bps,IFNULL(bpd,'0')as bpd,IFNULL(temperature,'0')as temperature,weight from Medicaltestdtls where Ptid = '" + PatId + "' and mtestid = '" + mTestId + "' and alltest = '" + alltest + "' ", null);
 
 
             if (c != null) {
@@ -6149,20 +6167,20 @@ public class ImportWebservices_NODEJS {
             Objects.requireNonNull(c).close();
 
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
-        final ImportWebservices_NODEJS.PatientData data = this.getPatientName(PatId);
+        PatientData data = getPatientName(PatId);
 
-        final String[] split_subtest;
+        String[] split_subtest;
 
         split_subtest = alltest.split("/");
 
         String compareRBSName = "blood sug random";
         if (split_subtest[1].trim().equalsIgnoreCase(compareRBSName)) {
 
-            final ContentValues values = new ContentValues();
+            ContentValues values = new ContentValues();
             values.put("Docid", BaseConfig.doctorId);
             values.put("Ptid", PatId);
             values.put("pname", data.pName);
@@ -6182,7 +6200,7 @@ public class ImportWebservices_NODEJS {
             values.put("PWeight", weight);
             values.put("Actdate", BaseConfig.DeviceDate());
 
-            final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+            SQLiteDatabase db = BaseConfig.GetDb();//ctx);
             db.insert("Diagonis", null, values);
 
 
@@ -6191,7 +6209,7 @@ public class ImportWebservices_NODEJS {
         if (split_subtest[1].trim().equalsIgnoreCase(compareFBSName)) {
 
 
-            final ContentValues values = new ContentValues();
+            ContentValues values = new ContentValues();
             values.put("Docid", BaseConfig.doctorId);
             values.put("Ptid", PatId);
             values.put("pname", data.pName);
@@ -6211,7 +6229,7 @@ public class ImportWebservices_NODEJS {
             values.put("PWeight", weight);
             values.put("Actdate", BaseConfig.DeviceDate());
 
-            final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+            SQLiteDatabase db = BaseConfig.GetDb();//ctx);
             db.insert("Diagonis", null, values);
 
 
@@ -6220,7 +6238,7 @@ public class ImportWebservices_NODEJS {
         if (split_subtest[1].trim().equalsIgnoreCase(comparePBSName)) {
 
 
-            final ContentValues values = new ContentValues();
+            ContentValues values = new ContentValues();
             values.put("Docid", BaseConfig.doctorId);
             values.put("Ptid", PatId);
             values.put("pname", data.pName);
@@ -6240,7 +6258,7 @@ public class ImportWebservices_NODEJS {
             values.put("PWeight", weight);
             values.put("Actdate", BaseConfig.DeviceDate());
 
-            final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+            SQLiteDatabase db = BaseConfig.GetDb();//ctx);
             db.insert("Diagonis", null, values);
 
 
@@ -6248,14 +6266,14 @@ public class ImportWebservices_NODEJS {
 
     }
 
-    private ImportWebservices_NODEJS.PatientData getPatientName(final String patId) {
-        final ImportWebservices_NODEJS.PatientData data = new PatientData();
+    private PatientData getPatientName(String patId) {
+        PatientData data = new ImportWebservices_NODEJS.PatientData();
 
 
         try {
 
-            final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
-            final Cursor c = db.rawQuery("select * from patreg where patid  = '" + patId.trim() + '\'', null);
+            SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+            Cursor c = db.rawQuery("select * from patreg where patid  = '" + patId.trim() + '\'', null);
 
 
             if (c != null) {
@@ -6275,7 +6293,7 @@ public class ImportWebservices_NODEJS {
             Objects.requireNonNull(c).close();
 
 
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -6286,7 +6304,7 @@ public class ImportWebservices_NODEJS {
 
     //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 
-    private void getOperationDetails(final String patids) {
+    private void getOperationDetails(String patids) {
         //String url = BaseConfig.URL + "/GetPatientOperationInfo?PatientId=" + patid;
         //Log.e("Mast Operation url", url);
 
@@ -6294,22 +6312,22 @@ public class ImportWebservices_NODEJS {
 
         ContentValues values1;
         try {
-            final MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(this.ctx);
-            final PostPatIdFactory postDoctorIdFactory = new PostPatIdFactory(magnetMobileClient);
-            final PostPatId postDoctorId = postDoctorIdFactory.obtainInstance();
+            MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(ctx);
+            PostPatIdFactory postDoctorIdFactory = new PostPatIdFactory(magnetMobileClient);
+            PostPatId postDoctorId = postDoctorIdFactory.obtainInstance();
 
             //Set Body Data
-            final PosPatIdRequest body = new PosPatIdRequest();
+            PosPatIdRequest body = new PosPatIdRequest();
             body.setPatientId(patids);
 
 
-            final Call<PosPatIdResult> resultCall = postDoctorId.posPatId(body, null);
+            Call<PosPatIdResult> resultCall = postDoctorId.posPatId(body, null);
 
-            final String resultsRequestSOAP = resultCall.get().getResults();
+            String resultsRequestSOAP = resultCall.get().getResults();
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -6317,33 +6335,33 @@ public class ImportWebservices_NODEJS {
 
                     objJson = jsonArray.getJSONObject(i);
                     String Remark_Image;
-                    final String ServerId = String.valueOf(objJson.getString("operationId"));
-                    final String OperationNo = String.valueOf(objJson.getString("OperationNo"));
-                    final String OperationName = String.valueOf(objJson.getString("OperationName"));
-                    final String patid = String.valueOf(objJson.getString("patid"));
-                    final String PatientName = String.valueOf(objJson.getString("PatientName"));
-                    final String Gender = String.valueOf(objJson.getString("Gender"));
-                    final String ScheduleDate = String.valueOf(objJson.getString("ScheduleDate"));
-                    final String Fromtime = String.valueOf(objJson.getString("Fromtime"));
-                    final String Totime = String.valueOf(objJson.getString("Totime"));
-                    final String Rate = String.valueOf(objJson.getString("Rate"));
-                    final String IsActive = String.valueOf(objJson.getString("IsActive"));
-                    final String curdate = String.valueOf(objJson.getString("curdate"));
-                    final String IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
-                    final String IsCancel = String.valueOf(objJson.getString("IsCancel"));
-                    final String Remarks_Cancel = String.valueOf(objJson.getString("Remarks_Cancel"));
-                    final String Status = String.valueOf(objJson.getString("Status"));
+                    String ServerId = String.valueOf(objJson.getString("operationId"));
+                    String OperationNo = String.valueOf(objJson.getString("OperationNo"));
+                    String OperationName = String.valueOf(objJson.getString("OperationName"));
+                    String patid = String.valueOf(objJson.getString("patid"));
+                    String PatientName = String.valueOf(objJson.getString("PatientName"));
+                    String Gender = String.valueOf(objJson.getString("Gender"));
+                    String ScheduleDate = String.valueOf(objJson.getString("ScheduleDate"));
+                    String Fromtime = String.valueOf(objJson.getString("Fromtime"));
+                    String Totime = String.valueOf(objJson.getString("Totime"));
+                    String Rate = String.valueOf(objJson.getString("Rate"));
+                    String IsActive = String.valueOf(objJson.getString("IsActive"));
+                    String curdate = String.valueOf(objJson.getString("curdate"));
+                    String IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
+                    String IsCancel = String.valueOf(objJson.getString("IsCancel"));
+                    String Remarks_Cancel = String.valueOf(objJson.getString("Remarks_Cancel"));
+                    String Status = String.valueOf(objJson.getString("Status"));
 
-                    final String Oper_Notes = String.valueOf(objJson.getString("Oper_Notes"));
-                    final String Position = String.valueOf(objJson.getString("Position"));
-                    final String OperationProcedure = String.valueOf(objJson.getString("OperationProcedure"));
-                    final String Post_Oper_Diagnosis = String.valueOf(objJson.getString("Post_Oper_Diagnosis"));
-                    final String Post_Oper_Instruction = String.valueOf(objJson.getString("Post_Oper_Instruction"));
-                    final String Closure = String.valueOf(objJson.getString("Closure"));
-                    final String Pre_Oper_Diagnosis = String.valueOf(objJson.getString("Pre_Oper_Diagnosis"));
+                    String Oper_Notes = String.valueOf(objJson.getString("Oper_Notes"));
+                    String Position = String.valueOf(objJson.getString("Position"));
+                    String OperationProcedure = String.valueOf(objJson.getString("OperationProcedure"));
+                    String Post_Oper_Diagnosis = String.valueOf(objJson.getString("Post_Oper_Diagnosis"));
+                    String Post_Oper_Instruction = String.valueOf(objJson.getString("Post_Oper_Instruction"));
+                    String Closure = String.valueOf(objJson.getString("Closure"));
+                    String Pre_Oper_Diagnosis = String.valueOf(objJson.getString("Pre_Oper_Diagnosis"));
 
 
-                    final String Doctor_Name = String.valueOf(objJson.getString("doctorname"));
+                    String Doctor_Name = String.valueOf(objJson.getString("doctorname"));
                     Remark_Image = String.valueOf(objJson.getString("Remark_Image"));
 
                     Remark_Image = BaseConfig.saveImageToSDCard(Remark_Image, ServerId);
@@ -6376,9 +6394,9 @@ public class ImportWebservices_NODEJS {
                     values1.put("Remark_Image", Remark_Image);
 
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from mast_Operation where ServerId=" + ServerId);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from mast_Operation where ServerId=" + ServerId);
 
-                    final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                    SQLiteDatabase db = BaseConfig.GetDb();//ctx);
                     if (GetStatus) {
                         db.update("mast_Operation", values1, "ServerId=" + ServerId, null);
 
@@ -6390,56 +6408,56 @@ public class ImportWebservices_NODEJS {
                 }
 
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
     }
 
-    private void getBindUpload(final String patid, final String mtestid1) {
+    private void getBindUpload(String patid, String mtestid1) {
 
 
-        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+        SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
         ContentValues values1;
 
         try {
 
-            final String MethodName = "Import_Upload";
-            final String resultsRequestSOAP = this.postPatidMtestId(patid, mtestid1, MethodName);
+            String MethodName = "Import_Upload";
+            String resultsRequestSOAP = postPatidMtestId(patid, mtestid1, MethodName);
 
 
             if (!"[]".equalsIgnoreCase(resultsRequestSOAP) && !"".equalsIgnoreCase(resultsRequestSOAP)) {
-                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
                 JSONObject objJson;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
                     String Remark_Image;
-                    final String ServerId = String.valueOf(objJson.getString("id"));
-                    final String Patid = String.valueOf(objJson.getString("Patid"));
-                    final String Fname = String.valueOf(objJson.getString("Fname"));
-                    final String Filetype = String.valueOf(objJson.getString("Filetype"));
-                    final String Type = String.valueOf(objJson.getString("Type"));
-                    final String Cdtime = String.valueOf(objJson.getString("Cdtime"));
-                    final String Docid = String.valueOf(objJson.getString("Docid"));
-                    final String Upload_Base64 = String.valueOf(objJson.getString("Upload_Base64"));
-                    final String mtestid = String.valueOf(objJson.getString("mtestid"));
-                    final String Report_Remarks = String.valueOf(objJson.getString("image_remarks"));
+                    String ServerId = String.valueOf(objJson.getString("id"));
+                    String Patid = String.valueOf(objJson.getString("Patid"));
+                    String Fname = String.valueOf(objJson.getString("Fname"));
+                    String Filetype = String.valueOf(objJson.getString("Filetype"));
+                    String Type = String.valueOf(objJson.getString("Type"));
+                    String Cdtime = String.valueOf(objJson.getString("Cdtime"));
+                    String Docid = String.valueOf(objJson.getString("Docid"));
+                    String Upload_Base64 = String.valueOf(objJson.getString("Upload_Base64"));
+                    String mtestid = String.valueOf(objJson.getString("mtestid"));
+                    String Report_Remarks = String.valueOf(objJson.getString("image_remarks"));
 
 
                     //Log.e("getBindUpload: Upload_Base64: ", Upload_Base64);
 
                     Bitmap theBitmap = null;
 
-                    theBitmap = BaseConfig.Glide_GetBitmap(ctx, Upload_Base64);//Glide.with(this.ctx).load(Upload_Base64).asBitmap().into(-1, -1).get();
+                    theBitmap = BaseConfig.Glide_GetBitmap(ImportWebservices_NODEJS.ctx, Upload_Base64);//Glide.with(this.ctx).load(Upload_Base64).asBitmap().into(-1, -1).get();
 
                     String ReportPhoto = null;
                     try {
                         ReportPhoto = BaseConfig.saveURLImagetoSDcard1(theBitmap, ServerId);
-                    } catch (final Exception e) {
+                    } catch (Exception e) {
                         e.printStackTrace();
                     }
 
@@ -6457,7 +6475,7 @@ public class ImportWebservices_NODEJS {
                     values1.put("mtestid", mtestid);
 
 
-                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Bind_Upload where ServerId=" + ServerId);
+                    boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Bind_Upload where ServerId=" + ServerId);
 
                     if (GetStatus) {
                         db.update("Bind_Upload", values1, "ServerId=" + ServerId, null);
@@ -6471,25 +6489,25 @@ public class ImportWebservices_NODEJS {
                 db.close();
 
             }
-        } catch (final Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
 
     }
 
-    private String postPatidMtestId(final String patId, final String mtestId, final String methodName) throws SchemaException, InterruptedException, ExecutionException {
-        final MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(this.ctx);
-        final PostPatidMtestidFactory postDoctorIdFactory = new PostPatidMtestidFactory(magnetMobileClient);
-        final PostPatidMtestid postDoctorId = postDoctorIdFactory.obtainInstance();
+    private String postPatidMtestId(String patId, String mtestId, String methodName) throws SchemaException, InterruptedException, ExecutionException {
+        MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(ctx);
+        PostPatidMtestidFactory postDoctorIdFactory = new PostPatidMtestidFactory(magnetMobileClient);
+        PostPatidMtestid postDoctorId = postDoctorIdFactory.obtainInstance();
 
         //Set Body Data
-        final PostPatidMtestidRequest body = new PostPatidMtestidRequest();
+        PostPatidMtestidRequest body = new PostPatidMtestidRequest();
         body.setMethodName(methodName);
         body.setMtestId(mtestId);
         body.setPatId(patId);
 
-        final Call<PatidMtestidResult> resultCall = postDoctorId.postPatidMtestid(body, null);
+        Call<PatidMtestidResult> resultCall = postDoctorId.postPatidMtestid(body, null);
 
         return resultCall.get().getResults();
     }
@@ -6500,13 +6518,13 @@ public class ImportWebservices_NODEJS {
 
         if (BaseConfig.LoadReportsBooleanStatus(Query)) {
 
-            getPatientDetails();
+            this.getPatientDetails();
         }
 
     }
 
-    private final ArrayList<CommonDataObjects.NotificationGetSet> getPatientDetails() {
-        ArrayList<CommonDataObjects.NotificationGetSet> value = new ArrayList<>();
+    private final ArrayList<NotificationGetSet> getPatientDetails() {
+        ArrayList<NotificationGetSet> value = new ArrayList<>();
         //Original Query
         String Query = "select Id as dstatus1  from Medicaltestdtls where seen = '0' and IsNew=1 and (substr(Actdate,0,11)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "')";
         //Testing Purpose
@@ -6526,7 +6544,7 @@ public class ImportWebservices_NODEJS {
                         String MEDICAL_TEST_ID = c.getString(c.getColumnIndex("mtestid"));
                         String PATIENT_NAME = BaseConfig.GetValues("select name as ret_values from Patreg where Patid='" + PATIENT_ID + "'");
 
-                        CreateNewNotification(PATIENT_ID, PATIENT_NAME +"-"+ PATIENT_ID, MEDICAL_TEST_ID, ID);
+                        this.CreateNewNotification(PATIENT_ID, PATIENT_NAME +"-"+ PATIENT_ID, MEDICAL_TEST_ID, ID);
 
 
                     }
@@ -6543,26 +6561,26 @@ public class ImportWebservices_NODEJS {
 
     private void CreateNewNotification(String patienid, String patid_name, String medid, int ids) {
         Notification foregroundNote;
-        RemoteViews bigView = new RemoteViews(ctx.getPackageName(), R.layout.notification_layout_big);
+        RemoteViews bigView = new RemoteViews(ImportWebservices_NODEJS.ctx.getPackageName(), layout.notification_layout_big);
 
-        bigView.setImageViewBitmap(R.id.patient_image, getPatientBitmpaImage(patienid));
-        bigView.setTextViewText(R.id.patientnotification_id, medid);
-        bigView.setTextViewText(R.id.patient_name, patid_name);
+        bigView.setImageViewBitmap(id.patient_image, this.getPatientBitmpaImage(patienid));
+        bigView.setTextViewText(id.patientnotification_id, medid);
+        bigView.setTextViewText(id.patient_name, patid_name);
 
 
-        Intent showFullQuoteIntent = new Intent(ctx, MyPatientDrawer.class);
+        Intent showFullQuoteIntent = new Intent(ImportWebservices_NODEJS.ctx, MyPatientDrawer.class);
         showFullQuoteIntent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, patienid);
 
         // both of these approaches now work: FLAG_CANCEL, FLAG_UPDATE; the uniqueInt may be the real solution.
         //PendingIntent pendingIntent = PendingIntent.getActivity(this, uniqueInt, showFullQuoteIntent, PendingIntent.FLAG_CANCEL_CURRENT);
         int uniqueInt = (int) (System.currentTimeMillis() & 0xfffffff);
-        PendingIntent pendingIntent = PendingIntent.getActivity(ctx, uniqueInt, showFullQuoteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
+        PendingIntent pendingIntent = PendingIntent.getActivity(ImportWebservices_NODEJS.ctx, uniqueInt, showFullQuoteIntent, PendingIntent.FLAG_UPDATE_CURRENT);
 
         // bigView.setOnClickPendingIntent() etc..
-        Notification.Builder mNotifyBuilder = new Notification.Builder(ctx);
+        Builder mNotifyBuilder = new Builder(ImportWebservices_NODEJS.ctx);
         foregroundNote = mNotifyBuilder.setContentTitle("Investigation Results - Expand to view")
                 .setContentText(patid_name)
-                .setSmallIcon(R.drawable.logo_high_pix)
+                .setSmallIcon(drawable.logo_high_pix)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
                 .build();
@@ -6570,7 +6588,7 @@ public class ImportWebservices_NODEJS {
         foregroundNote.bigContentView = bigView;
 
         // now show notification..
-        NotificationManager mNotifyManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+        NotificationManager mNotifyManager = (NotificationManager) ImportWebservices_NODEJS.ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         // tapping notification will open MainActivity
 
 
@@ -6589,7 +6607,7 @@ public class ImportWebservices_NODEJS {
                     try {
                         File sd = Environment.getExternalStorageDirectory();
                         File image = new File(c.getString(c.getColumnIndex("PC")));
-                        BitmapFactory.Options bmOptions = new BitmapFactory.Options();
+                        Options bmOptions = new Options();
                         Bitmap bitmap = BitmapFactory.decodeFile(image.getAbsolutePath(), bmOptions);
                         return bitmap;
                     } catch (Exception e) {
@@ -6603,8 +6621,8 @@ public class ImportWebservices_NODEJS {
     }
 
 
-    private ArrayList<CommonDataObjects.NotificationListGetSet> getTableData(String patientid) {
-        ArrayList<CommonDataObjects.NotificationListGetSet> values = new ArrayList<>();
+    private ArrayList<NotificationListGetSet> getTableData(String patientid) {
+        ArrayList<NotificationListGetSet> values = new ArrayList<>();
         SQLiteDatabase db = BaseConfig.GetDb();
 
         Cursor c = db.rawQuery("select *  from Medicaltestdtls where seen = '0' and IsNew=1 and (substr(Actdate,0,11)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "'  or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "') and Ptid='" + patientid + '\'', null);
@@ -6614,18 +6632,18 @@ public class ImportWebservices_NODEJS {
                 do {
                     String va = "";
 
-                    if (checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(compareRBSName)) {
-                        values.add(new CommonDataObjects.NotificationListGetSet(String.valueOf(c.getString(c.getColumnIndex("alltest"))), c.getString(c.getColumnIndex("temperature")), c.getString(c.getColumnIndex("testsummary"))));
+                    if (ImportWebservices_NODEJS.checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(this.compareRBSName)) {
+                        values.add(new NotificationListGetSet(String.valueOf(c.getString(c.getColumnIndex("alltest"))), c.getString(c.getColumnIndex("temperature")), c.getString(c.getColumnIndex("testsummary"))));
 
 
-                    } else if (checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(compareFBSName)) {
-                        values.add(new CommonDataObjects.NotificationListGetSet(String.valueOf(c.getString(c.getColumnIndex("alltest"))), c.getString(c.getColumnIndex("bps")), c.getString(c.getColumnIndex("testsummary"))));
+                    } else if (ImportWebservices_NODEJS.checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(this.compareFBSName)) {
+                        values.add(new NotificationListGetSet(String.valueOf(c.getString(c.getColumnIndex("alltest"))), c.getString(c.getColumnIndex("bps")), c.getString(c.getColumnIndex("testsummary"))));
 
-                    } else if (checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(comparePBSName)) {
-                        values.add(new CommonDataObjects.NotificationListGetSet(String.valueOf(c.getString(c.getColumnIndex("alltest"))), c.getString(c.getColumnIndex("bpd")), c.getString(c.getColumnIndex("testsummary"))));
+                    } else if (ImportWebservices_NODEJS.checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(this.comparePBSName)) {
+                        values.add(new NotificationListGetSet(String.valueOf(c.getString(c.getColumnIndex("alltest"))), c.getString(c.getColumnIndex("bpd")), c.getString(c.getColumnIndex("testsummary"))));
 
                     } else {
-                        values.add(new CommonDataObjects.NotificationListGetSet(String.valueOf(c.getString(c.getColumnIndex("alltest"))), c.getString(c.getColumnIndex("testvalue")), c.getString(c.getColumnIndex("testsummary"))));
+                        values.add(new NotificationListGetSet(String.valueOf(c.getString(c.getColumnIndex("alltest"))), c.getString(c.getColumnIndex("testvalue")), c.getString(c.getColumnIndex("testsummary"))));
                     }
 
 

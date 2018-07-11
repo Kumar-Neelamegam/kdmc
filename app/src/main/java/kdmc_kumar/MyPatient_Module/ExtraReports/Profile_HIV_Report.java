@@ -11,12 +11,16 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 /**
@@ -25,10 +29,10 @@ import kdmc_kumar.Core_Modules.BaseConfig;
 
 public class Profile_HIV_Report extends AppCompatActivity {
 
-    private WebView blood_report = null;
-    private Toolbar toolbar = null;
+    private WebView blood_report;
+    private Toolbar toolbar;
 
-    private ImageView ic_back = null;
+    private ImageView ic_back;
     private String MTESTID = "";
     private String PTID = "";
 
@@ -38,46 +42,46 @@ public class Profile_HIV_Report extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile__blood__report);
+        this.setContentView(layout.activity_profile__blood__report);
 
 
-        Bundle b = getIntent().getExtras();
+        Bundle b = this.getIntent().getExtras();
 
-        PTID = b.getString("PTID");
-        MTESTID = b.getString("MTESTID");
+        this.PTID = b.getString("PTID");
+        this.MTESTID = b.getString("MTESTID");
 
-        toolbar = findViewById(R.id.toolbar);
-        TextView title = toolbar.findViewById(R.id.txvw_title);
-        title.setText(getString(R.string.report_hiv));
+        this.toolbar = this.findViewById(id.toolbar);
+        TextView title = this.toolbar.findViewById(id.txvw_title);
+        title.setText(this.getString(string.report_hiv));
 
-        ic_back = toolbar.findViewById(R.id.ic_back);
+        this.ic_back = this.toolbar.findViewById(id.ic_back);
 
-        ic_back.setOnClickListener(view -> Profile_HIV_Report.this.finish());
+        this.ic_back.setOnClickListener(view -> finish());
 
-        blood_report = findViewById(R.id.blood_report);
+        this.blood_report = this.findViewById(id.blood_report);
 
-        blood_report.getSettings().setJavaScriptEnabled(true);
-        blood_report.setWebChromeClient(new WebChromeClient());
-        blood_report.getSettings().setJavaScriptEnabled(true);
-        blood_report.setLayerType(View.LAYER_TYPE_NONE, null);
-        blood_report.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        blood_report.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-        blood_report.getSettings().setDefaultTextEncodingName("utf-8");
+        this.blood_report.getSettings().setJavaScriptEnabled(true);
+        this.blood_report.setWebChromeClient(new WebChromeClient());
+        this.blood_report.getSettings().setJavaScriptEnabled(true);
+        this.blood_report.setLayerType(View.LAYER_TYPE_NONE, null);
+        this.blood_report.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        this.blood_report.getSettings().setRenderPriority(RenderPriority.HIGH);
+        this.blood_report.getSettings().setDefaultTextEncodingName("utf-8");
 
-        blood_report.setWebChromeClient(new MyWebChromeClient());
+        this.blood_report.setWebChromeClient(new Profile_HIV_Report.MyWebChromeClient());
 
-        blood_report.setBackgroundColor(0x00000000);
-        blood_report.setVerticalScrollBarEnabled(true);
-        blood_report.setHorizontalScrollBarEnabled(true);
+        this.blood_report.setBackgroundColor(0x00000000);
+        this.blood_report.setVerticalScrollBarEnabled(true);
+        this.blood_report.setHorizontalScrollBarEnabled(true);
 
-        blood_report.getSettings().setJavaScriptEnabled(true);
-        blood_report.getSettings().setAllowContentAccess(true);
+        this.blood_report.getSettings().setJavaScriptEnabled(true);
+        this.blood_report.getSettings().setAllowContentAccess(true);
 
 
-        blood_report.addJavascriptInterface(new WebAppInterface(this), "android");
+        this.blood_report.addJavascriptInterface(new Profile_HIV_Report.WebAppInterface(this), "android");
         try {
 
-            blood_report.loadDataWithBaseURL("file:///android_asset/", LoadInvetigationData(), "text/html", "utf-8", null);
+            this.blood_report.loadDataWithBaseURL("file:///android_asset/", this.LoadInvetigationData(), "text/html", "utf-8", null);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,7 +95,7 @@ public class Profile_HIV_Report extends AppCompatActivity {
 
 
         SQLiteDatabase db = BaseConfig.GetDb();
-        String Query = "select * from Bind_HIV_Report where Patid='" + PTID + "' and Mtestid='" + MTESTID + '\'';
+        String Query = "select * from Bind_HIV_Report where Patid='" + this.PTID + "' and Mtestid='" + this.MTESTID + '\'';
         //String Query = "select * from Bind_examination_blood_test where Patid='PID/2017/188/2870' and Mtestid='MTID/2017/188/DOCID/2017/05/81/4C19/2'";
         //Log.e("Load Invetigation Data: ", Query);
 
@@ -193,7 +197,7 @@ public class Profile_HIV_Report extends AppCompatActivity {
                 '\n' +
                 "<div class=\"table-responsive\">          \n" +
                 "<h4><b style=\"color:#3d5987;\"><u><align><center>\n" +
-                ' ' + getString(R.string.profile_hiv_hivtestreport) + "</u></b></align></h4>\n" +
+                ' ' + this.getString(string.profile_hiv_hivtestreport) + "</u></b></align></h4>\n" +
                 " \n" +
                 " <br>\n" +
 
@@ -205,50 +209,50 @@ public class Profile_HIV_Report extends AppCompatActivity {
                 '\n' +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>" + getString(R.string.profile_hiv_surname) + "</b></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>" + this.getString(string.profile_hiv_surname) + "</b></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\">    " + name + "</td> \n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>   " + getString(R.string.profile_hiv_firstname) + "</b></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>   " + this.getString(string.profile_hiv_firstname) + "</b></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\">    " + FatherName + "</td> \n" +
                 '\n' +
                 "</tr>\n" +
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>  " + getString(R.string.profile_hiv_middlename) + "</b></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>  " + this.getString(string.profile_hiv_middlename) + "</b></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\">    " + name + "</td> \n" +
                 '\n' +
                 "</tr>\n" +
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>  " + getString(R.string.profile_hiv_gender) + " </b></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>  " + this.getString(string.profile_hiv_gender) + " </b></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\">    " + gender + "</td> \n" +
                 '\n' +
                 "</tr>\n" +
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>  " + getString(R.string.profile_hiv_age) + " </b></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>  " + this.getString(string.profile_hiv_age) + " </b></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\">    " + age + "</td> \n" +
                 '\n' +
                 "</tr>\n" +
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>  " + getString(R.string.profile_hiv_pid) + "</b></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>  " + this.getString(string.profile_hiv_pid) + "</b></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\">    " + Patid + "</td> \n" +
                 '\n' +
                 "</tr>\n" +
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>  " + getString(R.string.profile_hiv_labid) + "</b></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>  " + this.getString(string.profile_hiv_labid) + "</b></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\">    " + LabId + "</td> \n" +
                 '\n' +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>" + getString(R.string.profile_hiv_dateandtimeblood) + "</b></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>" + this.getString(string.profile_hiv_dateandtimeblood) + "</b></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\">    " + date_time + "</td> \n" +
                 '\n' +
@@ -257,13 +261,13 @@ public class Profile_HIV_Report extends AppCompatActivity {
                 "</table>\n" +
                 "</div>\n" +
                 "<br>\n" +
-                "<P style=\"color:#3d5987;\"><b>" + getString(R.string.profile_hiv_testdetails) + "</b></P>\n" +
-                "<P style=\"color:#3d5987;\">" + getString(R.string.profile_hiv_speimenttype) + "</P>\n" +
+                "<P style=\"color:#3d5987;\"><b>" + this.getString(string.profile_hiv_testdetails) + "</b></P>\n" +
+                "<P style=\"color:#3d5987;\">" + this.getString(string.profile_hiv_speimenttype) + "</P>\n" +
                 "<div class=\"table-responsive\">\n" +
                 '\n' +
                 "<table class=\"table table-bordered\">\n" +
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>  " + getString(R.string.profile_hiv_dateandtimespeciment) + " </b></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\"> <b>  " + this.getString(string.profile_hiv_dateandtimespeciment) + " </b></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#3d5987;\">    " + blood_datetime + "</td> \n" +
                 '\n' +
@@ -272,10 +276,10 @@ public class Profile_HIV_Report extends AppCompatActivity {
                 "</table>\n" +
                 "</div>\n" +
                 '\n' +
-                "<p>" + getString(R.string.profile_hiv_note) + ":</p>\n" +
+                "<p>" + this.getString(string.profile_hiv_note) + ":</p>\n" +
                 "<ul>\n" +
-                "  <li>" + getString(R.string.profile_hiv_columnand) + "</li>\n" +
-                "  <li>" + getString(R.string.profile_hiv_nocell) + "</li>\n" +
+                "  <li>" + this.getString(string.profile_hiv_columnand) + "</li>\n" +
+                "  <li>" + this.getString(string.profile_hiv_nocell) + "</li>\n" +
                 "</ul>\n" +
                 '\n' +
                 '\n' +
@@ -288,20 +292,20 @@ public class Profile_HIV_Report extends AppCompatActivity {
 
 
                 '\n' +
-                "<p><b>" + getString(R.string.profile_hiv_differentialcount) + " :- </b></p>\n" +
+                "<p><b>" + this.getString(string.profile_hiv_differentialcount) + " :- </b></p>\n" +
                 '\n' +
                 "<tr style=\"background-color: #3d5987\">\n" +
-                "<th height=\"15\" width=\"15%\" style=\"color:#ffffff;\"> <b><align><center>  " + getString(R.string.profile_hiv_nameofhiv) + "</b></align></th> \n" +
+                "<th height=\"15\" width=\"15%\" style=\"color:#ffffff;\"> <b><align><center>  " + this.getString(string.profile_hiv_nameofhiv) + "</b></align></th> \n" +
                 '\n' +
-                "<th height=\"15\" width=\"15%\" style=\"color:#ffffff;\"> <b><align><center>  " + getString(R.string.profile_hiv_batchno) + "</b></align></th> \n" +
+                "<th height=\"15\" width=\"15%\" style=\"color:#ffffff;\"> <b><align><center>  " + this.getString(string.profile_hiv_batchno) + "</b></align></th> \n" +
                 '\n' +
-                "<th height=\"15\" width=\"15%\" style=\"color:#ffffff;\"> <b><align><center>   " + getString(R.string.profile_hiv_expdate) + "</b></align></th> \n" +
+                "<th height=\"15\" width=\"15%\" style=\"color:#ffffff;\"> <b><align><center>   " + this.getString(string.profile_hiv_expdate) + "</b></align></th> \n" +
                 '\n' +
-                "<th height=\"15\" width=\"15%\" style=\"color:#ffffff;\"> <b> <align><center>  " + getString(R.string.profile_hiv_hiv1antibodies) + "</b></align></th> \n" +
+                "<th height=\"15\" width=\"15%\" style=\"color:#ffffff;\"> <b> <align><center>  " + this.getString(string.profile_hiv_hiv1antibodies) + "</b></align></th> \n" +
                 '\n' +
-                "<th height=\"15\" width=\"15%\" style=\"color:#ffffff;\"> <b><align><center>    " + getString(R.string.profile_hiv_hiv2antibodies) + "</b></align></th> \n" +
+                "<th height=\"15\" width=\"15%\" style=\"color:#ffffff;\"> <b><align><center>    " + this.getString(string.profile_hiv_hiv2antibodies) + "</b></align></th> \n" +
                 '\n' +
-                "<th height=\"15\" width=\"15%\" style=\"color:#ffffff;\"> <b> <align><center>   " + getString(R.string.profile_hiv_hiv3antibodies) + "</b></align></th> \n" +
+                "<th height=\"15\" width=\"15%\" style=\"color:#ffffff;\"> <b> <align><center>   " + this.getString(string.profile_hiv_hiv3antibodies) + "</b></align></th> \n" +
                 '\n' +
                 '\n' +
                 "</tr>\n" +
@@ -310,7 +314,7 @@ public class Profile_HIV_Report extends AppCompatActivity {
 
 
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#000000;\"><align><center> <b> " + getString(R.string.profile_hiv_test) + " I </b></align></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#000000;\"><align><center> <b> " + this.getString(string.profile_hiv_test) + " I </b></align></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#000000;\"><align><center> <b> " + BatchNo1 + " </b></align></td> \n" +
                 '\n' +
@@ -327,7 +331,7 @@ public class Profile_HIV_Report extends AppCompatActivity {
 
 
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#000000;\"><align><center> <b> " + getString(R.string.profile_hiv_test) + " II </b></align></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#000000;\"><align><center> <b> " + this.getString(string.profile_hiv_test) + " II </b></align></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#000000;\"><align><center> <b> " + BatchNo2 + " </b></align></td> \n" +
                 '\n' +
@@ -344,7 +348,7 @@ public class Profile_HIV_Report extends AppCompatActivity {
 
 
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#000000;\"><align><center> <b> " + getString(R.string.profile_hiv_test) + " III </b></align></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#000000;\"><align><center> <b> " + this.getString(string.profile_hiv_test) + " III </b></align></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#000000;\"><align><center> <b> " + BatchNo3 + " </b></align></td> \n" +
                 '\n' +
@@ -362,7 +366,7 @@ public class Profile_HIV_Report extends AppCompatActivity {
                 "</table>\n" +
                 "</div>\n" +
                 '\n' +
-                "<P style=\"color:#3d5987;\"><b>" + getString(R.string.profile_hiv_interpretation) + "</b></P>\n" +
+                "<P style=\"color:#3d5987;\"><b>" + this.getString(string.profile_hiv_interpretation) + "</b></P>\n" +
                 '\n' +
                 "<div class=\"table-responsive\">\n" +
                 '\n' +
@@ -371,25 +375,25 @@ public class Profile_HIV_Report extends AppCompatActivity {
                 '\n' +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#fffff;\"> <b>" + getString(R.string.profile_hiv_negative_hiv_antibodies) + "</b></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#fffff;\"> <b>" + this.getString(string.profile_hiv_negative_hiv_antibodies) + "</b></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#fffff;\">    " + negative_HIV + "</td> \n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#fffff;\"> <b>   " + getString(R.string.profile_hiv_positive_hiv_1_antibodies) + "</b></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#fffff;\"> <b>   " + this.getString(string.profile_hiv_positive_hiv_1_antibodies) + "</b></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#fffff;\">    " + positive_HIV_1 + "</td> \n" +
                 '\n' +
                 "</tr>\n" +
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#fffff;\"> <b>  " + getString(R.string.profile_hiv_positive_hive1_hiv) + "</b></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#fffff;\"> <b>  " + this.getString(string.profile_hiv_positive_hive1_hiv) + "</b></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#fffff;\">    " + positive_HIV + "</td> \n" +
                 '\n' +
                 "</tr>\n" +
                 "<tr>\n" +
-                "<td height=\"15\" width=\"15%\" style=\"color:#fffff;\"> <b> " + getString(R.string.profile_hiv_specimenisdeterminate) + "</b></td> \n" +
+                "<td height=\"15\" width=\"15%\" style=\"color:#fffff;\"> <b> " + this.getString(string.profile_hiv_specimenisdeterminate) + "</b></td> \n" +
                 '\n' +
                 "<td height=\"15\" width=\"15%\" style=\"color:#fffff;\">    " + HIV_Anitibodies + "</td> \n" +
                 "</tr>\n" +
@@ -417,13 +421,13 @@ public class Profile_HIV_Report extends AppCompatActivity {
     @Override
     public final void onBackPressed() {
         //super.onBackPressed();
-        this.finish();
+        finish();
 
     }
 
     @Override
     public final boolean onOptionsItemSelected(MenuItem item) {
-        onBackPressed();
+        this.onBackPressed();
         return true;
     }
 
@@ -437,7 +441,7 @@ public class Profile_HIV_Report extends AppCompatActivity {
          * Instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
-            mContext = c;
+            this.mContext = c;
         }
 
         /**
@@ -445,7 +449,7 @@ public class Profile_HIV_Report extends AppCompatActivity {
          */
         @JavascriptInterface
         public final void showToast(String toast) {
-            Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.mContext, toast, Toast.LENGTH_SHORT).show();
 
 
         }

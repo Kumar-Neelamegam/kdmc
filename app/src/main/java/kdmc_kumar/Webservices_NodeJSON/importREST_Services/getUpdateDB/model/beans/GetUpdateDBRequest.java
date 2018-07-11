@@ -21,19 +21,19 @@ public class GetUpdateDBRequest {
 
 
     @com.google.gson.annotations.SerializedName("Docid")
-    private String docid = null;
+    private String docid;
 
 
-    private String imei = null;
+    private String imei;
 
 
-    private String mac = null;
+    private String mac;
 
     public GetUpdateDBRequest() {
     }
 
     public final String getDocid() {
-        return docid;
+        return this.docid;
     }
 
     public final void setDocid(String docid) {
@@ -41,7 +41,7 @@ public class GetUpdateDBRequest {
     }
 
     public final String getImei() {
-        return imei;
+        return this.imei;
     }
 
     public final void setImei(String imei) {
@@ -49,7 +49,7 @@ public class GetUpdateDBRequest {
     }
 
     public final String getMac() {
-        return mac;
+        return this.mac;
     }
 
     public final void setMac(String mac) {
@@ -66,21 +66,21 @@ public class GetUpdateDBRequest {
         }
 
         public final GetUpdateDBRequest build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final GetUpdateDBRequestBuilder docid(String value) {
-            toBuild.setDocid(value);
+        public final GetUpdateDBRequest.GetUpdateDBRequestBuilder docid(String value) {
+            this.toBuild.setDocid(value);
             return this;
         }
 
-        public final GetUpdateDBRequestBuilder imei(String value) {
-            toBuild.setImei(value);
+        public final GetUpdateDBRequest.GetUpdateDBRequestBuilder imei(String value) {
+            this.toBuild.setImei(value);
             return this;
         }
 
-        public final GetUpdateDBRequestBuilder mac(String value) {
-            toBuild.setMac(value);
+        public final GetUpdateDBRequest.GetUpdateDBRequestBuilder mac(String value) {
+            this.toBuild.setMac(value);
             return this;
         }
     }

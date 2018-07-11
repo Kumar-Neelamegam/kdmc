@@ -11,10 +11,10 @@ public class Section {
 
     public Section(String name) {
         this.name = name;
-        isExpanded = true;
+        this.isExpanded = true;
     }
 
     public final String getName() {
-        return name;
+        return this.name;
     }
 }

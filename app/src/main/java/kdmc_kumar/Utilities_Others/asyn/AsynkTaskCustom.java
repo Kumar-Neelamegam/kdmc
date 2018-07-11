@@ -10,19 +10,19 @@ import android.os.AsyncTask;
  */
 
 public class AsynkTaskCustom extends AsyncTask<onWriteCode, Void, Void> {
-    private onWriteCode object = null;
-    private Object returnobject = null;
+    private onWriteCode object;
+    private Object returnobject;
     private final Context context;
     private final ProgressDialog p;
 
     public AsynkTaskCustom(Context context, String Message) {
         this.context = context;
-        p = new ProgressDialog(context);
-        p.setMessage(Message);
-        p.setIndeterminate(false);
-        p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
-        p.setCancelable(false);
-        p.show();
+        this.p = new ProgressDialog(context);
+        this.p.setMessage(Message);
+        this.p.setIndeterminate(false);
+        this.p.setProgressStyle(ProgressDialog.STYLE_SPINNER);
+        this.p.setCancelable(false);
+        this.p.show();
 
     }
 
@@ -31,8 +31,8 @@ public class AsynkTaskCustom extends AsyncTask<onWriteCode, Void, Void> {
     protected final Void doInBackground(onWriteCode... params) {
 
         try {
-            object = params[0];
-            returnobject = object.onExecuteCode();
+            this.object = params[0];
+            this.returnobject = this.object.onExecuteCode();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -43,10 +43,10 @@ public class AsynkTaskCustom extends AsyncTask<onWriteCode, Void, Void> {
     protected final void onPostExecute(Void result) {
         super.onPostExecute(result);
 
-        p.dismiss();
+        this.p.dismiss();
 
         try {
-            object.onSuccess(returnobject);
+            this.object.onSuccess(this.returnobject);
         } catch (Exception e) {
             e.printStackTrace();
         }

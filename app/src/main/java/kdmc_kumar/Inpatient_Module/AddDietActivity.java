@@ -1,6 +1,9 @@
 package kdmc_kumar.Inpatient_Module;
 
+import android.R.id;
+import android.R.layout;
 import android.app.AlertDialog;
+import android.app.AlertDialog.Builder;
 import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
@@ -12,12 +15,14 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.ArrayAdapter;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
@@ -31,31 +36,33 @@ import java.util.List;
 import java.util.Random;
 
 import displ.mobydocmarathi.com.R;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.Addgetset;
+import displ.mobydocmarathi.com.R.drawable;
+import displ.mobydocmarathi.com.R.string;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
 import kdmc_kumar.Adapters_GetterSetter.DietAdapter;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 public class AddDietActivity extends AppCompatActivity {
 
-    public static TextView calories_total = null;
-    private final ArrayList<Addgetset> rowItems = new ArrayList<>();
-    public Button cancel_btns = null;
-    DietAdapter adapter2 = null;
-    BaseConfig bc = null;
+    public static TextView calories_total;
+    private final ArrayList<CommonDataObjects.Addgetset> rowItems = new ArrayList<>();
+    public Button cancel_btns;
+    DietAdapter adapter2;
+    BaseConfig bc;
     List<String> rowItemsId = new ArrayList<>();
-    private Spinner spn_diet = null;
-    private AutoCompleteTextView edt_breakfast = null;
-    private Button add_button_img = null;
-    private Button submit_datas = null;
-    private int total = 0;
-    private String[] Server_Id = null;
-    private String[] Diet_items = null;
-    private String PATIENT_ID = null;
+    private Spinner spn_diet;
+    private AutoCompleteTextView edt_breakfast;
+    private Button add_button_img;
+    private Button submit_datas;
+    private int total;
+    private String[] Server_Id;
+    private String[] Diet_items;
+    private String PATIENT_ID;
     private String AlreadYLoadedDietItemList = "";
-    private List<Addgetset> movieList = new ArrayList<>();
-    private RecyclerView recyclerView = null;
-    private DietAdapter mAdapter = null;
+    private final List<CommonDataObjects.Addgetset> movieList = new ArrayList<>();
+    private RecyclerView recyclerView;
+    private DietAdapter mAdapter;
 
     public AddDietActivity() {
     }
@@ -150,14 +157,14 @@ public class AddDietActivity extends AppCompatActivity {
         MenuItem item1 = menu.add(0, 0, 0, "Item 1");
         {
             // --Copio las imagenes que van en cada item
-            item1.setIcon(R.drawable.prev_icon);
+            item1.setIcon(drawable.prev_icon);
             item1.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
         }
 
         MenuItem item2 = menu.add(0, 1, 1, "Item 2");
         {
 
-            item2.setIcon(R.drawable.home_ico);
+            item2.setIcon(drawable.home_ico);
             item2.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM);
 
         }
@@ -226,45 +233,45 @@ public class AddDietActivity extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_diet);
+        this.setContentView(R.layout.activity_add_diet);
 
 
         //initilize
-        init();
+        this.init();
 
         //getfooditems
-        getfoodItems();
+        this.getfoodItems();
 
         //Listeneners
-        listeners();
+        this.listeners();
 
-        rowItems.clear();
-        selectDietList(BaseConfig.Patent_Id);
+        this.rowItems.clear();
+        this.selectDietList(BaseConfig.Patent_Id);
 
 
         String diet_list[] = {"Select Diet", "Diet1", "Diet2", "Diet3"};
 
-        getdietitemlist();
+        this.getdietitemlist();
 
-        ArrayAdapter<String> aa = new ArrayAdapter<>(AddDietActivity.this, android.R.layout.simple_list_item_1, Diet_items);
+        ArrayAdapter<String> aa = new ArrayAdapter<>(this, layout.simple_list_item_1, this.Diet_items);
 
-        spn_diet.setAdapter(aa);
+        this.spn_diet.setAdapter(aa);
 
-        calories_total.setText("0");
+        AddDietActivity.calories_total.setText("0");
 
     }
 
     private void listeners() {
 
 
-        cancel_btns.setOnClickListener(view -> {
-            AddDietActivity.this.finish();
+        this.cancel_btns.setOnClickListener(view -> {
+            finish();
 
         });
-        spn_diet.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        this.spn_diet.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
-                edt_breakfast.setText("");
+                AddDietActivity.this.edt_breakfast.setText("");
             }
 
             @Override
@@ -272,43 +279,43 @@ public class AddDietActivity extends AppCompatActivity {
 
             }
         });
-        edt_breakfast.setThreshold(1);
+        this.edt_breakfast.setThreshold(1);
 
 
-        submit_datas.setOnClickListener(view -> {
+        this.submit_datas.setOnClickListener(view -> {
 
-            Print_AdapterDatas();
-            if (mAdapter.getItemCount() < 0) {
-                Toast.makeText(AddDietActivity.this, "Please Add Diet entry.....", Toast.LENGTH_SHORT).show();
+            this.Print_AdapterDatas();
+            if (this.mAdapter.getItemCount() < 0) {
+                Toast.makeText(this, "Please Add Diet entry.....", Toast.LENGTH_SHORT).show();
 
-            } else if (mAdapter.getItemCount() > 0) {
+            } else if (this.mAdapter.getItemCount() > 0) {
 
                 try {
 
                     //Remove Previous rows
-                    removeOldDiet(BaseConfig.Patent_Id);
+                    AddDietActivity.removeOldDiet(BaseConfig.Patent_Id);
 
-                    int randomId = randomIdGen();
+                    int randomId = AddDietActivity.randomIdGen();
 
 
                     int tot = 0;
-                    for (int i = 0; i < mAdapter.getItemCount(); i++) {
+                    for (int i = 0; i < this.mAdapter.getItemCount(); i++) {
 
                         SQLiteDatabase db = BaseConfig.GetDb();//AddDietActivity.this);
 
-                        String value[] = getFood_id(mAdapter.moviesList.get(i).getFood_name()).split("/");
+                        String value[] = AddDietActivity.getFood_id(this.mAdapter.moviesList.get(i).getFood_name()).split("/");
 
-                        tot += Integer.valueOf(mAdapter.moviesList.get(i).getCalc()).intValue();
+                        tot += Integer.valueOf(this.mAdapter.moviesList.get(i).getCalc()).intValue();
 
                         Calendar c = Calendar.getInstance();
 
                         ContentValues values = new ContentValues();
-                        values.put("pat_id", PATIENT_ID);
+                        values.put("pat_id", this.PATIENT_ID);
                         String dietIdVar = "";
-                        if (AlreadYLoadedDietItemList.length() > 0) {
-                            String dietIdVar1 = AlreadYLoadedDietItemList;
+                        if (this.AlreadYLoadedDietItemList.length() > 0) {
+                            String dietIdVar1 = this.AlreadYLoadedDietItemList;
                             /// values.put("diet_id", AlreadYLoadedDietItemList);
-                        } else if (AlreadYLoadedDietItemList.length() == 0) {
+                        } else if (this.AlreadYLoadedDietItemList.length() == 0) {
                             String dietIdVar1 = String.valueOf(randomId);
 
                         }
@@ -321,8 +328,8 @@ public class AddDietActivity extends AppCompatActivity {
                         values.put("IsUpdate", "0");
                         values.put("IsDelete", "0");
                         values.put("HID", BaseConfig.HID);
-                        values.put("diet_session_id", selectDietServerId(mAdapter.moviesList.get(i).getDiet_name()));
-                        db.delete("diet_entry", "pat_id = '" + PATIENT_ID + "' and diet_id != '" + randomId + '\'', null);
+                        values.put("diet_session_id", AddDietActivity.selectDietServerId(this.mAdapter.moviesList.get(i).getDiet_name()));
+                        db.delete("diet_entry", "pat_id = '" + this.PATIENT_ID + "' and diet_id != '" + randomId + '\'', null);
                         db.insert("diet_entry", null, values);
                         db.close();
 
@@ -330,13 +337,13 @@ public class AddDietActivity extends AppCompatActivity {
                     }
 
 
-                    selectDietList(BaseConfig.Patent_Id);
-                    calories_total.setText(String.valueOf(tot));
-                    showDialog();
+                    this.selectDietList(BaseConfig.Patent_Id);
+                    AddDietActivity.calories_total.setText(String.valueOf(tot));
+                    this.showDialog();
 
-                    View view2 = AddDietActivity.this.getCurrentFocus();
+                    View view2 = getCurrentFocus();
                     if (view2 != null) {
-                        InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                        InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
                         imm.hideSoftInputFromWindow(view2.getWindowToken(), 0);
                     }
 
@@ -348,33 +355,33 @@ public class AddDietActivity extends AppCompatActivity {
                 }
                 /* popup(mAdapter.getItemCount());*/
             }
-            selectDietList(PATIENT_ID);
+            this.selectDietList(this.PATIENT_ID);
 
         });
-        add_button_img.setOnClickListener(view -> {
-            if (spn_diet.getSelectedItemPosition() == 0) {
-                Toast.makeText(AddDietActivity.this, "Please Select Diet.......", Toast.LENGTH_SHORT).show();
+        this.add_button_img.setOnClickListener(view -> {
+            if (this.spn_diet.getSelectedItemPosition() == 0) {
+                Toast.makeText(this, "Please Select Diet.......", Toast.LENGTH_SHORT).show();
                 // BaseConfig.SnackBar(AddDietActivity.this,  "Please Select Diet.......", parentLayout);
 
-                spn_diet.setFocusable(true);
-            } else if (edt_breakfast.getText().toString().equalsIgnoreCase("") || edt_breakfast.getText().toString().isEmpty() || edt_breakfast.getText().toString().equalsIgnoreCase(null)) {
-                Toast.makeText(AddDietActivity.this, "Enter Food name........", Toast.LENGTH_SHORT).show();
+                this.spn_diet.setFocusable(true);
+            } else if (this.edt_breakfast.getText().toString().equalsIgnoreCase("") || this.edt_breakfast.getText().toString().isEmpty() || this.edt_breakfast.getText().toString().equalsIgnoreCase(null)) {
+                Toast.makeText(this, "Enter Food name........", Toast.LENGTH_SHORT).show();
 
-                edt_breakfast.setFocusable(true);
-            } else if (spn_diet.getSelectedItemPosition() != 0 && !edt_breakfast.getText().toString().isEmpty()) {
-                Insertlistview(spn_diet.getSelectedItem().toString(), edt_breakfast.getText().toString(), null);
+                this.edt_breakfast.setFocusable(true);
+            } else if (this.spn_diet.getSelectedItemPosition() != 0 && !this.edt_breakfast.getText().toString().isEmpty()) {
+                this.Insertlistview(this.spn_diet.getSelectedItem().toString(), this.edt_breakfast.getText().toString(), null);
 
                 // Toast.makeText(AddDietActivity.this, spn_diet.getSelectedItem() + "      " + edt_breakfast.getText().toString(), Toast.LENGTH_SHORT).show();
 
-                mAdapter = new DietAdapter(rowItems, AddDietActivity.this);
-                RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-                recyclerView.setLayoutManager(mLayoutManager);
-                recyclerView.setItemAnimator(new DefaultItemAnimator());
-                recyclerView.setAdapter(mAdapter);
+                this.mAdapter = new DietAdapter(this.rowItems, this);
+                LayoutManager mLayoutManager = new LinearLayoutManager(this.getApplicationContext());
+                this.recyclerView.setLayoutManager(mLayoutManager);
+                this.recyclerView.setItemAnimator(new DefaultItemAnimator());
+                this.recyclerView.setAdapter(this.mAdapter);
 
-                View view2 = AddDietActivity.this.getCurrentFocus();
+                View view2 = getCurrentFocus();
                 if (view2 != null) {
-                    InputMethodManager imm = (InputMethodManager) getSystemService(Context.INPUT_METHOD_SERVICE);
+                    InputMethodManager imm = (InputMethodManager) this.getSystemService(Context.INPUT_METHOD_SERVICE);
                     imm.hideSoftInputFromWindow(view2.getWindowToken(), 0);
                 }
 
@@ -385,9 +392,9 @@ public class AddDietActivity extends AppCompatActivity {
 
 
                  */
-                spn_diet.setSelection(0);
-                edt_breakfast.setText("");
-                calcDiet();
+                this.spn_diet.setSelection(0);
+                this.edt_breakfast.setText("");
+                this.calcDiet();
 
 
             }
@@ -396,34 +403,34 @@ public class AddDietActivity extends AppCompatActivity {
     }
 
     private void init() {
-        calories_total = findViewById(R.id.calories_total_tv);
+        AddDietActivity.calories_total = this.findViewById(R.id.calories_total_tv);
 
-        recyclerView = findViewById(R.id.card_recycler_view);
-        submit_datas = findViewById(R.id.submit_datas);
-        spn_diet = findViewById(R.id.spn_select_diet_new);
+        this.recyclerView = this.findViewById(R.id.card_recycler_view);
+        this.submit_datas = this.findViewById(R.id.submit_datas);
+        this.spn_diet = this.findViewById(R.id.spn_select_diet_new);
 
-        edt_breakfast = findViewById(R.id.edt_breakfast);
+        this.edt_breakfast = this.findViewById(R.id.edt_breakfast);
 
-        add_button_img = findViewById(R.id.add_button_img);
-        cancel_btns = findViewById(R.id.cancel_btns);
+        this.add_button_img = this.findViewById(R.id.add_button_img);
+        this.cancel_btns = this.findViewById(R.id.cancel_btns);
 
-        Bundle b = getIntent().getExtras();
+        Bundle b = this.getIntent().getExtras();
 
-        PATIENT_ID = b.getString(BaseConfig.BUNDLE_PATIENT_ID);
+        this.PATIENT_ID = b.getString(BaseConfig.BUNDLE_PATIENT_ID);
 
     }
 
     private final void showDialog() {
         /// BaseConfig.showSimplePopUp("","Diet Plan",);
 
-        AlertDialog.Builder helpBuilder = new AlertDialog.Builder(AddDietActivity.this);
+        Builder helpBuilder = new Builder(this);
         helpBuilder.setTitle("Diet Plan");
         helpBuilder.setMessage("Patient Diet Items Updated");
 
 
         helpBuilder.setPositiveButton("Ok",
                 (dialog, which) -> {
-                    finish();
+                    this.finish();
 
 
                 });
@@ -438,11 +445,11 @@ public class AddDietActivity extends AppCompatActivity {
     private void Print_AdapterDatas() {
 
 
-        for (int i = 0; i < mAdapter.getItemCount(); i++) {
+        for (int i = 0; i < this.mAdapter.getItemCount(); i++) {
 
-            Log.i("Select Diet", mAdapter.moviesList.get(i).getDiet_name());
-            Log.i("Select Diet", mAdapter.moviesList.get(i).getFood_name());
-            Log.i("Select Diet", mAdapter.moviesList.get(i).getCalc());
+            Log.i("Select Diet", this.mAdapter.moviesList.get(i).getDiet_name());
+            Log.i("Select Diet", this.mAdapter.moviesList.get(i).getFood_name());
+            Log.i("Select Diet", this.mAdapter.moviesList.get(i).getCalc());
 
 
         }
@@ -450,7 +457,7 @@ public class AddDietActivity extends AppCompatActivity {
 
     @Override
     protected final void onResume() {
-        selectDietList(PATIENT_ID);
+        this.selectDietList(this.PATIENT_ID);
         super.onResume();
     }
 
@@ -458,7 +465,7 @@ public class AddDietActivity extends AppCompatActivity {
     @Override
     public final void onBackPressed() {
 
-        AddDietActivity.this.finish();
+        finish();
 
 
     }
@@ -468,14 +475,14 @@ public class AddDietActivity extends AppCompatActivity {
 
 
             int i = 0;
-            String values[] = getFood_id(food_name).split("/");
-            Addgetset item = new Addgetset(Diet_name, food_name, String.valueOf(values[1]));
+            String values[] = AddDietActivity.getFood_id(food_name).split("/");
+            CommonDataObjects.Addgetset item = new CommonDataObjects.Addgetset(Diet_name, food_name, values[1]);
 
-            rowItems.add(item);
+            this.rowItems.add(item);
 
-            total += Integer.parseInt(values[1]);
+            this.total += Integer.parseInt(values[1]);
 
-            calories_total.setText(total);
+            AddDietActivity.calories_total.setText(this.total);
             i++;
 
 
@@ -491,10 +498,10 @@ public class AddDietActivity extends AppCompatActivity {
 
     private final void calcDiet() {
         int totalStr = 0;
-        for (int i = 0; i <= rowItems.size() - 1; i++) {
+        for (int i = 0; i <= this.rowItems.size() - 1; i++) {
             try {
 
-                String values[] = getFood_id(rowItems.get(i).getFood_name()).split("/");
+                String values[] = AddDietActivity.getFood_id(this.rowItems.get(i).getFood_name()).split("/");
                 totalStr += Integer.parseInt(values[1]);
 
             } catch (NumberFormatException e) {
@@ -505,29 +512,29 @@ public class AddDietActivity extends AppCompatActivity {
 
 
         }
-        if (calories_total != null) {
-            calories_total.setText(String.valueOf(totalStr));
+        if (AddDietActivity.calories_total != null) {
+            AddDietActivity.calories_total.setText(String.valueOf(totalStr));
         }
     }
 
     public final void popup(int count) {
-        AlertDialog.Builder alert = new AlertDialog.Builder(AddDietActivity.this);
+        Builder alert = new Builder(this);
         alert.setTitle("Insert");
         alert.setMessage("Do you want Insert Table?");
-        alert.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
+        alert.setPositiveButton(this.getString(string.ok), (dialog, which) -> {
 
 
 //                InsertDb();
 
-            rowItems.clear();
+            this.rowItems.clear();
            /* recyclerView = (RecyclerView) findViewById(R.id.card_recycler_view);
 
             mAdapter = new DietAdapter(rowItems);*/
-            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-            recyclerView.setLayoutManager(mLayoutManager);
-            recyclerView.setItemAnimator(new DefaultItemAnimator());
-            recyclerView.setAdapter(mAdapter);
-            selectDietList(PATIENT_ID);
+            LayoutManager mLayoutManager = new LinearLayoutManager(this.getApplicationContext());
+            this.recyclerView.setLayoutManager(mLayoutManager);
+            this.recyclerView.setItemAnimator(new DefaultItemAnimator());
+            this.recyclerView.setAdapter(this.mAdapter);
+            this.selectDietList(this.PATIENT_ID);
 
         });
         alert.setNegativeButton("CANCEL", (dialog, which) -> dialog.cancel());
@@ -535,15 +542,15 @@ public class AddDietActivity extends AppCompatActivity {
     }
 
     public final void UpdateListView() {
-        if (recyclerView != null) {
-            recyclerView.setAdapter(mAdapter);
+        if (this.recyclerView != null) {
+            this.recyclerView.setAdapter(this.mAdapter);
         }
     }
 
     private final void selectDietList(String Patient_id) {
 
         int calc_total = 0;
-        rowItems.clear();
+        this.rowItems.clear();
         SQLiteDatabase db = BaseConfig.GetDb();//AddDietActivity.this);
 
 
@@ -563,14 +570,14 @@ public class AddDietActivity extends AppCompatActivity {
                     str1 = c.getString(c.getColumnIndex("food_id"));
 
                     int ids = Integer.parseInt(c.getString(c.getColumnIndex("diet_session_id")));
-                    str2 = selectDietName(ids);
-                    AlreadYLoadedDietItemList = String.valueOf(c.getString(c.getColumnIndex("diet_id")));
+                    str2 = AddDietActivity.selectDietName(ids);
+                    this.AlreadYLoadedDietItemList = String.valueOf(c.getString(c.getColumnIndex("diet_id")));
 
-                    String values[] = getFood_calc(str1).split("/");
+                    String values[] = AddDietActivity.getFood_calc(str1).split("/");
 
-                    Addgetset item = new Addgetset(str4, str2, values[0], String.valueOf(values[1]));
+                    CommonDataObjects.Addgetset item = new CommonDataObjects.Addgetset(str4, str2, values[0], values[1]);
 
-                    rowItems.add(item);
+                    this.rowItems.add(item);
 
 
                 } while (c.moveToNext());
@@ -578,13 +585,13 @@ public class AddDietActivity extends AppCompatActivity {
             }
         }
         c.close();
-        mAdapter = new DietAdapter(rowItems, this);
-        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getApplicationContext());
-        recyclerView.setLayoutManager(mLayoutManager);
-        recyclerView.setItemAnimator(new DefaultItemAnimator());
-        recyclerView.setAdapter(mAdapter);
+        this.mAdapter = new DietAdapter(this.rowItems, this);
+        LayoutManager mLayoutManager = new LinearLayoutManager(this.getApplicationContext());
+        this.recyclerView.setLayoutManager(mLayoutManager);
+        this.recyclerView.setItemAnimator(new DefaultItemAnimator());
+        this.recyclerView.setAdapter(this.mAdapter);
         db.close();
-        calcDiet();
+        this.calcDiet();
 
 
     }
@@ -594,21 +601,21 @@ public class AddDietActivity extends AppCompatActivity {
 
         Cursor c = db.rawQuery("Select food_name,calories,food_id from Mstr_foodItems where  (food_name!=null or food_name!='')  and (IsActive='true' or IsActive='1' or IsActive='True')", null);
 
-        Server_Id = new String[c.getCount()];
+        this.Server_Id = new String[c.getCount()];
         c.moveToFirst();
-        for (int i = 0; i < Server_Id.length; i++) {
-            Server_Id[i] = c.getString(c.getColumnIndex("food_name"));
-            System.out.println(Server_Id[i]);
+        for (int i = 0; i < this.Server_Id.length; i++) {
+            this.Server_Id[i] = c.getString(c.getColumnIndex("food_name"));
+            System.out.println(this.Server_Id[i]);
             c.moveToNext();
         }
 
 
-        for (String aServer_Id : Server_Id) {
+        for (String aServer_Id : this.Server_Id) {
             System.out.println("Array Values=" + aServer_Id);
         }
 
-        ArrayAdapter<String> aa = new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, Server_Id);
-        edt_breakfast.setAdapter(aa);
+        ArrayAdapter<String> aa = new ArrayAdapter<>(this, layout.simple_list_item_1, this.Server_Id);
+        this.edt_breakfast.setAdapter(aa);
         c.close();
         db.close();
     }
@@ -616,15 +623,15 @@ public class AddDietActivity extends AppCompatActivity {
     @Override
     public final boolean onOptionsItemSelected(MenuItem item) {
 
-        return MenuSelecciona(item);
+        return this.MenuSelecciona(item);
 
     }
 
     @Override
     public final boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater();
+        this.getMenuInflater();
 
-        CreateMenu(menu);
+        AddDietActivity.CreateMenu(menu);
         return true;
     }
 
@@ -635,18 +642,18 @@ public class AddDietActivity extends AppCompatActivity {
             case 0:
 
                 Bundle b = new Bundle();
-                b.putString(BaseConfig.BUNDLE_PATIENT_ID, PATIENT_ID);
-                BaseConfig.globalStartIntent(AddDietActivity.this, Inpatient_Detailed_View.class, b);
+                b.putString(BaseConfig.BUNDLE_PATIENT_ID, this.PATIENT_ID);
+                BaseConfig.globalStartIntent(this, Inpatient_Detailed_View.class, b);
 
 
                 return true;
             case 1:
 
-                BaseConfig.globalStartIntent(AddDietActivity.this, Dashboard_NavigationMenu.class, null);
+                BaseConfig.globalStartIntent(this, Dashboard_NavigationMenu.class, null);
 
                 return true;
 
-            case android.R.id.home:
+            case id.home:
 
                 return true;
 
@@ -659,12 +666,12 @@ public class AddDietActivity extends AppCompatActivity {
 
         Cursor c = db.rawQuery("Select DISTINCT SessionName from Mstr_dietSession where IsActive = '1'", null);
 
-        Diet_items = new String[c.getCount() + 1];
-        Diet_items[0] = "Select Diet";
+        this.Diet_items = new String[c.getCount() + 1];
+        this.Diet_items[0] = "Select Diet";
         c.moveToFirst();
         for (int i = 1; i <= c.getCount(); i++) {
-            Diet_items[i] = c.getString(c.getColumnIndex("SessionName"));
-            System.out.println(Diet_items[i]);
+            this.Diet_items[i] = c.getString(c.getColumnIndex("SessionName"));
+            System.out.println(this.Diet_items[i]);
             c.moveToNext();
         }
         c.close();

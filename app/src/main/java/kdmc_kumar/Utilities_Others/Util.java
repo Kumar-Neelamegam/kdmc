@@ -19,7 +19,9 @@ package kdmc_kumar.Utilities_Others;
 import android.app.Activity;
 import android.app.ProgressDialog;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
@@ -28,6 +30,8 @@ import android.support.annotation.Nullable;
 import android.view.Surface;
 
 import java.io.Closeable;
+
+import kdmc_kumar.Utilities_Others.MonitoredActivity.LifeCycleAdapter;
 
 /**
  * Collection of utility functions used in this package.
@@ -68,7 +72,7 @@ public class Util {
 			 * (or both) black.
 			 */
             Bitmap b2 = Bitmap.createBitmap(targetWidth, targetHeight,
-                    Bitmap.Config.ARGB_8888);
+                    Config.ARGB_8888);
             Canvas c = new Canvas(b2);
 
             int deltaXHalf = Math.max(0, deltaX / 2);
@@ -139,14 +143,14 @@ public class Util {
         // the thread will be done before the activity getting destroyed.
         ProgressDialog dialog = ProgressDialog.show(activity, title, message,
                 true, false);
-        new Thread(new BackgroundJob(activity, job, dialog, handler)).start();
+        new Thread(new Util.BackgroundJob(activity, job, dialog, handler)).start();
     }
 
     // Returns Options that set the puregeable flag for Bitmap decode.
-    public static BitmapFactory.Options createNativeAllocOptions() {
+    public static Options createNativeAllocOptions() {
 
         // options.inNativeAlloc = true;
-        return new BitmapFactory.Options();
+        return new Options();
     }
 
     // Thong added for rotate
@@ -184,7 +188,7 @@ public class Util {
     }
 
     private static class BackgroundJob extends
-            MonitoredActivity.LifeCycleAdapter implements Runnable {
+            LifeCycleAdapter implements Runnable {
 
         private final MonitoredActivity mActivity;
         private final ProgressDialog mDialog;
@@ -193,28 +197,28 @@ public class Util {
         private final Runnable mCleanupRunner = new Runnable() {
             public void run() {
 
-                mActivity.removeLifeCycleListener(BackgroundJob.this);
-                if (mDialog.getWindow() != null)
-                    mDialog.dismiss();
+                Util.BackgroundJob.this.mActivity.removeLifeCycleListener(Util.BackgroundJob.this);
+                if (Util.BackgroundJob.this.mDialog.getWindow() != null)
+                    Util.BackgroundJob.this.mDialog.dismiss();
             }
         };
 
         BackgroundJob(MonitoredActivity activity, Runnable job,
                       ProgressDialog dialog, Handler handler) {
 
-            mActivity = activity;
-            mDialog = dialog;
-            mJob = job;
-            mActivity.addLifeCycleListener(this);
-            mHandler = handler;
+            this.mActivity = activity;
+            this.mDialog = dialog;
+            this.mJob = job;
+            this.mActivity.addLifeCycleListener(this);
+            this.mHandler = handler;
         }
 
         public final void run() {
 
             try {
-                mJob.run();
+                this.mJob.run();
             } finally {
-                mHandler.post(mCleanupRunner);
+                this.mHandler.post(this.mCleanupRunner);
             }
         }
 
@@ -222,20 +226,20 @@ public class Util {
         public final void onActivityDestroyed(MonitoredActivity activity) {
             // We get here only when the onDestroyed being called before
             // the mCleanupRunner. So, run it now and remove it from the queue
-            mCleanupRunner.run();
-            mHandler.removeCallbacks(mCleanupRunner);
+            this.mCleanupRunner.run();
+            this.mHandler.removeCallbacks(this.mCleanupRunner);
         }
 
         @Override
         public final void onActivityStopped(MonitoredActivity activity) {
 
-            mDialog.hide();
+            this.mDialog.hide();
         }
 
         @Override
         public final void onActivityStarted(MonitoredActivity activity) {
 
-            mDialog.show();
+            this.mDialog.show();
         }
     }
 }

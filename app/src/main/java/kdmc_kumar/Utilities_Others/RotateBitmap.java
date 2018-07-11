@@ -29,72 +29,72 @@ public class RotateBitmap {
 
     public RotateBitmap(Bitmap bitmap) {
 
-        mBitmap = bitmap;
-        mRotation = 0;
+        this.mBitmap = bitmap;
+        this.mRotation = 0;
     }
 
     public RotateBitmap(Bitmap bitmap, int rotation) {
 
-        mBitmap = bitmap;
-        mRotation = rotation % 360;
+        this.mBitmap = bitmap;
+        this.mRotation = rotation % 360;
     }
 
     public final int getRotation() {
 
-        return mRotation;
+        return this.mRotation;
     }
 
     public final void setRotation(int rotation) {
 
-        mRotation = rotation;
+        this.mRotation = rotation;
     }
 
     public final Bitmap getBitmap() {
 
-        return mBitmap;
+        return this.mBitmap;
     }
 
     public final void setBitmap(Bitmap bitmap) {
 
-        mBitmap = bitmap;
+        this.mBitmap = bitmap;
     }
 
     public final Matrix getRotateMatrix() {
         // By default this is an identity matrix.
         Matrix matrix = new Matrix();
-        if (mRotation != 0) {
+        if (this.mRotation != 0) {
             // We want to do the rotation at origin, but since the bounding
             // rectangle will be changed after rotation, so the delta values
             // are based on old & new width/height respectively.
-            int cx = mBitmap.getWidth() / 2;
-            int cy = mBitmap.getHeight() / 2;
+            int cx = this.mBitmap.getWidth() / 2;
+            int cy = this.mBitmap.getHeight() / 2;
             matrix.preTranslate((float) -cx, (float) -cy);
-            matrix.postRotate((float) mRotation);
-            matrix.postTranslate((float) (getWidth() / 2), (float) (getHeight() / 2));
+            matrix.postRotate((float) this.mRotation);
+            matrix.postTranslate((float) (this.getWidth() / 2), (float) (this.getHeight() / 2));
         }
         return matrix;
     }
 
     private final boolean isOrientationChanged() {
 
-        return (mRotation / 90) % 2 != 0;
+        return (this.mRotation / 90) % 2 != 0;
     }
 
     public final int getHeight() {
 
-        return isOrientationChanged() ? mBitmap.getWidth() : mBitmap.getHeight();
+        return this.isOrientationChanged() ? this.mBitmap.getWidth() : this.mBitmap.getHeight();
     }
 
     public final int getWidth() {
 
-        return isOrientationChanged() ? mBitmap.getHeight() : mBitmap.getWidth();
+        return this.isOrientationChanged() ? this.mBitmap.getHeight() : this.mBitmap.getWidth();
     }
 
     public final void recycle() {
 
-        if (mBitmap != null) {
-            mBitmap.recycle();
-            mBitmap = null;
+        if (this.mBitmap != null) {
+            this.mBitmap.recycle();
+            this.mBitmap = null;
         }
     }
 }

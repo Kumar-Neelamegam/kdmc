@@ -20,21 +20,21 @@ public class PDFNodeJsResult {
 
 
     @com.google.gson.annotations.SerializedName("Result")
-    private String result = null;
+    private String result;
 
 
     @com.google.gson.annotations.SerializedName("URL")
-    private String uRL = null;
+    private String uRL;
 
     public PDFNodeJsResult() {
     }
 
     public final String getResult() {
-        return result;
+        return this.result;
     }
 
     public final String getURL() {
-        return getuRL();
+        return this.getuRL();
     }
 
     public void setResult(String result) {
@@ -42,7 +42,7 @@ public class PDFNodeJsResult {
     }
 
     public String getuRL() {
-        return uRL;
+        return this.uRL;
     }
 
     public void setuRL(String uRL) {
@@ -60,16 +60,16 @@ public class PDFNodeJsResult {
         }
 
         public final PDFNodeJsResult build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final PDFNodeJsResultBuilder result(String value) {
-            toBuild.setResult(value);
+        public final PDFNodeJsResult.PDFNodeJsResultBuilder result(String value) {
+            this.toBuild.setResult(value);
             return this;
         }
 
-        public final PDFNodeJsResultBuilder uRL(String value) {
-            toBuild.setuRL(value);
+        public final PDFNodeJsResult.PDFNodeJsResultBuilder uRL(String value) {
+            this.toBuild.setuRL(value);
             return this;
         }
     }

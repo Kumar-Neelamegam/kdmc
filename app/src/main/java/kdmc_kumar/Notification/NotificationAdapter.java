@@ -3,58 +3,63 @@ package kdmc_kumar.Notification;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 
 import displ.mobydocmarathi.com.R;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.NotificationGetSet;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.NotificationListGetSet;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
+import kdmc_kumar.Notification.NotificationAdapter.MyViewHolder;
 
 /**
  * Created by Ponnusamy M on 4/24/2017.
  */
 
-public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapter.MyViewHolder> {
+public class NotificationAdapter extends Adapter<MyViewHolder> {
 
-    private ArrayList<NotificationGetSet> notificationGetSetArrayAdapter = new ArrayList<>();
+    private ArrayList<CommonDataObjects.NotificationGetSet> notificationGetSetArrayAdapter = new ArrayList<>();
 
-    public NotificationAdapter(ArrayList<NotificationGetSet> notificationGetSetArrayAdapter) {
+    public NotificationAdapter(ArrayList<CommonDataObjects.NotificationGetSet> notificationGetSetArrayAdapter) {
         this.notificationGetSetArrayAdapter = notificationGetSetArrayAdapter;
     }
 
     @NonNull
     @Override
-    public final MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.notification_list_row, parent, false);
-        return new MyViewHolder(view);
+    public final NotificationAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(layout.notification_list_row, parent, false);
+        return new NotificationAdapter.MyViewHolder(view);
     }
 
     @Override
-    public final void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
+    public final void onBindViewHolder(@NonNull NotificationAdapter.MyViewHolder holder, int position) {
 
         StringBuilder stringBuilder = new StringBuilder();
 
-        NotificationGetSet item = notificationGetSetArrayAdapter.get(position);
+        CommonDataObjects.NotificationGetSet item = this.notificationGetSetArrayAdapter.get(position);
 
-        ArrayList<NotificationListGetSet> tabledata = item.getNotificationListGetSets();
+        ArrayList<CommonDataObjects.NotificationListGetSet> tabledata = item.getNotificationListGetSets();
 
         String patient_id = item.get_patientId();
         String patient_name = item.get_patientName();
         holder.webView.getSettings().setJavaScriptEnabled(true);
         holder.webView.setLayerType(View.LAYER_TYPE_NONE, null);
         holder.webView.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        holder.webView.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        holder.webView.getSettings().setRenderPriority(RenderPriority.HIGH);
         holder.webView.getSettings().setDefaultTextEncodingName("utf-8");
 
-        holder.webView.setWebChromeClient(new MyWebChromeClient());
+        holder.webView.setWebChromeClient(new NotificationAdapter.MyWebChromeClient());
 
         holder.webView.setBackgroundColor(0x00000000);
         holder.webView.setVerticalScrollBarEnabled(true);
@@ -64,11 +69,11 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
         holder.webView.getSettings().setAllowContentAccess(true);
 
-        holder.webView.addJavascriptInterface(new WebAppInterface(holder.webView.getContext()), "android");
+        holder.webView.addJavascriptInterface(new NotificationAdapter.WebAppInterface(holder.webView.getContext()), "android");
 
 
-        for (Iterator<NotificationListGetSet> iterator = tabledata.iterator(); iterator.hasNext(); ) {
-            NotificationListGetSet notificationListGetSet = iterator.next();
+        for (Iterator<CommonDataObjects.NotificationListGetSet> iterator = tabledata.iterator(); iterator.hasNext(); ) {
+            CommonDataObjects.NotificationListGetSet notificationListGetSet = iterator.next();
             stringBuilder.append("<tr>\n" + "    <td>").append(notificationListGetSet.get_testName()).append("</td>\n").append("\t<td>").append(notificationListGetSet.get_testValue()).append("</td>\n").append("\t<td>").append(notificationListGetSet.get_testRemark()).append("</td>\n").append("  </tr>");
         }
 
@@ -83,19 +88,19 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
 
     @Override
     public final int getItemCount() {
-        return notificationGetSetArrayAdapter.size();
+        return this.notificationGetSetArrayAdapter.size();
     }
 
     private static class MyWebChromeClient extends WebChromeClient {
     }
 
-    static class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends ViewHolder {
         final WebView webView;
 
         MyViewHolder(View itemView) {
             super(itemView);
 
-            webView = itemView.findViewById(R.id.webview);
+            this.webView = itemView.findViewById(id.webview);
         }
     }
 
@@ -106,7 +111,7 @@ public class NotificationAdapter extends RecyclerView.Adapter<NotificationAdapte
          * Instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
-            mContext = c;
+            this.mContext = c;
         }
 
         /**

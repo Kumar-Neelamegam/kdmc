@@ -2,24 +2,24 @@ package kdmc_kumar.Utilities_Others;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.ViewGroup;
 
 import java.util.List;
 
-public class KDMCRecyclerAdapter<Data, SampleViewHolder extends ViewHolder> extends RecyclerView.Adapter<SampleViewHolder> {
+public class KDMCRecyclerAdapter<Data, SampleViewHolder extends RecyclerView.ViewHolder> extends Adapter<SampleViewHolder> {
 
-    private List<Data> values;
+    private final List<Data> values;
     private SampleViewHolder viewHolder;
-    private int layoutId;
-    private AdapterView adapterView;
+    private final int layoutId;
+    private KDMCRecyclerAdapter.AdapterView adapterView;
 
     public KDMCRecyclerAdapter(List<Data> values, int layoutId) {
         this.values = values;
         this.layoutId = layoutId;
     }
 
-    public KDMCRecyclerAdapter setRowItemView(AdapterView adapterView) {
+    public KDMCRecyclerAdapter setRowItemView(KDMCRecyclerAdapter.AdapterView adapterView) {
         this.adapterView = adapterView;
         return this;
     }
@@ -27,21 +27,21 @@ public class KDMCRecyclerAdapter<Data, SampleViewHolder extends ViewHolder> exte
     @NonNull
     @Override
     public SampleViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        Object object = adapterView.setAdapterView(parent, viewType, this.layoutId);
-        this.viewHolder = (SampleViewHolder) object;
-        return this.viewHolder;
+        Object object = this.adapterView.setAdapterView(parent, viewType, layoutId);
+        viewHolder = (SampleViewHolder) object;
+        return viewHolder;
     }
 
 
     @Override
     public void onBindViewHolder(@NonNull SampleViewHolder holder, int position) {
-        Data data = values.get(position);
-        adapterView.onBindView(holder, position, data, (List<Object>) this.values);
+        Data data = this.values.get(position);
+        this.adapterView.onBindView(holder, position, data, (List<Object>) values);
     }
 
     @Override
     public int getItemCount() {
-        return values.size();
+        return this.values.size();
     }
 
     public interface AdapterView {
@@ -55,12 +55,12 @@ public class KDMCRecyclerAdapter<Data, SampleViewHolder extends ViewHolder> exte
 
 
     public void delete(int position){
-        values.remove(position);
-        notifyItemRemoved(position);
+        this.values.remove(position);
+        this.notifyItemRemoved(position);
     }
 
     public int getSize(){
-        return values.size();
+        return this.values.size();
     }
 
 

@@ -19,17 +19,18 @@ package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils;
 import android.annotation.TargetApi;
 import android.graphics.Matrix;
 import android.graphics.Rect;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
+import android.os.Build;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.id;
 
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class ViewUtils {
 
     static class BaseViewUtils {
@@ -64,11 +65,11 @@ public class ViewUtils {
         }
 
         public void setTransitionName(View v, String name) {
-            v.setTag(R.id.transitionName, name);
+            v.setTag(id.transitionName, name);
         }
 
         public String getTransitionName(View v) {
-            return (String) v.getTag(R.id.transitionName);
+            return (String) v.getTag(id.transitionName);
         }
 
         public void setTranslationZ(View view, float z) {
@@ -116,23 +117,23 @@ public class ViewUtils {
         }
 
         public void setTransitionVisibility(View v, int visibility) {
-            int value = (Integer) ReflectionUtils.getFieldValue(v, 0, FIELD_VIEW_FLAGS);
-            value = (value & ~VIEW_VISIBILITY_MASK) | visibility;
-            ReflectionUtils.setFieldValue(v, FIELD_VIEW_FLAGS, value);
+            int value = (Integer) ReflectionUtils.getFieldValue(v, 0, BaseViewUtils.FIELD_VIEW_FLAGS);
+            value = (value & ~BaseViewUtils.VIEW_VISIBILITY_MASK) | visibility;
+            ReflectionUtils.setFieldValue(v, BaseViewUtils.FIELD_VIEW_FLAGS, value);
         }
 
         public void setLeftTopRightBottom(View v, int left, int top, int right, int bottom) {
-            ReflectionUtils.invoke(v, null, METHOD_SET_FRAME, left, top, right, bottom);
+            ReflectionUtils.invoke(v, null, BaseViewUtils.METHOD_SET_FRAME, left, top, right, bottom);
         }
 
-        public void setLayoutParamsSilently(View view, ViewGroup.LayoutParams layoutParams) {
-            ReflectionUtils.setFieldValue(view, FIELD_LAYOUT_PARAMS, layoutParams);
+        public void setLayoutParamsSilently(View view, LayoutParams layoutParams) {
+            ReflectionUtils.setFieldValue(view, BaseViewUtils.FIELD_LAYOUT_PARAMS, layoutParams);
         }
 
     }
 
-    @TargetApi(VERSION_CODES.JELLY_BEAN)
-    static class ViewUtilsJellyBean extends BaseViewUtils {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    static class ViewUtilsJellyBean extends ViewUtils.BaseViewUtils {
         @Override
         public void setHasTransientState(View view, boolean hasTransientState) {
             view.setHasTransientState(hasTransientState);
@@ -144,16 +145,16 @@ public class ViewUtils {
         }
     }
 
-    @TargetApi(VERSION_CODES.JELLY_BEAN_MR1)
-    static class ViewUtilsJellyBeanMR1 extends ViewUtilsJellyBean {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    static class ViewUtilsJellyBeanMR1 extends ViewUtils.ViewUtilsJellyBean {
         @Override
         public boolean isRtl(View view) {
             return view != null && view.getLayoutDirection() == View.LAYOUT_DIRECTION_RTL;
         }
     }
 
-    @TargetApi(VERSION_CODES.JELLY_BEAN_MR2)
-    static class ViewUtilsJellyBeanMR2 extends ViewUtilsJellyBeanMR1 {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    static class ViewUtilsJellyBeanMR2 extends ViewUtils.ViewUtilsJellyBeanMR1 {
         @Override
         public void setClipBounds(View v, Rect clipBounds) {
             v.setClipBounds(clipBounds);
@@ -170,101 +171,101 @@ public class ViewUtils {
         }
     }
 
-    @TargetApi(VERSION_CODES.KITKAT)
-    static class ViewUtilsKitKat extends ViewUtilsJellyBeanMR2 {
+    @TargetApi(Build.VERSION_CODES.KITKAT)
+    static class ViewUtilsKitKat extends ViewUtils.ViewUtilsJellyBeanMR2 {
         @Override
         public boolean isLaidOut(View v, boolean defaultValue) {
             return v.isLaidOut();
         }
     }
 
-    private static final BaseViewUtils IMPL;
+    private static final ViewUtils.BaseViewUtils IMPL;
 
     static {
-        final int version = VERSION.SDK_INT;
-        if (version >= VERSION_CODES.LOLLIPOP_MR1) {
+        int version = Build.VERSION.SDK_INT;
+        if (version >= Build.VERSION_CODES.LOLLIPOP_MR1) {
             IMPL = new ViewUtilsLollipopMr1();
-        } else if (version >= VERSION_CODES.LOLLIPOP) {
+        } else if (version >= Build.VERSION_CODES.LOLLIPOP) {
             IMPL = new ViewUtilsLollipop();
-        } else if (version >= VERSION_CODES.KITKAT) {
-            IMPL = new ViewUtilsKitKat();
-        } else if (version >= VERSION_CODES.JELLY_BEAN_MR2) {
-            IMPL = new ViewUtilsJellyBeanMR2();
-        } else if (version >= VERSION_CODES.JELLY_BEAN_MR1) {
-            IMPL = new ViewUtilsJellyBeanMR1();
-        } else if (version >= VERSION_CODES.JELLY_BEAN) {
-            IMPL = new ViewUtilsJellyBean();
+        } else if (version >= Build.VERSION_CODES.KITKAT) {
+            IMPL = new ViewUtils.ViewUtilsKitKat();
+        } else if (version >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            IMPL = new ViewUtils.ViewUtilsJellyBeanMR2();
+        } else if (version >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+            IMPL = new ViewUtils.ViewUtilsJellyBeanMR1();
+        } else if (version >= Build.VERSION_CODES.JELLY_BEAN) {
+            IMPL = new ViewUtils.ViewUtilsJellyBean();
         } else {
-            IMPL = new BaseViewUtils();
+            IMPL = new ViewUtils.BaseViewUtils();
         }
     }
 
     public static float getTransitionAlpha(View v) {
-        return IMPL.getTransitionAlpha(v);
+        return ViewUtils.IMPL.getTransitionAlpha(v);
     }
 
     public static boolean isLaidOut(View v, boolean defaultValue) {
-        return IMPL.isLaidOut(v, defaultValue);
+        return ViewUtils.IMPL.isLaidOut(v, defaultValue);
     }
 
     public static void setClipBounds(View v, Rect clipBounds) {
-        IMPL.setClipBounds(v, clipBounds);
+        ViewUtils.IMPL.setClipBounds(v, clipBounds);
     }
 
     public static Rect getClipBounds(View v) {
-        return IMPL.getClipBounds(v);
+        return ViewUtils.IMPL.getClipBounds(v);
     }
 
     public static void setTransitionName(View v, String name) {
-        IMPL.setTransitionName(v, name);
+        ViewUtils.IMPL.setTransitionName(v, name);
     }
 
     public static String getTransitionName(View v) {
-        return IMPL.getTransitionName(v);
+        return ViewUtils.IMPL.getTransitionName(v);
     }
 
     public static float getTranslationZ(View view) {
-        return IMPL.getTranslationZ(view);
+        return ViewUtils.IMPL.getTranslationZ(view);
     }
 
     public static void setTranslationZ(View view, float z) {
-        IMPL.setTranslationZ(view, z);
+        ViewUtils.IMPL.setTranslationZ(view, z);
     }
 
     public static void transformMatrixToGlobal(View view, Matrix matrix) {
-        IMPL.transformMatrixToGlobal(view, matrix);
+        ViewUtils.IMPL.transformMatrixToGlobal(view, matrix);
     }
 
     public static void transformMatrixToLocal(View view, Matrix matrix) {
-        IMPL.transformMatrixToLocal(view, matrix);
+        ViewUtils.IMPL.transformMatrixToLocal(view, matrix);
     }
 
     public static void setAnimationMatrix(View view, Matrix matrix) {
-        IMPL.setAnimationMatrix(view, matrix);
+        ViewUtils.IMPL.setAnimationMatrix(view, matrix);
     }
 
     public static View addGhostView(View view, ViewGroup viewGroup, Matrix matrix) {
-        return IMPL.addGhostView(view, viewGroup, matrix);
+        return ViewUtils.IMPL.addGhostView(view, viewGroup, matrix);
     }
 
     public static void removeGhostView(View view) {
-        IMPL.removeGhostView(view);
+        ViewUtils.IMPL.removeGhostView(view);
     }
 
     public static Object getWindowId(View view) {
-        return IMPL.getWindowId(view);
+        return ViewUtils.IMPL.getWindowId(view);
     }
 
     public static boolean isRtl(View view) {
-        return IMPL.isRtl(view);
+        return ViewUtils.IMPL.isRtl(view);
     }
 
     public static boolean hasTransientState(View view) {
-        return IMPL.hasTransientState(view);
+        return ViewUtils.IMPL.hasTransientState(view);
     }
 
     public static void setHasTransientState(View view, boolean hasTransientState) {
-        IMPL.setHasTransientState(view, hasTransientState);
+        ViewUtils.IMPL.setHasTransientState(view, hasTransientState);
     }
 
     /**
@@ -277,16 +278,16 @@ public class ViewUtils {
      * @param visibility One of View.VISIBLE, View.INVISIBLE, or View.GONE.
      */
     public static void setTransitionVisibility(View view, int visibility) {
-        IMPL.setTransitionVisibility(view, visibility);
+        ViewUtils.IMPL.setTransitionVisibility(view, visibility);
     }
 
     public static void setLeftTopRightBottom(View view, int left, int top, int right, int bottom) {
         if (view != null) {
-            IMPL.setLeftTopRightBottom(view, left, top, right, bottom);
+            ViewUtils.IMPL.setLeftTopRightBottom(view, left, top, right, bottom);
         }
     }
 
-    public static void setLayoutParamsSilently(View view, ViewGroup.LayoutParams layoutParams) {
-        IMPL.setLayoutParamsSilently(view, layoutParams);
+    public static void setLayoutParamsSilently(View view, LayoutParams layoutParams) {
+        ViewUtils.IMPL.setLayoutParamsSilently(view, layoutParams);
     }
 }

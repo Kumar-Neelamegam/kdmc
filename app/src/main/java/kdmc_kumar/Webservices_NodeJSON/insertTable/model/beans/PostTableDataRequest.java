@@ -20,17 +20,17 @@ public class PostTableDataRequest {
 
 
     @com.google.gson.annotations.SerializedName("JsonValue")
-    private String jsonValue = null;
+    private String jsonValue;
 
 
     @com.google.gson.annotations.SerializedName("TableName")
-    private String tableName = null;
+    private String tableName;
 
     public PostTableDataRequest() {
     }
 
     public final String getJsonValue() {
-        return jsonValue;
+        return this.jsonValue;
     }
 
     public final void setJsonValue(String jsonValue) {
@@ -38,7 +38,7 @@ public class PostTableDataRequest {
     }
 
     public final String getTableName() {
-        return tableName;
+        return this.tableName;
     }
 
     public final void setTableName(String tableName) {
@@ -55,16 +55,16 @@ public class PostTableDataRequest {
         }
 
         public final PostTableDataRequest build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final PostTableDataRequestBuilder jsonValue(String value) {
-            toBuild.setJsonValue(value);
+        public final PostTableDataRequest.PostTableDataRequestBuilder jsonValue(String value) {
+            this.toBuild.setJsonValue(value);
             return this;
         }
 
-        public final PostTableDataRequestBuilder tableName(String value) {
-            toBuild.setTableName(value);
+        public final PostTableDataRequest.PostTableDataRequestBuilder tableName(String value) {
+            this.toBuild.setTableName(value);
             return this;
         }
     }

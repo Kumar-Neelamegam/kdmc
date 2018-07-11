@@ -20,17 +20,17 @@ public class PostIsUpdateMaxRequest {
 
 
     @com.google.gson.annotations.SerializedName("IsUpdateMax")
-    private String isUpdateMax = null;
+    private String isUpdateMax;
 
 
     @com.google.gson.annotations.SerializedName("MethodName")
-    private String methodName = null;
+    private String methodName;
 
     public PostIsUpdateMaxRequest() {
     }
 
     public final String getIsUpdateMax() {
-        return isUpdateMax;
+        return this.isUpdateMax;
     }
 
     public final void setIsUpdateMax(String isUpdateMax) {
@@ -38,7 +38,7 @@ public class PostIsUpdateMaxRequest {
     }
 
     public final String getMethodName() {
-        return methodName;
+        return this.methodName;
     }
 
     public final void setMethodName(String methodName) {
@@ -55,16 +55,16 @@ public class PostIsUpdateMaxRequest {
         }
 
         public final PostIsUpdateMaxRequest build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final PostIsUpdateMaxRequestBuilder isUpdateMax(String value) {
-            toBuild.setIsUpdateMax(value);
+        public final PostIsUpdateMaxRequest.PostIsUpdateMaxRequestBuilder isUpdateMax(String value) {
+            this.toBuild.setIsUpdateMax(value);
             return this;
         }
 
-        public final PostIsUpdateMaxRequestBuilder methodName(String value) {
-            toBuild.setMethodName(value);
+        public final PostIsUpdateMaxRequest.PostIsUpdateMaxRequestBuilder methodName(String value) {
+            this.toBuild.setMethodName(value);
             return this;
         }
     }

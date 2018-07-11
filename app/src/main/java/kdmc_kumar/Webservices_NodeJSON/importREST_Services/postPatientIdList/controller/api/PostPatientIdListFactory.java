@@ -10,7 +10,6 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
-import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -20,37 +19,37 @@ import kdmc_kumar.Webservices_NodeJSON.importREST_Services.postPatientIdList.mod
 
 public class PostPatientIdListFactory extends ControllerFactory<PostPatientIdList> {
     public PostPatientIdListFactory(MagnetMobileClient magnetClient) {
-        super(PostPatientIdList.class, PostPatientIdListSchemaFactory.getInstance().getSchema(), magnetClient);
+        super(PostPatientIdList.class, PostPatientIdListFactory.PostPatientIdListSchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller PostPatientIdList
     public static class PostPatientIdListSchemaFactory extends AbstractControllerSchemaFactory {
-        private static PostPatientIdListSchemaFactory __instance = null;
+        private static PostPatientIdListFactory.PostPatientIdListSchemaFactory __instance;
 
         private PostPatientIdListSchemaFactory() {
         }
 
-        static PostPatientIdListSchemaFactory getInstance() {
-            synchronized (PostPatientIdListSchemaFactory.class) {
-                if (null == __instance) {
-                    __instance = new PostPatientIdListSchemaFactory();
+        static PostPatientIdListFactory.PostPatientIdListSchemaFactory getInstance() {
+            synchronized (PostPatientIdListFactory.PostPatientIdListSchemaFactory.class) {
+                if (null == PostPatientIdListFactory.PostPatientIdListSchemaFactory.__instance) {
+                    PostPatientIdListFactory.PostPatientIdListSchemaFactory.__instance = new PostPatientIdListFactory.PostPatientIdListSchemaFactory();
                 }
 
-                return __instance;
+                return PostPatientIdListFactory.PostPatientIdListSchemaFactory.__instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != schema) {
+                if (null != this.schema) {
                     return;
                 }
 
-                schema = new RequestSchema();
-                schema.setRootPath("");
+                this.schema = new RequestSchema();
+                this.schema.setRootPath("");
 
                 //controller schema for controller method postPatientIdList
-                JMethod method1 = addMethod("postPatientIdList",
+                RequestSchema.JMethod method1 = this.addMethod("postPatientIdList",
                         "importMastersSP/postPatientIdList",
                         "POST",
                         PatientIdListResult.class,

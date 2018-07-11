@@ -22,25 +22,25 @@ public class PosPatIdDocIdMtestIdRequest {
 
 
     @com.google.gson.annotations.SerializedName("DocId")
-    private String docId = null;
+    private String docId;
 
 
     @com.google.gson.annotations.SerializedName("MethodName")
-    private String methodName = null;
+    private String methodName;
 
 
     @com.google.gson.annotations.SerializedName("MtestId")
-    private String mtestId = null;
+    private String mtestId;
 
 
     @com.google.gson.annotations.SerializedName("PatId")
-    private String patId = null;
+    private String patId;
 
     public PosPatIdDocIdMtestIdRequest() {
     }
 
     public final String getDocId() {
-        return docId;
+        return this.docId;
     }
 
     public final void setDocId(String docId) {
@@ -48,7 +48,7 @@ public class PosPatIdDocIdMtestIdRequest {
     }
 
     public final String getMethodName() {
-        return methodName;
+        return this.methodName;
     }
 
     public final void setMethodName(String methodName) {
@@ -56,7 +56,7 @@ public class PosPatIdDocIdMtestIdRequest {
     }
 
     public final String getMtestId() {
-        return mtestId;
+        return this.mtestId;
     }
 
     public final void setMtestId(String mtestId) {
@@ -64,7 +64,7 @@ public class PosPatIdDocIdMtestIdRequest {
     }
 
     public final String getPatId() {
-        return patId;
+        return this.patId;
     }
 
     public final void setPatId(String patId) {
@@ -81,26 +81,26 @@ public class PosPatIdDocIdMtestIdRequest {
         }
 
         public final PosPatIdDocIdMtestIdRequest build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final PosPatIdDocIdMtestIdRequestBuilder docId(String value) {
-            toBuild.setDocId(value);
+        public final PosPatIdDocIdMtestIdRequest.PosPatIdDocIdMtestIdRequestBuilder docId(String value) {
+            this.toBuild.setDocId(value);
             return this;
         }
 
-        public final PosPatIdDocIdMtestIdRequestBuilder methodName(String value) {
-            toBuild.setMethodName(value);
+        public final PosPatIdDocIdMtestIdRequest.PosPatIdDocIdMtestIdRequestBuilder methodName(String value) {
+            this.toBuild.setMethodName(value);
             return this;
         }
 
-        public final PosPatIdDocIdMtestIdRequestBuilder mtestId(String value) {
-            toBuild.setMtestId(value);
+        public final PosPatIdDocIdMtestIdRequest.PosPatIdDocIdMtestIdRequestBuilder mtestId(String value) {
+            this.toBuild.setMtestId(value);
             return this;
         }
 
-        public final PosPatIdDocIdMtestIdRequestBuilder patId(String value) {
-            toBuild.setPatId(value);
+        public final PosPatIdDocIdMtestIdRequest.PosPatIdDocIdMtestIdRequestBuilder patId(String value) {
+            this.toBuild.setPatId(value);
             return this;
         }
     }

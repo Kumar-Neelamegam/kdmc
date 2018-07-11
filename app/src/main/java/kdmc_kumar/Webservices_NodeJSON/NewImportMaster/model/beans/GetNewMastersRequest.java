@@ -31,13 +31,13 @@ public class GetNewMastersRequest {
   private String tableId;
 
   public String getIsUpdateMax() {
-    return isUpdateMax;
+    return this.isUpdateMax;
   }
   public String getMasterId() {
-    return masterId;
+    return this.masterId;
   }
   public String getTableId() {
-    return tableId;
+    return this.tableId;
   }
 
 
@@ -57,25 +57,25 @@ public class GetNewMastersRequest {
   * Builder for GetNewMastersRequest
   **/
   public static class GetNewMastersRequestBuilder {
-    private GetNewMastersRequest toBuild = new GetNewMastersRequest();
+    private final GetNewMastersRequest toBuild = new GetNewMastersRequest();
 
     public GetNewMastersRequestBuilder() {
     }
 
     public GetNewMastersRequest build() {
-      return toBuild;
+      return this.toBuild;
     }
 
-    public GetNewMastersRequestBuilder isUpdateMax(String value) {
-      toBuild.isUpdateMax = value;
+    public GetNewMastersRequest.GetNewMastersRequestBuilder isUpdateMax(String value) {
+        this.toBuild.isUpdateMax = value;
       return this;
     }
-    public GetNewMastersRequestBuilder masterId(String value) {
-      toBuild.masterId = value;
+    public GetNewMastersRequest.GetNewMastersRequestBuilder masterId(String value) {
+        this.toBuild.masterId = value;
       return this;
     }
-    public GetNewMastersRequestBuilder tableId(String value) {
-      toBuild.tableId = value;
+    public GetNewMastersRequest.GetNewMastersRequestBuilder tableId(String value) {
+        this.toBuild.tableId = value;
       return this;
     }
   }

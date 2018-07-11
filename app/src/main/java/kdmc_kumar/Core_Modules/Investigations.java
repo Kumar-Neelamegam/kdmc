@@ -1816,6 +1816,7 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
             values.put("imei", BaseConfig.Imeinum);
             values.put("prefdiag", autocompleteDiagcenterName.getText().toString());
             values.put("Isupdate", 0);
+            values.put("IsResultAvailable", 1);
             values.put("HID", BaseConfig.HID);
             db.insert(BaseConfig.TABLE_MEDICAL_TEST, null, values);
 

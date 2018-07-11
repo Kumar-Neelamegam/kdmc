@@ -10,7 +10,6 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
-import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Arrays;
 import java.util.Collections;
@@ -22,37 +21,37 @@ import kdmc_kumar.Webservices_NodeJSON.generatePDFNode.model.beans.PDFNodeJsResu
 
 public class GeneratePDFNodeFactory extends ControllerFactory<GeneratePDFNode> {
     public GeneratePDFNodeFactory(MagnetMobileClient magnetClient) {
-        super(GeneratePDFNode.class, GeneratePDFNodeSchemaFactory.getInstance().getSchema(), magnetClient);
+        super(GeneratePDFNode.class, GeneratePDFNodeFactory.GeneratePDFNodeSchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller GeneratePDFNode
     public static class GeneratePDFNodeSchemaFactory extends AbstractControllerSchemaFactory {
-        private static GeneratePDFNodeSchemaFactory __instance = null;
+        private static GeneratePDFNodeFactory.GeneratePDFNodeSchemaFactory __instance;
 
         private GeneratePDFNodeSchemaFactory() {
         }
 
-        static GeneratePDFNodeSchemaFactory getInstance() {
-            synchronized (GeneratePDFNodeSchemaFactory.class) {
-                if (null == __instance) {
-                    __instance = new GeneratePDFNodeSchemaFactory();
+        static GeneratePDFNodeFactory.GeneratePDFNodeSchemaFactory getInstance() {
+            synchronized (GeneratePDFNodeFactory.GeneratePDFNodeSchemaFactory.class) {
+                if (null == GeneratePDFNodeFactory.GeneratePDFNodeSchemaFactory.__instance) {
+                    GeneratePDFNodeFactory.GeneratePDFNodeSchemaFactory.__instance = new GeneratePDFNodeFactory.GeneratePDFNodeSchemaFactory();
                 }
 
-                return __instance;
+                return GeneratePDFNodeFactory.GeneratePDFNodeSchemaFactory.__instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != schema) {
+                if (null != this.schema) {
                     return;
                 }
 
-                schema = new RequestSchema();
-                schema.setRootPath("");
+                this.schema = new RequestSchema();
+                this.schema.setRootPath("");
 
                 //controller schema for controller method getPDFNodeJs
-                JMethod method1 = addMethod("getPDFNodeJs",
+                RequestSchema.JMethod method1 = this.addMethod("getPDFNodeJs",
                         "ExportMasters/kdmcPDF",
                         "POST",
                         PDFNodeJsResult.class,

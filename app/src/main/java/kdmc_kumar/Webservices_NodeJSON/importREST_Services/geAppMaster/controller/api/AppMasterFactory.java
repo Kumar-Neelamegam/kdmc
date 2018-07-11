@@ -11,7 +11,6 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
-import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -20,37 +19,37 @@ import kdmc_kumar.Webservices_NodeJSON.importREST_Services.geAppMaster.model.bea
 
 public class AppMasterFactory extends ControllerFactory<AppMaster> {
     public AppMasterFactory(MagnetMobileClient magnetClient) {
-        super(AppMaster.class, AppMasterSchemaFactory.getInstance().getSchema(), magnetClient);
+        super(AppMaster.class, AppMasterFactory.AppMasterSchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller AppMaster
     public static class AppMasterSchemaFactory extends AbstractControllerSchemaFactory {
-        private static AppMasterSchemaFactory __instance = null;
+        private static AppMasterFactory.AppMasterSchemaFactory __instance;
 
         private AppMasterSchemaFactory() {
         }
 
-        static AppMasterSchemaFactory getInstance() {
-            synchronized (AppMasterSchemaFactory.class) {
-                if (null == __instance) {
-                    __instance = new AppMasterSchemaFactory();
+        static AppMasterFactory.AppMasterSchemaFactory getInstance() {
+            synchronized (AppMasterFactory.AppMasterSchemaFactory.class) {
+                if (null == AppMasterFactory.AppMasterSchemaFactory.__instance) {
+                    AppMasterFactory.AppMasterSchemaFactory.__instance = new AppMasterFactory.AppMasterSchemaFactory();
                 }
 
-                return __instance;
+                return AppMasterFactory.AppMasterSchemaFactory.__instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != schema) {
+                if (null != this.schema) {
                     return;
                 }
 
-                schema = new RequestSchema();
-                schema.setRootPath("");
+                this.schema = new RequestSchema();
+                this.schema.setRootPath("");
 
                 //controller schema for controller method getAppMaster
-                JMethod method1 = addMethod("getAppMaster",
+                RequestSchema.JMethod method1 = this.addMethod("getAppMaster",
                         "data/getAppMaster",
                         "GET",
                         AppMasterResult.class,

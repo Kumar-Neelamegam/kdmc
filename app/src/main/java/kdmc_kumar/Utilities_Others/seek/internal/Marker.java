@@ -22,6 +22,8 @@ import android.content.res.TypedArray;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.support.v4.view.ViewCompat;
 import android.util.AttributeSet;
 import android.util.DisplayMetrics;
@@ -32,116 +34,120 @@ import android.widget.FrameLayout;
 import android.widget.TextView;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.attr;
+import displ.mobydocmarathi.com.R.style;
+import displ.mobydocmarathi.com.R.styleable;
 import kdmc_kumar.Utilities_Others.seek.internal.compat.SeekBarCompat;
 import kdmc_kumar.Utilities_Others.seek.internal.drawable.MarkerDrawable;
+import kdmc_kumar.Utilities_Others.seek.internal.drawable.MarkerDrawable.MarkerAnimationListener;
 
-public class Marker extends ViewGroup implements MarkerDrawable.MarkerAnimationListener {
+public class Marker extends ViewGroup implements MarkerAnimationListener {
     private static final int PADDING_DP = 4;
     private static final int ELEVATION_DP = 8;
     //The TextView to show the info
-    private TextView mNumber;
+    private final TextView mNumber;
     //The max width of this View
     private int mWidth;
     //some distance between the thumb and our bubble marker.
     //This will be added to our measured height
-    private int mSeparation;
+    private final int mSeparation;
     MarkerDrawable mMarkerDrawable;
 
     public Marker(Context context, AttributeSet attrs, int defStyleAttr, String maxValue, int thumbSize, int separation) {
         super(context, attrs, defStyleAttr);
         //as we're reading the parent DiscreteSeekBar attributes, it may wrongly set this view's visibility.
-        setVisibility(View.VISIBLE);
+        this.setVisibility(View.VISIBLE);
         
         DisplayMetrics displayMetrics = context.getResources().getDisplayMetrics();
-        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.DiscreteSeekBar,
-                R.attr.discreteSeekBarStyle, R.style.Widget_DiscreteSeekBar);
+        TypedArray a = context.obtainStyledAttributes(attrs, styleable.DiscreteSeekBar,
+                attr.discreteSeekBarStyle, style.Widget_DiscreteSeekBar);
 
-        int padding = (int) (PADDING_DP * displayMetrics.density) * 2;
-        int textAppearanceId = a.getResourceId(R.styleable.DiscreteSeekBar_dsb_indicatorTextAppearance,
-                R.style.Widget_DiscreteIndicatorTextAppearance);
-        mNumber = new TextView(context);
+        int padding = (int) (Marker.PADDING_DP * displayMetrics.density) * 2;
+        int textAppearanceId = a.getResourceId(styleable.DiscreteSeekBar_dsb_indicatorTextAppearance,
+                style.Widget_DiscreteIndicatorTextAppearance);
+        this.mNumber = new TextView(context);
         //Add some padding to this textView so the bubble has some space to breath
-        mNumber.setPadding(padding, 0, padding, 0);
-        mNumber.setTextAppearance(context, textAppearanceId);
-        mNumber.setGravity(Gravity.CENTER);
-        mNumber.setText(maxValue);
-        mNumber.setMaxLines(1);
-        mNumber.setSingleLine(true);
-        SeekBarCompat.setTextDirection(mNumber, TEXT_DIRECTION_LOCALE);
-        mNumber.setVisibility(View.INVISIBLE);
+        this.mNumber.setPadding(padding, 0, padding, 0);
+        this.mNumber.setTextAppearance(context, textAppearanceId);
+        this.mNumber.setGravity(Gravity.CENTER);
+        this.mNumber.setText(maxValue);
+        this.mNumber.setMaxLines(1);
+        this.mNumber.setSingleLine(true);
+        SeekBarCompat.setTextDirection(this.mNumber, View.TEXT_DIRECTION_LOCALE);
+        this.mNumber.setVisibility(View.INVISIBLE);
 
         //add some padding for the elevation shadow not to be clipped
         //I'm sure there are better ways of doing this...
-        setPadding(padding, padding, padding, padding);
+        this.setPadding(padding, padding, padding, padding);
 
-        resetSizes(maxValue);
+        this.resetSizes(maxValue);
 
-        mSeparation = separation;
-        ColorStateList color = a.getColorStateList(R.styleable.DiscreteSeekBar_dsb_indicatorColor);
-        mMarkerDrawable = new MarkerDrawable(color, thumbSize);
-        mMarkerDrawable.setCallback(this);
-        mMarkerDrawable.setMarkerListener(this);
-        mMarkerDrawable.setExternalOffset(padding);
+        this.mSeparation = separation;
+        ColorStateList color = a.getColorStateList(styleable.DiscreteSeekBar_dsb_indicatorColor);
+        this.mMarkerDrawable = new MarkerDrawable(color, thumbSize);
+        this.mMarkerDrawable.setCallback(this);
+        this.mMarkerDrawable.setMarkerListener(this);
+        this.mMarkerDrawable.setExternalOffset(padding);
 
         //Elevation for anroid 5+
-        float elevation = a.getDimension(R.styleable.DiscreteSeekBar_dsb_indicatorElevation, ELEVATION_DP * displayMetrics.density);
+        float elevation = a.getDimension(styleable.DiscreteSeekBar_dsb_indicatorElevation, Marker.ELEVATION_DP * displayMetrics.density);
         ViewCompat.setElevation(this, elevation);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-            SeekBarCompat.setOutlineProvider(this, mMarkerDrawable);
+        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+            SeekBarCompat.setOutlineProvider(this, this.mMarkerDrawable);
         }
         a.recycle();
     }
 
     public void resetSizes(String maxValue) {
-        DisplayMetrics displayMetrics = getResources().getDisplayMetrics();
+        DisplayMetrics displayMetrics = this.getResources().getDisplayMetrics();
         //Account for negative numbers... is there any proper way of getting the biggest string between our range????
-        mNumber.setText("-" + maxValue);
+        this.mNumber.setText("-" + maxValue);
         //Do a first forced measure call for the TextView (with the biggest text content),
         //to calculate the max width and use always the same.
         //this avoids the TextView from shrinking and growing when the text content changes
-        int wSpec = MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, MeasureSpec.AT_MOST);
-        int hSpec = MeasureSpec.makeMeasureSpec(displayMetrics.heightPixels, MeasureSpec.AT_MOST);
-        mNumber.measure(wSpec, hSpec);
-        mWidth = Math.max(mNumber.getMeasuredWidth(), mNumber.getMeasuredHeight());
-        removeView(mNumber);
-        addView(mNumber, new FrameLayout.LayoutParams(mWidth, mWidth, Gravity.LEFT | Gravity.TOP));
+        int wSpec = View.MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, View.MeasureSpec.AT_MOST);
+        int hSpec = View.MeasureSpec.makeMeasureSpec(displayMetrics.heightPixels, View.MeasureSpec.AT_MOST);
+        this.mNumber.measure(wSpec, hSpec);
+        this.mWidth = Math.max(this.mNumber.getMeasuredWidth(), this.mNumber.getMeasuredHeight());
+        this.removeView(this.mNumber);
+        this.addView(this.mNumber, new FrameLayout.LayoutParams(this.mWidth, this.mWidth, Gravity.LEFT | Gravity.TOP));
     }
 
     @Override
     protected void dispatchDraw(Canvas canvas) {
-        mMarkerDrawable.draw(canvas);
+        this.mMarkerDrawable.draw(canvas);
         super.dispatchDraw(canvas);
     }
 
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
-        measureChildren(widthMeasureSpec, heightMeasureSpec);
-        int widthSize = mWidth + getPaddingLeft() + getPaddingRight();
-        int heightSize = mWidth + getPaddingTop() + getPaddingBottom();
+        this.measureChildren(widthMeasureSpec, heightMeasureSpec);
+        int widthSize = this.mWidth + this.getPaddingLeft() + this.getPaddingRight();
+        int heightSize = this.mWidth + this.getPaddingTop() + this.getPaddingBottom();
         //This diff is the basic calculation of the difference between
         //a square side size and its diagonal
         //this helps us account for the visual offset created by MarkerDrawable
         //when leaving one of the corners un-rounded
-        int diff = (int) ((1.41f * mWidth) - mWidth) / 2;
-        setMeasuredDimension(widthSize, heightSize + diff + mSeparation);
+        int diff = (int) ((1.41f * this.mWidth) - this.mWidth) / 2;
+        this.setMeasuredDimension(widthSize, heightSize + diff + this.mSeparation);
     }
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        int left = getPaddingLeft();
-        int top = getPaddingTop();
-        int right = getWidth() - getPaddingRight();
-        int bottom = getHeight() - getPaddingBottom();
+        int left = this.getPaddingLeft();
+        int top = this.getPaddingTop();
+        int right = this.getWidth() - this.getPaddingRight();
+        int bottom = this.getHeight() - this.getPaddingBottom();
         //the TetView is always layout at the top
-        mNumber.layout(left, top, left + mWidth, top + mWidth);
+        this.mNumber.layout(left, top, left + this.mWidth, top + this.mWidth);
         //the MarkerDrawable uses the whole view, it will adapt itself...
         // or it seems so...
-        mMarkerDrawable.setBounds(left, top, right, bottom);
+        this.mMarkerDrawable.setBounds(left, top, right, bottom);
     }
 
     @Override
     protected boolean verifyDrawable(Drawable who) {
-        return who == mMarkerDrawable || super.verifyDrawable(who);
+        return who == this.mMarkerDrawable || super.verifyDrawable(who);
     }
 
     @Override
@@ -151,50 +157,50 @@ public class Marker extends ViewGroup implements MarkerDrawable.MarkerAnimationL
         //so the drawable cannot schedule itself to run the animation
         //I think we can call it here safely.
         //I've seen it happen in android 2.3.7
-        animateOpen();
+        this.animateOpen();
     }
 
     public void setValue(CharSequence value) {
-        mNumber.setText(value);
+        this.mNumber.setText(value);
     }
 
     public CharSequence getValue() {
-        return mNumber.getText();
+        return this.mNumber.getText();
     }
 
     public void animateOpen() {
-        mMarkerDrawable.stop();
-        mMarkerDrawable.animateToPressed();
+        this.mMarkerDrawable.stop();
+        this.mMarkerDrawable.animateToPressed();
     }
 
     public void animateClose() {
-        mMarkerDrawable.stop();
-        mNumber.setVisibility(View.INVISIBLE);
-        mMarkerDrawable.animateToNormal();
+        this.mMarkerDrawable.stop();
+        this.mNumber.setVisibility(View.INVISIBLE);
+        this.mMarkerDrawable.animateToNormal();
     }
 
     @Override
     public void onOpeningComplete() {
-        mNumber.setVisibility(View.VISIBLE);
-        if (getParent() instanceof MarkerDrawable.MarkerAnimationListener) {
-            ((MarkerDrawable.MarkerAnimationListener) getParent()).onOpeningComplete();
+        this.mNumber.setVisibility(View.VISIBLE);
+        if (this.getParent() instanceof MarkerAnimationListener) {
+            ((MarkerAnimationListener) this.getParent()).onOpeningComplete();
         }
     }
 
     @Override
     public void onClosingComplete() {
-        if (getParent() instanceof MarkerDrawable.MarkerAnimationListener) {
-            ((MarkerDrawable.MarkerAnimationListener) getParent()).onClosingComplete();
+        if (this.getParent() instanceof MarkerAnimationListener) {
+            ((MarkerAnimationListener) this.getParent()).onClosingComplete();
         }
     }
 
     @Override
     protected void onDetachedFromWindow() {
         super.onDetachedFromWindow();
-        mMarkerDrawable.stop();
+        this.mMarkerDrawable.stop();
     }
 
     public void setColors(int startColor, int endColor) {
-        mMarkerDrawable.setColors(startColor, endColor);
+        this.mMarkerDrawable.setColors(startColor, endColor);
     }
 }

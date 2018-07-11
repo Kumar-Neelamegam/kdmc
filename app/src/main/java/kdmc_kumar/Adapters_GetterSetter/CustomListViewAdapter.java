@@ -6,6 +6,7 @@ import android.support.annotation.NonNull;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.ArrayAdapter;
 import android.widget.ImageView;
@@ -16,13 +17,16 @@ import android.widget.TextView;
 import java.util.List;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.RowItem;
 
 
-public class CustomListViewAdapter extends ArrayAdapter<CommonDataObjects.RowItem> {
+public class CustomListViewAdapter extends ArrayAdapter<RowItem> {
 
     private final Context context;
 
-    public CustomListViewAdapter(Context context, int resourceId, List<CommonDataObjects.RowItem> items) {
+    public CustomListViewAdapter(Context context, int resourceId, List<RowItem> items) {
         super(context, resourceId, items);
         this.context = context;
     }
@@ -30,24 +34,24 @@ public class CustomListViewAdapter extends ArrayAdapter<CommonDataObjects.RowIte
     @NonNull
     public final View getView(int position, View convertView, @NonNull ViewGroup parent) {
         View convertView1 = convertView;
-        ViewHolder holder = null;
-        CommonDataObjects.RowItem rowItem = getItem(position);
+        CustomListViewAdapter.ViewHolder holder = null;
+        RowItem rowItem = this.getItem(position);
 
-        LayoutInflater mInflater = (LayoutInflater) context
+        LayoutInflater mInflater = (LayoutInflater) this.context
                 .getSystemService(Context.LAYOUT_INFLATER_SERVICE);
         if (convertView1 == null) {
-            convertView1 = mInflater.inflate(R.layout.list_item, null);
-            holder = new ViewHolder();
-            holder.txtDesc = convertView1.findViewById(R.id.desc);
-            holder.txtTitle = convertView1.findViewById(R.id.title);
-            holder.imageView = convertView1.findViewById(R.id.icon);
-            holder.rootLayout = convertView1.findViewById(R.id.list_root);
+            convertView1 = mInflater.inflate(layout.list_item, null);
+            holder = new CustomListViewAdapter.ViewHolder();
+            holder.txtDesc = convertView1.findViewById(id.desc);
+            holder.txtTitle = convertView1.findViewById(id.title);
+            holder.imageView = convertView1.findViewById(id.icon);
+            holder.rootLayout = convertView1.findViewById(id.list_root);
             //holder.mv = (MedallionImageView) convertView.findViewById(R.id.medallionImageView1);
             convertView1.setTag(holder);
 
         } else
 
-            holder = (ViewHolder) convertView1.getTag();
+            holder = (CustomListViewAdapter.ViewHolder) convertView1.getTag();
         holder.txtDesc.setText(rowItem.getDesc());
         holder.txtTitle.setText(rowItem.getTitle());
         // holder.imageView.setImageResource(rowItem.getImageId());
@@ -55,19 +59,19 @@ public class CustomListViewAdapter extends ArrayAdapter<CommonDataObjects.RowIte
             holder.imageView.setImageBitmap(rowItem.getImageId());
         }
         holder.rootLayout.setLayoutParams(new AbsListView.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT));
 
         return convertView1;
     }
 
     /* private view holder class */
     private static class ViewHolder {
-        ImageView imageView = null;
-        LinearLayout rootLayout = null;
+        ImageView imageView;
+        LinearLayout rootLayout;
 
-        TextView txtTitle = null;
-        TextView txtDesc = null;
+        TextView txtTitle;
+        TextView txtDesc;
 
         private ViewHolder() {
         }

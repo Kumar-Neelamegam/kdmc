@@ -39,13 +39,13 @@ public class FontHelper {
      *                 views.
      * @param fontPath Font path related to the assets folder (e.g. "fonts/YourFontName.ttf").
      */
-    public static void applyFont(final Context context, final View root, final String fontPath) {
+    public static void applyFont(Context context, View root, String fontPath) {
         try {
             if (root instanceof ViewGroup) {
                 ViewGroup viewGroup = (ViewGroup) root;
                 int childCount = viewGroup.getChildCount();
                 for (int i = 0; i < childCount; i++)
-                    applyFont(context, viewGroup.getChildAt(i), fontPath);
+                    FontHelper.applyFont(context, viewGroup.getChildAt(i), fontPath);
             } else if (root instanceof TextView)
                 ((TextView) root).setTypeface(Typeface.createFromAsset(context.getAssets(), fontPath));
 
@@ -66,9 +66,9 @@ public class FontHelper {
         for (int i = 0; i < viewGroup.getChildCount(); i++) {
             View childView = viewGroup.getChildAt(i);
             if (childView instanceof ViewGroup) {
-                applyTypeface((ViewGroup) childView, typefaceCollection);
+                FontHelper.applyTypeface((ViewGroup) childView, typefaceCollection);
             } else {
-                applyForView(childView, typefaceCollection);
+                FontHelper.applyForView(childView, typefaceCollection);
             }
         }
     }
@@ -84,7 +84,7 @@ public class FontHelper {
         if (view instanceof TextView) {
             TextView textView = (TextView) view;
             Typeface oldTypeface = textView.getTypeface();
-            final int style = oldTypeface == null ? Typeface.NORMAL : oldTypeface.getStyle();
+            int style = oldTypeface == null ? Typeface.NORMAL : oldTypeface.getStyle();
             textView.setTypeface(typefaceCollection.getTypeface(style));
             textView.setPaintFlags(textView.getPaintFlags() | Paint.SUBPIXEL_TEXT_FLAG);
         }

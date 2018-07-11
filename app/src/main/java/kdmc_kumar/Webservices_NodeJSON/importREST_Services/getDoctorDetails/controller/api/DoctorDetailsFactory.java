@@ -11,7 +11,6 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
-import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -21,37 +20,37 @@ import kdmc_kumar.Webservices_NodeJSON.importREST_Services.getDoctorDetails.mode
 
 public class DoctorDetailsFactory extends ControllerFactory<DoctorDetails> {
     public DoctorDetailsFactory(MagnetMobileClient magnetClient) {
-        super(DoctorDetails.class, DoctorDetailsSchemaFactory.getInstance().getSchema(), magnetClient);
+        super(DoctorDetails.class, DoctorDetailsFactory.DoctorDetailsSchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller DoctorDetails
     public static class DoctorDetailsSchemaFactory extends AbstractControllerSchemaFactory {
-        private static DoctorDetailsSchemaFactory __instance = null;
+        private static DoctorDetailsFactory.DoctorDetailsSchemaFactory __instance;
 
         private DoctorDetailsSchemaFactory() {
         }
 
-        static DoctorDetailsSchemaFactory getInstance() {
-            synchronized (DoctorDetailsSchemaFactory.class) {
-                if (null == __instance) {
-                    __instance = new DoctorDetailsSchemaFactory();
+        static DoctorDetailsFactory.DoctorDetailsSchemaFactory getInstance() {
+            synchronized (DoctorDetailsFactory.DoctorDetailsSchemaFactory.class) {
+                if (null == DoctorDetailsFactory.DoctorDetailsSchemaFactory.__instance) {
+                    DoctorDetailsFactory.DoctorDetailsSchemaFactory.__instance = new DoctorDetailsFactory.DoctorDetailsSchemaFactory();
                 }
 
-                return __instance;
+                return DoctorDetailsFactory.DoctorDetailsSchemaFactory.__instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != schema) {
+                if (null != this.schema) {
                     return;
                 }
 
-                schema = new RequestSchema();
-                schema.setRootPath("");
+                this.schema = new RequestSchema();
+                this.schema.setRootPath("");
 
                 //controller schema for controller method postDoctorId
-                JMethod method1 = addMethod("postDoctorId",
+                RequestSchema.JMethod method1 = this.addMethod("postDoctorId",
                         "data/Get_DrRegInfo",
                         "POST",
                         DoctorIdResult.class,

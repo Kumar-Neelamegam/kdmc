@@ -5,9 +5,9 @@ import android.content.Context
 import android.content.Context.MODE_PRIVATE
 
 
-public class LocalSharedPref(context: Context) {
+class LocalSharedPref(context: Context) {
 
-    val MY_PREFS_NAME="MedicalApp";
+    val MY_PREFS_NAME="MedicalApp"
     private var context: Context? = null
 
     init {

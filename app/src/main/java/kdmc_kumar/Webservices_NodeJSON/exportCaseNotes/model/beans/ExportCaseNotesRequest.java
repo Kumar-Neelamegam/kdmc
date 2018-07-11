@@ -19,20 +19,20 @@ public class ExportCaseNotesRequest {
 
   
 @com.google.gson.annotations.SerializedName("JsonValue")
-  private String jsonValue = null;
+  private String jsonValue;
 
   
 @com.google.gson.annotations.SerializedName("MethodName")
-  private String methodName = null;
+  private String methodName;
 
     public ExportCaseNotesRequest() {
     }
 
     public final String getJsonValue() {
-    return jsonValue;
+    return this.jsonValue;
   }
   public final String getMethodName() {
-    return methodName;
+    return this.methodName;
   }
 
   public final void setJsonValue(String jsonValue) {
@@ -53,15 +53,15 @@ public class ExportCaseNotesRequest {
     }
 
     public final ExportCaseNotesRequest build() {
-      return toBuild;
+      return this.toBuild;
     }
 
-    public final ExportCaseNotesRequestBuilder jsonValue(String value) {
-      toBuild.setJsonValue(value);
+    public final ExportCaseNotesRequest.ExportCaseNotesRequestBuilder jsonValue(String value) {
+        this.toBuild.setJsonValue(value);
       return this;
     }
-    public final ExportCaseNotesRequestBuilder methodName(String value) {
-      toBuild.setMethodName(value);
+    public final ExportCaseNotesRequest.ExportCaseNotesRequestBuilder methodName(String value) {
+        this.toBuild.setMethodName(value);
       return this;
     }
   }

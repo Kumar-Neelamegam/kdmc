@@ -2,24 +2,26 @@ package kdmc_kumar.Utilities_Others;
 
 import android.content.res.ColorStateList;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.BitmapShader;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
 import android.graphics.Matrix;
+import android.graphics.Matrix.ScaleToFit;
 import android.graphics.Paint;
+import android.graphics.Paint.Style;
 import android.graphics.PixelFormat;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.Shader;
+import android.graphics.Shader.TileMode;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.LayerDrawable;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
-import android.widget.ImageView.ScaleType;
+import android.widget.ImageView;
 
 public class RoundedDrawable extends Drawable {
 
@@ -37,31 +39,31 @@ public class RoundedDrawable extends Drawable {
     private final Paint mBorderPaint;
     private final Matrix mShaderMatrix = new Matrix();
 
-    private float mCornerRadius = (float) 0;
-    private boolean mOval = false;
-    private float mBorderWidth = (float) 0;
-    private ColorStateList mBorderColor = ColorStateList.valueOf(DEFAULT_BORDER_COLOR);
-    private ScaleType mScaleType = ScaleType.FIT_CENTER;
+    private float mCornerRadius;
+    private boolean mOval;
+    private float mBorderWidth;
+    private ColorStateList mBorderColor = ColorStateList.valueOf(RoundedDrawable.DEFAULT_BORDER_COLOR);
+    private ImageView.ScaleType mScaleType = ImageView.ScaleType.FIT_CENTER;
 
     private RoundedDrawable(Bitmap bitmap) {
 
-        mBitmapWidth = bitmap.getWidth();
-        mBitmapHeight = bitmap.getHeight();
-        mBitmapRect.set((float) 0, (float) 0, (float) mBitmapWidth, (float) mBitmapHeight);
+        this.mBitmapWidth = bitmap.getWidth();
+        this.mBitmapHeight = bitmap.getHeight();
+        this.mBitmapRect.set((float) 0, (float) 0, (float) this.mBitmapWidth, (float) this.mBitmapHeight);
 
-        mBitmapShader = new BitmapShader(bitmap, Shader.TileMode.CLAMP, Shader.TileMode.CLAMP);
-        mBitmapShader.setLocalMatrix(mShaderMatrix);
+        this.mBitmapShader = new BitmapShader(bitmap, TileMode.CLAMP, TileMode.CLAMP);
+        this.mBitmapShader.setLocalMatrix(this.mShaderMatrix);
 
-        mBitmapPaint = new Paint();
-        mBitmapPaint.setStyle(Paint.Style.FILL);
-        mBitmapPaint.setAntiAlias(true);
-        mBitmapPaint.setShader(mBitmapShader);
+        this.mBitmapPaint = new Paint();
+        this.mBitmapPaint.setStyle(Style.FILL);
+        this.mBitmapPaint.setAntiAlias(true);
+        this.mBitmapPaint.setShader(this.mBitmapShader);
 
-        mBorderPaint = new Paint();
-        mBorderPaint.setStyle(Paint.Style.STROKE);
-        mBorderPaint.setAntiAlias(true);
-        mBorderPaint.setColor(mBorderColor.getColorForState(getState(), DEFAULT_BORDER_COLOR));
-        mBorderPaint.setStrokeWidth(mBorderWidth);
+        this.mBorderPaint = new Paint();
+        this.mBorderPaint.setStyle(Style.STROKE);
+        this.mBorderPaint.setAntiAlias(true);
+        this.mBorderPaint.setColor(this.mBorderColor.getColorForState(this.getState(), RoundedDrawable.DEFAULT_BORDER_COLOR));
+        this.mBorderPaint.setStrokeWidth(this.mBorderWidth);
     }
 
     public static RoundedDrawable fromBitmap(Bitmap bitmap) {
@@ -80,17 +82,17 @@ public class RoundedDrawable extends Drawable {
                 // loop through layers to and change to RoundedDrawables if possible
                 for (int i = 0; i < num; i++) {
                     Drawable d = ld.getDrawable(i);
-                    ld.setDrawableByLayerId(ld.getId(i), fromDrawable(d));
+                    ld.setDrawableByLayerId(ld.getId(i), RoundedDrawable.fromDrawable(d));
                 }
                 return ld;
             }
 
             // try to get a bitmap from the drawable and
-            Bitmap bm = drawableToBitmap(drawable);
+            Bitmap bm = RoundedDrawable.drawableToBitmap(drawable);
             if (bm != null) {
                 return new RoundedDrawable(bm);
             } else {
-                Log.w(TAG, "Failed to create bitmap from drawable!");
+                Log.w(RoundedDrawable.TAG, "Failed to create bitmap from drawable!");
             }
         }
         return drawable;
@@ -105,7 +107,7 @@ public class RoundedDrawable extends Drawable {
         int width = Math.max(drawable.getIntrinsicWidth(), 1);
         int height = Math.max(drawable.getIntrinsicHeight(), 1);
         try {
-            bitmap = Bitmap.createBitmap(width, height, Config.ARGB_8888);
+            bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
             Canvas canvas = new Canvas(bitmap);
             drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
             drawable.draw(canvas);
@@ -119,16 +121,16 @@ public class RoundedDrawable extends Drawable {
 
     @Override
     public final boolean isStateful() {
-        return mBorderColor.isStateful();
+        return this.mBorderColor.isStateful();
     }
 
     @Override
     protected final boolean onStateChange(int[] state) {
-        int newColor = mBorderColor.getColorForState(state, 0);
-        if (mBorderPaint.getColor() == newColor) {
+        int newColor = this.mBorderColor.getColorForState(state, 0);
+        if (this.mBorderPaint.getColor() == newColor) {
             return super.onStateChange(state);
         } else {
-            mBorderPaint.setColor(newColor);
+            this.mBorderPaint.setColor(newColor);
             return true;
         }
     }
@@ -138,119 +140,119 @@ public class RoundedDrawable extends Drawable {
         float dx;
         float dy;
 
-        switch (mScaleType) {
+        switch (this.mScaleType) {
             case CENTER:
-                mBorderRect.set(mBounds);
-                mBorderRect.inset((mBorderWidth) / 2.0F, (mBorderWidth) / 2.0F);
+                this.mBorderRect.set(this.mBounds);
+                this.mBorderRect.inset((this.mBorderWidth) / 2.0F, (this.mBorderWidth) / 2.0F);
 
-                mShaderMatrix.set(null);
-                mShaderMatrix.setTranslate((float) (int) ((mBorderRect.width() - (float) mBitmapWidth) * 0.5f + 0.5f),
-                        (float) (int) ((mBorderRect.height() - (float) mBitmapHeight) * 0.5f + 0.5f));
+                this.mShaderMatrix.set(null);
+                this.mShaderMatrix.setTranslate((float) (int) ((this.mBorderRect.width() - (float) this.mBitmapWidth) * 0.5f + 0.5f),
+                        (float) (int) ((this.mBorderRect.height() - (float) this.mBitmapHeight) * 0.5f + 0.5f));
                 break;
 
             case CENTER_CROP:
-                mBorderRect.set(mBounds);
-                mBorderRect.inset((mBorderWidth) / 2.0F, (mBorderWidth) / 2.0F);
+                this.mBorderRect.set(this.mBounds);
+                this.mBorderRect.inset((this.mBorderWidth) / 2.0F, (this.mBorderWidth) / 2.0F);
 
-                mShaderMatrix.set(null);
+                this.mShaderMatrix.set(null);
 
                 dx = (float) 0;
                 dy = (float) 0;
 
-                if ((float) mBitmapWidth * mBorderRect.height() > mBorderRect.width() * (float) mBitmapHeight) {
-                    scale = mBorderRect.height() / mBitmapHeight;
-                    dx = (mBorderRect.width() - (float) mBitmapWidth * scale) * 0.5f;
+                if ((float) this.mBitmapWidth * this.mBorderRect.height() > this.mBorderRect.width() * (float) this.mBitmapHeight) {
+                    scale = this.mBorderRect.height() / this.mBitmapHeight;
+                    dx = (this.mBorderRect.width() - (float) this.mBitmapWidth * scale) * 0.5f;
                 } else {
-                    scale = mBorderRect.width() / mBitmapWidth;
-                    dy = (mBorderRect.height() - (float) mBitmapHeight * scale) * 0.5f;
+                    scale = this.mBorderRect.width() / this.mBitmapWidth;
+                    dy = (this.mBorderRect.height() - (float) this.mBitmapHeight * scale) * 0.5f;
                 }
 
-                mShaderMatrix.setScale(scale, scale);
-                mShaderMatrix.postTranslate((float) (int) (dx + 0.5f) + mBorderWidth,
-                        (float) (int) (dy + 0.5f) + mBorderWidth);
+                this.mShaderMatrix.setScale(scale, scale);
+                this.mShaderMatrix.postTranslate((float) (int) (dx + 0.5f) + this.mBorderWidth,
+                        (float) (int) (dy + 0.5f) + this.mBorderWidth);
                 break;
 
             case CENTER_INSIDE:
-                mShaderMatrix.set(null);
+                this.mShaderMatrix.set(null);
 
-                scale = mBitmapWidth <= mBounds.width() && mBitmapHeight <= mBounds.height() ? 1.0f : Math.min(mBounds.width() / (float) mBitmapWidth,
-                        mBounds.height() / (float) mBitmapHeight);
+                scale = this.mBitmapWidth <= this.mBounds.width() && this.mBitmapHeight <= this.mBounds.height() ? 1.0f : Math.min(this.mBounds.width() / (float) this.mBitmapWidth,
+                        this.mBounds.height() / (float) this.mBitmapHeight);
 
-                dx = (float) (int) ((mBounds.width() - (float) mBitmapWidth * scale) * 0.5f + 0.5f);
-                dy = (float) (int) ((mBounds.height() - (float) mBitmapHeight * scale) * 0.5f + 0.5f);
+                dx = (float) (int) ((this.mBounds.width() - (float) this.mBitmapWidth * scale) * 0.5f + 0.5f);
+                dy = (float) (int) ((this.mBounds.height() - (float) this.mBitmapHeight * scale) * 0.5f + 0.5f);
 
-                mShaderMatrix.setScale(scale, scale);
-                mShaderMatrix.postTranslate(dx, dy);
+                this.mShaderMatrix.setScale(scale, scale);
+                this.mShaderMatrix.postTranslate(dx, dy);
 
-                mBorderRect.set(mBitmapRect);
-                mShaderMatrix.mapRect(mBorderRect);
-                mBorderRect.inset((mBorderWidth) / 2.0F, (mBorderWidth) / 2.0F);
-                mShaderMatrix.setRectToRect(mBitmapRect, mBorderRect, Matrix.ScaleToFit.FILL);
+                this.mBorderRect.set(this.mBitmapRect);
+                this.mShaderMatrix.mapRect(this.mBorderRect);
+                this.mBorderRect.inset((this.mBorderWidth) / 2.0F, (this.mBorderWidth) / 2.0F);
+                this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBorderRect, ScaleToFit.FILL);
                 break;
 
             default:
             case FIT_CENTER:
-                mBorderRect.set(mBitmapRect);
-                mShaderMatrix.setRectToRect(mBitmapRect, mBounds, Matrix.ScaleToFit.CENTER);
-                mShaderMatrix.mapRect(mBorderRect);
-                mBorderRect.inset((mBorderWidth) / 2.0F, (mBorderWidth) / 2.0F);
-                mShaderMatrix.setRectToRect(mBitmapRect, mBorderRect, Matrix.ScaleToFit.FILL);
+                this.mBorderRect.set(this.mBitmapRect);
+                this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBounds, ScaleToFit.CENTER);
+                this.mShaderMatrix.mapRect(this.mBorderRect);
+                this.mBorderRect.inset((this.mBorderWidth) / 2.0F, (this.mBorderWidth) / 2.0F);
+                this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBorderRect, ScaleToFit.FILL);
                 break;
 
             case FIT_END:
-                mBorderRect.set(mBitmapRect);
-                mShaderMatrix.setRectToRect(mBitmapRect, mBounds, Matrix.ScaleToFit.END);
-                mShaderMatrix.mapRect(mBorderRect);
-                mBorderRect.inset((mBorderWidth) / 2.0F, (mBorderWidth) / 2.0F);
-                mShaderMatrix.setRectToRect(mBitmapRect, mBorderRect, Matrix.ScaleToFit.FILL);
+                this.mBorderRect.set(this.mBitmapRect);
+                this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBounds, ScaleToFit.END);
+                this.mShaderMatrix.mapRect(this.mBorderRect);
+                this.mBorderRect.inset((this.mBorderWidth) / 2.0F, (this.mBorderWidth) / 2.0F);
+                this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBorderRect, ScaleToFit.FILL);
                 break;
 
             case FIT_START:
-                mBorderRect.set(mBitmapRect);
-                mShaderMatrix.setRectToRect(mBitmapRect, mBounds, Matrix.ScaleToFit.START);
-                mShaderMatrix.mapRect(mBorderRect);
-                mBorderRect.inset((mBorderWidth) / 2.0F, (mBorderWidth) / 2.0F);
-                mShaderMatrix.setRectToRect(mBitmapRect, mBorderRect, Matrix.ScaleToFit.FILL);
+                this.mBorderRect.set(this.mBitmapRect);
+                this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBounds, ScaleToFit.START);
+                this.mShaderMatrix.mapRect(this.mBorderRect);
+                this.mBorderRect.inset((this.mBorderWidth) / 2.0F, (this.mBorderWidth) / 2.0F);
+                this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBorderRect, ScaleToFit.FILL);
                 break;
 
             case FIT_XY:
-                mBorderRect.set(mBounds);
-                mBorderRect.inset((mBorderWidth) / 2.0F, (mBorderWidth) / 2.0F);
-                mShaderMatrix.set(null);
-                mShaderMatrix.setRectToRect(mBitmapRect, mBorderRect, Matrix.ScaleToFit.FILL);
+                this.mBorderRect.set(this.mBounds);
+                this.mBorderRect.inset((this.mBorderWidth) / 2.0F, (this.mBorderWidth) / 2.0F);
+                this.mShaderMatrix.set(null);
+                this.mShaderMatrix.setRectToRect(this.mBitmapRect, this.mBorderRect, ScaleToFit.FILL);
                 break;
         }
 
-        mDrawableRect.set(mBorderRect);
-        mBitmapShader.setLocalMatrix(mShaderMatrix);
+        this.mDrawableRect.set(this.mBorderRect);
+        this.mBitmapShader.setLocalMatrix(this.mShaderMatrix);
     }
 
     @Override
     protected final void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
 
-        mBounds.set(bounds);
+        this.mBounds.set(bounds);
 
-        updateShaderMatrix();
+        this.updateShaderMatrix();
     }
 
     @Override
     public final void draw(@NonNull Canvas canvas) {
 
-        if (mOval) {
-            if (mBorderWidth > (float) 0) {
-                canvas.drawOval(mDrawableRect, mBitmapPaint);
-                canvas.drawOval(mBorderRect, mBorderPaint);
+        if (this.mOval) {
+            if (this.mBorderWidth > (float) 0) {
+                canvas.drawOval(this.mDrawableRect, this.mBitmapPaint);
+                canvas.drawOval(this.mBorderRect, this.mBorderPaint);
             } else {
-                canvas.drawOval(mDrawableRect, mBitmapPaint);
+                canvas.drawOval(this.mDrawableRect, this.mBitmapPaint);
             }
         } else {
-            if (mBorderWidth > (float) 0) {
-                canvas.drawRoundRect(mDrawableRect, Math.max(mCornerRadius, (float) 0),
-                        Math.max(mCornerRadius, (float) 0), mBitmapPaint);
-                canvas.drawRoundRect(mBorderRect, mCornerRadius, mCornerRadius, mBorderPaint);
+            if (this.mBorderWidth > (float) 0) {
+                canvas.drawRoundRect(this.mDrawableRect, Math.max(this.mCornerRadius, (float) 0),
+                        Math.max(this.mCornerRadius, (float) 0), this.mBitmapPaint);
+                canvas.drawRoundRect(this.mBorderRect, this.mCornerRadius, this.mCornerRadius, this.mBorderPaint);
             } else {
-                canvas.drawRoundRect(mDrawableRect, mCornerRadius, mCornerRadius, mBitmapPaint);
+                canvas.drawRoundRect(this.mDrawableRect, this.mCornerRadius, this.mCornerRadius, this.mBitmapPaint);
             }
         }
     }
@@ -262,101 +264,101 @@ public class RoundedDrawable extends Drawable {
 
     @Override
     public final void setAlpha(int i) {
-        mBitmapPaint.setAlpha(i);
-        invalidateSelf();
+        this.mBitmapPaint.setAlpha(i);
+        this.invalidateSelf();
     }
 
     @Override
     public final void setColorFilter(ColorFilter colorFilter) {
-        mBitmapPaint.setColorFilter(colorFilter);
-        invalidateSelf();
+        this.mBitmapPaint.setColorFilter(colorFilter);
+        this.invalidateSelf();
     }
 
     @Override
     public final void setDither(boolean dither) {
-        mBitmapPaint.setDither(dither);
-        invalidateSelf();
+        this.mBitmapPaint.setDither(dither);
+        this.invalidateSelf();
     }
 
     @Override
     public final void setFilterBitmap(boolean filter) {
-        mBitmapPaint.setFilterBitmap(filter);
-        invalidateSelf();
+        this.mBitmapPaint.setFilterBitmap(filter);
+        this.invalidateSelf();
     }
 
     @Override
     public final int getIntrinsicWidth() {
-        return mBitmapWidth;
+        return this.mBitmapWidth;
     }
 
     @Override
     public final int getIntrinsicHeight() {
-        return mBitmapHeight;
+        return this.mBitmapHeight;
     }
 
     public final float getCornerRadius() {
-        return mCornerRadius;
+        return this.mCornerRadius;
     }
 
     public final RoundedDrawable setCornerRadius(float radius) {
-        mCornerRadius = radius;
+        this.mCornerRadius = radius;
         return this;
     }
 
     public final float getBorderWidth() {
-        return mBorderWidth;
+        return this.mBorderWidth;
     }
 
     public final RoundedDrawable setBorderWidth(int width) {
-        mBorderWidth = (float) width;
-        mBorderPaint.setStrokeWidth(mBorderWidth);
+        this.mBorderWidth = (float) width;
+        this.mBorderPaint.setStrokeWidth(this.mBorderWidth);
         return this;
     }
 
     public final int getBorderColor() {
-        return mBorderColor.getDefaultColor();
+        return this.mBorderColor.getDefaultColor();
     }
 
     public final RoundedDrawable setBorderColor(int color) {
-        return setBorderColors(ColorStateList.valueOf(color));
+        return this.setBorderColors(ColorStateList.valueOf(color));
     }
 
     public final ColorStateList getBorderColors() {
-        return mBorderColor;
+        return this.mBorderColor;
     }
 
     public final RoundedDrawable setBorderColors(ColorStateList colors) {
-        mBorderColor = colors != null ? colors : ColorStateList.valueOf(0);
-        mBorderPaint.setColor(mBorderColor.getColorForState(getState(), DEFAULT_BORDER_COLOR));
+        this.mBorderColor = colors != null ? colors : ColorStateList.valueOf(0);
+        this.mBorderPaint.setColor(this.mBorderColor.getColorForState(this.getState(), RoundedDrawable.DEFAULT_BORDER_COLOR));
         return this;
     }
 
     public final boolean isOval() {
-        return mOval;
+        return this.mOval;
     }
 
     public final RoundedDrawable setOval(boolean oval) {
-        mOval = oval;
+        this.mOval = oval;
         return this;
     }
 
-    public final ScaleType getScaleType() {
-        return mScaleType;
+    public final ImageView.ScaleType getScaleType() {
+        return this.mScaleType;
     }
 
-    public final RoundedDrawable setScaleType(ScaleType scaleType) {
-        ScaleType scaleType1 = scaleType;
+    public final RoundedDrawable setScaleType(ImageView.ScaleType scaleType) {
+        ImageView.ScaleType scaleType1 = scaleType;
         if (scaleType1 == null) {
-            scaleType1 = ScaleType.FIT_CENTER;
+            scaleType1 = ImageView.ScaleType.FIT_CENTER;
         }
-        if (mScaleType != scaleType1) {
-            mScaleType = scaleType1;
-            updateShaderMatrix();
+        if (this.mScaleType != scaleType1) {
+            this.mScaleType = scaleType1;
+            this.updateShaderMatrix();
         }
         return this;
     }
 
     public final Bitmap toBitmap() {
-        return drawableToBitmap(this);
+        return RoundedDrawable.drawableToBitmap(this);
     }
 }

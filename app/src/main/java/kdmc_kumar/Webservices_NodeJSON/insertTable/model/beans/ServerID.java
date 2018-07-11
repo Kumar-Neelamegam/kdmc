@@ -19,13 +19,13 @@ public class ServerID {
 
 
     @com.google.gson.annotations.SerializedName("Id")
-    private Integer id = null;
+    private Integer id;
 
     public ServerID() {
     }
 
     public final Integer getId() {
-        return id;
+        return this.id;
     }
 
     public void setId(Integer id) {
@@ -42,11 +42,11 @@ public class ServerID {
         }
 
         public final ServerID build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final ServerIDBuilder id(Integer value) {
-            toBuild.setId(value);
+        public final ServerID.ServerIDBuilder id(Integer value) {
+            this.toBuild.setId(value);
             return this;
         }
     }

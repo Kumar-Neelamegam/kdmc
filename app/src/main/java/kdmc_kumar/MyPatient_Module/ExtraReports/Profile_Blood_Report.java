@@ -11,21 +11,25 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 
 public class Profile_Blood_Report extends AppCompatActivity {
 
-    private WebView blood_report = null;
-    private Toolbar toolbar = null;
+    private WebView blood_report;
+    private Toolbar toolbar;
 
-    private ImageView ic_back = null;
+    private ImageView ic_back;
 
     private String MTESTID = "";
     private String PTID = "";
@@ -36,47 +40,47 @@ public class Profile_Blood_Report extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_profile__blood__report);
+        this.setContentView(layout.activity_profile__blood__report);
 
         try {
-            toolbar = findViewById(R.id.toolbar);
-            TextView title = toolbar.findViewById(R.id.txvw_title);
-            title.setText(getString(R.string.report_blood));
+            this.toolbar = this.findViewById(id.toolbar);
+            TextView title = this.toolbar.findViewById(id.txvw_title);
+            title.setText(this.getString(string.report_blood));
 
-            Bundle b = getIntent().getExtras();
+            Bundle b = this.getIntent().getExtras();
 
-            PTID = b.getString("PTID");
-            MTESTID = b.getString("MTESTID");
+            this.PTID = b.getString("PTID");
+            this.MTESTID = b.getString("MTESTID");
 
-            ic_back = toolbar.findViewById(R.id.ic_back);
+            this.ic_back = this.toolbar.findViewById(id.ic_back);
 
-            ic_back.setOnClickListener(view -> Profile_Blood_Report.this.finish());
+            this.ic_back.setOnClickListener(view -> finish());
 
-            blood_report = findViewById(R.id.blood_report);
+            this.blood_report = this.findViewById(id.blood_report);
 
-            blood_report.getSettings().setJavaScriptEnabled(true);
-            blood_report.setWebChromeClient(new WebChromeClient());
-            blood_report.getSettings().setJavaScriptEnabled(true);
-            blood_report.setLayerType(View.LAYER_TYPE_NONE, null);
-            blood_report.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-            blood_report.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-            blood_report.getSettings().setDefaultTextEncodingName("utf-8");
+            this.blood_report.getSettings().setJavaScriptEnabled(true);
+            this.blood_report.setWebChromeClient(new WebChromeClient());
+            this.blood_report.getSettings().setJavaScriptEnabled(true);
+            this.blood_report.setLayerType(View.LAYER_TYPE_NONE, null);
+            this.blood_report.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+            this.blood_report.getSettings().setRenderPriority(RenderPriority.HIGH);
+            this.blood_report.getSettings().setDefaultTextEncodingName("utf-8");
 
-            blood_report.setWebChromeClient(new MyWebChromeClient());
+            this.blood_report.setWebChromeClient(new Profile_Blood_Report.MyWebChromeClient());
 
-            blood_report.setBackgroundColor(0x00000000);
-            blood_report.setVerticalScrollBarEnabled(true);
-            blood_report.setHorizontalScrollBarEnabled(true);
+            this.blood_report.setBackgroundColor(0x00000000);
+            this.blood_report.setVerticalScrollBarEnabled(true);
+            this.blood_report.setHorizontalScrollBarEnabled(true);
 
             //MyDynamicToast.informationMessage(this, getString(R.string.loading_blood_report));
-            blood_report.getSettings().setJavaScriptEnabled(true);
-            blood_report.getSettings().setAllowContentAccess(true);
+            this.blood_report.getSettings().setJavaScriptEnabled(true);
+            this.blood_report.getSettings().setAllowContentAccess(true);
 
 
-            blood_report.addJavascriptInterface(new WebAppInterface(this), "android");
+            this.blood_report.addJavascriptInterface(new Profile_Blood_Report.WebAppInterface(this), "android");
             try {
 
-                blood_report.loadDataWithBaseURL("file:///android_asset/", LoadInvetigationData(), "text/html", "utf-8", null);
+                this.blood_report.loadDataWithBaseURL("file:///android_asset/", this.LoadInvetigationData(), "text/html", "utf-8", null);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -104,7 +108,7 @@ public class Profile_Blood_Report extends AppCompatActivity {
 
 
         SQLiteDatabase db = BaseConfig.GetDb();
-        String Query = "select * from Bind_examination_blood_test where Patid='" + PTID + "' and Mtestid='" + MTESTID + '\'';
+        String Query = "select * from Bind_examination_blood_test where Patid='" + this.PTID + "' and Mtestid='" + this.MTESTID + '\'';
         //String Query = "select * from Bind_examination_blood_test where Patid='PID/2017/188/2870' and Mtestid='MTID/2017/188/DOCID/2017/05/81/4C19/2'";
         //Log.e("Load Invetigation Data: ", Query);
 
@@ -177,33 +181,33 @@ public class Profile_Blood_Report extends AppCompatActivity {
                 "<font class=\"sub\">\n" +
                 "<i class=\"fa fa-flask fa-2x\" \n" +
                 "aria-hidden=\"true\">\n" +
-                "</i> " + getString(R.string.test_report_complete_blood_count) + "</font>\n" +
+                "</i> " + this.getString(string.test_report_complete_blood_count) + "</font>\n" +
                 '\n' +
                 '\n' +
                 '\n' +
                 "<table class=\"table table-bordered\">\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"20%\" style=\"color:#3d5987;\"></i><b>     " + getString(R.string.test_report_hemoglobin) + "</b><br>(M:14-17 gm%,F:12-16 gm%)</td> \n" +
-                GetMaxMin1(maemogiobin, Patid) +
+                "<td height=\"20\" width=\"20%\" style=\"color:#3d5987;\"></i><b>     " + this.getString(string.test_report_hemoglobin) + "</b><br>(M:14-17 gm%,F:12-16 gm%)</td> \n" +
+                Profile_Blood_Report.GetMaxMin1(maemogiobin, Patid) +
                 '\n' +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.test_report_packed_cell_volume) + "</b><br> (M:40-54, F:37-47)</td> \n" +
-                GetMaxMin2(packed_cell_volume, Patid) +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.test_report_packed_cell_volume) + "</b><br> (M:40-54, F:37-47)</td> \n" +
+                Profile_Blood_Report.GetMaxMin2(packed_cell_volume, Patid) +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.test_report_total_count) + " </b><br>(4000-10000 cells/mm)</td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.test_report_total_count) + " </b><br>(4000-10000 cells/mm)</td> \n" +
                 //"<td height=\"20\" width=\"50%\" style=\"color:#000000;\">" + total_count + " cell/mm</td>\n" +
-                GetMaxMin3(total_count, Patid, 10000, 4000, "cell/mm") +
+                Profile_Blood_Report.GetMaxMin3(total_count, Patid, 10000, 4000, "cell/mm") +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.test_report_rbc_count) + " </b><br>(4.5-6.0 x 10<sup>6</sup> cells/mm<sup>3</sup>) </td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.test_report_rbc_count) + " </b><br>(4.5-6.0 x 10<sup>6</sup> cells/mm<sup>3</sup>) </td> \n" +
                 //"<td height=\"20\" width=\"50%\" style=\"color:#000000;\">" + rbc_count + " cell/mm<sup>3</sup></td>\n" +
-                GetMaxMin4(rbc_count, Patid, Double.valueOf(6.0), Double.valueOf(4.5), "cell/mm<sup>3</sup>") +
+                Profile_Blood_Report.GetMaxMin4(rbc_count, Patid, Double.valueOf(6.0), Double.valueOf(4.5), "cell/mm<sup>3</sup>") +
                 "</tr>\n" +
                 '\n' +
                 '\n' +
@@ -216,50 +220,50 @@ public class Profile_Blood_Report extends AppCompatActivity {
                 "<font class=\"sub\">\n" +
                 "<i class=\"fa fa-compress fa-2x\" \n" +
                 "aria-hidden=\"true\">\n" +
-                "</i> " + getString(R.string.test_report_differential_count) + "</font>\n" +
+                "</i> " + this.getString(string.test_report_differential_count) + "</font>\n" +
                 '\n' +
                 '\n' +
                 "<table class=\"table table-bordered\">\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"20%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.test_report_polymorphs) + "</b><br>(40 to 70)%</td> \n" +
+                "<td height=\"20\" width=\"20%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.test_report_polymorphs) + "</b><br>(40 to 70)%</td> \n" +
                 //"<td height=\"20\" width=\"50%\" style=\"color:#000000;\">" + polymorphs + " %</td>\n" +
-                GetMaxMin3(polymorphs, Patid, 70, 40, "%") +
+                Profile_Blood_Report.GetMaxMin3(polymorphs, Patid, 70, 40, "%") +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.test_report_lymphocytes) + " </b><br>(20 to 40)%</td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.test_report_lymphocytes) + " </b><br>(20 to 40)%</td> \n" +
                 //"<td height=\"20\" width=\"50%\" style=\"color:#000000;\">" + lymphocytes + " %</td>\n" +
-                GetMaxMin3(lymphocytes, Patid, 40, 20, "%") +
+                Profile_Blood_Report.GetMaxMin3(lymphocytes, Patid, 40, 20, "%") +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.test_report_eosinophilis) + " </b><br>(01 to 06)%</td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.test_report_eosinophilis) + " </b><br>(01 to 06)%</td> \n" +
                 // "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">" + eosinophilis + " %</td>\n" +
-                GetMaxMin3(eosinophilis, Patid, 6, 1, "%") +
+                Profile_Blood_Report.GetMaxMin3(eosinophilis, Patid, 6, 1, "%") +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.test_report_monocytes) + " </b> <br> (02 to 08)%</td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.test_report_monocytes) + " </b> <br> (02 to 08)%</td> \n" +
                 //"<td height=\"20\" width=\"50%\" style=\"color:#000000;\">" + monocytes + " %</td>\n" +
-                GetMaxMin3(monocytes, Patid, 0x08, 2, "%") +
+                Profile_Blood_Report.GetMaxMin3(monocytes, Patid, 0x08, 2, "%") +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.test_report_basophils) + "</b> <br> (00 to 01)%</td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.test_report_basophils) + "</b> <br> (00 to 01)%</td> \n" +
                 //"<td height=\"20\" width=\"50%\" style=\"color:#000000;\">" + basophils + " %</td>\n" +
-                GetMaxMin3(basophils, Patid, 1, 0, "%") +
+                Profile_Blood_Report.GetMaxMin3(basophils, Patid, 1, 0, "%") +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.test_report_band_form) + "</b></td> \n" +
+                "<td height=\"20\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.test_report_band_form) + "</b></td> \n" +
                 "<td height=\"20\" style=\"color:#000000;\">" + band_from + " %</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.test_report_platelets_count) + " </b><br>(1.5-3.5 lakhs/mm<sup>3</sup>)</td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.test_report_platelets_count) + " </b><br>(1.5-3.5 lakhs/mm<sup>3</sup>)</td> \n" +
                 // "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">" + platelets_count + "</td>\n" +
-                GetMaxMin4(platelets_count, Patid, Double.valueOf(3.5), Double.valueOf(1.5), "") +
+                Profile_Blood_Report.GetMaxMin4(platelets_count, Patid, Double.valueOf(3.5), Double.valueOf(1.5), "") +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
@@ -268,9 +272,9 @@ public class Profile_Blood_Report extends AppCompatActivity {
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  ESR </b> <br> (0-15 MM/HR)(" + getString(R.string.test_report_method_westergen) + ")</td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  ESR </b> <br> (0-15 MM/HR)(" + this.getString(string.test_report_method_westergen) + ")</td> \n" +
                 //"<td height=\"20\" width=\"50%\" style=\"color:#000000;\">" + esr + "</td>\n" +
-                GetMaxMin3(esr, Patid, 15, 0, "(Method: Westergen)") +
+                Profile_Blood_Report.GetMaxMin3(esr, Patid, 15, 0, "(Method: Westergen)") +
                 "</tr>\n" +
                 '\n' +
                 "</table>\n" +
@@ -283,7 +287,7 @@ public class Profile_Blood_Report extends AppCompatActivity {
                 "<font class=\"sub\">\n" +
                 "<i class=\"fa fa-list fa-2x\" \n" +
                 "aria-hidden=\"true\">\n" +
-                "</i>  " + getString(R.string.test_report_widal_test) + "</font>\n" +
+                "</i>  " + this.getString(string.test_report_widal_test) + "</font>\n" +
                 '\n' +
                 '\n' +
                 "<table class=\"table table-bordered\">\n" +
@@ -291,26 +295,26 @@ public class Profile_Blood_Report extends AppCompatActivity {
                 "<tr>\n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  S. Typhi 'O'</b> <br>(Titre(NR)- 1:80)</td> \n" +
                 //"<td height=\"20\" width=\"50%\" style=\"color:#000000;\">" + STyphi_O + "</td>\n" +
-                GetMaxMin3(STyphi_O, Patid, 80, 1, "%") +
+                Profile_Blood_Report.GetMaxMin3(STyphi_O, Patid, 80, 1, "%") +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  S. Typhi 'H'</b><br> (Titre(NR)- 1:160)</td> \n" +
                 //"<td height=\"20\" width=\"50%\" style=\"color:#000000;\">" + STyphi_H + "</td>\n" +
-                GetMaxMin3(STyphi_H, Patid, 160, 1, "%") +
+                Profile_Blood_Report.GetMaxMin3(STyphi_H, Patid, 160, 1, "%") +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  S. Paratyphi 'AH'</b><br> (Titre(NR)- 1:80)</td> \n" +
                 // "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">" + SParatyphi_AH + "</td>\n" +
-                GetMaxMin3(SParatyphi_AH, Patid, 80, 1, "%") +
+                Profile_Blood_Report.GetMaxMin3(SParatyphi_AH, Patid, 80, 1, "%") +
                 '\n' +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  S. Paratyphi 'BH'</b> <br> (Titre(NR)- 1:80)</td> \n" +
                 //"<td height=\"20\" width=\"50%\" style=\"color:#000000;\">" + SParatyphi_BH + "</td>\n" +
-                GetMaxMin3(SParatyphi_BH, Patid, 80, 1, "%") +
+                Profile_Blood_Report.GetMaxMin3(SParatyphi_BH, Patid, 80, 1, "%") +
                 '\n' +
                 "</tr>\n" +
                 '\n' +
@@ -465,13 +469,13 @@ public class Profile_Blood_Report extends AppCompatActivity {
     @Override
     public final void onBackPressed() {
         //super.onBackPressed();
-        this.finish();
+        finish();
 
     }
 
     @Override
     public final boolean onOptionsItemSelected(MenuItem item) {
-        onBackPressed();
+        this.onBackPressed();
         return true;
     }
 
@@ -485,7 +489,7 @@ public class Profile_Blood_Report extends AppCompatActivity {
          * Instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
-            mContext = c;
+            this.mContext = c;
         }
 
         /**
@@ -493,7 +497,7 @@ public class Profile_Blood_Report extends AppCompatActivity {
          */
         @JavascriptInterface
         public final void showToast(String toast) {
-            Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.mContext, toast, Toast.LENGTH_SHORT).show();
 
 
         }

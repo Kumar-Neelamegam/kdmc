@@ -17,13 +17,14 @@ package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere;
 
 import android.annotation.TargetApi;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.view.View;
 
 /**
  * Base class for <code>TransitionPropagation</code>s that care about
  * View Visibility and the center position of the View.
  */
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
 public abstract class VisibilityPropagation extends TransitionPropagation {
 
     /**
@@ -38,8 +39,8 @@ public abstract class VisibilityPropagation extends TransitionPropagation {
     private static final String PROPNAME_VIEW_CENTER = "android:visibilityPropagation:center";
 
     private static final String[] VISIBILITY_PROPAGATION_VALUES = {
-            PROPNAME_VISIBILITY,
-            PROPNAME_VIEW_CENTER,
+            VisibilityPropagation.PROPNAME_VISIBILITY,
+            VisibilityPropagation.PROPNAME_VIEW_CENTER,
     };
 
     @Override
@@ -49,19 +50,19 @@ public abstract class VisibilityPropagation extends TransitionPropagation {
         if (visibility == null) {
             visibility = view.getVisibility();
         }
-        values.values.put(PROPNAME_VISIBILITY, visibility);
+        values.values.put(VisibilityPropagation.PROPNAME_VISIBILITY, visibility);
         int[] loc = new int[2];
         view.getLocationOnScreen(loc);
         loc[0] += Math.round(view.getTranslationX());
         loc[0] += view.getWidth() / 2;
         loc[1] += Math.round(view.getTranslationY());
         loc[1] += view.getHeight() / 2;
-        values.values.put(PROPNAME_VIEW_CENTER, loc);
+        values.values.put(VisibilityPropagation.PROPNAME_VIEW_CENTER, loc);
     }
 
     @Override
     public String[] getPropagationProperties() {
-        return VISIBILITY_PROPAGATION_VALUES;
+        return VisibilityPropagation.VISIBILITY_PROPAGATION_VALUES;
     }
 
     /**
@@ -75,7 +76,7 @@ public abstract class VisibilityPropagation extends TransitionPropagation {
         if (values == null) {
             return View.GONE;
         }
-        Integer visibility = (Integer) values.values.get(PROPNAME_VISIBILITY);
+        Integer visibility = (Integer) values.values.get(VisibilityPropagation.PROPNAME_VISIBILITY);
         if (visibility == null) {
             return View.GONE;
         }
@@ -90,7 +91,7 @@ public abstract class VisibilityPropagation extends TransitionPropagation {
      * were captured.
      */
     public int getViewX(TransitionValues values) {
-        return getViewCoordinate(values, 0);
+        return VisibilityPropagation.getViewCoordinate(values, 0);
     }
 
     /**
@@ -101,7 +102,7 @@ public abstract class VisibilityPropagation extends TransitionPropagation {
      * were captured.
      */
     public int getViewY(TransitionValues values) {
-        return getViewCoordinate(values, 1);
+        return VisibilityPropagation.getViewCoordinate(values, 1);
     }
 
     private static int getViewCoordinate(TransitionValues values, int coordinateIndex) {
@@ -109,7 +110,7 @@ public abstract class VisibilityPropagation extends TransitionPropagation {
             return -1;
         }
 
-        int[] coordinates = (int[]) values.values.get(PROPNAME_VIEW_CENTER);
+        int[] coordinates = (int[]) values.values.get(VisibilityPropagation.PROPNAME_VIEW_CENTER);
         if (coordinates == null) {
             return -1;
         }

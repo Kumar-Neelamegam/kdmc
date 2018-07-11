@@ -24,29 +24,29 @@ import java.util.Iterator;
 
 public class MonitoredActivity extends Activity {
 
-    private final ArrayList<LifeCycleListener> mListeners =
+    private final ArrayList<MonitoredActivity.LifeCycleListener> mListeners =
             new ArrayList<>();
 
     public MonitoredActivity() {
     }
 
-    public final void addLifeCycleListener(LifeCycleListener listener) {
+    public final void addLifeCycleListener(MonitoredActivity.LifeCycleListener listener) {
 
-        if (mListeners.contains(listener)) return;
-        mListeners.add(listener);
+        if (this.mListeners.contains(listener)) return;
+        this.mListeners.add(listener);
     }
 
-    public final void removeLifeCycleListener(LifeCycleListener listener) {
+    public final void removeLifeCycleListener(MonitoredActivity.LifeCycleListener listener) {
 
-        mListeners.remove(listener);
+        this.mListeners.remove(listener);
     }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        for (Iterator<LifeCycleListener> iterator = mListeners.iterator(); iterator.hasNext(); ) {
-            LifeCycleListener listener = iterator.next();
+        for (Iterator<MonitoredActivity.LifeCycleListener> iterator = this.mListeners.iterator(); iterator.hasNext(); ) {
+            MonitoredActivity.LifeCycleListener listener = iterator.next();
             listener.onActivityCreated(this);
         }
     }
@@ -55,8 +55,8 @@ public class MonitoredActivity extends Activity {
     protected void onDestroy() {
 
         super.onDestroy();
-        for (Iterator<LifeCycleListener> iterator = mListeners.iterator(); iterator.hasNext(); ) {
-            LifeCycleListener listener = iterator.next();
+        for (Iterator<MonitoredActivity.LifeCycleListener> iterator = this.mListeners.iterator(); iterator.hasNext(); ) {
+            MonitoredActivity.LifeCycleListener listener = iterator.next();
             listener.onActivityDestroyed(this);
         }
     }
@@ -65,8 +65,8 @@ public class MonitoredActivity extends Activity {
     protected final void onStart() {
 
         super.onStart();
-        for (Iterator<LifeCycleListener> iterator = mListeners.iterator(); iterator.hasNext(); ) {
-            LifeCycleListener listener = iterator.next();
+        for (Iterator<MonitoredActivity.LifeCycleListener> iterator = this.mListeners.iterator(); iterator.hasNext(); ) {
+            MonitoredActivity.LifeCycleListener listener = iterator.next();
             listener.onActivityStarted(this);
         }
     }
@@ -75,8 +75,8 @@ public class MonitoredActivity extends Activity {
     protected final void onStop() {
 
         super.onStop();
-        for (Iterator<LifeCycleListener> iterator = mListeners.iterator(); iterator.hasNext(); ) {
-            LifeCycleListener listener = iterator.next();
+        for (Iterator<MonitoredActivity.LifeCycleListener> iterator = this.mListeners.iterator(); iterator.hasNext(); ) {
+            MonitoredActivity.LifeCycleListener listener = iterator.next();
             listener.onActivityStopped(this);
         }
     }
@@ -96,7 +96,7 @@ public class MonitoredActivity extends Activity {
         void onActivityStopped(MonitoredActivity activity);
     }
 
-    public static class LifeCycleAdapter implements LifeCycleListener {
+    public static class LifeCycleAdapter implements MonitoredActivity.LifeCycleListener {
 
         public LifeCycleAdapter() {
         }

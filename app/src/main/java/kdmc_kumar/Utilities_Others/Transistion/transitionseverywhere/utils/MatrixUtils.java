@@ -21,6 +21,7 @@ import android.graphics.Matrix;
 import android.graphics.RectF;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.widget.ImageView;
 
 import java.lang.reflect.Field;
@@ -37,177 +38,177 @@ public class MatrixUtils {
 
         @Override
         public void set(Matrix src) {
-            oops();
+            this.oops();
         }
 
         @Override
         public void reset() {
-            oops();
+            this.oops();
         }
 
         @Override
         public void setTranslate(float dx, float dy) {
-            oops();
+            this.oops();
         }
 
         @Override
         public void setScale(float sx, float sy, float px, float py) {
-            oops();
+            this.oops();
         }
 
         @Override
         public void setScale(float sx, float sy) {
-            oops();
+            this.oops();
         }
 
         @Override
         public void setRotate(float degrees, float px, float py) {
-            oops();
+            this.oops();
         }
 
         @Override
         public void setRotate(float degrees) {
-            oops();
+            this.oops();
         }
 
         @Override
         public void setSinCos(float sinValue, float cosValue, float px, float py) {
-            oops();
+            this.oops();
         }
 
         @Override
         public void setSinCos(float sinValue, float cosValue) {
-            oops();
+            this.oops();
         }
 
         @Override
         public void setSkew(float kx, float ky, float px, float py) {
-            oops();
+            this.oops();
         }
 
         @Override
         public void setSkew(float kx, float ky) {
-            oops();
+            this.oops();
         }
 
         @Override
         public boolean setConcat(Matrix a, Matrix b) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean preTranslate(float dx, float dy) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean preScale(float sx, float sy, float px, float py) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean preScale(float sx, float sy) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean preRotate(float degrees, float px, float py) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean preRotate(float degrees) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean preSkew(float kx, float ky, float px, float py) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean preSkew(float kx, float ky) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean preConcat(Matrix other) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean postTranslate(float dx, float dy) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean postScale(float sx, float sy, float px, float py) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean postScale(float sx, float sy) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean postRotate(float degrees, float px, float py) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean postRotate(float degrees) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean postSkew(float kx, float ky, float px, float py) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean postSkew(float kx, float ky) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public boolean postConcat(Matrix other) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
-        public boolean setRectToRect(RectF src, RectF dst, ScaleToFit stf) {
-            oops();
+        public boolean setRectToRect(RectF src, RectF dst, Matrix.ScaleToFit stf) {
+            this.oops();
             return false;
         }
 
         @Override
         public boolean setPolyToPoly(float[] src, int srcIndex, float[] dst, int dstIndex,
                                      int pointCount) {
-            oops();
+            this.oops();
             return false;
         }
 
         @Override
         public void setValues(float[] values) {
-            oops();
+            this.oops();
         }
     };
 
@@ -226,14 +227,14 @@ public class MatrixUtils {
             Matrix drawMatrix = imageView.getImageMatrix();
             if (drawMatrix.isIdentity()) {
                 drawMatrix = new Matrix();
-                ReflectionUtils.setFieldValue(imageView, FIELD_DRAW_MATRIX, drawMatrix);
+                ReflectionUtils.setFieldValue(imageView, MatrixUtils.FIELD_DRAW_MATRIX, drawMatrix);
             }
             drawMatrix.set(matrix);
         }
         imageView.invalidate();
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
     public static class MatrixEvaluator implements TypeEvaluator<Matrix> {
 
         float[] mTempStartValues = new float[9];
@@ -244,18 +245,18 @@ public class MatrixUtils {
 
         @Override
         public Matrix evaluate(float fraction, Matrix startValue, Matrix endValue) {
-            startValue.getValues(mTempStartValues);
-            endValue.getValues(mTempEndValues);
+            startValue.getValues(this.mTempStartValues);
+            endValue.getValues(this.mTempEndValues);
             for (int i = 0; i < 9; i++) {
-                float diff = mTempEndValues[i] - mTempStartValues[i];
-                mTempEndValues[i] = mTempStartValues[i] + (fraction * diff);
+                float diff = this.mTempEndValues[i] - this.mTempStartValues[i];
+                this.mTempEndValues[i] = this.mTempStartValues[i] + (fraction * diff);
             }
-            mTempMatrix.setValues(mTempEndValues);
-            return mTempMatrix;
+            this.mTempMatrix.setValues(this.mTempEndValues);
+            return this.mTempMatrix;
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+    @TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
     public static class NullMatrixEvaluator implements TypeEvaluator<Matrix> {
         @Override
         public Matrix evaluate(float fraction, Matrix startValue, Matrix endValue) {

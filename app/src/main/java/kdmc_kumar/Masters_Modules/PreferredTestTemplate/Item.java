@@ -10,34 +10,34 @@ public class Item {
     private final int id;
 
     public Item(String testName, String subtestname, int id) {
-        TestName = testName;
-        Subtestname = subtestname;
+        this.TestName = testName;
+        this.Subtestname = subtestname;
         this.id = id;
     }
 
 
     public final String getTestName() {
-        return TestName;
+        return this.TestName;
     }
 
     public final String getSubtestname() {
-        return Subtestname;
+        return this.Subtestname;
     }
 
     public final int getId() {
-        return id;
+        return this.id;
     }
 
     public final String setTestName() {
-        return TestName;
+        return this.TestName;
     }
 
     public final String setSubtestname() {
-        return Subtestname;
+        return this.Subtestname;
     }
 
     public final int setId() {
-        return id;
+        return this.id;
     }
 
 

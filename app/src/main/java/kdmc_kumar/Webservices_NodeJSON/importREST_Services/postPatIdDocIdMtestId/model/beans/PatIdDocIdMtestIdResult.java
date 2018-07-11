@@ -20,21 +20,21 @@ public class PatIdDocIdMtestIdResult {
 
 
     @com.google.gson.annotations.SerializedName("LocalIds")
-    private String localIds = null;
+    private String localIds;
 
 
     @com.google.gson.annotations.SerializedName("Results")
-    private String results = null;
+    private String results;
 
     public PatIdDocIdMtestIdResult() {
     }
 
     public final String getLocalIds() {
-        return localIds;
+        return this.localIds;
     }
 
     public final String getResults() {
-        return results;
+        return this.results;
     }
 
     public void setLocalIds(String localIds) {
@@ -55,16 +55,16 @@ public class PatIdDocIdMtestIdResult {
         }
 
         public final PatIdDocIdMtestIdResult build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final PatIdDocIdMtestIdResultBuilder localIds(String value) {
-            toBuild.setLocalIds(value);
+        public final PatIdDocIdMtestIdResult.PatIdDocIdMtestIdResultBuilder localIds(String value) {
+            this.toBuild.setLocalIds(value);
             return this;
         }
 
-        public final PatIdDocIdMtestIdResultBuilder results(String value) {
-            toBuild.setResults(value);
+        public final PatIdDocIdMtestIdResult.PatIdDocIdMtestIdResultBuilder results(String value) {
+            this.toBuild.setResults(value);
             return this;
         }
     }

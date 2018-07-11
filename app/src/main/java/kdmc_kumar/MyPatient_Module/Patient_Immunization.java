@@ -8,14 +8,17 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.Toolbar;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -36,9 +39,11 @@ import java.util.List;
 import java.util.Locale;
 
 import displ.mobydocmarathi.com.R;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.DataObject;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.RowItemVaccination;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
 import kdmc_kumar.Core_Modules.BaseConfig;
+import kdmc_kumar.MyPatient_Module.Patient_Immunization.SimpleItemRecyclerViewAdapter.ViewHolder;
 import kdmc_kumar.Utilities_Others.Validation1;
 
 
@@ -46,38 +51,38 @@ public class Patient_Immunization extends Fragment {
 
     static final int DATE_DIALOG_ID = 1;
     private static final String TAG = "MainActivity";
-    public static int mYear = 0;
-    public static int mMonth = 0;
-    public static int mDay = 0;
-    public static int mcYear = 0;
-    public static int mcDay = 0;
-    public static int mcMonth = 0;
+    public static int mYear;
+    public static int mMonth;
+    public static int mDay;
+    public static int mcYear;
+    public static int mcDay;
+    public static int mcMonth;
     // Declaration -------------------
     BaseConfig bcnfg = new BaseConfig();
     // /////////////////////////////////////////
-    ArrayList<HashMap<String, String>> titles_list = null;
-    ArrayAdapter<RowItemVaccination> adapter = null;
-    private List<DataObject> filteredList = null;
-    ArrayList<RowItemVaccination> rowItems = null;
+    ArrayList<HashMap<String, String>> titles_list;
+    ArrayAdapter<CommonDataObjects.RowItemVaccination> adapter;
+    private List<CommonDataObjects.DataObject> filteredList;
+    ArrayList<CommonDataObjects.RowItemVaccination> rowItems;
     // /////////////////////////////////////////
-    private ImageView imgNoMedia = null;
-    TextView info = null;
+    private ImageView imgNoMedia;
+    TextView info;
     // /////////////////////////////////////////
-    ListView savedvaccineList = null;
-    private GridLayoutManager lLayout = null;
+    ListView savedvaccineList;
+    private GridLayoutManager lLayout;
 
     /*// RecycleView adapter object
     private RecyclerAdapter mAdapter;*/
-    private EditText srchbx = null;
-    Button search = null;
-    Toolbar toolbar = null;
-    private RecyclerView recyclerView = null;
-    private String BUNDLE_PATIENT_ID = null;
-    private ArrayList<DataObject> results = new ArrayList<>();
+    private EditText srchbx;
+    Button search;
+    Toolbar toolbar;
+    private RecyclerView recyclerView;
+    private String BUNDLE_PATIENT_ID;
+    private ArrayList<CommonDataObjects.DataObject> results = new ArrayList<>();
     // List of all dictionary words
-    private ArrayList<DataObject> dictionaryWords = null;
+    private ArrayList<CommonDataObjects.DataObject> dictionaryWords;
     // RecycleView adapter object
-    private SimpleItemRecyclerViewAdapter mAdapter = null;
+    private Patient_Immunization.SimpleItemRecyclerViewAdapter mAdapter;
 
     public Patient_Immunization() {
     }
@@ -87,20 +92,20 @@ public class Patient_Immunization extends Fragment {
     public final View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                    Bundle savedInstanceState) {
 
-        final View rootView = inflater.inflate(
-                R.layout.fragment_mypatient_vaccinationfragment, container,
+        View rootView = inflater.inflate(
+                layout.fragment_mypatient_vaccinationfragment, container,
                 false);
 
-        Bundle args = getArguments();
-        BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
+        Bundle args = this.getArguments();
+        this.BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
 
 
-        GetIniliz(rootView);
+        this.GetIniliz(rootView);
 
 
-        srchbx = rootView.findViewById(R.id.edt);
+        this.srchbx = rootView.findViewById(id.edt);
         // search suggestions using the edittext widget
-        srchbx.addTextChangedListener(new TextWatcher() {
+        this.srchbx.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
@@ -111,7 +116,7 @@ public class Patient_Immunization extends Fragment {
                 //Log.e("onTextChanged: ", String.valueOf(dictionaryWords));
 
 
-                mAdapter.getFilter().filter(charSequence.toString());
+                Patient_Immunization.this.mAdapter.getFilter().filter(charSequence.toString());
 
 
             }
@@ -130,35 +135,35 @@ public class Patient_Immunization extends Fragment {
 
     private void GetIniliz(View rootView) {
         // TODO Auto-generated method stub
-        imgNoMedia = rootView.findViewById(R.id.imgNoMedia);
-        imgNoMedia.setVisibility(View.GONE);
+        this.imgNoMedia = rootView.findViewById(id.imgNoMedia);
+        this.imgNoMedia.setVisibility(View.GONE);
 
 
-        recyclerView = rootView.findViewById(R.id.listVaccination);
+        this.recyclerView = rootView.findViewById(id.listVaccination);
 
-        dictionaryWords = getDataSet();
-        filteredList = new ArrayList<>();
-        filteredList.addAll(dictionaryWords);
+        this.dictionaryWords = this.getDataSet();
+        this.filteredList = new ArrayList<>();
+        this.filteredList.addAll(this.dictionaryWords);
 
         //recyclerView.setHasFixedSize(true);
         //mLayoutManager = new LinearLayoutManager(getActivity());
         //recyclerView.setLayoutManager(mLayoutManager);
 
 
-        lLayout = new GridLayoutManager(getActivity(), 2);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(lLayout);
-        recyclerView.setNestedScrollingEnabled(false);
+        this.lLayout = new GridLayoutManager(this.getActivity(), 2);
+        this.recyclerView.setHasFixedSize(true);
+        this.recyclerView.setLayoutManager(this.lLayout);
+        this.recyclerView.setNestedScrollingEnabled(false);
 
 
-        assert recyclerView != null;
-        mAdapter = new SimpleItemRecyclerViewAdapter(filteredList);
-        recyclerView.setAdapter(mAdapter);
+        assert this.recyclerView != null;
+        this.mAdapter = new Patient_Immunization.SimpleItemRecyclerViewAdapter(this.filteredList);
+        this.recyclerView.setAdapter(this.mAdapter);
 
 
-        srchbx = rootView.findViewById(R.id.edt);
+        this.srchbx = rootView.findViewById(id.edt);
         // search suggestions using the edittext widget
-        srchbx.addTextChangedListener(new TextWatcher() {
+        this.srchbx.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
             }
@@ -166,22 +171,22 @@ public class Patient_Immunization extends Fragment {
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
-                mAdapter.getFilter().filter(charSequence.toString());
+                Patient_Immunization.this.mAdapter.getFilter().filter(charSequence.toString());
 
 
-                dictionaryWords = getDataSetSearch(charSequence.toString());
-                filteredList = new ArrayList<>();
-                filteredList.addAll(dictionaryWords);
+                Patient_Immunization.this.dictionaryWords = Patient_Immunization.this.getDataSetSearch(charSequence.toString());
+                Patient_Immunization.this.filteredList = new ArrayList<>();
+                Patient_Immunization.this.filteredList.addAll(Patient_Immunization.this.dictionaryWords);
 
-                lLayout = new GridLayoutManager(getActivity(), 2);
-                recyclerView.setHasFixedSize(true);
-                recyclerView.setLayoutManager(lLayout);
-                recyclerView.setNestedScrollingEnabled(false);
+                Patient_Immunization.this.lLayout = new GridLayoutManager(Patient_Immunization.this.getActivity(), 2);
+                Patient_Immunization.this.recyclerView.setHasFixedSize(true);
+                Patient_Immunization.this.recyclerView.setLayoutManager(Patient_Immunization.this.lLayout);
+                Patient_Immunization.this.recyclerView.setNestedScrollingEnabled(false);
 
 
-                assert recyclerView != null;
-                mAdapter = new SimpleItemRecyclerViewAdapter(filteredList);
-                recyclerView.setAdapter(mAdapter);
+                assert Patient_Immunization.this.recyclerView != null;
+                Patient_Immunization.this.mAdapter = new Patient_Immunization.SimpleItemRecyclerViewAdapter(Patient_Immunization.this.filteredList);
+                Patient_Immunization.this.recyclerView.setAdapter(Patient_Immunization.this.mAdapter);
 
             }
 
@@ -193,14 +198,14 @@ public class Patient_Immunization extends Fragment {
 
     }
 
-    private ArrayList<DataObject> getDataSet() {
+    private ArrayList<CommonDataObjects.DataObject> getDataSet() {
 
-        results = new ArrayList<>();
+        this.results = new ArrayList<>();
 
         String query;
 
         query = "select vaccinename,schedule,givendt,weight from vaccination where patid='"
-                + BUNDLE_PATIENT_ID + '\'';
+                + this.BUNDLE_PATIENT_ID + '\'';
 
 
         SQLiteDatabase db = BaseConfig.GetDb();//);
@@ -209,14 +214,14 @@ public class Patient_Immunization extends Fragment {
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    DataObject obj = new DataObject();
+                    CommonDataObjects.DataObject obj = new CommonDataObjects.DataObject();
                     obj.setVaccinename(c.getString(c.getColumnIndex("vaccinename")));
                     obj.setGivendt(c.getString(c.getColumnIndex("givendt")));
                     obj.setSchedule(c.getString(c.getColumnIndex("schedule")));
                     obj.setWeight(c.getString(c.getColumnIndex("weight")));
 
 
-                    results.add(obj);
+                    this.results.add(obj);
 
                 }
                 while (c.moveToNext());
@@ -227,18 +232,18 @@ public class Patient_Immunization extends Fragment {
         db.close();
 
 
-        return results;
+        return this.results;
 
     }
 
-    private ArrayList<DataObject> getDataSetSearch(String str) {
+    private ArrayList<CommonDataObjects.DataObject> getDataSetSearch(String str) {
 
-        results = new ArrayList<>();
+        this.results = new ArrayList<>();
 
         String query;
 
         query = "select vaccinename,schedule,IFNULL(givendt,'')as givendt,IFNULL(weight,'')as weight from vaccination where patid='"
-                + BUNDLE_PATIENT_ID + '\'';
+                + this.BUNDLE_PATIENT_ID + '\'';
 
 
         SQLiteDatabase db = BaseConfig.GetDb();//);
@@ -247,14 +252,14 @@ public class Patient_Immunization extends Fragment {
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    DataObject obj = new DataObject();
+                    CommonDataObjects.DataObject obj = new CommonDataObjects.DataObject();
                     obj.setVaccinename(c.getString(c.getColumnIndex("vaccinename")));
                     obj.setGivendt(BaseConfig.CheckDBString(c.getString(c.getColumnIndex("givendt"))));
                     obj.setSchedule(c.getString(c.getColumnIndex("schedule")));
                     obj.setWeight(BaseConfig.CheckDBString(c.getString(c.getColumnIndex("weight"))));
 
                     if (c.getString(c.getColumnIndex("vaccinename")).toLowerCase().startsWith(str)) {
-                        results.add(obj);
+                        this.results.add(obj);
                     }
 
 
@@ -267,7 +272,7 @@ public class Patient_Immunization extends Fragment {
         db.close();
 
 
-        return results;
+        return this.results;
 
     }
 
@@ -282,33 +287,33 @@ public class Patient_Immunization extends Fragment {
 
     // create a custom RecycleViewAdapter class
 
-    public class SimpleItemRecyclerViewAdapter extends RecyclerView.Adapter<SimpleItemRecyclerViewAdapter.ViewHolder> implements Filterable {
+    public class SimpleItemRecyclerViewAdapter extends Adapter<ViewHolder> implements Filterable {
 
-        Context context = null;
-        final CustomFilter mFilter;
-        RecyclerView myrecyler = null;
-        View view = null;
-        private final List<DataObject> mValues;
+        Context context;
+        final Patient_Immunization.SimpleItemRecyclerViewAdapter.CustomFilter mFilter;
+        RecyclerView myrecyler;
+        View view;
+        private final List<CommonDataObjects.DataObject> mValues;
 
 
-        SimpleItemRecyclerViewAdapter(List<DataObject> items) {
-            mValues = items;
-            mFilter = new CustomFilter(SimpleItemRecyclerViewAdapter.this);
+        SimpleItemRecyclerViewAdapter(List<CommonDataObjects.DataObject> items) {
+            this.mValues = items;
+            this.mFilter = new Patient_Immunization.SimpleItemRecyclerViewAdapter.CustomFilter(this);
         }
 
 
         @NonNull
         @Override
-        public final ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-            View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.listrowimmunization, parent, false);
-            return new ViewHolder(view);
+        public final Patient_Immunization.SimpleItemRecyclerViewAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+            View view = LayoutInflater.from(parent.getContext()).inflate(layout.listrowimmunization, parent, false);
+            return new Patient_Immunization.SimpleItemRecyclerViewAdapter.ViewHolder(view);
         }
 
 
         @Override
-        public final void onBindViewHolder(@NonNull final ViewHolder holder, int position) {
+        public final void onBindViewHolder(@NonNull Patient_Immunization.SimpleItemRecyclerViewAdapter.ViewHolder holder, int position) {
 
-            DataObject rowItem = mValues.get(position);
+            CommonDataObjects.DataObject rowItem = this.mValues.get(position);
 
             holder.vaccinename.setText(BaseConfig.CheckDBString(rowItem.getVaccinename()));
             holder.schedule.setText(BaseConfig.CheckDBString(rowItem.getSchedule()));
@@ -338,43 +343,43 @@ public class Patient_Immunization extends Fragment {
                 String dttm = dateformt.format(date);
 
                 LayoutInflater li = LayoutInflater.from(v.getContext());
-                View promptsView = li.inflate(R.layout.vaccipopup, null);
+                View promptsView = li.inflate(layout.vaccipopup, null);
 
                 ////Log.e("RowItem Vaccination: ", rowItem.getGivendt().toString()+"/"+rowItem.getWeight().toString());
 
                 if (holder.givenon.getText().equals("")
                         && holder.weight.getText().equals("")) {
 
-                    final AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(
+                    Builder alertDialogBuilder = new Builder(
                             v.getContext());
 
                     // set prompts.xml to alertdialog builder
                     alertDialogBuilder.setView(promptsView);
 
-                    final Button cancelbtn = promptsView
-                            .findViewById(R.id.cancel_button);
-                    final Button replybtn = promptsView
-                            .findViewById(R.id.ok_button);
+                    Button cancelbtn = promptsView
+                            .findViewById(id.cancel_button);
+                    Button replybtn = promptsView
+                            .findViewById(id.ok_button);
                     TextView pid, pname, agegenn;
-                    pid = promptsView.findViewById(R.id.textView5);
-                    pname = promptsView.findViewById(R.id.textView6);
+                    pid = promptsView.findViewById(id.textView5);
+                    pname = promptsView.findViewById(id.textView6);
                     agegenn = promptsView
-                            .findViewById(R.id.textView7);
+                            .findViewById(id.textView7);
 
                     pname.setText(rowItem.getVaccinename());
                     pid.setText(rowItem.getSchedule());
 
-                    String Patient_AgeGender = BaseConfig.GetValues("select age||'-'||gender as ret_values from Patreg where Patid='" + BUNDLE_PATIENT_ID + '\'');
+                    String Patient_AgeGender = BaseConfig.GetValues("select age||'-'||gender as ret_values from Patreg where Patid='" + Patient_Immunization.this.BUNDLE_PATIENT_ID + '\'');
                     agegenn.setText(Patient_AgeGender);
 
-                    final EditText vn;
-                    final EditText sch;
-                    final EditText gvon;
-                    final EditText wei;
-                    vn = promptsView.findViewById(R.id.editText1);
-                    sch = promptsView.findViewById(R.id.editText2);
-                    gvon = promptsView.findViewById(R.id.editText3);
-                    wei = promptsView.findViewById(R.id.editText4);
+                    EditText vn;
+                    EditText sch;
+                    EditText gvon;
+                    EditText wei;
+                    vn = promptsView.findViewById(id.editText1);
+                    sch = promptsView.findViewById(id.editText2);
+                    gvon = promptsView.findViewById(id.editText3);
+                    wei = promptsView.findViewById(id.editText4);
 
                     vn.setText(rowItem.getVaccinename());
                     sch.setText(rowItem.getSchedule());
@@ -388,11 +393,11 @@ public class Patient_Immunization extends Fragment {
                     }
 
                     // create alert dialog
-                    final AlertDialog alertDialog = alertDialogBuilder.create();
+                    AlertDialog alertDialog = alertDialogBuilder.create();
 
                     alertDialog.show();
 
-                    replybtn.setOnClickListener(new View.OnClickListener() {
+                    replybtn.setOnClickListener(new OnClickListener() {
 
                         @Override
                         public void onClick(View view) {
@@ -400,7 +405,7 @@ public class Patient_Immunization extends Fragment {
 
                             if (gvon.getText().length() > 0) {
                                 if (wei.getText().length() > 0) {
-                                    SaveLocal(vn, sch, gvon, wei);
+                                    this.SaveLocal(vn, sch, gvon, wei);
                                     alertDialog.cancel();
                                 } else {
                                     wei.setError("Required");
@@ -416,12 +421,12 @@ public class Patient_Immunization extends Fragment {
                                                EditText gvon, EditText wei) {
                             // TODO Auto-generated method stub
                             try {
-                                if (checkValidation(vn, sch, gvon, wei))
+                                if (this.checkValidation(vn, sch, gvon, wei))
 
-                                    submitForm(vn, sch, gvon, wei);
+                                    this.submitForm(vn, sch, gvon, wei);
                                 else
 
-                                    Toast.makeText(getContext(), "check for missing & valid Data", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(Patient_Immunization.this.getContext(), "check for missing & valid Data", Toast.LENGTH_SHORT).show();
                                 //BaseConfig.SnackBar(this,  "check for missing & valid Data", parentLayout);
 
 
@@ -439,30 +444,30 @@ public class Patient_Immunization extends Fragment {
                             Date date = new Date();
                             String dttm = dateformt.format(date);
 
-                            final String Insert_Query = "update vaccination set givendt='"
-                                    + gvon.getText().toString()
+                            String Insert_Query = "update vaccination set givendt='"
+                                    + gvon.getText()
                                     + "',weight='"
-                                    + wei.getText().toString()
+                                    + wei.getText()
                                     + "',dt='"
                                     + dttm
                                     + "',isactive='1',Isupdate='1',duedt = '00/00/0000 00:00:00',HID = '" + BaseConfig.HID + '\''
                                     + "where vaccinename='"
-                                    + vn.getText().toString()
+                                    + vn.getText()
                                     + "' and schedule='"
-                                    + sch.getText().toString()
+                                    + sch.getText()
                                     + "' and patid='"
-                                    + BUNDLE_PATIENT_ID
+                                    + Patient_Immunization.this.BUNDLE_PATIENT_ID
                                     + "' and isactive='0' and Isupdate='0'";
 
                             BaseConfig.SaveData(Insert_Query);
 
-                            showSimplePopUpExit();
+                            this.showSimplePopUpExit();
                         }
 
                         private void showSimplePopUpExit() {
                             // TODO Auto-generated method stub
 
-                            final AlertDialog.Builder helpBuilder = new AlertDialog.Builder(
+                            Builder helpBuilder = new Builder(
                                     v.getContext());
                             helpBuilder.setTitle("Information");
                             helpBuilder.setMessage("Vaccination Added Successfully");
@@ -472,19 +477,19 @@ public class Patient_Immunization extends Fragment {
 
                                         dialog.cancel();
 
-                                        dictionaryWords = getDataSet();
-                                        filteredList = new ArrayList<>();
-                                        filteredList.addAll(dictionaryWords);
+                                        Patient_Immunization.this.dictionaryWords = Patient_Immunization.this.getDataSet();
+                                        Patient_Immunization.this.filteredList = new ArrayList<>();
+                                        Patient_Immunization.this.filteredList.addAll(Patient_Immunization.this.dictionaryWords);
 
-                                        lLayout = new GridLayoutManager(getActivity(), 2);
-                                        recyclerView.setHasFixedSize(true);
-                                        recyclerView.setLayoutManager(lLayout);
-                                        recyclerView.setNestedScrollingEnabled(false);
+                                        Patient_Immunization.this.lLayout = new GridLayoutManager(Patient_Immunization.this.getActivity(), 2);
+                                        Patient_Immunization.this.recyclerView.setHasFixedSize(true);
+                                        Patient_Immunization.this.recyclerView.setLayoutManager(Patient_Immunization.this.lLayout);
+                                        Patient_Immunization.this.recyclerView.setNestedScrollingEnabled(false);
 
 
-                                        assert recyclerView != null;
-                                        mAdapter = new SimpleItemRecyclerViewAdapter(filteredList);
-                                        recyclerView.setAdapter(mAdapter);
+                                        assert Patient_Immunization.this.recyclerView != null;
+                                        Patient_Immunization.this.mAdapter = new Patient_Immunization.SimpleItemRecyclerViewAdapter(Patient_Immunization.this.filteredList);
+                                        Patient_Immunization.this.recyclerView.setAdapter(Patient_Immunization.this.mAdapter);
 
                                     });
 
@@ -513,7 +518,7 @@ public class Patient_Immunization extends Fragment {
 
                 } else {
 
-                    Toast.makeText(getContext(), "Already Vaccination Given", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(Patient_Immunization.this.getContext(), "Already Vaccination Given", Toast.LENGTH_SHORT).show();
                     //BaseConfig.SnackBar(this,  "Already Vaccination Given", parentLayout);
 
                 }
@@ -525,20 +530,20 @@ public class Patient_Immunization extends Fragment {
 
         @Override
         public final int getItemCount() {
-            return mValues.size();
+            return this.mValues.size();
         }
 
 
         @Override
         public final Filter getFilter() {
-            return mFilter;
+            return this.mFilter;
         }
 
 
         public class ViewHolder extends RecyclerView.ViewHolder {
 
 
-            public DataObject mItem = null;
+            public CommonDataObjects.DataObject mItem;
             final TextView vaccinename;
             final TextView schedule;
             final TextView givenon;
@@ -550,11 +555,11 @@ public class Patient_Immunization extends Fragment {
                 super(view);
 
 
-                vaccinename = view.findViewById(R.id.textView1);
-                schedule = view.findViewById(R.id.textView2);
-                givenon = view.findViewById(R.id.textView3);
-                weight = view.findViewById(R.id.textView4);
-                card_view = view.findViewById(R.id.card_view);
+                this.vaccinename = view.findViewById(id.textView1);
+                this.schedule = view.findViewById(id.textView2);
+                this.givenon = view.findViewById(id.textView3);
+                this.weight = view.findViewById(id.textView4);
+                this.card_view = view.findViewById(id.card_view);
 
 
             }
@@ -565,54 +570,53 @@ public class Patient_Immunization extends Fragment {
 
         class CustomFilter extends Filter {
 
-            private final SimpleItemRecyclerViewAdapter mAdapter;
+            private final Patient_Immunization.SimpleItemRecyclerViewAdapter mAdapter;
 
 
-            private CustomFilter(SimpleItemRecyclerViewAdapter mAdapter) {
-                super();
+            private CustomFilter(Patient_Immunization.SimpleItemRecyclerViewAdapter mAdapter) {
                 this.mAdapter = mAdapter;
 
             }
 
             @Override
-            protected final FilterResults performFiltering(CharSequence charSequence) {
-                filteredList = new ArrayList<>();
-                filteredList.clear();
-                final FilterResults results = new Filter.FilterResults();
+            protected final Filter.FilterResults performFiltering(CharSequence charSequence) {
+                Patient_Immunization.this.filteredList = new ArrayList<>();
+                Patient_Immunization.this.filteredList.clear();
+                Filter.FilterResults results = new Filter.FilterResults();
                 if (charSequence.length() == 0) {
-                    filteredList.addAll(dictionaryWords);
+                    Patient_Immunization.this.filteredList.addAll(Patient_Immunization.this.dictionaryWords);
                 } else {
-                    final String filterPattern = charSequence.toString().toLowerCase().trim();
+                    String filterPattern = charSequence.toString().toLowerCase().trim();
 
-                    for (Iterator<DataObject> iterator = dictionaryWords.iterator(); iterator.hasNext(); ) {
-                        DataObject mWords = iterator.next();
+                    for (Iterator<CommonDataObjects.DataObject> iterator = Patient_Immunization.this.dictionaryWords.iterator(); iterator.hasNext(); ) {
+                        CommonDataObjects.DataObject mWords = iterator.next();
                         if (mWords.getVaccinename().toLowerCase().startsWith(filterPattern)) {
-                            filteredList.add(mWords);
+                            Patient_Immunization.this.filteredList.add(mWords);
                         }
                     }
                 }
 
 
-                System.out.println("Count Number (filteredList)" + filteredList.size());
+                System.out.println("Count Number (filteredList)" + Patient_Immunization.this.filteredList.size());
 
-                results.values = filteredList;
-                results.count = filteredList.size();
+                results.values = Patient_Immunization.this.filteredList;
+                results.count = Patient_Immunization.this.filteredList.size();
 
 
                 return results;
             }
 
             @Override
-            protected final void publishResults(CharSequence charSequence, FilterResults filterResults) {
-                System.out.println("Count Number " + ((List<DataObject>) filterResults.values).size());
-                this.mAdapter.notifyDataSetChanged();
+            protected final void publishResults(CharSequence charSequence, Filter.FilterResults filterResults) {
+                System.out.println("Count Number " + ((List<CommonDataObjects.DataObject>) filterResults.values).size());
+                mAdapter.notifyDataSetChanged();
 
 
-                if (filteredList.size() > 0) {
-                    System.out.println("Count Number " + filteredList.get(0).getVaccinename());
+                if (Patient_Immunization.this.filteredList.size() > 0) {
+                    System.out.println("Count Number " + Patient_Immunization.this.filteredList.get(0).getVaccinename());
                     //Log.e("Total : ",String.valueOf( filteredList.size()));
                     // Count.setTextColor(getResources().getColor(R.color.colorPrimary));
-                } else if (filteredList.size() == 0 && ((List<DataObject>) filterResults.values).size() == 0) {
+                } else if (Patient_Immunization.this.filteredList.size() == 0 && ((List<CommonDataObjects.DataObject>) filterResults.values).size() == 0) {
 
                     //Log.e("filteredList","No search keyword found..click refresh");
                     //Count.setTextColor(getResources().getColor(R.color.red_btn_bg_color));

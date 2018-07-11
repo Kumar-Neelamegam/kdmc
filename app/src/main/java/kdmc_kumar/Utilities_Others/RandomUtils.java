@@ -55,7 +55,7 @@ public class RandomUtils {
      * @see RandomUtils#getRandom(String source, int length)
      */
     public static String getRandomNumbersAndLetters(int length) {
-        return getRandom(NUMBERS_AND_LETTERS, length);
+        return RandomUtils.getRandom(RandomUtils.NUMBERS_AND_LETTERS, length);
     }
 
     /**
@@ -66,7 +66,7 @@ public class RandomUtils {
      * @see RandomUtils#getRandom(String source, int length)
      */
     public static String getRandomNumbers(int length) {
-        return getRandom(NUMBERS, length);
+        return RandomUtils.getRandom(RandomUtils.NUMBERS, length);
     }
 
     /**
@@ -77,7 +77,7 @@ public class RandomUtils {
      * @see RandomUtils#getRandom(String source, int length)
      */
     public static String getRandomLetters(int length) {
-        return getRandom(LETTERS, length);
+        return RandomUtils.getRandom(RandomUtils.LETTERS, length);
     }
 
     /**
@@ -88,7 +88,7 @@ public class RandomUtils {
      * @see RandomUtils#getRandom(String source, int length)
      */
     public static String getRandomCapitalLetters(int length) {
-        return getRandom(CAPITAL_LETTERS, length);
+        return RandomUtils.getRandom(RandomUtils.CAPITAL_LETTERS, length);
     }
 
     /**
@@ -99,7 +99,7 @@ public class RandomUtils {
      * @see RandomUtils#getRandom(String source, int length)
      */
     public static String getRandomLowerCaseLetters(int length) {
-        return getRandom(LOWER_CASE_LETTERS, length);
+        return RandomUtils.getRandom(RandomUtils.LOWER_CASE_LETTERS, length);
     }
 
     /**
@@ -113,7 +113,7 @@ public class RandomUtils {
      * </ul>
      */
     public static String getRandom(String source, int length) {
-        return TextUtils.isEmpty(source) ? null : getRandom(source.toCharArray(), length);
+        return TextUtils.isEmpty(source) ? null : RandomUtils.getRandom(source.toCharArray(), length);
     }
 
     /**
@@ -149,7 +149,7 @@ public class RandomUtils {
      * </ul>
      */
     public static int getRandom(int max) {
-        return getRandom(0, max);
+        return RandomUtils.getRandom(0, max);
     }
 
     /**
@@ -184,7 +184,7 @@ public class RandomUtils {
             return false;
         }
 
-        return shuffle(objArray, getRandom(objArray.length));
+        return RandomUtils.shuffle(objArray, RandomUtils.getRandom(objArray.length));
     }
 
     /**
@@ -201,7 +201,7 @@ public class RandomUtils {
         }
 
         for (int i = 1; i <= shuffleCount; i++) {
-            int random = getRandom(length - i);
+            int random = RandomUtils.getRandom(length - i);
             Object temp = objArray[length - i];
             objArray[length - i] = objArray[random];
             objArray[random] = temp;
@@ -220,7 +220,7 @@ public class RandomUtils {
             return null;
         }
 
-        return shuffle(intArray, getRandom(intArray.length));
+        return RandomUtils.shuffle(intArray, RandomUtils.getRandom(intArray.length));
     }
 
     /**
@@ -238,7 +238,7 @@ public class RandomUtils {
 
         int[] out = new int[shuffleCount];
         for (int i = 1; i <= shuffleCount; i++) {
-            int random = getRandom(length - i);
+            int random = RandomUtils.getRandom(length - i);
             out[i - 1] = intArray[random];
             int temp = intArray[length - i];
             intArray[length - i] = intArray[random];

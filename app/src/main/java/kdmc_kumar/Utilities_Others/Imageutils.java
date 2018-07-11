@@ -1,27 +1,37 @@
 package kdmc_kumar.Utilities_Others;
 
 import android.Manifest;
+import android.Manifest.permission;
 import android.app.Activity;
 import android.content.ContentValues;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.DialogInterface.OnClickListener;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
+import android.graphics.Bitmap.Config;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.media.ExifInterface;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Build.VERSION;
 import android.provider.MediaStore;
+import android.provider.MediaStore.Images;
+import android.provider.MediaStore.Images.Media;
+import android.provider.MediaStore.MediaColumns;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.util.Base64;
 import android.util.Log;
 import android.widget.Toast;
@@ -38,21 +48,21 @@ public class Imageutils {
     private final Context context;
     private final Activity current_activity;
 
-    private final ImageAttachmentListener imageAttachment_callBack;
+    private final Imageutils.ImageAttachmentListener imageAttachment_callBack;
 
     @Nullable
     private
     String selected_path = "";
-    private Uri imageUri = null;
-    private File path = null;
+    private Uri imageUri;
+    private File path;
 
-    private int from = 0;
+    private int from;
 
     public Imageutils(Activity act) {
 
-        this.context = act;
-        this.current_activity = act;
-        imageAttachment_callBack = (ImageAttachmentListener) context;
+        context = act;
+        current_activity = act;
+        this.imageAttachment_callBack = (Imageutils.ImageAttachmentListener) this.context;
     }
 
     /**
@@ -77,8 +87,8 @@ public class Imageutils {
 
     public static final Uri getImageUri(Context context, Bitmap photo) {
         ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-        photo.compress(Bitmap.CompressFormat.PNG, 80, bytes);
-        String path = MediaStore.Images.Media.insertImage(context.getContentResolver(), photo, "Title", null);
+        photo.compress(CompressFormat.PNG, 80, bytes);
+        String path = Media.insertImage(context.getContentResolver(), photo, "Title", null);
         return Uri.parse(path);
     }
 
@@ -90,11 +100,11 @@ public class Imageutils {
      */
 
     private final String getPath(Uri uri) {
-        String[] projection = {MediaStore.MediaColumns.DATA};
-        Cursor cursor = this.context.getContentResolver().query(uri, projection, null, null, null);
+        String[] projection = {MediaColumns.DATA};
+        Cursor cursor = context.getContentResolver().query(uri, projection, null, null, null);
         int column_index = 0;
         if (cursor != null) {
-            int column_index1 = cursor.getColumnIndexOrThrow(MediaStore.MediaColumns.DATA);
+            int column_index1 = cursor.getColumnIndexOrThrow(MediaColumns.DATA);
             cursor.moveToFirst();
             String path = cursor.getString(column_index1);
             cursor.close();
@@ -130,7 +140,7 @@ public class Imageutils {
 
     public static final String BitMapToString(Bitmap bitmap) {
         ByteArrayOutputStream baos = new ByteArrayOutputStream();
-        bitmap.compress(Bitmap.CompressFormat.PNG, 80, baos);
+        bitmap.compress(CompressFormat.PNG, 80, baos);
         byte[] b = baos.toByteArray();
         return Base64.encodeToString(b, Base64.DEFAULT);
     }
@@ -145,7 +155,7 @@ public class Imageutils {
     private final boolean isDeviceSupportCamera() {
         // this device has a camera
 // no camera on this device
-        return this.context.getPackageManager().hasSystemFeature(
+        return context.getPackageManager().hasSystemFeature(
                 PackageManager.FEATURE_CAMERA);
     }
 
@@ -163,10 +173,10 @@ public class Imageutils {
     @Nullable
     private final Bitmap compressImage(String imageUri, float height, float width) {
 
-        String filePath = getRealPathFromURI(imageUri);
+        String filePath = this.getRealPathFromURI(imageUri);
         Bitmap scaledBitmap = null;
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
+        Options options = new Options();
 
         // by setting this field as true, the actual bitmap pixels are not loaded in the memory. Just the bounds are loaded. If
         // you try the use the bitmap here, you will get null.
@@ -202,7 +212,7 @@ public class Imageutils {
 
         //  setting inSampleSize value allows to load a scaled down version of the original image
 
-        options.inSampleSize = calculateInSampleSize(options, actualWidth, actualHeight);
+        options.inSampleSize = Imageutils.calculateInSampleSize(options, actualWidth, actualHeight);
 
         //  inJustDecodeBounds set to false to load the actual bitmap
         options.inJustDecodeBounds = false;
@@ -221,7 +231,7 @@ public class Imageutils {
 
         }
         try {
-            scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight, Bitmap.Config.ARGB_8888);
+            scaledBitmap = Bitmap.createBitmap(actualWidth, actualHeight, Config.ARGB_8888);
         } catch (OutOfMemoryError exception) {
             exception.printStackTrace();
         }
@@ -281,12 +291,12 @@ public class Imageutils {
      */
     private String getRealPathFromURI(String contentURI) {
         Uri contentUri = Uri.parse(contentURI);
-        Cursor cursor = context.getContentResolver().query(contentUri, null, null, null, null);
+        Cursor cursor = this.context.getContentResolver().query(contentUri, null, null, null, null);
         if (cursor == null) {
             return contentUri.getPath();
         } else {
             cursor.moveToFirst();
-            int index = cursor.getColumnIndex(MediaStore.MediaColumns.DATA);
+            int index = cursor.getColumnIndex(MediaColumns.DATA);
 
             return cursor.getString(index);
         }
@@ -303,18 +313,18 @@ public class Imageutils {
      * @return
      */
 
-    private static final int calculateInSampleSize(BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        final int height = options.outHeight;
-        final int width = options.outWidth;
+    private static final int calculateInSampleSize(Options options, int reqWidth, int reqHeight) {
+        int height = options.outHeight;
+        int width = options.outWidth;
         int inSampleSize = 1;
 
         if (height > reqHeight || width > reqWidth) {
-            final int heightRatio = Math.round((float) height / reqHeight);
-            final int widthRatio = Math.round((float) width / reqWidth);
+            int heightRatio = Math.round((float) height / reqHeight);
+            int widthRatio = Math.round((float) width / reqWidth);
             inSampleSize = heightRatio < widthRatio ? heightRatio : widthRatio;
         }
-        final float totalPixels = (float) (width * height);
-        final float totalReqPixelsCap = (float) (reqWidth * reqHeight * 2);
+        float totalPixels = (float) (width * height);
+        float totalReqPixelsCap = (float) (reqWidth * reqHeight * 2);
         while (totalPixels / (float) (inSampleSize * inSampleSize) > totalReqPixelsCap) {
             inSampleSize++;
         }
@@ -331,10 +341,10 @@ public class Imageutils {
     private final void launchCamera(int from) {
         this.from = from;
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            permission_check(1);
+        if (VERSION.SDK_INT >= 23) {
+            this.permission_check(1);
         } else {
-            camera_call();
+            this.camera_call();
         }
     }
 
@@ -348,10 +358,10 @@ public class Imageutils {
 
         this.from = from;
 
-        if (Build.VERSION.SDK_INT >= 23) {
-            permission_check(2);
+        if (VERSION.SDK_INT >= 23) {
+            this.permission_check(2);
         } else {
-            galley_call();
+            this.galley_call();
         }
     }
 
@@ -364,12 +374,12 @@ public class Imageutils {
      * @param from
      */
 
-    public final void imagepicker(final int from) {
+    public final void imagepicker(int from) {
         this.from = from;
 
-        final CharSequence[] items;
+        CharSequence[] items;
 
-        if (isDeviceSupportCamera()) {
+        if (this.isDeviceSupportCamera()) {
             items = new CharSequence[2];
             items[0] = "Camera";
             items[1] = "Gallery";
@@ -378,13 +388,13 @@ public class Imageutils {
             items[0] = "Gallery";
         }
 
-        android.app.AlertDialog.Builder alertdialog = new android.app.AlertDialog.Builder(current_activity);
+        android.app.AlertDialog.Builder alertdialog = new android.app.AlertDialog.Builder(this.current_activity);
         alertdialog.setTitle("Add Image");
         alertdialog.setItems(items, (dialog, item) -> {
             if (items[item].equals("Camera")) {
-                launchCamera(from);
+                this.launchCamera(from);
             } else if (items[item].equals("Gallery")) {
-                launchGallery(from);
+                this.launchGallery(from);
             }
         });
         alertdialog.show();
@@ -396,36 +406,36 @@ public class Imageutils {
      * @param code
      */
 
-    private final void permission_check(final int code) {
-        int hasWriteContactsPermission = ContextCompat.checkSelfPermission(current_activity,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE);
+    private final void permission_check(int code) {
+        int hasWriteContactsPermission = ContextCompat.checkSelfPermission(this.current_activity,
+                permission.WRITE_EXTERNAL_STORAGE);
 
         if (hasWriteContactsPermission != PackageManager.PERMISSION_GRANTED) {
-            if (!ActivityCompat.shouldShowRequestPermissionRationale(current_activity,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this.current_activity,
+                    permission.WRITE_EXTERNAL_STORAGE)) {
 
-                showMessageOKCancel(
-                        (dialog, which) -> ActivityCompat.requestPermissions(current_activity,
-                                new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                this.showMessageOKCancel(
+                        (dialog, which) -> ActivityCompat.requestPermissions(this.current_activity,
+                                new String[]{permission.WRITE_EXTERNAL_STORAGE},
                                 code));
                 return;
             }
 
-            ActivityCompat.requestPermissions(current_activity,
-                    new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},
+            ActivityCompat.requestPermissions(this.current_activity,
+                    new String[]{permission.WRITE_EXTERNAL_STORAGE},
                     code);
             return;
         }
 
         if (code == 1)
-            camera_call();
+            this.camera_call();
         else if (code == 2)
-            galley_call();
+            this.galley_call();
     }
 
 
-    private void showMessageOKCancel(DialogInterface.OnClickListener okListener) {
-        new AlertDialog.Builder(current_activity)
+    private void showMessageOKCancel(OnClickListener okListener) {
+        new Builder(this.current_activity)
                 .setMessage("For adding images , You need to provide permission to access your files")
                 .setPositiveButton("OK", okListener)
                 .setNegativeButton("Cancel", null)
@@ -440,11 +450,11 @@ public class Imageutils {
 
     private final void camera_call() {
         ContentValues values = new ContentValues();
-        imageUri = current_activity.getContentResolver().insert(
-                MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+        this.imageUri = this.current_activity.getContentResolver().insert(
+                Media.EXTERNAL_CONTENT_URI, values);
         Intent intent1 = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-        intent1.putExtra(MediaStore.EXTRA_OUTPUT, imageUri);
-        current_activity.startActivityForResult(intent1, 0);
+        intent1.putExtra(MediaStore.EXTRA_OUTPUT, this.imageUri);
+        this.current_activity.startActivityForResult(intent1, 0);
     }
 
     /**
@@ -453,9 +463,9 @@ public class Imageutils {
 
     private final void galley_call() {
 
-        Intent intent2 = new Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        Intent intent2 = new Intent(Intent.ACTION_PICK, Media.EXTERNAL_CONTENT_URI);
         intent2.setType("image/*");
-        current_activity.startActivityForResult(intent2, 1);
+        this.current_activity.startActivityForResult(intent2, 1);
 
     }
 
@@ -471,19 +481,19 @@ public class Imageutils {
         switch (requestCode) {
             case 1:
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    camera_call();
+                    this.camera_call();
                 } else {
-                    Toast.makeText(current_activity, "Permission denied", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this.current_activity, "Permission denied", Toast.LENGTH_LONG).show();
                 }
                 break;
 
             case 2:
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    galley_call();
+                    this.galley_call();
                 } else {
 
-                    Toast.makeText(current_activity, "Permission denied", Toast.LENGTH_LONG).show();
+                    Toast.makeText(this.current_activity, "Permission denied", Toast.LENGTH_LONG).show();
                 }
                 break;
         }
@@ -509,14 +519,14 @@ public class Imageutils {
                     //Log.e("Camera Selected","Photo");
 
                     try {
-                        selected_path = null;
-                        selected_path = getPath(imageUri);
+                        this.selected_path = null;
+                        this.selected_path = this.getPath(this.imageUri);
 
-                        file_name = selected_path.substring(selected_path.lastIndexOf('/') + 1);
+                        file_name = this.selected_path.substring(this.selected_path.lastIndexOf('/') + 1);
                         //Log.e("file","name"+file_name);
                         //Log.e("selected","path"+selected_path);
-                        bitmap = compressImage(imageUri.toString(), 816.0F, 612.0F);
-                        imageAttachment_callBack.image_attachment(from, file_name, bitmap, imageUri);
+                        bitmap = this.compressImage(this.imageUri.toString(), 816.0F, 612.0F);
+                        this.imageAttachment_callBack.image_attachment(this.from, file_name, bitmap, this.imageUri);
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
@@ -531,11 +541,11 @@ public class Imageutils {
                     Uri selectedImage = data.getData();
 
                     try {
-                        selected_path = null;
-                        selected_path = getPath(selectedImage);
-                        file_name = selected_path.substring(selected_path.lastIndexOf('/') + 1);
-                        bitmap = compressImage(selectedImage.toString(), 816.0F, 612.0F);
-                        imageAttachment_callBack.image_attachment(from, file_name, bitmap, selectedImage);
+                        this.selected_path = null;
+                        this.selected_path = this.getPath(selectedImage);
+                        file_name = this.selected_path.substring(this.selected_path.lastIndexOf('/') + 1);
+                        bitmap = this.compressImage(selectedImage.toString(), 816.0F, 612.0F);
+                        this.imageAttachment_callBack.image_attachment(this.from, file_name, bitmap, selectedImage);
                         //Log.e("file","name"+file_name);
                         //Log.e("selected","path"+selected_path);
                     } catch (Exception e) {
@@ -562,7 +572,7 @@ public class Imageutils {
         Bitmap bitmap = null;
 
         try {
-            bitmap = compressImage(uri.toString(), height, width);
+            bitmap = this.compressImage(uri.toString(), height, width);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -582,7 +592,7 @@ public class Imageutils {
 
         try {
 
-            path = getRealPathFromURI(uri.getPath());
+            path = this.getRealPathFromURI(uri.getPath());
             file_name = path.substring(path.lastIndexOf('/') + 1);
         } catch (Exception e) {
             e.printStackTrace();
@@ -604,9 +614,9 @@ public class Imageutils {
 
     public final boolean checkimage(String file_name, String file_path) {
         boolean flag;
-        path = new File(file_path);
+        this.path = new File(file_path);
 
-        File file = new File(path, file_name);
+        File file = new File(this.path, file_name);
         if (file.exists()) {
             Log.i("file", "exists");
             flag = true;
@@ -630,17 +640,17 @@ public class Imageutils {
     @Nullable
     public final Bitmap getImage(String file_name, String file_path) {
 
-        path = new File(file_path);
-        File file = new File(path, file_name);
+        this.path = new File(file_path);
+        File file = new File(this.path, file_name);
 
-        BitmapFactory.Options options = new BitmapFactory.Options();
-        options.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        Options options = new Options();
+        options.inPreferredConfig = Config.ARGB_8888;
         options.inSampleSize = 2;
         options.inTempStorage = new byte[16 * 1024];
 
         Bitmap bitmap = BitmapFactory.decodeFile(file.getAbsolutePath(), options);
 
-        return bitmap != null ? bitmap : null;
+        return bitmap;
     }
 
     /**
@@ -656,23 +666,23 @@ public class Imageutils {
     public final void createImage(Bitmap bitmap, String file_name, String filepath, boolean file_replace) {
 
         try {
-            path = new File(filepath);
+            this.path = new File(filepath);
 
-            if (!path.exists()) {
-                path.mkdirs();
+            if (!this.path.exists()) {
+                this.path.mkdirs();
             }
 
-            File file = new File(path, file_name);
+            File file = new File(this.path, file_name);
 
             if (file.exists()) {
                 if (file_replace) {
                     file.delete();
-                    File file1 = new File(path, file_name);
-                    store_image(file1, bitmap);
+                    File file1 = new File(this.path, file_name);
+                    Imageutils.store_image(file1, bitmap);
                     Log.i("file", "replaced");
                 }
             } else {
-                store_image(file, bitmap);
+                Imageutils.store_image(file, bitmap);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -690,7 +700,7 @@ public class Imageutils {
         //Toast.makeText(context, "Path:"+file , Toast.LENGTH_LONG).show();
         try {
             FileOutputStream out = new FileOutputStream(file);
-            bmp.compress(Bitmap.CompressFormat.PNG, 80, out);
+            bmp.compress(CompressFormat.PNG, 80, out);
             out.flush();
             out.close();
 

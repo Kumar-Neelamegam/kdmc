@@ -25,6 +25,7 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.util.AttributeSet;
 import android.view.KeyEvent;
+import android.widget.ImageView;
 
 abstract class ImageViewTouchBase extends android.support.v7.widget.AppCompatImageView {
 
@@ -56,30 +57,30 @@ abstract class ImageViewTouchBase extends android.support.v7.widget.AppCompatIma
     private final Handler mHandler = new Handler();
     private int mThisWidth = -1;
     private int mThisHeight = -1;
-    private float mMaxZoom = 0.0F;
-    int mLeft = 0;
-    int mRight = 0;
-    int mTop = 0;
-    int mBottom = 0;
-    private Recycler mRecycler = null;
+    private float mMaxZoom;
+    int mLeft;
+    int mRight;
+    int mTop;
+    int mBottom;
+    private ImageViewTouchBase.Recycler mRecycler;
     @Nullable
-    private Runnable mOnLayoutRunnable = null;
+    private Runnable mOnLayoutRunnable;
 
     protected ImageViewTouchBase(Context context) {
 
         super(context);
-        init();
+        this.init();
     }
 
     protected ImageViewTouchBase(Context context, AttributeSet attrs) {
 
         super(context, attrs);
-        init();
+        this.init();
     }
 
-    public final void setRecycler(Recycler r) {
+    public final void setRecycler(ImageViewTouchBase.Recycler r) {
 
-        mRecycler = r;
+        this.mRecycler = r;
     }
 
     @Override
@@ -87,30 +88,30 @@ abstract class ImageViewTouchBase extends android.support.v7.widget.AppCompatIma
                             int bottom) {
 
         super.onLayout(changed, left, top, right, bottom);
-        mLeft = left;
-        mRight = right;
-        mTop = top;
-        mBottom = bottom;
-        mThisWidth = right - left;
-        mThisHeight = bottom - top;
-        Runnable r = mOnLayoutRunnable;
+        this.mLeft = left;
+        this.mRight = right;
+        this.mTop = top;
+        this.mBottom = bottom;
+        this.mThisWidth = right - left;
+        this.mThisHeight = bottom - top;
+        Runnable r = this.mOnLayoutRunnable;
         if (r != null) {
-            mOnLayoutRunnable = null;
+            this.mOnLayoutRunnable = null;
             r.run();
         }
-        if (mBitmapDisplayed.getBitmap() != null) {
-            getProperBaseMatrix(mBitmapDisplayed, mBaseMatrix);
-            setImageMatrix(getImageViewMatrix());
+        if (this.mBitmapDisplayed.getBitmap() != null) {
+            this.getProperBaseMatrix(this.mBitmapDisplayed, this.mBaseMatrix);
+            this.setImageMatrix(this.getImageViewMatrix());
         }
     }
 
     @Override
     public final boolean onKeyDown(int keyCode, KeyEvent event) {
 
-        if (keyCode == KeyEvent.KEYCODE_BACK && getScale() > 1.0f) {
+        if (keyCode == KeyEvent.KEYCODE_BACK && this.getScale() > 1.0f) {
             // If we're zoomed in, pressing Back jumps out to show the entire
             // image, otherwise Back returns the user to the gallery.
-            zoomTo();
+            this.zoomTo();
             return true;
         }
         return super.onKeyDown(keyCode, event);
@@ -119,62 +120,62 @@ abstract class ImageViewTouchBase extends android.support.v7.widget.AppCompatIma
     @Override
     public final void setImageBitmap(Bitmap bm) {
 
-        setImageBitmap(bm, 0);
+        this.setImageBitmap(bm, 0);
     }
 
     private void setImageBitmap(Bitmap bitmap, int rotation) {
 
         super.setImageBitmap(bitmap);
-        Drawable d = getDrawable();
+        Drawable d = this.getDrawable();
         if (d != null) {
             d.setDither(true);
         }
 
-        Bitmap old = mBitmapDisplayed.getBitmap();
-        mBitmapDisplayed.setBitmap(bitmap);
-        mBitmapDisplayed.setRotation(rotation);
+        Bitmap old = this.mBitmapDisplayed.getBitmap();
+        this.mBitmapDisplayed.setBitmap(bitmap);
+        this.mBitmapDisplayed.setRotation(rotation);
 
-        if (old != null && old != bitmap && mRecycler != null) {
-            mRecycler.recycle(old);
+        if (old != null && old != bitmap && this.mRecycler != null) {
+            this.mRecycler.recycle(old);
         }
     }
 
     public final void clear() {
 
-        setImageBitmapResetBase(null, true);
+        this.setImageBitmapResetBase(null, true);
     }
 
     // This function changes bitmap, reset base matrix according to the size
     // of the bitmap, and optionally reset the supplementary matrix.
-    public final void setImageBitmapResetBase(final Bitmap bitmap,
-                                              final boolean resetSupp) {
+    public final void setImageBitmapResetBase(Bitmap bitmap,
+                                              boolean resetSupp) {
 
-        setImageRotateBitmapResetBase(new RotateBitmap(bitmap), resetSupp);
+        this.setImageRotateBitmapResetBase(new RotateBitmap(bitmap), resetSupp);
     }
 
-    public final void setImageRotateBitmapResetBase(final RotateBitmap bitmap,
-                                                    final boolean resetSupp) {
+    public final void setImageRotateBitmapResetBase(RotateBitmap bitmap,
+                                                    boolean resetSupp) {
 
-        final int viewWidth = getWidth();
+        int viewWidth = this.getWidth();
 
         if (viewWidth <= 0) {
-            mOnLayoutRunnable = () -> setImageRotateBitmapResetBase(bitmap, resetSupp);
+            this.mOnLayoutRunnable = () -> this.setImageRotateBitmapResetBase(bitmap, resetSupp);
             return;
         }
 
         if (bitmap.getBitmap() != null) {
-            getProperBaseMatrix(bitmap, mBaseMatrix);
-            setImageBitmap(bitmap.getBitmap(), bitmap.getRotation());
+            this.getProperBaseMatrix(bitmap, this.mBaseMatrix);
+            this.setImageBitmap(bitmap.getBitmap(), bitmap.getRotation());
         } else {
-            mBaseMatrix.reset();
-            setImageBitmap(null);
+            this.mBaseMatrix.reset();
+            this.setImageBitmap(null);
         }
 
         if (resetSupp) {
-            mSuppMatrix.reset();
+            this.mSuppMatrix.reset();
         }
-        setImageMatrix(getImageViewMatrix());
-        mMaxZoom = maxZoom();
+        this.setImageMatrix(this.getImageViewMatrix());
+        this.mMaxZoom = this.maxZoom();
     }
 
     // Center as much as possible in one or both axis. Centering is
@@ -184,14 +185,14 @@ abstract class ImageViewTouchBase extends android.support.v7.widget.AppCompatIma
     // then translate it back into view (i.e. eliminate black bars).
     final void center() {
 
-        if (mBitmapDisplayed.getBitmap() == null) {
+        if (this.mBitmapDisplayed.getBitmap() == null) {
             return;
         }
 
-        Matrix m = getImageViewMatrix();
+        Matrix m = this.getImageViewMatrix();
 
-        RectF rect = new RectF((float) 0, (float) 0, (float) mBitmapDisplayed.getBitmap().getWidth(),
-                (float) mBitmapDisplayed.getBitmap().getHeight());
+        RectF rect = new RectF((float) 0, (float) 0, (float) this.mBitmapDisplayed.getBitmap().getWidth(),
+                (float) this.mBitmapDisplayed.getBitmap().getHeight());
 
         m.mapRect(rect);
 
@@ -201,18 +202,18 @@ abstract class ImageViewTouchBase extends android.support.v7.widget.AppCompatIma
         float deltaX = (float) 0, deltaY = (float) 0;
 
         if (true) {
-            int viewHeight = getHeight();
+            int viewHeight = this.getHeight();
             if (height < (float) viewHeight) {
                 deltaY = ((float) viewHeight - height) / 2.0F - rect.top;
             } else if (rect.top > (float) 0) {
                 deltaY = -rect.top;
             } else if (rect.bottom < (float) viewHeight) {
-                deltaY = (float) getHeight() - rect.bottom;
+                deltaY = (float) this.getHeight() - rect.bottom;
             }
         }
 
         if (true) {
-            int viewWidth = getWidth();
+            int viewWidth = this.getWidth();
             if (width < (float) viewWidth) {
                 deltaX = ((float) viewWidth - width) / 2.0F - rect.left;
             } else if (rect.left > (float) 0) {
@@ -222,37 +223,37 @@ abstract class ImageViewTouchBase extends android.support.v7.widget.AppCompatIma
             }
         }
 
-        postTranslate(deltaX, deltaY);
-        setImageMatrix(getImageViewMatrix());
+        this.postTranslate(deltaX, deltaY);
+        this.setImageMatrix(this.getImageViewMatrix());
     }
 
     private void init() {
 
-        setScaleType(ScaleType.MATRIX);
+        this.setScaleType(ImageView.ScaleType.MATRIX);
     }
 
     private final float getValue(Matrix matrix) {
 
-        matrix.getValues(mMatrixValues);
-        return mMatrixValues[Matrix.MSCALE_X];
+        matrix.getValues(this.mMatrixValues);
+        return this.mMatrixValues[Matrix.MSCALE_X];
     }
 
     // Get the scale factor out of the matrix.
     private final float getScale(Matrix matrix) {
 
-        return getValue(matrix);
+        return this.getValue(matrix);
     }
 
     final float getScale() {
 
-        return getScale(mSuppMatrix);
+        return this.getScale(this.mSuppMatrix);
     }
 
     // Setup the base matrix so that the image is centered and scaled properly.
     private void getProperBaseMatrix(RotateBitmap bitmap, Matrix matrix) {
 
-        float viewWidth = (float) getWidth();
-        float viewHeight = (float) getHeight();
+        float viewWidth = (float) this.getWidth();
+        float viewHeight = (float) this.getHeight();
 
         float w = (float) bitmap.getWidth();
         float h = (float) bitmap.getHeight();
@@ -277,9 +278,9 @@ abstract class ImageViewTouchBase extends android.support.v7.widget.AppCompatIma
     private final Matrix getImageViewMatrix() {
         // The final matrix is computed as the concatentation of the base matrix
         // and the supplementary matrix.
-        mDisplayMatrix.set(mBaseMatrix);
-        mDisplayMatrix.postConcat(mSuppMatrix);
-        return mDisplayMatrix;
+        this.mDisplayMatrix.set(this.mBaseMatrix);
+        this.mDisplayMatrix.postConcat(this.mSuppMatrix);
+        return this.mDisplayMatrix;
     }
 
     // Sets the maximum zoom, which is a scale relative to the base matrix. It
@@ -288,47 +289,47 @@ abstract class ImageViewTouchBase extends android.support.v7.widget.AppCompatIma
     // rather than the current 1024x768, this should be changed down to 200%.
     private final float maxZoom() {
 
-        if (mBitmapDisplayed.getBitmap() == null) {
+        if (this.mBitmapDisplayed.getBitmap() == null) {
             return 1.0F;
         }
 
-        float fw = (float) mBitmapDisplayed.getWidth() / mThisWidth;
-        float fh = (float) mBitmapDisplayed.getHeight() / mThisHeight;
+        float fw = (float) this.mBitmapDisplayed.getWidth() / this.mThisWidth;
+        float fh = (float) this.mBitmapDisplayed.getHeight() / this.mThisHeight;
         return Math.max(fw, fh) * 4;
     }
 
     public void zoomTo1(float scale, float centerX, float centerY) {
 
         float scale1 = scale;
-        if (scale1 > mMaxZoom) {
-            scale1 = mMaxZoom;
+        if (scale1 > this.mMaxZoom) {
+            scale1 = this.mMaxZoom;
         }
 
-        float oldScale = getScale();
+        float oldScale = this.getScale();
         float deltaScale = scale1 / oldScale;
 
-        mSuppMatrix.postScale(deltaScale, deltaScale, centerX, centerY);
-        setImageMatrix(getImageViewMatrix());
-        center();
+        this.mSuppMatrix.postScale(deltaScale, deltaScale, centerX, centerY);
+        this.setImageMatrix(this.getImageViewMatrix());
+        this.center();
     }
 
-    void zoomTo(final float scale, final float centerX,
-                final float centerY) {
+    void zoomTo(float scale, float centerX,
+                float centerY) {
 
-        final float incrementPerMs = (scale - getScale()) / 300F;
-        final float oldScale = getScale();
-        final long startTime = System.currentTimeMillis();
+        float incrementPerMs = (scale - this.getScale()) / 300F;
+        float oldScale = this.getScale();
+        long startTime = System.currentTimeMillis();
 
-        mHandler.post(new Runnable() {
+        this.mHandler.post(new Runnable() {
             public void run() {
 
                 long now = System.currentTimeMillis();
                 float currentMs = Math.min(300F, (float) (now - startTime));
                 float target = oldScale + (incrementPerMs * currentMs);
-                zoomTo1(target, centerX, centerY);
+                ImageViewTouchBase.this.zoomTo1(target, centerX, centerY);
 
                 if (currentMs < 300F) {
-                    mHandler.post(this);
+                    ImageViewTouchBase.this.mHandler.post(this);
                 }
             }
         });
@@ -336,59 +337,59 @@ abstract class ImageViewTouchBase extends android.support.v7.widget.AppCompatIma
 
     private final void zoomTo() {
 
-        float cx = (float) getWidth() / 2.0F;
-        float cy = (float) getHeight() / 2.0F;
+        float cx = (float) this.getWidth() / 2.0F;
+        float cy = (float) this.getHeight() / 2.0F;
 
-        zoomTo(1.0f, cx, cy);
+        this.zoomTo(1.0f, cx, cy);
     }
 
     private final void zoomIn() {
 
-        if (getScale() >= mMaxZoom) {
+        if (this.getScale() >= this.mMaxZoom) {
             return; // Don't let the user zoom into the molecular level.
         }
-        if (mBitmapDisplayed.getBitmap() == null) {
+        if (this.mBitmapDisplayed.getBitmap() == null) {
             return;
         }
 
-        float cx = (float) getWidth() / 2.0F;
-        float cy = (float) getHeight() / 2.0F;
+        float cx = (float) this.getWidth() / 2.0F;
+        float cy = (float) this.getHeight() / 2.0F;
 
-        mSuppMatrix.postScale(ImageViewTouchBase.SCALE_RATE, ImageViewTouchBase.SCALE_RATE, cx, cy);
-        setImageMatrix(getImageViewMatrix());
+        this.mSuppMatrix.postScale(SCALE_RATE, SCALE_RATE, cx, cy);
+        this.setImageMatrix(this.getImageViewMatrix());
     }
 
     private final void zoomOut() {
 
-        if (mBitmapDisplayed.getBitmap() == null) {
+        if (this.mBitmapDisplayed.getBitmap() == null) {
             return;
         }
 
-        float cx = (float) getWidth() / 2.0F;
-        float cy = (float) getHeight() / 2.0F;
+        float cx = (float) this.getWidth() / 2.0F;
+        float cy = (float) this.getHeight() / 2.0F;
 
         // Zoom out to at most 1x.
-        Matrix tmp = new Matrix(mSuppMatrix);
-        tmp.postScale(1.0F / ImageViewTouchBase.SCALE_RATE, 1.0F / ImageViewTouchBase.SCALE_RATE, cx, cy);
+        Matrix tmp = new Matrix(this.mSuppMatrix);
+        tmp.postScale(1.0F / SCALE_RATE, 1.0F / SCALE_RATE, cx, cy);
 
-        if (getScale(tmp) < 1.0F) {
-            mSuppMatrix.setScale(1.0F, 1.0F, cx, cy);
+        if (this.getScale(tmp) < 1.0F) {
+            this.mSuppMatrix.setScale(1.0F, 1.0F, cx, cy);
         } else {
-            mSuppMatrix.postScale(1.0F / ImageViewTouchBase.SCALE_RATE, 1.0F / ImageViewTouchBase.SCALE_RATE, cx, cy);
+            this.mSuppMatrix.postScale(1.0F / SCALE_RATE, 1.0F / SCALE_RATE, cx, cy);
         }
-        setImageMatrix(getImageViewMatrix());
-        center();
+        this.setImageMatrix(this.getImageViewMatrix());
+        this.center();
     }
 
     void postTranslate(float dx, float dy) {
 
-        mSuppMatrix.postTranslate(dx, dy);
+        this.mSuppMatrix.postTranslate(dx, dy);
     }
 
     final void panBy(float dx, float dy) {
 
-        postTranslate(dx, dy);
-        setImageMatrix(getImageViewMatrix());
+        this.postTranslate(dx, dy);
+        this.setImageMatrix(this.getImageViewMatrix());
     }
 
     // ImageViewTouchBase will pass a Bitmap to the Recycler if it has finished

@@ -27,15 +27,15 @@ public class PDFReportItems {
     }
 
     public final int getId() {
-        return Id;
+        return this.Id;
     }
 
     public final void setId(int id) {
-        Id = id;
+        this.Id = id;
     }
 
     public final String getDIAGNOSIS() {
-        return DIAGNOSIS;
+        return this.DIAGNOSIS;
     }
 
     public final void setDIAGNOSIS(String DIAGNOSIS) {
@@ -43,7 +43,7 @@ public class PDFReportItems {
     }
 
     public final String getPATIENTID() {
-        return PATIENTID;
+        return this.PATIENTID;
     }
 
     public final void setPATIENTID(String PATIENTID) {
@@ -51,7 +51,7 @@ public class PDFReportItems {
     }
 
     public final String getPATIENTNAME() {
-        return PATIENTNAME;
+        return this.PATIENTNAME;
     }
 
     public final void setPATIENTNAME(String PATIENTNAME) {
@@ -59,7 +59,7 @@ public class PDFReportItems {
     }
 
     public final String getSYMPTOMS() {
-        return SYMPTOMS;
+        return this.SYMPTOMS;
     }
 
     public final void setSYMPTOMS(String SYMPTOMS) {
@@ -67,7 +67,7 @@ public class PDFReportItems {
     }
 
     public final String getVISITEDON() {
-        return VISITEDON;
+        return this.VISITEDON;
     }
 
     public final void setVISITEDON(String VISITEDON) {

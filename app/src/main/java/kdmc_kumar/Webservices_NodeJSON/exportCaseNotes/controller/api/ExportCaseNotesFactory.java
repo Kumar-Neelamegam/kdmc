@@ -9,7 +9,7 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
-import com.magnet.android.mms.controller.RequestSchema.JMethod;
+
 import java.util.Arrays;
 import java.util.Collections;
 
@@ -20,20 +20,20 @@ import kdmc_kumar.Webservices_NodeJSON.exportCaseNotes.model.beans.ExportCaseNot
 
 public class ExportCaseNotesFactory extends ControllerFactory<ExportCaseNotes> {
   public ExportCaseNotesFactory(MagnetMobileClient magnetClient) {
-    super(ExportCaseNotes.class, ExportCaseNotesSchemaFactory.getInstance().getSchema(), magnetClient);
+    super(ExportCaseNotes.class, ExportCaseNotesFactory.ExportCaseNotesSchemaFactory.getInstance().getSchema(), magnetClient);
   }
 
   // Schema factory for controller ExportCaseNotes
   public static class ExportCaseNotesSchemaFactory extends AbstractControllerSchemaFactory {
-    private static ExportCaseNotesSchemaFactory __instance = null;
+    private static ExportCaseNotesFactory.ExportCaseNotesSchemaFactory __instance;
 
-    static ExportCaseNotesSchemaFactory getInstance() {
-      synchronized (ExportCaseNotesSchemaFactory.class) {
-        if (null == __instance) {
-          __instance = new ExportCaseNotesSchemaFactory();
+    static ExportCaseNotesFactory.ExportCaseNotesSchemaFactory getInstance() {
+      synchronized (ExportCaseNotesFactory.ExportCaseNotesSchemaFactory.class) {
+        if (null == ExportCaseNotesFactory.ExportCaseNotesSchemaFactory.__instance) {
+            ExportCaseNotesFactory.ExportCaseNotesSchemaFactory.__instance = new ExportCaseNotesFactory.ExportCaseNotesSchemaFactory();
         }
 
-        return __instance;
+        return ExportCaseNotesFactory.ExportCaseNotesSchemaFactory.__instance;
       }
     }
 
@@ -41,15 +41,15 @@ public class ExportCaseNotesFactory extends ControllerFactory<ExportCaseNotes> {
 
     protected final void initSchemaMaps() {
       synchronized (this) {
-        if (null != schema) {
+        if (null != this.schema) {
           return;
         }
 
-        schema = new RequestSchema();
-        schema.setRootPath("");
+          this.schema = new RequestSchema();
+          this.schema.setRootPath("");
 
         //controller schema for controller method exportCaseNotes
-        JMethod method1 = addMethod("exportCaseNotes",
+        RequestSchema.JMethod method1 = this.addMethod("exportCaseNotes",
                 "exportMastersSP/postDataSP",
                 "POST",
                 ExportCaseNotesResult.class,

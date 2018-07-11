@@ -2,7 +2,9 @@ package kdmc_kumar.Inpatient_Module;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.TimePickerDialog;
+import android.app.TimePickerDialog.OnTimeSetListener;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -14,6 +16,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -39,11 +42,18 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.color;
+import displ.mobydocmarathi.com.R.drawable;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.MedicalCaseRecords;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Utilities_Others.CircleImageView;
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
 import kdmc_kumar.Utilities_Others.KDMCRecyclerAdapter;
+import kdmc_kumar.Utilities_Others.KDMCRecyclerAdapter.AdapterView;
 import kdmc_kumar.Utilities_Others.ViewAnimation;
 
 
@@ -56,188 +66,188 @@ public class Inpatient_Inputs extends AppCompatActivity {
     }
 
     // #######################################################################################################
-    @BindView(R.id.clinicalinformation_parent_layout)
+    @BindView(id.clinicalinformation_parent_layout)
     CoordinatorLayout clinicalinformationParentLayout;
-    @BindView(R.id.inpatiententry_nesetedscrollview)
+    @BindView(id.inpatiententry_nesetedscrollview)
     NestedScrollView inpatiententryNesetedscrollview;
-    @BindView(R.id.upperlayout)
+    @BindView(id.upperlayout)
     LinearLayout upperlayout;
-    @BindView(R.id.imgvw_patientphoto)
+    @BindView(id.imgvw_patientphoto)
     CircleImageView imgvwPatientphoto;
-    @BindView(R.id.tvw_agegender)
+    @BindView(id.tvw_agegender)
     TextView tvwAgegender;
-    @BindView(R.id.txt_patid)
+    @BindView(id.txt_patid)
     TextView txtPatid;
-    @BindView(R.id.textView12)
+    @BindView(id.textView12)
     TextView textView12;
-    @BindView(R.id.icome_text)
+    @BindView(id.icome_text)
     TextView icomeText;
-    @BindView(R.id.caste_text)
+    @BindView(id.caste_text)
     TextView casteText;
-    @BindView(R.id.caretaker_text)
+    @BindView(id.caretaker_text)
     TextView caretakerText;
-    @BindView(R.id.ward_no)
+    @BindView(id.ward_no)
     TextView wardNo;
-    @BindView(R.id.room_no)
+    @BindView(id.room_no)
     TextView roomNo;
-    @BindView(R.id.bed_no)
+    @BindView(id.bed_no)
     TextView bedNo;
-    @BindView(R.id.textview_ward)
+    @BindView(id.textview_ward)
     TextView textviewWard;
-    @BindView(R.id.textview_roomnumber)
+    @BindView(id.textview_roomnumber)
     TextView textviewRoomnumber;
-    @BindView(R.id.textview_bednumber)
+    @BindView(id.textview_bednumber)
     TextView textviewBednumber;
-    @BindView(R.id.textview_admitteddate)
+    @BindView(id.textview_admitteddate)
     TextView textviewAdmitteddate;
-    @BindView(R.id.edittext_inaptientchart_date)
+    @BindView(id.edittext_inaptientchart_date)
     EditText edittextInaptientchartDate;
-    @BindView(R.id.edittext_inaptientchart_time)
+    @BindView(id.edittext_inaptientchart_time)
     EditText edittextInaptientchartTime;
-    @BindView(R.id.edittext_inaptientchart_bpsytolic)
+    @BindView(id.edittext_inaptientchart_bpsytolic)
     EditText edittextInaptientchartBpsytolic;
-    @BindView(R.id.edittext_inaptientchart_bpdiastolic)
+    @BindView(id.edittext_inaptientchart_bpdiastolic)
     EditText edittextInaptientchartBpdiastolic;
-    @BindView(R.id.edittext_inaptientchart_pulseperminute)
+    @BindView(id.edittext_inaptientchart_pulseperminute)
     EditText edittextInaptientchartPulseperminute;
-    @BindView(R.id.spinner_inaptientchart_temperature)
+    @BindView(id.spinner_inaptientchart_temperature)
     Spinner spinnerInaptientchartTemperature;
-    @BindView(R.id.edittext_inaptientchart_resp)
+    @BindView(id.edittext_inaptientchart_resp)
     EditText edittextInaptientchartResp;
-    @BindView(R.id.edittext_inaptientchart_spo2)
+    @BindView(id.edittext_inaptientchart_spo2)
     EditText edittextInaptientchartSpo2;
-    @BindView(R.id.edittext_inaptientchart_drugorder)
+    @BindView(id.edittext_inaptientchart_drugorder)
     EditText edittextInaptientchartDrugorder;
-    @BindView(R.id.edittext_inaptientchart_nursing_instruction)
+    @BindView(id.edittext_inaptientchart_nursing_instruction)
     EditText edittextInaptientchartNursingInstruction;
-    @BindView(R.id.edittext_inaptientchart_oral)
+    @BindView(id.edittext_inaptientchart_oral)
     EditText edittextInaptientchartOral;
-    @BindView(R.id.edittext_inaptientchart_fluids)
+    @BindView(id.edittext_inaptientchart_fluids)
     EditText edittextInaptientchartFluids;
-    @BindView(R.id.edittext_inaptientchart_rvles)
+    @BindView(id.edittext_inaptientchart_rvles)
     EditText edittextInaptientchartRvles;
-    @BindView(R.id.edittext_inaptientchart_motion)
+    @BindView(id.edittext_inaptientchart_motion)
     EditText edittextInaptientchartMotion;
-    @BindView(R.id.edittext_inaptientchart_urine)
+    @BindView(id.edittext_inaptientchart_urine)
     EditText edittextInaptientchartUrine;
-    @BindView(R.id.edittext_diabetichart_date)
+    @BindView(id.edittext_diabetichart_date)
     EditText edittextDiabetichartDate;
-    @BindView(R.id.edittext_diabetichart_time)
+    @BindView(id.edittext_diabetichart_time)
     EditText edittextDiabetichartTime;
-    @BindView(R.id.edittext_diabetichart_speciali_instruction)
+    @BindView(id.edittext_diabetichart_speciali_instruction)
     EditText edittextDiabetichartSpecialiInstruction;
-    @BindView(R.id.autoCompleteTextView_diabetichart_urine_sugar)
+    @BindView(id.autoCompleteTextView_diabetichart_urine_sugar)
     EditText autoCompleteTextViewDiabetichartUrineSugar;
-    @BindView(R.id.edittext_diabetichart_lente)
+    @BindView(id.edittext_diabetichart_lente)
     EditText edittextDiabetichartLente;
-    @BindView(R.id.edittext_diabetichart_insulin_plain)
+    @BindView(id.edittext_diabetichart_insulin_plain)
     EditText edittextDiabetichartInsulinPlain;
-    @BindView(R.id.edittext_diabetichart_blood_sugar)
+    @BindView(id.edittext_diabetichart_blood_sugar)
     EditText edittextDiabetichartBloodSugar;
-    @BindView(R.id.edittext_diabetichart_ketone_bodies)
+    @BindView(id.edittext_diabetichart_ketone_bodies)
     EditText edittextDiabetichartKetoneBodies;
-    @BindView(R.id.edittext_temperaturechart_date)
+    @BindView(id.edittext_temperaturechart_date)
     EditText edittextTemperaturechartDate;
-    @BindView(R.id.edittext_temperaturechart_time)
+    @BindView(id.edittext_temperaturechart_time)
     EditText edittextTemperaturechartTime;
-    @BindView(R.id.spinner_temperaturechart_selecttemperature)
+    @BindView(id.spinner_temperaturechart_selecttemperature)
     Spinner spinnerTemperaturechartSelecttemperature;
-    @BindView(R.id.edittext_temperaturechart_visit_summary)
+    @BindView(id.edittext_temperaturechart_visit_summary)
     EditText edittextTemperaturechartVisitSummary;
-    @BindView(R.id.edittext_surgery_date)
+    @BindView(id.edittext_surgery_date)
     EditText edittextSurgeryDate;
-    @BindView(R.id.edittext_surgery_preoperative_diagnosis)
+    @BindView(id.edittext_surgery_preoperative_diagnosis)
     EditText edittextSurgeryPreoperativeDiagnosis;
-    @BindView(R.id.editext_surgery_operativenotes)
+    @BindView(id.editext_surgery_operativenotes)
     EditText editextSurgeryOperativenotes;
-    @BindView(R.id.edittext_surgery_position)
+    @BindView(id.edittext_surgery_position)
     EditText edittextSurgeryPosition;
-    @BindView(R.id.edittext_surgery_procedure)
+    @BindView(id.edittext_surgery_procedure)
     EditText edittextSurgeryProcedure;
-    @BindView(R.id.edittext_surgery_closure)
+    @BindView(id.edittext_surgery_closure)
     EditText edittextSurgeryClosure;
-    @BindView(R.id.edittext_surgery_postoperative_diagnosis)
+    @BindView(id.edittext_surgery_postoperative_diagnosis)
     EditText edittextSurgeryPostoperativeDiagnosis;
-    @BindView(R.id.edittext_surgery_surgeon)
+    @BindView(id.edittext_surgery_surgeon)
     EditText edittextSurgerySurgeon;
-    @BindView(R.id.edittext_surgery_anaesthetist)
+    @BindView(id.edittext_surgery_anaesthetist)
     EditText edittextSurgeryAnaesthetist;
-    @BindView(R.id.edittext_surgery_asst)
+    @BindView(id.edittext_surgery_asst)
     EditText edittextSurgeryAsst;
-    @BindView(R.id.edittext_surgery_blood_loss)
+    @BindView(id.edittext_surgery_blood_loss)
     EditText edittextSurgeryBloodLoss;
-    @BindView(R.id.edittext_surgery_histo_pathological)
+    @BindView(id.edittext_surgery_histo_pathological)
     EditText edittextSurgeryHistoPathological;
-    @BindView(R.id.edittext_surgery_post_op_instruction)
+    @BindView(id.edittext_surgery_post_op_instruction)
     EditText edittextSurgeryPostOpInstruction;
-    @BindView(R.id.Spinner_medicalcase_record_undercareof)
+    @BindView(id.Spinner_medicalcase_record_undercareof)
     Spinner spinnerMedicalcaseRecordUndercareof;
-    @BindView(R.id.edittext_medicalcase_record_student)
+    @BindView(id.edittext_medicalcase_record_student)
     EditText edittextMedicalcaseRecordStudent;
-    @BindView(R.id.autocomplete_medicalcase_provisional_diagnosis)
+    @BindView(id.autocomplete_medicalcase_provisional_diagnosis)
     AutoCompleteTextView autocompleteMedicalcaseProvisionalDiagnosis;
-    @BindView(R.id.edittext_medicalcase_final_diagnosis)
+    @BindView(id.edittext_medicalcase_final_diagnosis)
     EditText edittextMedicalcaseFinalDiagnosis;
-    @BindView(R.id.spinner_medicalcase_select_result)
+    @BindView(id.spinner_medicalcase_select_result)
     Spinner spinnerMedicalcaseSelectResult;
-    @BindView(R.id.edittext_medicalcase_date)
+    @BindView(id.edittext_medicalcase_date)
     EditText edittextMedicalcaseDate;
-    @BindView(R.id.edittext_medicalcase_time)
+    @BindView(id.edittext_medicalcase_time)
     EditText edittextMedicalcaseTime;
-    @BindView(R.id.edittext_medicalcase_clinicalnotes)
+    @BindView(id.edittext_medicalcase_clinicalnotes)
     EditText edittextMedicalcaseClinicalnotes;
-    @BindView(R.id.edittext_medicalcase_treatement_and_diet)
+    @BindView(id.edittext_medicalcase_treatement_and_diet)
     EditText edittextMedicalcaseTreatementAndDiet;
 
 
-    @BindView(R.id.inpatientchart_primary)
+    @BindView(id.inpatientchart_primary)
     LinearLayout inpatientchart_primary;
 
 
-    @BindView(R.id.diabetic_primary)
+    @BindView(id.diabetic_primary)
     LinearLayout diabetic_primary;
 
-    @BindView(R.id.temperature_primary)
+    @BindView(id.temperature_primary)
     LinearLayout temperature_primary;
 
-    @BindView(R.id.surgery_primary)
+    @BindView(id.surgery_primary)
     LinearLayout surgery_primary;
 
-    @BindView(R.id.medicalcase_primary)
+    @BindView(id.medicalcase_primary)
     LinearLayout medicalcase_primary;
 
-    @BindView(R.id.recyler_View)
+    @BindView(id.recyler_View)
     RecyclerView recyclerView;
 
-    @BindView(R.id.toolbar)
+    @BindView(id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.toolbar_back)
+    @BindView(id.toolbar_back)
     AppCompatImageView toolbarBack;
-    @BindView(R.id.toolbar_title)
+    @BindView(id.toolbar_title)
     TextView toolbarTitle;
-    @BindView(R.id.toolbar_exit)
+    @BindView(id.toolbar_exit)
     AppCompatImageView toolbarExit;
 
     // #######################################################################################################
-    private String PATIENT_NAME = null;
-    private String PATIENT_AGEGENDER = null;
-    private String PATIENT_INCOME = null;
-    private String PATIENT_CASTE = null;
-    private String PATIENT_CARETAKER = null;
-    private String PATIENT_ID = null;
+    private String PATIENT_NAME;
+    private String PATIENT_AGEGENDER;
+    private String PATIENT_INCOME;
+    private String PATIENT_CASTE;
+    private String PATIENT_CARETAKER;
+    private String PATIENT_ID;
     // #######################################################################################################
-    ArrayList<CommonDataObjects.MedicalCaseRecords> medicalCaseRecords = new ArrayList<>();
+    ArrayList<MedicalCaseRecords> medicalCaseRecords = new ArrayList<>();
     KDMCRecyclerAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.kdmc_layout_inpatiententry);
+        this.setContentView(layout.kdmc_layout_inpatiententry);
         ButterKnife.bind(this);
 
 
         try {
-            loadInpatientDetails();
+            this.loadInpatientDetails();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -248,20 +258,20 @@ public class Inpatient_Inputs extends AppCompatActivity {
 
     private void loadInpatientDetails() {
 
-        Bundle b = getIntent().getExtras();
-        PATIENT_ID = b.getString(BaseConfig.BUNDLE_PATIENT_ID);
-        PATIENT_NAME = BaseConfig.GetValues("select name as ret_values from Patreg where Patid='" + PATIENT_ID + '\'');
-        PATIENT_AGEGENDER = BaseConfig.GetValues("select age||'-'||gender as ret_values from Patreg where Patid='" + PATIENT_ID + '\'');
-        PATIENT_INCOME = BaseConfig.GetValues("select income as ret_values from Patreg where Patid='" + PATIENT_ID + '\'');
-        PATIENT_CASTE = BaseConfig.GetValues("select caste as ret_values from Patreg where Patid='" + PATIENT_ID + '\'');
-        PATIENT_CARETAKER = BaseConfig.GetValues("select caretaker as ret_values from Patreg where Patid='" + PATIENT_ID + '\'');
+        Bundle b = this.getIntent().getExtras();
+        this.PATIENT_ID = b.getString(BaseConfig.BUNDLE_PATIENT_ID);
+        this.PATIENT_NAME = BaseConfig.GetValues("select name as ret_values from Patreg where Patid='" + this.PATIENT_ID + '\'');
+        this.PATIENT_AGEGENDER = BaseConfig.GetValues("select age||'-'||gender as ret_values from Patreg where Patid='" + this.PATIENT_ID + '\'');
+        this.PATIENT_INCOME = BaseConfig.GetValues("select income as ret_values from Patreg where Patid='" + this.PATIENT_ID + '\'');
+        this.PATIENT_CASTE = BaseConfig.GetValues("select caste as ret_values from Patreg where Patid='" + this.PATIENT_ID + '\'');
+        this.PATIENT_CARETAKER = BaseConfig.GetValues("select caretaker as ret_values from Patreg where Patid='" + this.PATIENT_ID + '\'');
 
-        String ward_values = BaseConfig.CheckDBString(BaseConfig.getwardNameFromId(BaseConfig.GetValues("select wardno as ret_values from Patreg where Patid='" + PATIENT_ID + "'"), this));
-        String room_values = BaseConfig.CheckDBString(BaseConfig.getRoomNameFromId(BaseConfig.GetValues("select roomno as ret_values from Patreg where Patid='" + PATIENT_ID + "'"), this));
-        String bed_values = BaseConfig.CheckDBString(BaseConfig.getBedNameFromId(BaseConfig.GetValues("select bedno as ret_values from Patreg where Patid='" + PATIENT_ID + "'"), this));
+        String ward_values = BaseConfig.CheckDBString(BaseConfig.getwardNameFromId(BaseConfig.GetValues("select wardno as ret_values from Patreg where Patid='" + this.PATIENT_ID + "'"), this));
+        String room_values = BaseConfig.CheckDBString(BaseConfig.getRoomNameFromId(BaseConfig.GetValues("select roomno as ret_values from Patreg where Patid='" + this.PATIENT_ID + "'"), this));
+        String bed_values = BaseConfig.CheckDBString(BaseConfig.getBedNameFromId(BaseConfig.GetValues("select bedno as ret_values from Patreg where Patid='" + this.PATIENT_ID + "'"), this));
 
 
-        String admitDate = BaseConfig.GetValues("select admitdt as ret_values from Patreg where Patid='" + PATIENT_ID + '\'');
+        String admitDate = BaseConfig.GetValues("select admitdt as ret_values from Patreg where Patid='" + this.PATIENT_ID + '\'');
 
 
         try {
@@ -273,73 +283,72 @@ public class Inpatient_Inputs extends AppCompatActivity {
         }
 
 
-        txtPatid.setText(PATIENT_ID);
-        textView12.setText(PATIENT_NAME);
-        tvwAgegender.setText(PATIENT_AGEGENDER);
-        icomeText.setText(PATIENT_INCOME);
-        casteText.setText(PATIENT_CASTE);
-        caretakerText.setText(PATIENT_CARETAKER);
-        wardNo.setText(ward_values);
-        roomNo.setText(room_values);
-        bedNo.setText(bed_values);
-        textviewAdmitteddate.setText(admitDate);
+        this.txtPatid.setText(this.PATIENT_ID);
+        this.textView12.setText(this.PATIENT_NAME);
+        this.tvwAgegender.setText(this.PATIENT_AGEGENDER);
+        this.icomeText.setText(this.PATIENT_INCOME);
+        this.casteText.setText(this.PATIENT_CASTE);
+        this.caretakerText.setText(this.PATIENT_CARETAKER);
+        this.wardNo.setText(ward_values);
+        this.roomNo.setText(room_values);
+        this.bedNo.setText(bed_values);
+        this.textviewAdmitteddate.setText(admitDate);
 
 
-
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         String arrs1[] = {"Select Under Care of", "Medical Officer", "Student"};
         String arrs[] = {"Select Result", "Cured", "Relieved", "Unrelieved", "Absconded", "Died"};
-        ArrayAdapter cc = new ArrayAdapter<>(Inpatient_Inputs.this, android.R.layout.simple_spinner_dropdown_item, arrs1);
-        spinnerMedicalcaseRecordUndercareof.setAdapter(cc);
-        ArrayAdapter<String> aa = new ArrayAdapter<>(Inpatient_Inputs.this, android.R.layout.simple_spinner_dropdown_item, arrs);
-        spinnerMedicalcaseSelectResult.setAdapter(aa);
+        ArrayAdapter cc = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, arrs1);
+        this.spinnerMedicalcaseRecordUndercareof.setAdapter(cc);
+        ArrayAdapter<String> aa = new ArrayAdapter<>(this, android.R.layout.simple_spinner_dropdown_item, arrs);
+        this.spinnerMedicalcaseSelectResult.setAdapter(aa);
 
 
-        getUserDetails(tvwAgegender, imgvwPatientphoto);
+        this.getUserDetails(this.tvwAgegender, this.imgvwPatientphoto);
 
 
         //Load Pickers
-        edittextInaptientchartDate.setOnClickListener(view -> openDatePickerDialog(edittextInaptientchartDate));
-        edittextInaptientchartTime.setOnClickListener(view -> openTimePickerDialog(edittextInaptientchartTime));
-        edittextInaptientchartDate.setText(getDate());
-        edittextInaptientchartTime.setText(getTime());
+        this.edittextInaptientchartDate.setOnClickListener(view -> Inpatient_Inputs.openDatePickerDialog(this.edittextInaptientchartDate));
+        this.edittextInaptientchartTime.setOnClickListener(view -> this.openTimePickerDialog(this.edittextInaptientchartTime));
+        this.edittextInaptientchartDate.setText(this.getDate());
+        this.edittextInaptientchartTime.setText(this.getTime());
 
-        edittextDiabetichartTime.setOnClickListener(view -> openTimePickerDialog(edittextDiabetichartTime));
-        edittextDiabetichartDate.setOnClickListener(view -> openDatePickerDialog(edittextDiabetichartDate));
-        edittextDiabetichartDate.setText(getDate());
-        edittextDiabetichartTime.setText(getTime());
+        this.edittextDiabetichartTime.setOnClickListener(view -> this.openTimePickerDialog(this.edittextDiabetichartTime));
+        this.edittextDiabetichartDate.setOnClickListener(view -> Inpatient_Inputs.openDatePickerDialog(this.edittextDiabetichartDate));
+        this.edittextDiabetichartDate.setText(this.getDate());
+        this.edittextDiabetichartTime.setText(this.getTime());
 
-        edittextTemperaturechartTime.setOnClickListener(view -> openTimePickerDialog(edittextTemperaturechartTime));
-        edittextTemperaturechartDate.setOnClickListener(view -> openDatePickerDialog(edittextTemperaturechartDate));
-        edittextTemperaturechartDate.setText(getDate());
-        edittextTemperaturechartTime.setText(getTime());
+        this.edittextTemperaturechartTime.setOnClickListener(view -> this.openTimePickerDialog(this.edittextTemperaturechartTime));
+        this.edittextTemperaturechartDate.setOnClickListener(view -> Inpatient_Inputs.openDatePickerDialog(this.edittextTemperaturechartDate));
+        this.edittextTemperaturechartDate.setText(this.getDate());
+        this.edittextTemperaturechartTime.setText(this.getTime());
 
-        edittextSurgeryDate.setOnClickListener(view -> openDatePickerDialog(edittextSurgeryDate));
-        edittextSurgeryDate.setText(getDate());
+        this.edittextSurgeryDate.setOnClickListener(view -> Inpatient_Inputs.openDatePickerDialog(this.edittextSurgeryDate));
+        this.edittextSurgeryDate.setText(this.getDate());
 
-        edittextMedicalcaseDate.setOnClickListener(view -> openDatePickerDialog(edittextMedicalcaseDate));
-        edittextMedicalcaseTime.setOnClickListener(view -> openTimePickerDialog(edittextMedicalcaseTime));
-        edittextMedicalcaseDate.setText(getDate());
-        edittextMedicalcaseTime.setText(getTime());
+        this.edittextMedicalcaseDate.setOnClickListener(view -> Inpatient_Inputs.openDatePickerDialog(this.edittextMedicalcaseDate));
+        this.edittextMedicalcaseTime.setOnClickListener(view -> this.openTimePickerDialog(this.edittextMedicalcaseTime));
+        this.edittextMedicalcaseDate.setText(this.getDate());
+        this.edittextMedicalcaseTime.setText(this.getTime());
 
-        toolbarBack.setOnClickListener(view -> Inpatient_Inputs.this.finish());
-        toolbarExit.setOnClickListener(view -> BaseConfig.ExitSweetDialog(Inpatient_Inputs.this, null));
+        this.toolbarBack.setOnClickListener(view -> finish());
+        this.toolbarExit.setOnClickListener(view -> BaseConfig.ExitSweetDialog(this, null));
 
-        toolbarTitle.setText("Inpatient Entry");
+        this.toolbarTitle.setText("Inpatient Entry");
 
     }
 
-    public class MedicalCaseViewHolder extends RecyclerView.ViewHolder {
+    public class MedicalCaseViewHolder extends ViewHolder {
 
-        @BindView(R.id.date_mc)
+        @BindView(id.date_mc)
         TextView dateMc;
-        @BindView(R.id.clinical_notes_value)
+        @BindView(id.clinical_notes_value)
         TextView clinicalNotesValue;
-        @BindView(R.id.treatment_diet_value)
+        @BindView(id.treatment_diet_value)
         TextView treatmentDietValue;
 
-        @BindView(R.id.ic_delete)
+        @BindView(id.ic_delete)
         ImageView delete;
 
         public MedicalCaseViewHolder(@NonNull View itemView) {
@@ -357,7 +366,7 @@ public class Inpatient_Inputs extends AppCompatActivity {
         int minute = mcurrentTime.get(Calendar.MINUTE);
         TimePickerDialog mTimePicker;
 
-        mTimePicker = new TimePickerDialog(editText.getContext(), new TimePickerDialog.OnTimeSetListener() {
+        mTimePicker = new TimePickerDialog(editText.getContext(), new OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
 
@@ -402,7 +411,7 @@ public class Inpatient_Inputs extends AppCompatActivity {
 
         Calendar myCalendar = Calendar.getInstance();
         @SuppressLint("DefaultLocale")
-        DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
+        OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
             // TODO Auto-generated method stub
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
@@ -420,7 +429,7 @@ public class Inpatient_Inputs extends AppCompatActivity {
 
     private final void getUserDetails(TextView patientname, ImageView PatientImage) {
         SQLiteDatabase db = BaseConfig.GetDb();//);
-        Cursor c = db.rawQuery("select * from patreg where Patid='"+ PATIENT_ID + "';", null);
+        Cursor c = db.rawQuery("select * from patreg where Patid='"+ this.PATIENT_ID + "';", null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -430,8 +439,8 @@ public class Inpatient_Inputs extends AppCompatActivity {
                     String Photo_Path = c.getString(c.getColumnIndex("PC"));
 
                     BaseConfig.LoadPatientImage(Photo_Path, PatientImage, 100);
-                    this.patienname = c.getString(c.getColumnIndex("name"));
-                    this.patientagegen = c.getString(c.getColumnIndex("age")) + '-' + c.getString(c.getColumnIndex("gender"));
+                    patienname = c.getString(c.getColumnIndex("name"));
+                    patientagegen = c.getString(c.getColumnIndex("age")) + '-' + c.getString(c.getColumnIndex("gender"));
 
                 } while (c.moveToNext());
             }
@@ -442,7 +451,7 @@ public class Inpatient_Inputs extends AppCompatActivity {
 
 
     private void toggleSectionInput(View view, View PrimaryLayout) {
-        boolean show = toggleArrow(view);
+        boolean show = this.toggleArrow(view);
         if (show) {
            // ViewAnimation.expand(PrimaryLayout, () -> Tools.nestedScrollTo(inpatiententryNesetedscrollview, PrimaryLayout));
             ViewAnimation.expand(PrimaryLayout);
@@ -466,30 +475,30 @@ public class Inpatient_Inputs extends AppCompatActivity {
     //#####################################################################//
     //#####################################################################//
 
-    @OnClick(R.id.arrow_inpatient_chart)
+    @OnClick(id.arrow_inpatient_chart)
     void onArrowInpatientChartClick() {
-        toggleSectionInput(findViewById(R.id.arrow_inpatient_chart), inpatientchart_primary);
+        this.toggleSectionInput(this.findViewById(id.arrow_inpatient_chart), this.inpatientchart_primary);
     }
 
-    @OnClick(R.id.arrow_diabetic_chart)
+    @OnClick(id.arrow_diabetic_chart)
     void onArrowDiabeticChartClick() {
-        toggleSectionInput(findViewById(R.id.arrow_diabetic_chart), diabetic_primary);
+        this.toggleSectionInput(this.findViewById(id.arrow_diabetic_chart), this.diabetic_primary);
     }
 
-    @OnClick(R.id.arrow_temperature_chart)
+    @OnClick(id.arrow_temperature_chart)
     void onArrowTemperatureChartClick() {
-        toggleSectionInput(findViewById(R.id.arrow_temperature_chart), temperature_primary);
+        this.toggleSectionInput(this.findViewById(id.arrow_temperature_chart), this.temperature_primary);
 
     }
 
-    @OnClick(R.id.arrow_surgery_record)
+    @OnClick(id.arrow_surgery_record)
     void onArrowSurgeryRecordClick() {
-        toggleSectionInput(findViewById(R.id.arrow_surgery_record), surgery_primary);
+        this.toggleSectionInput(this.findViewById(id.arrow_surgery_record), this.surgery_primary);
     }
 
-    @OnClick(R.id.arrow_medicalcase_record)
+    @OnClick(id.arrow_medicalcase_record)
     void onArrowMedicalcaseRecordClick() {
-        toggleSectionInput(findViewById(R.id.arrow_medicalcase_record), medicalcase_primary);
+        this.toggleSectionInput(this.findViewById(id.arrow_medicalcase_record), this.medicalcase_primary);
     }
 
 
@@ -522,10 +531,10 @@ public class Inpatient_Inputs extends AppCompatActivity {
 
             SQLiteDatabase db = BaseConfig.GetDb();//);
 
-            final Calendar c = Calendar.getInstance();
-            mYear = c.get(Calendar.YEAR);
-            mMonth = c.get(Calendar.MONTH);
-            mDay = c.get(Calendar.DAY_OF_MONTH);
+            Calendar c = Calendar.getInstance();
+            Inpatient_Inputs.mYear = c.get(Calendar.YEAR);
+            Inpatient_Inputs.mMonth = c.get(Calendar.MONTH);
+            Inpatient_Inputs.mDay = c.get(Calendar.DAY_OF_MONTH);
 
             SimpleDateFormat dateformt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ENGLISH);
             Date date = new Date();
@@ -540,33 +549,33 @@ public class Inpatient_Inputs extends AppCompatActivity {
                         ipfluid_txt, oprives_txt, opmotion_txt, opurine_txt, ipseltime = "-";
 
 
-                bp_txt1 = CheckEdittextIsEmpty(edittextInaptientchartBpsytolic);
-                bp_txt2 = CheckEdittextIsEmpty(edittextInaptientchartBpdiastolic);
-                pulse_txt = CheckEdittextIsEmpty(edittextInaptientchartPulseperminute);
-                temp_txt = CheckEdittextIsEmpty(spinnerInaptientchartTemperature);
-                resp_txt = CheckEdittextIsEmpty(edittextInaptientchartResp);
-                spo2_txt = CheckEdittextIsEmpty(edittextInaptientchartSpo2);
-                nursing_txt = CheckEdittextIsEmpty(edittextInaptientchartNursingInstruction);
-                drugorder_txt = CheckEdittextIsEmpty(edittextInaptientchartDrugorder);
-                iporal_txt = CheckEdittextIsEmpty(edittextInaptientchartOral);
-                ipfluid_txt = CheckEdittextIsEmpty(edittextInaptientchartFluids);
-                oprives_txt = CheckEdittextIsEmpty(edittextInaptientchartRvles);
-                opmotion_txt = CheckEdittextIsEmpty(edittextInaptientchartMotion);
-                opurine_txt = CheckEdittextIsEmpty(edittextInaptientchartUrine);
-                ipseltime = CheckEdittextIsEmpty(edittextInaptientchartTime);
+                bp_txt1 = this.CheckEdittextIsEmpty(this.edittextInaptientchartBpsytolic);
+                bp_txt2 = this.CheckEdittextIsEmpty(this.edittextInaptientchartBpdiastolic);
+                pulse_txt = this.CheckEdittextIsEmpty(this.edittextInaptientchartPulseperminute);
+                temp_txt = this.CheckEdittextIsEmpty(this.spinnerInaptientchartTemperature);
+                resp_txt = this.CheckEdittextIsEmpty(this.edittextInaptientchartResp);
+                spo2_txt = this.CheckEdittextIsEmpty(this.edittextInaptientchartSpo2);
+                nursing_txt = this.CheckEdittextIsEmpty(this.edittextInaptientchartNursingInstruction);
+                drugorder_txt = this.CheckEdittextIsEmpty(this.edittextInaptientchartDrugorder);
+                iporal_txt = this.CheckEdittextIsEmpty(this.edittextInaptientchartOral);
+                ipfluid_txt = this.CheckEdittextIsEmpty(this.edittextInaptientchartFluids);
+                oprives_txt = this.CheckEdittextIsEmpty(this.edittextInaptientchartRvles);
+                opmotion_txt = this.CheckEdittextIsEmpty(this.edittextInaptientchartMotion);
+                opurine_txt = this.CheckEdittextIsEmpty(this.edittextInaptientchartUrine);
+                ipseltime = this.CheckEdittextIsEmpty(this.edittextInaptientchartTime);
 
 
                 ContentValues cv = new ContentValues();
                 cv.put("DiagId", InpatientChartid);
-                cv.put("patid", PATIENT_ID);
-                cv.put("pname", PATIENT_NAME);
-                cv.put("pagegen", textView12.getText().toString());
+                cv.put("patid", this.PATIENT_ID);
+                cv.put("pname", this.PATIENT_NAME);
+                cv.put("pagegen", this.textView12.getText().toString());
                 cv.put("docid", BaseConfig.doctorId);
                 cv.put("docname", BaseConfig.doctorname);
                 cv.put("Actdate", dttm);
                 cv.put("IsActive", "1");
                 cv.put("Isupdate", "0");
-                cv.put("doc_visit_date", edittextInaptientchartDate.getText().toString());
+                cv.put("doc_visit_date", this.edittextInaptientchartDate.getText().toString());
                 cv.put("doc_visit_time", ipseltime);
                 cv.put("bp", bp_txt1);
                 cv.put("bpd", bp_txt2);
@@ -586,27 +595,27 @@ public class Inpatient_Inputs extends AppCompatActivity {
                 cv.put("HID", BaseConfig.HID);
                 db.insert("Inpatient_MainChart", null, cv);
 
-                showSuccess();
+                this.showSuccess();
 
 
                 try {
-                    edittextInaptientchartBpsytolic.setText("");
-                    edittextInaptientchartDate.setText("");
-                    edittextInaptientchartBpdiastolic.setText("");
-                    edittextInaptientchartPulseperminute.setText("");
-                    spinnerInaptientchartTemperature.setSelection(0);
-                    edittextInaptientchartResp.setText("");
-                    edittextInaptientchartSpo2.setText("");
-                    edittextInaptientchartNursingInstruction.setText("");
-                    edittextInaptientchartDrugorder.setText("");
-                    edittextInaptientchartOral.setText("");
-                    edittextInaptientchartFluids.setText("");
-                    edittextInaptientchartRvles.setText("");
-                    edittextInaptientchartMotion.setText("");
-                    edittextInaptientchartUrine.setText("");
-                    edittextInaptientchartTime.setText("");
+                    this.edittextInaptientchartBpsytolic.setText("");
+                    this.edittextInaptientchartDate.setText("");
+                    this.edittextInaptientchartBpdiastolic.setText("");
+                    this.edittextInaptientchartPulseperminute.setText("");
+                    this.spinnerInaptientchartTemperature.setSelection(0);
+                    this.edittextInaptientchartResp.setText("");
+                    this.edittextInaptientchartSpo2.setText("");
+                    this.edittextInaptientchartNursingInstruction.setText("");
+                    this.edittextInaptientchartDrugorder.setText("");
+                    this.edittextInaptientchartOral.setText("");
+                    this.edittextInaptientchartFluids.setText("");
+                    this.edittextInaptientchartRvles.setText("");
+                    this.edittextInaptientchartMotion.setText("");
+                    this.edittextInaptientchartUrine.setText("");
+                    this.edittextInaptientchartTime.setText("");
 
-                    toggleSectionInput(findViewById(R.id.arrow_inpatient_chart), inpatientchart_primary);
+                    this.toggleSectionInput(this.findViewById(id.arrow_inpatient_chart), this.inpatientchart_primary);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -617,28 +626,28 @@ public class Inpatient_Inputs extends AppCompatActivity {
                 String urinesgr_txt, lente_txt, insulinplain_txt, bloodsgr_txt, ketone_txt, ipdiab_time = "-";
 
 
-                urinesgr_txt = CheckEdittextIsEmpty(autoCompleteTextViewDiabetichartUrineSugar);
-                lente_txt = CheckEdittextIsEmpty(edittextDiabetichartLente);
-                insulinplain_txt = CheckEdittextIsEmpty(edittextDiabetichartInsulinPlain);
-                bloodsgr_txt = CheckEdittextIsEmpty(edittextDiabetichartBloodSugar);
-                ketone_txt = CheckEdittextIsEmpty(edittextDiabetichartKetoneBodies);
-                ipdiab_time = CheckEdittextIsEmpty(edittextDiabetichartTime);
+                urinesgr_txt = this.CheckEdittextIsEmpty(this.autoCompleteTextViewDiabetichartUrineSugar);
+                lente_txt = this.CheckEdittextIsEmpty(this.edittextDiabetichartLente);
+                insulinplain_txt = this.CheckEdittextIsEmpty(this.edittextDiabetichartInsulinPlain);
+                bloodsgr_txt = this.CheckEdittextIsEmpty(this.edittextDiabetichartBloodSugar);
+                ketone_txt = this.CheckEdittextIsEmpty(this.edittextDiabetichartKetoneBodies);
+                ipdiab_time = this.CheckEdittextIsEmpty(this.edittextDiabetichartTime);
 
 
                 ContentValues cv = new ContentValues();
 
                 cv.put("DiagId", InpatientChartid);
-                cv.put("patid", PATIENT_ID);
-                cv.put("pname", PATIENT_NAME);
-                cv.put("pagegen", tvwAgegender.getText().toString());
+                cv.put("patid", this.PATIENT_ID);
+                cv.put("pname", this.PATIENT_NAME);
+                cv.put("pagegen", this.tvwAgegender.getText().toString());
                 cv.put("docid", BaseConfig.doctorId);
                 cv.put("docname", BaseConfig.doctorname);
                 cv.put("Actdate", dttm);
                 cv.put("IsActive", "1");
                 cv.put("Isupdate", "0");
-                cv.put("doc_visit_date", edittextDiabetichartDate.getText().toString());
+                cv.put("doc_visit_date", this.edittextDiabetichartDate.getText().toString());
                 cv.put("doc_visit_time", ipdiab_time);
-                cv.put("spl_instr", edittextDiabetichartSpecialiInstruction.getText().toString());
+                cv.put("spl_instr", this.edittextDiabetichartSpecialiInstruction.getText().toString());
                 cv.put("urine_sugar", urinesgr_txt);
                 cv.put("lente", lente_txt);
                 cv.put("insulin_plain", insulinplain_txt);
@@ -651,19 +660,19 @@ public class Inpatient_Inputs extends AppCompatActivity {
                 //final String Update_Query = "update InpatientChartmvalue set minpcnum=minpcnum +1";
                 //BaseConfig.SaveData(Update_Query);
 
-                showSuccess();
+                this.showSuccess();
 
 
                 try {
-                    edittextDiabetichartLente.setText("");
-                    edittextDiabetichartInsulinPlain.setText("");
-                    edittextDiabetichartBloodSugar.setText("");
-                    edittextDiabetichartKetoneBodies.setText("");
-                    edittextDiabetichartDate.setText("");
-                    edittextDiabetichartTime.setText("");
-                    edittextDiabetichartSpecialiInstruction.setText("");
-                    autoCompleteTextViewDiabetichartUrineSugar.setText("");
-                    toggleSectionInput(findViewById(R.id.arrow_diabetic_chart), diabetic_primary);
+                    this.edittextDiabetichartLente.setText("");
+                    this.edittextDiabetichartInsulinPlain.setText("");
+                    this.edittextDiabetichartBloodSugar.setText("");
+                    this.edittextDiabetichartKetoneBodies.setText("");
+                    this.edittextDiabetichartDate.setText("");
+                    this.edittextDiabetichartTime.setText("");
+                    this.edittextDiabetichartSpecialiInstruction.setText("");
+                    this.autoCompleteTextViewDiabetichartUrineSugar.setText("");
+                    this.toggleSectionInput(this.findViewById(id.arrow_diabetic_chart), this.diabetic_primary);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -672,41 +681,41 @@ public class Inpatient_Inputs extends AppCompatActivity {
             } else if (id == 3) {
                 String temperature_values = "0", temperature_time = "";
 
-                if (spinnerTemperaturechartSelecttemperature.getSelectedItemPosition() > 0) {
-                    temperature_values = spinnerTemperaturechartSelecttemperature.getSelectedItem().toString();
+                if (this.spinnerTemperaturechartSelecttemperature.getSelectedItemPosition() > 0) {
+                    temperature_values = this.spinnerTemperaturechartSelecttemperature.getSelectedItem().toString();
                 }
 
 
                 ContentValues cv = new ContentValues();
 
                 cv.put("DiagId", InpatientChartid);
-                cv.put("patid", PATIENT_ID);
-                cv.put("pname", PATIENT_NAME);
-                cv.put("pagegen", PATIENT_AGEGENDER);
+                cv.put("patid", this.PATIENT_ID);
+                cv.put("pname", this.PATIENT_NAME);
+                cv.put("pagegen", this.PATIENT_AGEGENDER);
                 cv.put("docid", BaseConfig.doctorId);
                 cv.put("docname", BaseConfig.doctorname);
                 cv.put("Actdate", dttm);
                 cv.put("IsActive", "1");
                 cv.put("Isupdate", "0");
-                cv.put("doc_visit_date", edittextTemperaturechartDate.getText().toString());
-                cv.put("doc_visit_time", edittextTemperaturechartTime.getText().toString());
+                cv.put("doc_visit_date", this.edittextTemperaturechartDate.getText().toString());
+                cv.put("doc_visit_time", this.edittextTemperaturechartTime.getText().toString());
                 cv.put("temperature", temperature_values);
-                cv.put("visitsummary", edittextTemperaturechartVisitSummary.getText().toString());
+                cv.put("visitsummary", this.edittextTemperaturechartVisitSummary.getText().toString());
                 cv.put("temptakentime", temperature_time);
                 cv.put("HID", BaseConfig.HID);
                 db.insert("Inpatient_TemperatureChart", null, cv);
                 //#######################################################
 
 
-                showSuccess();
+                this.showSuccess();
 
 
                 try {
-                    edittextTemperaturechartDate.setText("");
-                    edittextTemperaturechartTime.setText("");
-                    edittextTemperaturechartVisitSummary.setText("");
-                    spinnerTemperaturechartSelecttemperature.setSelection(0);
-                    toggleSectionInput(findViewById(R.id.arrow_temperature_chart), temperature_primary);
+                    this.edittextTemperaturechartDate.setText("");
+                    this.edittextTemperaturechartTime.setText("");
+                    this.edittextTemperaturechartVisitSummary.setText("");
+                    this.spinnerTemperaturechartSelecttemperature.setSelection(0);
+                    this.toggleSectionInput(this.findViewById(id.arrow_temperature_chart), this.temperature_primary);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -717,49 +726,49 @@ public class Inpatient_Inputs extends AppCompatActivity {
                 ContentValues cv = new ContentValues();
 
                 cv.put("DiagId", InpatientChartid);
-                cv.put("patid", PATIENT_ID);
-                cv.put("pname", PATIENT_NAME);
-                cv.put("pagegen", PATIENT_AGEGENDER);
+                cv.put("patid", this.PATIENT_ID);
+                cv.put("pname", this.PATIENT_NAME);
+                cv.put("pagegen", this.PATIENT_AGEGENDER);
                 cv.put("docid", BaseConfig.doctorId);
                 cv.put("docname", BaseConfig.doctorname);
                 cv.put("Actdate", dttm);
                 cv.put("IsActive", "1");
                 cv.put("Isupdate", "0");
-                cv.put("doc_visit_date", edittextSurgeryDate.getText().toString());
+                cv.put("doc_visit_date", this.edittextSurgeryDate.getText().toString());
                 cv.put("doc_visit_time", BaseConfig.GetCurrentTime());
-                cv.put("pre_operativediag", edittextSurgeryPreoperativeDiagnosis.getText().toString());
-                cv.put("operative_notes", editextSurgeryOperativenotes.getText().toString());
-                cv.put("position", edittextSurgeryPosition.getText().toString());
-                cv.put("procedure", edittextSurgeryProcedure.getText().toString());
-                cv.put("closure", edittextSurgeryClosure.getText().toString());
-                cv.put("post_operativediag", edittextSurgeryPostoperativeDiagnosis.getText().toString());
-                cv.put("surgeon", edittextSurgerySurgeon.getText().toString());
-                cv.put("anaesthetist", edittextSurgeryAnaesthetist.getText().toString());
-                cv.put("asst", edittextSurgeryAsst.getText().toString());
-                cv.put("bloodloss", edittextSurgeryBloodLoss.getText().toString());
-                cv.put("histopathological", edittextSurgeryHistoPathological.getText().toString());
-                cv.put("post_op_instruct", edittextSurgeryPostOpInstruction.getText().toString());
+                cv.put("pre_operativediag", this.edittextSurgeryPreoperativeDiagnosis.getText().toString());
+                cv.put("operative_notes", this.editextSurgeryOperativenotes.getText().toString());
+                cv.put("position", this.edittextSurgeryPosition.getText().toString());
+                cv.put("procedure", this.edittextSurgeryProcedure.getText().toString());
+                cv.put("closure", this.edittextSurgeryClosure.getText().toString());
+                cv.put("post_operativediag", this.edittextSurgeryPostoperativeDiagnosis.getText().toString());
+                cv.put("surgeon", this.edittextSurgerySurgeon.getText().toString());
+                cv.put("anaesthetist", this.edittextSurgeryAnaesthetist.getText().toString());
+                cv.put("asst", this.edittextSurgeryAsst.getText().toString());
+                cv.put("bloodloss", this.edittextSurgeryBloodLoss.getText().toString());
+                cv.put("histopathological", this.edittextSurgeryHistoPathological.getText().toString());
+                cv.put("post_op_instruct", this.edittextSurgeryPostOpInstruction.getText().toString());
                 cv.put("HID", BaseConfig.HID);
                 db.insert("Inpatient_SurgeryRecord", null, cv);
 
-                showSuccess();
+                this.showSuccess();
 
                 try {
-                    edittextSurgeryDate.setText("");
-                    edittextSurgeryPreoperativeDiagnosis.setText("");
-                    editextSurgeryOperativenotes.setText("");
-                    edittextSurgeryPosition.setText("");
-                    edittextSurgeryClosure.setText("");
-                    edittextSurgeryPostoperativeDiagnosis.setText("");
-                    edittextSurgerySurgeon.setText("");
-                    edittextSurgeryAnaesthetist.setText("");
-                    edittextSurgeryAsst.setText("");
-                    edittextSurgeryBloodLoss.setText("");
-                    edittextSurgeryHistoPathological.setText("");
-                    edittextSurgeryPostOpInstruction.setText("");
+                    this.edittextSurgeryDate.setText("");
+                    this.edittextSurgeryPreoperativeDiagnosis.setText("");
+                    this.editextSurgeryOperativenotes.setText("");
+                    this.edittextSurgeryPosition.setText("");
+                    this.edittextSurgeryClosure.setText("");
+                    this.edittextSurgeryPostoperativeDiagnosis.setText("");
+                    this.edittextSurgerySurgeon.setText("");
+                    this.edittextSurgeryAnaesthetist.setText("");
+                    this.edittextSurgeryAsst.setText("");
+                    this.edittextSurgeryBloodLoss.setText("");
+                    this.edittextSurgeryHistoPathological.setText("");
+                    this.edittextSurgeryPostOpInstruction.setText("");
 
-                    edittextSurgeryProcedure.setText("");
-                    toggleSectionInput(findViewById(R.id.arrow_surgery_record), surgery_primary);
+                    this.edittextSurgeryProcedure.setText("");
+                    this.toggleSectionInput(this.findViewById(id.arrow_surgery_record), this.surgery_primary);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -780,17 +789,17 @@ public class Inpatient_Inputs extends AppCompatActivity {
         boolean ret = true;
 
 
-        if (edittextInaptientchartTime.getText().toString().length() == 0) {
-            Toast.makeText(Inpatient_Inputs.this, "please select time", Toast.LENGTH_LONG).show();
+        if (this.edittextInaptientchartTime.getText().toString().length() == 0) {
+            Toast.makeText(this, "please select time", Toast.LENGTH_LONG).show();
             ret = false;
         }
-        if (edittextInaptientchartBpsytolic.getText().length() == 0 && edittextInaptientchartBpdiastolic.getText().length() == 0
-                && edittextInaptientchartPulseperminute.getText().toString().length() == 0 && edittextInaptientchartResp.getText().toString().length() == 0) {
-            Toast.makeText(Inpatient_Inputs.this, "At least input one numeric value", Toast.LENGTH_LONG).show();
+        if (this.edittextInaptientchartBpsytolic.getText().length() == 0 && this.edittextInaptientchartBpdiastolic.getText().length() == 0
+                && this.edittextInaptientchartPulseperminute.getText().toString().length() == 0 && this.edittextInaptientchartResp.getText().toString().length() == 0) {
+            Toast.makeText(this, "At least input one numeric value", Toast.LENGTH_LONG).show();
             ret = false;
         }
-        if (spinnerInaptientchartTemperature.getSelectedItemPosition() == 0) {
-            Toast.makeText(Inpatient_Inputs.this, "Please Select Temperature", Toast.LENGTH_LONG).show();
+        if (this.spinnerInaptientchartTemperature.getSelectedItemPosition() == 0) {
+            Toast.makeText(this, "Please Select Temperature", Toast.LENGTH_LONG).show();
             ret = false;
         }
 
@@ -800,32 +809,32 @@ public class Inpatient_Inputs extends AppCompatActivity {
 
 
     //region InpatientChart
-    @OnClick(R.id.button_inaptientchart_clear)
+    @OnClick(id.button_inaptientchart_clear)
     void onButtonInaptientchartClearClick() {
-        edittextInaptientchartBpsytolic.setText("");
-        edittextInaptientchartBpdiastolic.setText("");
-        edittextInaptientchartPulseperminute.setText("");
-        spinnerInaptientchartTemperature.setSelection(0);
-        edittextInaptientchartResp.setText("");
-        edittextInaptientchartSpo2.setText("");
-        edittextInaptientchartNursingInstruction.setText("");
-        edittextInaptientchartDrugorder.setText("");
-        edittextInaptientchartOral.setText("");
-        edittextInaptientchartFluids.setText("");
-        edittextInaptientchartRvles.setText("");
-        edittextInaptientchartMotion.setText("");
-        edittextInaptientchartUrine.setText("");
-        edittextInaptientchartTime.setText("");
-        edittextInaptientchartDate.setText("");
+        this.edittextInaptientchartBpsytolic.setText("");
+        this.edittextInaptientchartBpdiastolic.setText("");
+        this.edittextInaptientchartPulseperminute.setText("");
+        this.spinnerInaptientchartTemperature.setSelection(0);
+        this.edittextInaptientchartResp.setText("");
+        this.edittextInaptientchartSpo2.setText("");
+        this.edittextInaptientchartNursingInstruction.setText("");
+        this.edittextInaptientchartDrugorder.setText("");
+        this.edittextInaptientchartOral.setText("");
+        this.edittextInaptientchartFluids.setText("");
+        this.edittextInaptientchartRvles.setText("");
+        this.edittextInaptientchartMotion.setText("");
+        this.edittextInaptientchartUrine.setText("");
+        this.edittextInaptientchartTime.setText("");
+        this.edittextInaptientchartDate.setText("");
     }
 
 
-    @OnClick(R.id.button_inaptientchart_save)
+    @OnClick(id.button_inaptientchart_save)
     void onButtonInaptientchartSaveClick() {
-        if (CheckInPatientValidation()) {
+        if (this.CheckInPatientValidation()) {
 
 
-            SaveLocal(1);
+            this.SaveLocal(1);
 
 
         }
@@ -833,10 +842,10 @@ public class Inpatient_Inputs extends AppCompatActivity {
     }
 
 
-    @OnClick(R.id.button_inaptientchart_hide)
+    @OnClick(id.button_inaptientchart_hide)
     void onButtonInaptientchartHideClick() {
         try {
-            toggleSectionInput(findViewById(R.id.arrow_inpatient_chart), inpatientchart_primary);
+            this.toggleSectionInput(this.findViewById(id.arrow_inpatient_chart), this.inpatientchart_primary);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -845,23 +854,23 @@ public class Inpatient_Inputs extends AppCompatActivity {
 
 
     //region Diabetic Chart
-    @OnClick(R.id.button_diabetichart_hide)
+    @OnClick(id.button_diabetichart_hide)
     void onButtonDiabetichartHideClick() {
-        toggleSectionInput(findViewById(R.id.arrow_diabetic_chart), diabetic_primary);
+        this.toggleSectionInput(this.findViewById(id.arrow_diabetic_chart), this.diabetic_primary);
     }
 
-    @OnClick(R.id.button_diabetichart_clear)
+    @OnClick(id.button_diabetichart_clear)
     void onButtonDiabetichartClearClick() {
         try {
-            edittextDiabetichartBloodSugar.setText("");
-            edittextDiabetichartLente.setText("");
-            edittextDiabetichartInsulinPlain.setText("");
-            edittextDiabetichartBloodSugar.setText("");
-            edittextDiabetichartKetoneBodies.setText("");
-            edittextDiabetichartDate.setText("");
-            edittextDiabetichartTime.setText("");
-            edittextDiabetichartSpecialiInstruction.setText("");
-            autoCompleteTextViewDiabetichartUrineSugar.setText("");
+            this.edittextDiabetichartBloodSugar.setText("");
+            this.edittextDiabetichartLente.setText("");
+            this.edittextDiabetichartInsulinPlain.setText("");
+            this.edittextDiabetichartBloodSugar.setText("");
+            this.edittextDiabetichartKetoneBodies.setText("");
+            this.edittextDiabetichartDate.setText("");
+            this.edittextDiabetichartTime.setText("");
+            this.edittextDiabetichartSpecialiInstruction.setText("");
+            this.autoCompleteTextViewDiabetichartUrineSugar.setText("");
 
 
         } catch (Exception e) {
@@ -869,24 +878,24 @@ public class Inpatient_Inputs extends AppCompatActivity {
         }
     }
 
-    @OnClick(R.id.button_diabetichart_save)
+    @OnClick(id.button_diabetichart_save)
     void onButtonDiabetichartSaveClick() {
-        if (CheckDiabeticChartValidation()) {
-            SaveLocal(2);
+        if (this.CheckDiabeticChartValidation()) {
+            this.SaveLocal(2);
         }
     }
 
     private boolean CheckDiabeticChartValidation() {
         boolean ret = true;
-        if (edittextDiabetichartTime.getText().length() == 0) {
-            Toast.makeText(Inpatient_Inputs.this, "please select time", Toast.LENGTH_LONG).show();
+        if (this.edittextDiabetichartTime.getText().length() == 0) {
+            Toast.makeText(this, "please select time", Toast.LENGTH_LONG).show();
             ret = false;
         }
 
-        if (autoCompleteTextViewDiabetichartUrineSugar.getText().toString().length() == 0 && edittextDiabetichartLente.getText().toString().length() == 0 && edittextDiabetichartInsulinPlain.getText().toString().length() == 0
-                && edittextDiabetichartBloodSugar.getText().toString().length() == 0 && edittextDiabetichartKetoneBodies.getText().toString().length() == 0) {
+        if (this.autoCompleteTextViewDiabetichartUrineSugar.getText().toString().length() == 0 && this.edittextDiabetichartLente.getText().toString().length() == 0 && this.edittextDiabetichartInsulinPlain.getText().toString().length() == 0
+                && this.edittextDiabetichartBloodSugar.getText().toString().length() == 0 && this.edittextDiabetichartKetoneBodies.getText().toString().length() == 0) {
 
-            Toast.makeText(Inpatient_Inputs.this, "At least input one numeric value", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "At least input one numeric value", Toast.LENGTH_LONG).show();
             ret = false;
 
         }
@@ -898,41 +907,41 @@ public class Inpatient_Inputs extends AppCompatActivity {
 
 
     //region Temperature Chart
-    @OnClick(R.id.button_temperaturechart_hide)
+    @OnClick(id.button_temperaturechart_hide)
     void onButtonTemperaturechartHideClick() {
-        toggleSectionInput(findViewById(R.id.arrow_temperature_chart), temperature_primary);
+        this.toggleSectionInput(this.findViewById(id.arrow_temperature_chart), this.temperature_primary);
     }
 
 
-    @OnClick(R.id.button_temperaturechart_clear)
+    @OnClick(id.button_temperaturechart_clear)
     void onButtonTemperaturechartClearClick() {
 
         try {
-            edittextTemperaturechartDate.setText("");
-            edittextTemperaturechartTime.setText("");
-            edittextTemperaturechartVisitSummary.setText("");
-            spinnerTemperaturechartSelecttemperature.setSelection(0);
+            this.edittextTemperaturechartDate.setText("");
+            this.edittextTemperaturechartTime.setText("");
+            this.edittextTemperaturechartVisitSummary.setText("");
+            this.spinnerTemperaturechartSelecttemperature.setSelection(0);
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    @OnClick(R.id.button_temperaturechart_save)
+    @OnClick(id.button_temperaturechart_save)
     void onButtonTemperaturechartSaveClick() {
-        if (CheckTemperatureChartValidation()) {
-            SaveLocal(3);
+        if (this.CheckTemperatureChartValidation()) {
+            this.SaveLocal(3);
         }
     }
 
     private boolean CheckTemperatureChartValidation() {
         boolean ret = true;
-        if (edittextTemperaturechartTime.getText().length() == 0) {
-            Toast.makeText(Inpatient_Inputs.this, "please select time", Toast.LENGTH_LONG).show();
+        if (this.edittextTemperaturechartTime.getText().length() == 0) {
+            Toast.makeText(this, "please select time", Toast.LENGTH_LONG).show();
             ret = false;
         }
-        if (spinnerTemperaturechartSelecttemperature.getSelectedItemPosition() == 0) {
-            Toast.makeText(Inpatient_Inputs.this, "please select temperature", Toast.LENGTH_LONG).show();
+        if (this.spinnerTemperaturechartSelecttemperature.getSelectedItemPosition() == 0) {
+            Toast.makeText(this, "please select temperature", Toast.LENGTH_LONG).show();
             ret = false;
         }
         return ret;
@@ -941,80 +950,80 @@ public class Inpatient_Inputs extends AppCompatActivity {
 
 
     //region Surgery
-    @OnClick(R.id.button_surgery_hide)
+    @OnClick(id.button_surgery_hide)
     void onButtonSurgeryHideClick() {
-        toggleSectionInput(findViewById(R.id.arrow_surgery_record), surgery_primary);
+        this.toggleSectionInput(this.findViewById(id.arrow_surgery_record), this.surgery_primary);
     }
 
-    @OnClick(R.id.button_surgery_clear)
+    @OnClick(id.button_surgery_clear)
     void onButtonSurgeryClearClick() {
         try {
-            edittextSurgeryDate.setText("");
-            edittextSurgeryPreoperativeDiagnosis.setText("");
-            editextSurgeryOperativenotes.setText("");
-            edittextSurgeryPosition.setText("");
-            edittextSurgeryClosure.setText("");
-            edittextSurgeryPostoperativeDiagnosis.setText("");
-            edittextSurgerySurgeon.setText("");
-            edittextSurgeryAnaesthetist.setText("");
-            edittextSurgeryAsst.setText("");
-            edittextSurgeryBloodLoss.setText("");
-            edittextSurgeryHistoPathological.setText("");
-            edittextSurgeryPostOpInstruction.setText("");
+            this.edittextSurgeryDate.setText("");
+            this.edittextSurgeryPreoperativeDiagnosis.setText("");
+            this.editextSurgeryOperativenotes.setText("");
+            this.edittextSurgeryPosition.setText("");
+            this.edittextSurgeryClosure.setText("");
+            this.edittextSurgeryPostoperativeDiagnosis.setText("");
+            this.edittextSurgerySurgeon.setText("");
+            this.edittextSurgeryAnaesthetist.setText("");
+            this.edittextSurgeryAsst.setText("");
+            this.edittextSurgeryBloodLoss.setText("");
+            this.edittextSurgeryHistoPathological.setText("");
+            this.edittextSurgeryPostOpInstruction.setText("");
 
-            edittextSurgeryProcedure.setText("");
+            this.edittextSurgeryProcedure.setText("");
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
 
-    @OnClick(R.id.button_surgery_save)
+    @OnClick(id.button_surgery_save)
     void onButtonSurgerySaveClick() {
-        SaveLocal(4);
+        this.SaveLocal(4);
     }
     //endregion
 
 
     //region Medical Case Record
-    @OnClick(R.id.button_medicalcase_add)
+    @OnClick(id.button_medicalcase_add)
     void onButtonMedicalcaseAddClick() {
 
 
-        if (edittextMedicalcaseDate.getText().toString().length() == 0) {
-            edittextMedicalcaseDate.setFocusable(true);
-            edittextMedicalcaseDate.setError("Enter");
-        } else if (edittextMedicalcaseTime.getText().toString().length() == 0) {
-            edittextMedicalcaseTime.setFocusable(true);
-            edittextMedicalcaseTime.setError("Enter");
+        if (this.edittextMedicalcaseDate.getText().toString().length() == 0) {
+            this.edittextMedicalcaseDate.setFocusable(true);
+            this.edittextMedicalcaseDate.setError("Enter");
+        } else if (this.edittextMedicalcaseTime.getText().toString().length() == 0) {
+            this.edittextMedicalcaseTime.setFocusable(true);
+            this.edittextMedicalcaseTime.setError("Enter");
 
-        } else if (edittextMedicalcaseClinicalnotes.getText().toString().length() == 0) {
-            edittextMedicalcaseClinicalnotes.setFocusable(true);
-            edittextMedicalcaseClinicalnotes.setError("Enter");
-        } else if (edittextMedicalcaseTreatementAndDiet.getText().toString().length() == 0) {
-            edittextMedicalcaseTreatementAndDiet.setFocusable(true);
-            edittextMedicalcaseTreatementAndDiet.setError("Enter");
+        } else if (this.edittextMedicalcaseClinicalnotes.getText().toString().length() == 0) {
+            this.edittextMedicalcaseClinicalnotes.setFocusable(true);
+            this.edittextMedicalcaseClinicalnotes.setError("Enter");
+        } else if (this.edittextMedicalcaseTreatementAndDiet.getText().toString().length() == 0) {
+            this.edittextMedicalcaseTreatementAndDiet.setFocusable(true);
+            this.edittextMedicalcaseTreatementAndDiet.setError("Enter");
         } else {
 
-            medicalCaseRecords.add(new CommonDataObjects.MedicalCaseRecords(edittextMedicalcaseDate.getText().toString(), edittextMedicalcaseTime.getText().toString(), edittextMedicalcaseClinicalnotes.getText().toString(), edittextMedicalcaseTreatementAndDiet.getText().toString()));
+            this.medicalCaseRecords.add(new MedicalCaseRecords(this.edittextMedicalcaseDate.getText().toString(), this.edittextMedicalcaseTime.getText().toString(), this.edittextMedicalcaseClinicalnotes.getText().toString(), this.edittextMedicalcaseTreatementAndDiet.getText().toString()));
 
-            edittextMedicalcaseDate.setText("");
-            edittextMedicalcaseClinicalnotes.setText("");
-            edittextMedicalcaseTreatementAndDiet.setText("");
-            edittextMedicalcaseTime.setText("");
+            this.edittextMedicalcaseDate.setText("");
+            this.edittextMedicalcaseClinicalnotes.setText("");
+            this.edittextMedicalcaseTreatementAndDiet.setText("");
+            this.edittextMedicalcaseTime.setText("");
 
-            adapter = new KDMCRecyclerAdapter<>(medicalCaseRecords, R.layout.each_medical_records)
-                    .setRowItemView(new KDMCRecyclerAdapter.AdapterView() {
+            this.adapter = new KDMCRecyclerAdapter<>(this.medicalCaseRecords, layout.each_medical_records)
+                    .setRowItemView(new AdapterView() {
                         @Override
                         public Object setAdapterView(ViewGroup parent, int viewType, int layoutId) {
-                            return new MedicalCaseViewHolder(LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false));
+                            return new Inpatient_Inputs.MedicalCaseViewHolder(LayoutInflater.from(parent.getContext()).inflate(layoutId, parent, false));
                         }
 
                         @Override
                         public void onBindView(Object holder, int position, Object data, List<Object> dataList) {
 
-                            MedicalCaseViewHolder viewholder = (MedicalCaseViewHolder) holder;
-                            CommonDataObjects.MedicalCaseRecords value = (CommonDataObjects.MedicalCaseRecords) data;
+                            Inpatient_Inputs.MedicalCaseViewHolder viewholder = (Inpatient_Inputs.MedicalCaseViewHolder) holder;
+                            MedicalCaseRecords value = (MedicalCaseRecords) data;
 
                             viewholder.clinicalNotesValue.setText(value.getClinical_notes());
                             viewholder.dateMc.setText(value.getDate());
@@ -1022,49 +1031,49 @@ public class Inpatient_Inputs extends AppCompatActivity {
 
                             viewholder.delete.setOnClickListener(view ->
                                     new CustomKDMCDialog(view.getContext())
-                                            .setLayoutColor(R.color.red_400)
-                                            .setImage(R.drawable.ic_delete_forever_black_24dp)
+                                            .setLayoutColor(color.red_400)
+                                            .setImage(drawable.ic_delete_forever_black_24dp)
                                             .setTitle("Remove")
                                             .setDescription("Do you want to Remove?")
                                             .setPossitiveButtonTitle("YES")
                                             .setNegativeButtonTitle("NO")
                                             .setOnPossitiveListener(() -> {
-                                                adapter.delete(position);
-                                                medicalCaseRecords.remove(position);
+                                                Inpatient_Inputs.this.adapter.delete(position);
+                                                Inpatient_Inputs.this.medicalCaseRecords.remove(position);
                                             }));
                         }
                     });
 
-            recyclerView.setAdapter(adapter);
+            this.recyclerView.setAdapter(this.adapter);
         }
 
     }
 
 
-    @OnClick(R.id.button_medicalcase_hide)
+    @OnClick(id.button_medicalcase_hide)
     void onButtonMedicalcaseHideClick() {
-        toggleSectionInput(findViewById(R.id.arrow_medicalcase_record), medicalcase_primary);
+        this.toggleSectionInput(this.findViewById(id.arrow_medicalcase_record), this.medicalcase_primary);
     }
 
 
-    @OnClick(R.id.button_medicalcase_clear)
+    @OnClick(id.button_medicalcase_clear)
     void onButtonMedicalcaseClearClick() {
-        edittextMedicalcaseDate.setText("");
-        edittextMedicalcaseClinicalnotes.setText("");
-        edittextMedicalcaseTreatementAndDiet.setText("");
-        edittextMedicalcaseTime.setText("");
-        spinnerMedicalcaseRecordUndercareof.setSelection(0);
-        edittextMedicalcaseRecordStudent.setText("");
-        autocompleteMedicalcaseProvisionalDiagnosis.setText("");
-        edittextMedicalcaseFinalDiagnosis.setText("");
-        spinnerMedicalcaseSelectResult.setSelection(0);
+        this.edittextMedicalcaseDate.setText("");
+        this.edittextMedicalcaseClinicalnotes.setText("");
+        this.edittextMedicalcaseTreatementAndDiet.setText("");
+        this.edittextMedicalcaseTime.setText("");
+        this.spinnerMedicalcaseRecordUndercareof.setSelection(0);
+        this.edittextMedicalcaseRecordStudent.setText("");
+        this.autocompleteMedicalcaseProvisionalDiagnosis.setText("");
+        this.edittextMedicalcaseFinalDiagnosis.setText("");
+        this.spinnerMedicalcaseSelectResult.setSelection(0);
 
         try {
             //first clear the recycler view so items are not populated twice
-            for (int i1 = 0; i1 < adapter.getSize(); i1++) {
-                adapter.delete(i1);
+            for (int i1 = 0; i1 < this.adapter.getSize(); i1++) {
+                this.adapter.delete(i1);
             }
-            adapter.notifyDataSetChanged();
+            this.adapter.notifyDataSetChanged();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1072,86 +1081,86 @@ public class Inpatient_Inputs extends AppCompatActivity {
     }
 
 
-    @OnClick(R.id.button_medicalcase_save)
+    @OnClick(id.button_medicalcase_save)
     void onButtonMedicalcaseSaveClick() {
 
         SQLiteDatabase db = BaseConfig.GetDb();//);
 
-        if (spinnerMedicalcaseRecordUndercareof.getSelectedItemPosition() == 0) {
+        if (this.spinnerMedicalcaseRecordUndercareof.getSelectedItemPosition() == 0) {
             Toast.makeText(this, "Please enter Please enter Under care of....", Toast.LENGTH_LONG).show();
-            spinnerMedicalcaseRecordUndercareof.setFocusable(true);
-        } else if (edittextMedicalcaseRecordStudent.getText().toString().isEmpty()) {
-            edittextMedicalcaseRecordStudent.setError("Please enter Student name....");
-            edittextMedicalcaseRecordStudent.setFocusable(true);
-        } else if (autocompleteMedicalcaseProvisionalDiagnosis.getText().toString().isEmpty()) {
-            autocompleteMedicalcaseProvisionalDiagnosis.setError("Please enter  Provisional Diagnosis....");
-            autocompleteMedicalcaseProvisionalDiagnosis.setFocusable(true);
-        } else if (edittextMedicalcaseFinalDiagnosis.getText().toString().isEmpty()) {
-            edittextMedicalcaseFinalDiagnosis.setError("Please enter  Final Diagnosis....");
-            edittextMedicalcaseFinalDiagnosis.setFocusable(true);
-        } else if (medicalCaseRecords.size() == 0) {
+            this.spinnerMedicalcaseRecordUndercareof.setFocusable(true);
+        } else if (this.edittextMedicalcaseRecordStudent.getText().toString().isEmpty()) {
+            this.edittextMedicalcaseRecordStudent.setError("Please enter Student name....");
+            this.edittextMedicalcaseRecordStudent.setFocusable(true);
+        } else if (this.autocompleteMedicalcaseProvisionalDiagnosis.getText().toString().isEmpty()) {
+            this.autocompleteMedicalcaseProvisionalDiagnosis.setError("Please enter  Provisional Diagnosis....");
+            this.autocompleteMedicalcaseProvisionalDiagnosis.setFocusable(true);
+        } else if (this.edittextMedicalcaseFinalDiagnosis.getText().toString().isEmpty()) {
+            this.edittextMedicalcaseFinalDiagnosis.setError("Please enter  Final Diagnosis....");
+            this.edittextMedicalcaseFinalDiagnosis.setFocusable(true);
+        } else if (this.medicalCaseRecords.size() == 0) {
 
             Toast.makeText(this, "Please add medical case record item using Plus(+) button", Toast.LENGTH_LONG).show();
 
         } else {
             String Datetime;
 
-            for (int i = 0; i <= medicalCaseRecords.size() - 1; i++) {
+            for (int i = 0; i <= this.medicalCaseRecords.size() - 1; i++) {
 
-                String dateMc = medicalCaseRecords.get(i).getDate();
-                String clinicalNotes = medicalCaseRecords.get(i).getClinical_notes();
-                String treatmentDiet = medicalCaseRecords.get(i).getTreatment_diet();
+                String dateMc = this.medicalCaseRecords.get(i).getDate();
+                String clinicalNotes = this.medicalCaseRecords.get(i).getClinical_notes();
+                String treatmentDiet = this.medicalCaseRecords.get(i).getTreatment_diet();
 
 
                 // TODO: 3/14/2017 Tochange DropDown Value Remove AM/PM
 
-                Datetime = medicalCaseRecords.get(i).getTime();
+                Datetime = this.medicalCaseRecords.get(i).getTime();
 
 
                 ContentValues cv = new ContentValues();
 
                 cv.put("ActDate", BaseConfig.DeviceDate());
-                cv.put("pat_id", PATIENT_ID);
+                cv.put("pat_id", this.PATIENT_ID);
                 cv.put("doc_id", BaseConfig.doctorId);
-                cv.put("result", spinnerMedicalcaseSelectResult.getSelectedItem().toString());
-                cv.put("under_care_of", spinnerMedicalcaseRecordUndercareof.getSelectedItem().toString());
-                cv.put("under_care_name", edittextMedicalcaseRecordStudent.getText().toString());
+                cv.put("result", this.spinnerMedicalcaseSelectResult.getSelectedItem().toString());
+                cv.put("under_care_of", this.spinnerMedicalcaseRecordUndercareof.getSelectedItem().toString());
+                cv.put("under_care_name", this.edittextMedicalcaseRecordStudent.getText().toString());
                 cv.put("date", Datetime);
                 cv.put("referred_by", BaseConfig.doctorname);
                 cv.put("clinical_notes", clinicalNotes);
                 cv.put("treatment_diet", treatmentDiet);
-                cv.put("provisional_diag", autocompleteMedicalcaseProvisionalDiagnosis.getText().toString());
-                cv.put("final_diag", edittextMedicalcaseFinalDiagnosis.getText().toString());
+                cv.put("provisional_diag", this.autocompleteMedicalcaseProvisionalDiagnosis.getText().toString());
+                cv.put("final_diag", this.edittextMedicalcaseFinalDiagnosis.getText().toString());
                 cv.put("IsUpdate", "0");
                 cv.put("IsActive", "1");
                 cv.put("HID", BaseConfig.HID);
                 db.insert("InPatient_MedicalCaseRecords", null, cv);
 
 
-                showSuccess();
+                this.showSuccess();
 
                 try {
-                    edittextMedicalcaseDate.setText("");
-                    edittextMedicalcaseClinicalnotes.setText("");
-                    edittextMedicalcaseTreatementAndDiet.setText("");
-                    edittextMedicalcaseTime.setText("");
-                    spinnerMedicalcaseRecordUndercareof.setSelection(0);
-                    edittextMedicalcaseRecordStudent.setText("");
-                    autocompleteMedicalcaseProvisionalDiagnosis.setText("");
-                    edittextMedicalcaseFinalDiagnosis.setText("");
-                    spinnerMedicalcaseSelectResult.setSelection(0);
+                    this.edittextMedicalcaseDate.setText("");
+                    this.edittextMedicalcaseClinicalnotes.setText("");
+                    this.edittextMedicalcaseTreatementAndDiet.setText("");
+                    this.edittextMedicalcaseTime.setText("");
+                    this.spinnerMedicalcaseRecordUndercareof.setSelection(0);
+                    this.edittextMedicalcaseRecordStudent.setText("");
+                    this.autocompleteMedicalcaseProvisionalDiagnosis.setText("");
+                    this.edittextMedicalcaseFinalDiagnosis.setText("");
+                    this.spinnerMedicalcaseSelectResult.setSelection(0);
 
                     try {
-                        medicalCaseRecords = new ArrayList<>();
+                        this.medicalCaseRecords = new ArrayList<>();
                         //first clear the recycler view so items are not populated twice
-                        for (int i1 = 0; i1 < adapter.getSize(); i1++) {
-                            adapter.delete(i1);
+                        for (int i1 = 0; i1 < this.adapter.getSize(); i1++) {
+                            this.adapter.delete(i1);
                         }
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
 
-                    toggleSectionInput(findViewById(R.id.arrow_medicalcase_record), medicalcase_primary);
+                    this.toggleSectionInput(this.findViewById(id.arrow_medicalcase_record), this.medicalcase_primary);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -1164,9 +1173,9 @@ public class Inpatient_Inputs extends AppCompatActivity {
 
     private void showSuccess() {
         new CustomKDMCDialog(this)
-                .setLayoutColor(R.color.green_500)
-                .setImage(R.drawable.ic_success_done)
-                .setTitle(this.getResources().getString(R.string.information))
+                .setLayoutColor(color.green_500)
+                .setImage(drawable.ic_success_done)
+                .setTitle(getResources().getString(string.information))
                 .setDescription("Successfully Inserted")
                 .setNegativeButtonVisible(View.GONE)
                 .setPossitiveButtonTitle("OK");

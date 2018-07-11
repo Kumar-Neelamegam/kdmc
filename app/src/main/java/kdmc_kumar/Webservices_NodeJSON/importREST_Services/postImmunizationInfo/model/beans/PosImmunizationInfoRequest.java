@@ -20,17 +20,17 @@ public class PosImmunizationInfoRequest {
 
 
     @com.google.gson.annotations.SerializedName("DocId")
-    private String docId = null;
+    private String docId;
 
 
     @com.google.gson.annotations.SerializedName("PatId")
-    private String patId = null;
+    private String patId;
 
     public PosImmunizationInfoRequest() {
     }
 
     public final String getDocId() {
-        return docId;
+        return this.docId;
     }
 
     public final void setDocId(String docId) {
@@ -38,7 +38,7 @@ public class PosImmunizationInfoRequest {
     }
 
     public final String getPatId() {
-        return patId;
+        return this.patId;
     }
 
     public final void setPatId(String patId) {
@@ -55,16 +55,16 @@ public class PosImmunizationInfoRequest {
         }
 
         public final PosImmunizationInfoRequest build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final PosImmunizationInfoRequestBuilder docId(String value) {
-            toBuild.setDocId(value);
+        public final PosImmunizationInfoRequest.PosImmunizationInfoRequestBuilder docId(String value) {
+            this.toBuild.setDocId(value);
             return this;
         }
 
-        public final PosImmunizationInfoRequestBuilder patId(String value) {
-            toBuild.setPatId(value);
+        public final PosImmunizationInfoRequest.PosImmunizationInfoRequestBuilder patId(String value) {
+            this.toBuild.setPatId(value);
             return this;
         }
     }

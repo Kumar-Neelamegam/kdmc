@@ -10,12 +10,12 @@ class FileCache {
 
     public FileCache(Context context) {
         // Find the dir to save cached images
-        cacheDir = android.os.Environment.getExternalStorageState().equals(
+        this.cacheDir = android.os.Environment.getExternalStorageState().equals(
                 android.os.Environment.MEDIA_MOUNTED) ? new File(
                 android.os.Environment.getExternalStorageDirectory(),
                 "LazyList") : context.getCacheDir();
-        if (!cacheDir.exists())
-            cacheDir.mkdirs();
+        if (!this.cacheDir.exists())
+            this.cacheDir.mkdirs();
     }
 
     public final File getFile(String url) {
@@ -24,12 +24,12 @@ class FileCache {
         String filename = String.valueOf(url.hashCode());
         // Another possible solution (thanks to grantland)
         // String filename = URLEncoder.encode(url);
-        return new File(cacheDir, filename);
+        return new File(this.cacheDir, filename);
 
     }
 
     public final void clear() {
-        File[] files = cacheDir.listFiles();
+        File[] files = this.cacheDir.listFiles();
         if (files == null)
             return;
         for (File f : files)

@@ -13,9 +13,11 @@ import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.widget.AbsListView;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -32,8 +34,17 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.color;
+import displ.mobydocmarathi.com.R.drawable;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.MyPatientGetSet;
+import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu.NotificationClass;
+import kdmc_kumar.Adapters_GetterSetter.SearchMyPatienRecylerAdapter.ViewHolder;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
 import kdmc_kumar.Core_Modules.MyPatient;
@@ -44,20 +55,20 @@ import kdmc_kumar.Webservices_NodeJSON.ImportWebservices_NODEJS;
  * Created by Ponnusamy M on 4/2/2017.
  */
 
-public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyPatienRecylerAdapter.ViewHolder> {
+public class SearchMyPatienRecylerAdapter extends Adapter<ViewHolder> {
 
     private static final int WRAP_CONTENT = 34;
-    ArrayList<CommonDataObjects.MyPatientGetSet> filteredList = new ArrayList<>();
-    ArrayList<Dashboard_NavigationMenu.NotificationClass> notificationListTest = new ArrayList<>();
+    ArrayList<MyPatientGetSet> filteredList = new ArrayList<>();
+    ArrayList<NotificationClass> notificationListTest = new ArrayList<>();
     private final LinkedHashMap<Integer, String> hm = new LinkedHashMap<>();
     private final Button getDetails;
     private final String ResponseJson;
     private final Context ctxx;
-    private final List<CommonDataObjects.MyPatientGetSet> mValues;
-    private List<CommonDataObjects.MyPatientGetSet> dictionaryWords = null;
+    private final List<MyPatientGetSet> mValues;
+    private final List<MyPatientGetSet> dictionaryWords;
 
 
-    public SearchMyPatienRecylerAdapter(List<CommonDataObjects.MyPatientGetSet> mValues, Button getDetails, String ResponseJson, Context ctxx) {
+    public SearchMyPatienRecylerAdapter(List<MyPatientGetSet> mValues, Button getDetails, String ResponseJson, Context ctxx) {
         this.mValues = mValues;
         this.getDetails = getDetails;
         this.ResponseJson = ResponseJson;
@@ -66,17 +77,17 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
 
     @NonNull
     @Override
-    public final ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public final SearchMyPatienRecylerAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = null;
         // if (BaseConfig.listViewType.equals(ListViewType.ListView)) {
-        View view1 = LayoutInflater.from(parent.getContext()).inflate(R.layout.grid_item_searchpatient, parent, false);
+        View view1 = LayoutInflater.from(parent.getContext()).inflate(layout.grid_item_searchpatient, parent, false);
 
-        return new ViewHolder(view1);
+        return new SearchMyPatienRecylerAdapter.ViewHolder(view1);
     }
 
 
     @Override
-    public final void onBindViewHolder(@NonNull final ViewHolder holder, final int position) {
+    public final void onBindViewHolder(@NonNull SearchMyPatienRecylerAdapter.ViewHolder holder, int position) {
 
         String[] parts;
         String part1, part2 = null;
@@ -84,23 +95,23 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
 
             // TODO: 3/20/2017 adding My patient infos
 
-            holder.txtDesc.setText(mValues.get(position).getPatient_Age());
-            holder.gender.setText(mValues.get(position).getPatient_Gender());
+            holder.txtDesc.setText(this.mValues.get(position).getPatient_Age());
+            holder.gender.setText(this.mValues.get(position).getPatient_Gender());
 
-            holder.txtTitle.setText(mValues.get(position).getPatient_Name());
-            holder.pid.setText(mValues.get(position).getPatient_Id());
+            holder.txtTitle.setText(this.mValues.get(position).getPatient_Name());
+            holder.pid.setText(this.mValues.get(position).getPatient_Id());
 
             holder.checkPatient.setOnCheckedChangeListener((buttonView, isChecked) -> {
 
 
-                String values = mValues.get(position).getPatient_Id();
+                String values = this.mValues.get(position).getPatient_Id();
 
 
                 if (isChecked) {
-                    hm.put(Integer.valueOf(position), values);
+                    this.hm.put(Integer.valueOf(position), values);
                     //Toast.makeText(buttonView.getContext(), "Added Selected Position: " + values, Toast.LENGTH_LONG).show();
                 } else {
-                    hm.remove(Integer.valueOf(position));
+                    this.hm.remove(Integer.valueOf(position));
                     //Toast.makeText(buttonView.getContext(), "Removed Selected Position: " + values, Toast.LENGTH_LONG).show();
                 }
 
@@ -108,11 +119,11 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
             });
 
 
-            getDetails.setOnClickListener(v -> {
+            this.getDetails.setOnClickListener(v -> {
 
                 try {
-                    if (hm != null && hm.size() > 0) {
-                        new PatientMapping(ResponseJson, v).execute();
+                    if (this.hm != null && this.hm.size() > 0) {
+                        new PatientMapping(this.ResponseJson, v).execute();
                     } else {
                         Toast.makeText(v.getContext(), "Select any one patient to get information...", Toast.LENGTH_SHORT).show();
 
@@ -133,23 +144,23 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
 
         String PatientId = "";
 
-        String PatientId1 = mValues.get(position).getPatient_Id();
+        String PatientId1 = this.mValues.get(position).getPatient_Id();
 
-        final String finalPatientId = PatientId1;
+        String finalPatientId = PatientId1;
 
 
         //Log.e("Image File Path: ", mValues.get(position).getPatient_Image());
 
         try {
-            BaseConfig.LoadPatientImage(mValues.get(position).getPatient_Image(), holder.imageView, 50);
+            BaseConfig.LoadPatientImage(this.mValues.get(position).getPatient_Image(), holder.imageView, 50);
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
         holder.rootLayout.setLayoutParams(new AbsListView.LayoutParams(
-                ViewGroup.LayoutParams.MATCH_PARENT,
-                ViewGroup.LayoutParams.WRAP_CONTENT));
+                LayoutParams.MATCH_PARENT,
+                LayoutParams.WRAP_CONTENT));
 
 /*
         if (mValues.get(position).IsOnlinePatient) {
@@ -364,8 +375,8 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
                     values1.put("spouse", spouse);
 
 
-                    for (Iterator<Map.Entry<Integer, String>> iterator = hm.entrySet().iterator(); iterator.hasNext(); ) {
-                        Map.Entry m = iterator.next();
+                    for (Iterator<Entry<Integer, String>> iterator = this.hm.entrySet().iterator(); iterator.hasNext(); ) {
+                        Entry m = iterator.next();
                         //Log.e("Details: ", m.getKey() + " " + m.getValue());
 
                         if (Patid_data.equalsIgnoreCase(m.getValue().toString())) {
@@ -382,7 +393,7 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
                                 db.insert("Patreg", null, values1);
                                 //Log.e("Insert PatitentMapping Webservice: ", String.valueOf(values1));
 
-                                ImportWebservices_NODEJS.LoadForVaccination(Patid_data, name_data, String.valueOf(age_data + "-" + gender_data), phone_data);
+                                ImportWebservices_NODEJS.LoadForVaccination(Patid_data, name_data, age_data + "-" + gender_data, phone_data);
 
                             }
 
@@ -401,7 +412,7 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
                     }
 
 
-                    UpdatePatientMapping(hm);
+                    this.UpdatePatientMapping(this.hm);
 
 
                 }
@@ -420,8 +431,8 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
             JSONObject from_db_obj = new JSONObject();
             JSONArray export_jsonarray = new JSONArray();
 
-            for (Iterator<Map.Entry<Integer, String>> iterator = this.hm.entrySet().iterator(); iterator.hasNext(); ) {
-                Map.Entry m = iterator.next();
+            for (Iterator<Entry<Integer, String>> iterator = this.hm.entrySet().iterator(); iterator.hasNext(); ) {
+                Entry m = iterator.next();
 
                 from_db_obj = new JSONObject();
 
@@ -451,14 +462,14 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
 
 //**********************************************************************************************
 
-    private final void ShowClosePatientDialog(final Context ctx, final List<CommonDataObjects.MyPatientGetSet> mValues, int position) {
+    private final void ShowClosePatientDialog(Context ctx, List<MyPatientGetSet> mValues, int position) {
 
 
         new CustomKDMCDialog(ctx)
-                .setLayoutColor(R.color.green_500)
-                .setImage(R.drawable.ic_close_black_24dp)
-                .setTitle(ctx.getResources().getString(R.string.close_online))
-                .setDescription(ctx.getResources().getString(R.string.close_online_txt))
+                .setLayoutColor(color.green_500)
+                .setImage(drawable.ic_close_black_24dp)
+                .setTitle(ctx.getResources().getString(string.close_online))
+                .setDescription(ctx.getResources().getString(string.close_online_txt))
                 .setPossitiveButtonTitle("YES")
                 .setNegativeButtonTitle("NO")
                 .setOnPossitiveListener(() -> {
@@ -469,7 +480,7 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
                     db.execSQL(Query);
                     db.close();
                     mValues.get(position).IsOnlinePatient = false;
-                    notifyDataSetChanged();
+                    this.notifyDataSetChanged();
 
                 });
 
@@ -517,7 +528,7 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
 
     @Override
     public final int getItemCount() {
-        return mValues.size();
+        return this.mValues.size();
     }
 
 
@@ -560,8 +571,8 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
     class PatientMapping extends AsyncTask<String, String, String> {
 
 
-        boolean result = false;
-        ProgressDialog progressDialog = null;
+        boolean result;
+        ProgressDialog progressDialog;
 
         final String responseJson;
         final View v;
@@ -574,32 +585,32 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
         @Override
         protected final void onPreExecute() {
             super.onPreExecute();
-            progressDialog = ProgressDialog.show(v.getContext(),
+            this.progressDialog = ProgressDialog.show(this.v.getContext(),
                     "Please wait",
                     "Getting all selected patient details...");
 
-            progressDialog.setCanceledOnTouchOutside(false);
-            progressDialog.setOnCancelListener(dialog -> result = false);
+            this.progressDialog.setCanceledOnTouchOutside(false);
+            this.progressDialog.setOnCancelListener(dialog -> this.result = false);
         }
 
         @Override
         protected final void onPostExecute(String result) {
             super.onPostExecute(result);
-            progressDialog.dismiss();
+            this.progressDialog.dismiss();
 
-            Toast.makeText(v.getContext(), "Patient details imported successfully...", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this.v.getContext(), "Patient details imported successfully...", Toast.LENGTH_SHORT).show();
            // BaseConfig.SnackBar(this,  "Patient details imported successfully..." , parentLayout);
 
-            new CustomKDMCDialog(v.getContext())
-                    .setLayoutColor(R.color.green_500)
-                    .setImage(R.drawable.ic_success_done)
-                    .setTitle(v.getContext().getString(R.string.information)).setNegativeButtonVisible(View.GONE)
+            new CustomKDMCDialog(this.v.getContext())
+                    .setLayoutColor(color.green_500)
+                    .setImage(drawable.ic_success_done)
+                    .setTitle(this.v.getContext().getString(string.information)).setNegativeButtonVisible(View.GONE)
                     .setDescription("Patient details received successfully.")
-                    .setPossitiveButtonTitle(v.getContext().getString(R.string.ok))
+                    .setPossitiveButtonTitle(this.v.getContext().getString(string.ok))
                     .setOnPossitiveListener(() -> {
-                        ((Activity) ctxx).finish();
-                        Intent OnlinePatient = new Intent(ctxx, MyPatient.class);
-                        ctxx.startActivity(OnlinePatient);
+                        ((Activity) SearchMyPatienRecylerAdapter.this.ctxx).finish();
+                        Intent OnlinePatient = new Intent(SearchMyPatienRecylerAdapter.this.ctxx, MyPatient.class);
+                        SearchMyPatienRecylerAdapter.this.ctxx.startActivity(OnlinePatient);
                     });
 
 
@@ -614,7 +625,7 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
         protected final String doInBackground(String... params) {
 
             try {
-                InsertPatient(responseJson, v);
+                SearchMyPatienRecylerAdapter.this.InsertPatient(this.responseJson, this.v);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -637,24 +648,24 @@ public class SearchMyPatienRecylerAdapter extends RecyclerView.Adapter<SearchMyP
         final TextView gender;
         final TextView pid;
 
-        TextView labreport_text = null;
-        LinearLayout labreport = null;
+        TextView labreport_text;
+        LinearLayout labreport;
         final CardView card_view;
         final CheckBox checkPatient;
 
 
         ViewHolder(View view) {
             super(view);
-            txtDesc = view.findViewById(R.id.desc);
-            txtTitle = view.findViewById(R.id.title);
-            imageView = view.findViewById(R.id.icon);
-            rootLayout = view.findViewById(R.id.list_root);
-            layout = view.findViewById(R.id.online_patient);
+            this.txtDesc = view.findViewById(id.desc);
+            this.txtTitle = view.findViewById(id.title);
+            this.imageView = view.findViewById(id.icon);
+            this.rootLayout = view.findViewById(id.list_root);
+            this.layout = view.findViewById(id.online_patient);
            // closeOnlineButton = view.findViewById(R.id.close_online_patient);
-            gender = view.findViewById(R.id.gender);
-            pid = view.findViewById(R.id.pid);
-            card_view = view.findViewById(R.id.card_view);
-            checkPatient = view.findViewById(R.id.chk_bx);
+            this.gender = view.findViewById(id.gender);
+            this.pid = view.findViewById(id.pid);
+            this.card_view = view.findViewById(id.card_view);
+            this.checkPatient = view.findViewById(id.chk_bx);
 
         }
 

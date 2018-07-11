@@ -30,7 +30,7 @@ public class ReflectionUtils {
         // This utility class is not publicly instantiable.
     }
 
-    public static Class<?> getClass(final String className) {
+    public static Class<?> getClass(String className) {
         try {
             return Class.forName(className);
         } catch (ClassNotFoundException e) {
@@ -38,8 +38,8 @@ public class ReflectionUtils {
         }
     }
 
-    public static Method getMethod(final Class<?> targetClass, final String name,
-                                   final Class<?>... parameterTypes) {
+    public static Method getMethod(Class<?> targetClass, String name,
+                                   Class<?>... parameterTypes) {
         if (targetClass == null || TextUtils.isEmpty(name)) return null;
         try {
             return targetClass.getMethod(name, parameterTypes);
@@ -51,8 +51,8 @@ public class ReflectionUtils {
         return null;
     }
 
-    public static Method getPrivateMethod(final Class<?> targetClass, final String name,
-                                   final Class<?>... parameterTypes) {
+    public static Method getPrivateMethod(Class<?> targetClass, String name,
+                                          Class<?>... parameterTypes) {
         if (targetClass == null || TextUtils.isEmpty(name)) return null;
         try {
             Method method = targetClass.getDeclaredMethod(name, parameterTypes);
@@ -66,18 +66,18 @@ public class ReflectionUtils {
         return null;
     }
 
-    public static Object invoke(final Object receiver, final Object defaultValue,
-                                final Method method, final Object... args) {
+    public static Object invoke(Object receiver, Object defaultValue,
+                                Method method, Object... args) {
         if (method == null) return defaultValue;
         try {
             return method.invoke(receiver, args);
         } catch (Exception e) {
-            Log.e(TAG, "Exception in invoke", e);
+            Log.e(ReflectionUtils.TAG, "Exception in invoke", e);
         }
         return defaultValue;
     }
 
-    public static Field getPrivateField(final Class<?> targetClass, final String name) {
+    public static Field getPrivateField(Class<?> targetClass, String name) {
         if (targetClass == null || TextUtils.isEmpty(name)) return null;
         try {
             Field field = targetClass.getDeclaredField(name);
@@ -93,22 +93,22 @@ public class ReflectionUtils {
         return null;
     }
 
-    public static void setFieldValue(final Object receiver, final Field field, final Object value) {
+    public static void setFieldValue(Object receiver, Field field, Object value) {
         if (field == null) return;
         try {
             field.set(receiver, value);
         } catch (Exception e) {
-            Log.e(TAG, "Exception in setFieldValue", e);
+            Log.e(ReflectionUtils.TAG, "Exception in setFieldValue", e);
         }
     }
 
-    public static Object getFieldValue(final Object receiver, final Object defaultValue,
-                                       final Field field) {
+    public static Object getFieldValue(Object receiver, Object defaultValue,
+                                       Field field) {
         if (field == null) return defaultValue;
         try {
             return field.get(receiver);
         } catch (Exception e) {
-            Log.e(TAG, "Exception in getFieldValue", e);
+            Log.e(ReflectionUtils.TAG, "Exception in getFieldValue", e);
         }
         return defaultValue;
     }
@@ -123,51 +123,51 @@ public class ReflectionUtils {
     private static final Object[] FOUR_OBJECTS_ARRAY = new Object[4];
 
     public static Object invoke(Object receiver, Object defaultValue, Method method) {
-        return invoke(receiver, defaultValue, method, EMPTY_ARRAY);
+        return ReflectionUtils.invoke(receiver, defaultValue, method, ReflectionUtils.EMPTY_ARRAY);
     }
 
     public static Object invoke(Object receiver, Object defaultValue, Method method, Object firstArg) {
-        ONE_OBJECT_ARRAY[0] = firstArg;
-        Object result = invoke(receiver, defaultValue, method, ONE_OBJECT_ARRAY);
-        ONE_OBJECT_ARRAY[0] = null;
+        ReflectionUtils.ONE_OBJECT_ARRAY[0] = firstArg;
+        Object result = ReflectionUtils.invoke(receiver, defaultValue, method, ReflectionUtils.ONE_OBJECT_ARRAY);
+        ReflectionUtils.ONE_OBJECT_ARRAY[0] = null;
         return result;
     }
 
     public static Object invoke(Object receiver, Object defaultValue, Method method,
                                 Object firstArg, Object secondArg) {
-        TWO_OBJECTS_ARRAY[0] = firstArg;
-        TWO_OBJECTS_ARRAY[1] = secondArg;
-        Object result = invoke(receiver, defaultValue, method, TWO_OBJECTS_ARRAY);
-        TWO_OBJECTS_ARRAY[0] = null;
-        TWO_OBJECTS_ARRAY[1] = null;
+        ReflectionUtils.TWO_OBJECTS_ARRAY[0] = firstArg;
+        ReflectionUtils.TWO_OBJECTS_ARRAY[1] = secondArg;
+        Object result = ReflectionUtils.invoke(receiver, defaultValue, method, ReflectionUtils.TWO_OBJECTS_ARRAY);
+        ReflectionUtils.TWO_OBJECTS_ARRAY[0] = null;
+        ReflectionUtils.TWO_OBJECTS_ARRAY[1] = null;
         return result;
     }
 
 
     public static Object invoke(Object receiver, Object defaultValue, Method method,
                                 Object firstArg, Object secondArg, Object thirdArg) {
-        THREE_OBJECTS_ARRAY[0] = firstArg;
-        THREE_OBJECTS_ARRAY[1] = secondArg;
-        THREE_OBJECTS_ARRAY[2] = thirdArg;
-        Object result = invoke(receiver, defaultValue, method, THREE_OBJECTS_ARRAY);
-        THREE_OBJECTS_ARRAY[0] = null;
-        THREE_OBJECTS_ARRAY[1] = null;
-        THREE_OBJECTS_ARRAY[2] = null;
+        ReflectionUtils.THREE_OBJECTS_ARRAY[0] = firstArg;
+        ReflectionUtils.THREE_OBJECTS_ARRAY[1] = secondArg;
+        ReflectionUtils.THREE_OBJECTS_ARRAY[2] = thirdArg;
+        Object result = ReflectionUtils.invoke(receiver, defaultValue, method, ReflectionUtils.THREE_OBJECTS_ARRAY);
+        ReflectionUtils.THREE_OBJECTS_ARRAY[0] = null;
+        ReflectionUtils.THREE_OBJECTS_ARRAY[1] = null;
+        ReflectionUtils.THREE_OBJECTS_ARRAY[2] = null;
         return result;
     }
 
     public static Object invoke(Object receiver, Object defaultValue, Method method,
                                 Object firstArg, Object secondArg,
                                 Object thirdArg, Object fourthArg) {
-        FOUR_OBJECTS_ARRAY[0] = firstArg;
-        FOUR_OBJECTS_ARRAY[1] = secondArg;
-        FOUR_OBJECTS_ARRAY[2] = thirdArg;
-        FOUR_OBJECTS_ARRAY[3] = fourthArg;
-        Object result = invoke(receiver, defaultValue, method, FOUR_OBJECTS_ARRAY);
-        FOUR_OBJECTS_ARRAY[0] = null;
-        FOUR_OBJECTS_ARRAY[1] = null;
-        FOUR_OBJECTS_ARRAY[2] = null;
-        FOUR_OBJECTS_ARRAY[3] = null;
+        ReflectionUtils.FOUR_OBJECTS_ARRAY[0] = firstArg;
+        ReflectionUtils.FOUR_OBJECTS_ARRAY[1] = secondArg;
+        ReflectionUtils.FOUR_OBJECTS_ARRAY[2] = thirdArg;
+        ReflectionUtils.FOUR_OBJECTS_ARRAY[3] = fourthArg;
+        Object result = ReflectionUtils.invoke(receiver, defaultValue, method, ReflectionUtils.FOUR_OBJECTS_ARRAY);
+        ReflectionUtils.FOUR_OBJECTS_ARRAY[0] = null;
+        ReflectionUtils.FOUR_OBJECTS_ARRAY[1] = null;
+        ReflectionUtils.FOUR_OBJECTS_ARRAY[2] = null;
+        ReflectionUtils.FOUR_OBJECTS_ARRAY[3] = null;
         return result;
     }
 

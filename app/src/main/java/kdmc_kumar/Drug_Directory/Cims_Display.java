@@ -11,12 +11,17 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
+import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.drawable;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 /**
@@ -34,13 +39,13 @@ public class Cims_Display extends AppCompatActivity {
     //**********************************************************************************************
 
 
-    private Toolbar toolbar = null;
-    private ImageView back = null;//
-    private TextView Title = null;
+    private Toolbar toolbar;
+    private ImageView back;//
+    private TextView Title;
 
-    private WebView Web_CimsData = null;
-    private TextView tvw_System_Name = null;
-    private ImageView imgvw_Medicine_Logo = null;
+    private WebView Web_CimsData;
+    private TextView tvw_System_Name;
+    private ImageView imgvw_Medicine_Logo;
 
     public Cims_Display() {
     }
@@ -51,14 +56,14 @@ public class Cims_Display extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
 
-        setContentView(R.layout.new_cims_display);
+        this.setContentView(layout.new_cims_display);
 
 
         try {
 
-            GetIniliaze();
+            this.GetIniliaze();
 
-            Controllisteners();
+            this.Controllisteners();
 
 
         } catch (Exception e) {
@@ -72,52 +77,52 @@ public class Cims_Display extends AppCompatActivity {
     private final void GetIniliaze() {
 
 
-        toolbar = findViewById(R.id.toolbar);
-        back = toolbar.findViewById(R.id.ic_back);
-        Title = toolbar.findViewById(R.id.txvw_title);
-        Title.setText("CIMS");
+        this.toolbar = this.findViewById(id.toolbar);
+        this.back = this.toolbar.findViewById(id.ic_back);
+        this.Title = this.toolbar.findViewById(id.txvw_title);
+        this.Title.setText("CIMS");
 
-        setSupportActionBar(toolbar);
-
-
-        back.setOnClickListener(view -> LoadBack());
-
-        Web_CimsData = findViewById(R.id.webvw_cims_display);
-        tvw_System_Name = findViewById(R.id.txtvw_title);
-        imgvw_Medicine_Logo = findViewById(R.id.imgvw_logo);
-
-        Web_CimsData = findViewById(R.id.webvw_cims_display);
-        Web_CimsData.getSettings().setJavaScriptEnabled(true);
-        Web_CimsData.setWebChromeClient(new WebChromeClient());
-        Web_CimsData.getSettings().setJavaScriptEnabled(true);
-        Web_CimsData.setLayerType(View.LAYER_TYPE_NONE, null);
-        Web_CimsData.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        Web_CimsData.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
-        Web_CimsData.getSettings().setDefaultTextEncodingName("utf-8");
-
-        Web_CimsData.setWebChromeClient(new MyWebChromeClient());
-
-        Web_CimsData.setBackgroundColor(0x00000000);
-        Web_CimsData.setVerticalScrollBarEnabled(true);
-        Web_CimsData.setHorizontalScrollBarEnabled(true);
-
-        Toast.makeText(this, getString(R.string.please_wait_drug), Toast.LENGTH_SHORT).show();
+        this.setSupportActionBar(this.toolbar);
 
 
-        Web_CimsData.getSettings().setJavaScriptEnabled(true);
+        this.back.setOnClickListener(view -> this.LoadBack());
 
-        Web_CimsData.getSettings().setAllowContentAccess(true);
+        this.Web_CimsData = this.findViewById(id.webvw_cims_display);
+        this.tvw_System_Name = this.findViewById(id.txtvw_title);
+        this.imgvw_Medicine_Logo = this.findViewById(id.imgvw_logo);
+
+        this.Web_CimsData = this.findViewById(id.webvw_cims_display);
+        this.Web_CimsData.getSettings().setJavaScriptEnabled(true);
+        this.Web_CimsData.setWebChromeClient(new WebChromeClient());
+        this.Web_CimsData.getSettings().setJavaScriptEnabled(true);
+        this.Web_CimsData.setLayerType(View.LAYER_TYPE_NONE, null);
+        this.Web_CimsData.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        this.Web_CimsData.getSettings().setRenderPriority(RenderPriority.HIGH);
+        this.Web_CimsData.getSettings().setDefaultTextEncodingName("utf-8");
+
+        this.Web_CimsData.setWebChromeClient(new Cims_Display.MyWebChromeClient());
+
+        this.Web_CimsData.setBackgroundColor(0x00000000);
+        this.Web_CimsData.setVerticalScrollBarEnabled(true);
+        this.Web_CimsData.setHorizontalScrollBarEnabled(true);
+
+        Toast.makeText(this, this.getString(string.please_wait_drug), Toast.LENGTH_SHORT).show();
 
 
-        Web_CimsData.setOnLongClickListener(v -> true);
+        this.Web_CimsData.getSettings().setJavaScriptEnabled(true);
 
-        Web_CimsData.setLongClickable(false);
+        this.Web_CimsData.getSettings().setAllowContentAccess(true);
 
 
-        Web_CimsData.addJavascriptInterface(new WebAppInterface(Cims_Display.this), "android");
+        this.Web_CimsData.setOnLongClickListener(v -> true);
+
+        this.Web_CimsData.setLongClickable(false);
+
+
+        this.Web_CimsData.addJavascriptInterface(new Cims_Display.WebAppInterface(this), "android");
         try {
 
-            Web_CimsData.loadDataWithBaseURL("file:///android_asset/", LoadCimsDisplay(), "text/html", "utf-8", null);
+            this.Web_CimsData.loadDataWithBaseURL("file:///android_asset/", this.LoadCimsDisplay(), "text/html", "utf-8", null);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -129,7 +134,7 @@ public class Cims_Display extends AppCompatActivity {
     @Override
     public final void onBackPressed() {
         //
-        LoadBack();
+        this.LoadBack();
     }
     //**********************************************************************************************
 
@@ -156,36 +161,36 @@ public class Cims_Display extends AppCompatActivity {
                     String iconchange = (c.getString(c.getColumnIndex("MEDICINEINTAKETYPE")).trim());
                     switch (iconchange) {
                         case "TAB":
-                            imgvw_Medicine_Logo.setImageResource(R.drawable.tablet);
+                            this.imgvw_Medicine_Logo.setImageResource(drawable.tablet);
                             break;
 
                         case "SYR":
-                            imgvw_Medicine_Logo.setImageResource(R.drawable.syrup);
+                            this.imgvw_Medicine_Logo.setImageResource(drawable.syrup);
                             break;
 
                         case "OINT":
-                            imgvw_Medicine_Logo.setImageResource(R.drawable.ointment);
+                            this.imgvw_Medicine_Logo.setImageResource(drawable.ointment);
                             break;
 
                         case "CAP":
-                            imgvw_Medicine_Logo.setImageResource(R.drawable.capsule);
+                            this.imgvw_Medicine_Logo.setImageResource(drawable.capsule);
                             break;
 
                         case "INJ":
-                            imgvw_Medicine_Logo.setImageResource(R.drawable.injection);
+                            this.imgvw_Medicine_Logo.setImageResource(drawable.injection);
                             break;
                     }
 
                     cimsdruggeneric_name1 = (c.getString(c.getColumnIndex("DRUGGENERICNAME")));
 
-                    tvw_System_Name.setText(cimsdruggeneric_name1);
+                    this.tvw_System_Name.setText(cimsdruggeneric_name1);
 
                     //Str 0
-                    str0.append('\n' + "<tr>\n" + "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i><b>  ").append(getString(R.string.system)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("SYSTEM"))).append("</td> \n").append("</tr>\n").append('\n').append('\n').append('\n').append("<tr>\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-address-card\" aria-hidden=\"true\"></i><b>  ").append(getString(R.string.category_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("DRUGGENERICNAME"))).append("</td>\n").append("</tr>\n").append('\n').append('\n').append("<tr>\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i><b>  ").append(getString(R.string.chemical_name_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("CHEMICALNAME"))).append("</td>\n").append("</tr>");
+                    str0.append('\n' + "<tr>\n" + "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i><b>  ").append(this.getString(string.system)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("SYSTEM"))).append("</td> \n").append("</tr>\n").append('\n').append('\n').append('\n').append("<tr>\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-address-card\" aria-hidden=\"true\"></i><b>  ").append(this.getString(string.category_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("DRUGGENERICNAME"))).append("</td>\n").append("</tr>\n").append('\n').append('\n').append("<tr>\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i><b>  ").append(this.getString(string.chemical_name_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("CHEMICALNAME"))).append("</td>\n").append("</tr>");
 
 
                     //Str1
-                    str1.append('\n' + "<tr >\n" + "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-id-card-o\" aria-hidden=\"true\"></i><b>  ").append(getString(R.string.brand_name_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("MARKETNAMEOFDRUG"))).append("</td> \n").append("</tr>\n").append('\n').append("<tr >\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-user-circle-o\" aria-hidden=\"true\"></i><b> ").append(getString(R.string.pharma_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("PHARMACOMPANY"))).append("</td> \n").append("</tr>\n").append('\n').append('\n').append("<tr >\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-user-circle\" aria-hidden=\"true\"></i><b> ").append(getString(R.string.composition_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("COMPOSITION"))).append("</td>\n").append("</tr>\n").append('\n').append(" <tr >\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-calendar\" aria-hidden=\"true\"></i><b> ").append(getString(R.string.dosage_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("DOSAGE"))).append("</td>\n").append("</tr> \n").append('\n').append("<tr > \n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-calendar-check-o\" aria-hidden=\"true\"></i><b>  ").append(getString(R.string.medicine_intake_type_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:  ").append(c.getString(c.getColumnIndex("MEDICINEINTAKETYPE"))).append("</td>\n").append("</tr>\n").append('\n').append('\n').append("<tr >\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-mars-stroke\" aria-hidden=\"true\"></i><b>  ").append(getString(R.string.units_per_pack_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("UNITSPERPACK"))).append('-').append(c.getString(c.getColumnIndex("MEDICINEINTAKETYPE"))).append("</td>\n").append("</tr>\n").append('\n').append(" \n").append('\n').append("<tr>\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  PRICE MRP</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("PRICEMRP"))).append("</td>\n").append("</tr>");
+                    str1.append('\n' + "<tr >\n" + "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-id-card-o\" aria-hidden=\"true\"></i><b>  ").append(this.getString(string.brand_name_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("MARKETNAMEOFDRUG"))).append("</td> \n").append("</tr>\n").append('\n').append("<tr >\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-user-circle-o\" aria-hidden=\"true\"></i><b> ").append(this.getString(string.pharma_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("PHARMACOMPANY"))).append("</td> \n").append("</tr>\n").append('\n').append('\n').append("<tr >\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-user-circle\" aria-hidden=\"true\"></i><b> ").append(this.getString(string.composition_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("COMPOSITION"))).append("</td>\n").append("</tr>\n").append('\n').append(" <tr >\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-calendar\" aria-hidden=\"true\"></i><b> ").append(this.getString(string.dosage_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("DOSAGE"))).append("</td>\n").append("</tr> \n").append('\n').append("<tr > \n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-calendar-check-o\" aria-hidden=\"true\"></i><b>  ").append(this.getString(string.medicine_intake_type_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:  ").append(c.getString(c.getColumnIndex("MEDICINEINTAKETYPE"))).append("</td>\n").append("</tr>\n").append('\n').append('\n').append("<tr >\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-mars-stroke\" aria-hidden=\"true\"></i><b>  ").append(this.getString(string.units_per_pack_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("UNITSPERPACK"))).append('-').append(c.getString(c.getColumnIndex("MEDICINEINTAKETYPE"))).append("</td>\n").append("</tr>\n").append('\n').append(" \n").append('\n').append("<tr>\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  PRICE MRP</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(c.getString(c.getColumnIndex("PRICEMRP"))).append("</td>\n").append("</tr>");
 
 
                     // INDICATIONS AND DOSAGE
@@ -330,7 +335,7 @@ public class Cims_Display extends AppCompatActivity {
 
         //get data 3
         StringBuilder str6 = new StringBuilder();
-        Resources res = getResources();
+        Resources res = this.getResources();
 
         String Query3 = "select genericname,Roa,Category from pregnaacysafety where genericname like '%" + cimsdruggeneric_name2 + "%' order by id";
         Cursor c3 = db.rawQuery(Query3, null);
@@ -354,8 +359,8 @@ public class Cims_Display extends AppCompatActivity {
                         str6.append("\n");*/
 
                         str = "<tr>\n" +
-                                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\t" + getString(R.string.category_txt) + "</b></td> \n" +
-                                "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   " + res.getString(R.string.Category_A) + "</td>\n" +
+                                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\t" + this.getString(string.category_txt) + "</b></td> \n" +
+                                "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   " + res.getString(string.Category_A) + "</td>\n" +
                                 "</tr>\n" +
                                 "<tr>\n" +
                                 "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\tROA</b></td> \n" +
@@ -365,8 +370,8 @@ public class Cims_Display extends AppCompatActivity {
                     } else if (category_chk.equalsIgnoreCase("B")) {
 
                         str = "<tr>\n" +
-                                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\t" + getString(R.string.category_txt) + "</b></td> \n" +
-                                "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   " + res.getString(R.string.Category_B) + "</td>\n" +
+                                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\t" + this.getString(string.category_txt) + "</b></td> \n" +
+                                "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   " + res.getString(string.Category_B) + "</td>\n" +
                                 "</tr>\n" +
                                 "<tr>\n" +
                                 "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\tROA</b></td> \n" +
@@ -377,8 +382,8 @@ public class Cims_Display extends AppCompatActivity {
                     } else if (category_chk.equalsIgnoreCase("C")) {
 
                         str = "<tr>\n" +
-                                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\t" + getString(R.string.category_txt) + "</b></td> \n" +
-                                "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   " + res.getString(R.string.Category_C) + "</td>\n" +
+                                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\t" + this.getString(string.category_txt) + "</b></td> \n" +
+                                "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   " + res.getString(string.Category_C) + "</td>\n" +
                                 "</tr>\n" +
                                 "<tr>\n" +
                                 "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\tROA</b></td> \n" +
@@ -388,8 +393,8 @@ public class Cims_Display extends AppCompatActivity {
                     } else if (category_chk.equalsIgnoreCase("D")) {
 
                         str = "<tr>\n" +
-                                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\t" + getString(R.string.category_txt) + "</b></td> \n" +
-                                "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   " + res.getString(R.string.Category_D) + "</td>\n" +
+                                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\t" + this.getString(string.category_txt) + "</b></td> \n" +
+                                "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   " + res.getString(string.Category_D) + "</td>\n" +
                                 "</tr>\n" +
                                 "<tr>\n" +
                                 "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\tROA</b></td> \n" +
@@ -400,8 +405,8 @@ public class Cims_Display extends AppCompatActivity {
                     } else if (category_chk.equalsIgnoreCase("X")) {
 
                         str = "<tr>\n" +
-                                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\t" + getString(R.string.category_txt) + "</b></td> \n" +
-                                "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   " + res.getString(R.string.Category_X) + "</td>\n" +
+                                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\t" + this.getString(string.category_txt) + "</b></td> \n" +
+                                "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   " + res.getString(string.Category_X) + "</td>\n" +
                                 "</tr>\n" +
                                 "<tr>\n" +
                                 "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-credit-card\" aria-hidden=\"true\"></i><b>\tROA</b></td> \n" +
@@ -443,7 +448,7 @@ public class Cims_Display extends AppCompatActivity {
                     }
 
 
-                    str8.append("<tr>\n" + "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-user\" aria-hidden=\"true\"></i><b>\t").append(getString(R.string.post_food)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(str).append("</td>\n").append("</tr>\n").append(" \n").append('\n').append("<tr>\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-user\" aria-hidden=\"true\"></i><b>\t").append(getString(R.string.remarks_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:  ").append(c2.getString(c2.getColumnIndex("Additionalcomments"))).append("</td>\n").append("</tr>\n").append(' ');
+                    str8.append("<tr>\n" + "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-user\" aria-hidden=\"true\"></i><b>\t").append(this.getString(string.post_food)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:   ").append(str).append("</td>\n").append("</tr>\n").append(" \n").append('\n').append("<tr>\n").append("<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"><i class=\"fa fa-user\" aria-hidden=\"true\"></i><b>\t").append(this.getString(string.remarks_txt)).append("</b></td> \n").append("<td height=\"20\" width=\"50%\" style=\"color:#000000;\">:  ").append(c2.getString(c2.getColumnIndex("Additionalcomments"))).append("</td>\n").append("</tr>\n").append(' ');
 
 
                     break;
@@ -456,7 +461,7 @@ public class Cims_Display extends AppCompatActivity {
         db.close();
 
 
-        String values1 = "<!DOCTYPE html>\n" + "\n" + "<html lang=\"en\">\n" + "<head>\n" + "\n" + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/>\n" + "<link rel=\"stylesheet\"  type=\"text/css\" href=\"file:///android_asset/Doctor_Profile/css/english.css\"/>\n" + "\n" + "<link rel=\"stylesheet\" href=\"file:///android_asset/Doctor_Profile/css/bootstrap.min.css\" />\n" + "<link rel=\"stylesheet\" href=\"file:///android_asset/Doctor_Profile/css/bootstrap-theme.min.css\" />\n" + "\n" + "<link rel=\"stylesheet\" href=\"file:///android_asset/Doctor_Profile/css/font-awesome.min.css\" type=\"text/css\" />\n" + "\n" + "<script src=\"file:///android_asset/Doctor_Profile/css/jquery.min.js\"></script>\n" + "<script src=\"file:///android_asset/Doctor_Profile/css/bootstrap.min.js\" ></script>\n" + "\n" + "\n" + "\n" + "\n" + "</head>\n" + "<body>  \n" + " \n" + "\n" + "\n" + "<div >\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + getString(R.string.system) + "</font>\n" + "\n" + "\n" + "<div class=\"bs-example\">\n" + "\n" + "\n" + "<table style=\"width:100%\" class=\"table\">\n" + "   \n" + "<tbody>\n" + "\n" + "" + str0.toString() + "\n" + "\n" + "\n" + "</tbody>\n" + "</table>\n" + "\n" + "</div>\n" + " \n" + "<!----------------------------------------------------------------->\n" + "\n" + "\n" + "<table style=\"width:100%\" class=\"table\">\n" + "   \n" + "<tbody>\n" + "\n" + "" + str1.toString() + "\n" + "\n" + "\n" + "</tbody>\n" + "</table>\n" + "\n" + "</div>\n" + "\n" + "\n" + "<br/>\n" + "<!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-user fa-2x\" aria-hidden=\"true\"></i>\t" + getString(R.string.indications_and_dosage) + "</font>\n" + "\n" + "\n" + "<div class=\"bs-example\">\n" + "\n" + "\n" + "<table style=\"width:100%\" class=\"table\">\n" + "   \n" + "<tbody>\n" + "\n" + "" + str2.toString() + "\n" + "\n" + "\n" + "</tbody>\n" + "</table>\n" + "\n" + "</div>\n" + "\n" + "\n" + "\n" + "<!----------------------------------------------------------------->\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-credit-card-alt fa-2x\" aria-hidden=\"true\"></i>\tPre and Post Prandial Advice</font>\n" + "\n" + "\n" + "<div class=\"bs-example\">\n" + "\n" + "\n" + "<table style=\"width:100%\" class=\"table\">\n" + "   \n" + "<tbody>\n" + "\n" + "\n" + "" + str8.toString() + "\n" + "\n" + "\n" + "</tbody>\n" + "</table>\n" + "\n" + "</div> \n" + "<br/> \n" + "<!----------------------------------------------------------------->\n" + "<!----------------------------------------------------------------->\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-credit-card-alt fa-2x\" aria-hidden=\"true\"></i>\tSafety Alerts - Pregnancy</font>\n" + "\n" + "\n" + "<div class=\"bs-example\">\n" + "\n" + "\n" + "<table style=\"width:100%\" class=\"table\">\n" + "   \n" + "<tbody>\n" + "\n" + "\n" + "\n" + str6.toString() + "\n" + "\n" + "\n" + "\n" + "\n" + "</tbody>\n" + "</table>\n" + "\n" + "</div>\n" + "\n" + "\n" + "\n" + "<!----------------------------------------------------------------->\n" + "\n" + "<br/>\n" + "</body>\n" + "</html>                             ";
+        String values1 = "<!DOCTYPE html>\n" + "\n" + "<html lang=\"en\">\n" + "<head>\n" + "\n" + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/>\n" + "<link rel=\"stylesheet\"  type=\"text/css\" href=\"file:///android_asset/Doctor_Profile/css/english.css\"/>\n" + "\n" + "<link rel=\"stylesheet\" href=\"file:///android_asset/Doctor_Profile/css/bootstrap.min.css\" />\n" + "<link rel=\"stylesheet\" href=\"file:///android_asset/Doctor_Profile/css/bootstrap-theme.min.css\" />\n" + "\n" + "<link rel=\"stylesheet\" href=\"file:///android_asset/Doctor_Profile/css/font-awesome.min.css\" type=\"text/css\" />\n" + "\n" + "<script src=\"file:///android_asset/Doctor_Profile/css/jquery.min.js\"></script>\n" + "<script src=\"file:///android_asset/Doctor_Profile/css/bootstrap.min.js\" ></script>\n" + "\n" + "\n" + "\n" + "\n" + "</head>\n" + "<body>  \n" + " \n" + "\n" + "\n" + "<div >\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + this.getString(string.system) + "</font>\n" + "\n" + "\n" + "<div class=\"bs-example\">\n" + "\n" + "\n" + "<table style=\"width:100%\" class=\"table\">\n" + "   \n" + "<tbody>\n" + "\n" + "" + str0 + "\n" + "\n" + "\n" + "</tbody>\n" + "</table>\n" + "\n" + "</div>\n" + " \n" + "<!----------------------------------------------------------------->\n" + "\n" + "\n" + "<table style=\"width:100%\" class=\"table\">\n" + "   \n" + "<tbody>\n" + "\n" + "" + str1 + "\n" + "\n" + "\n" + "</tbody>\n" + "</table>\n" + "\n" + "</div>\n" + "\n" + "\n" + "<br/>\n" + "<!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-user fa-2x\" aria-hidden=\"true\"></i>\t" + this.getString(string.indications_and_dosage) + "</font>\n" + "\n" + "\n" + "<div class=\"bs-example\">\n" + "\n" + "\n" + "<table style=\"width:100%\" class=\"table\">\n" + "   \n" + "<tbody>\n" + "\n" + "" + str2 + "\n" + "\n" + "\n" + "</tbody>\n" + "</table>\n" + "\n" + "</div>\n" + "\n" + "\n" + "\n" + "<!----------------------------------------------------------------->\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-credit-card-alt fa-2x\" aria-hidden=\"true\"></i>\tPre and Post Prandial Advice</font>\n" + "\n" + "\n" + "<div class=\"bs-example\">\n" + "\n" + "\n" + "<table style=\"width:100%\" class=\"table\">\n" + "   \n" + "<tbody>\n" + "\n" + "\n" + "" + str8 + "\n" + "\n" + "\n" + "</tbody>\n" + "</table>\n" + "\n" + "</div> \n" + "<br/> \n" + "<!----------------------------------------------------------------->\n" + "<!----------------------------------------------------------------->\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-credit-card-alt fa-2x\" aria-hidden=\"true\"></i>\tSafety Alerts - Pregnancy</font>\n" + "\n" + "\n" + "<div class=\"bs-example\">\n" + "\n" + "\n" + "<table style=\"width:100%\" class=\"table\">\n" + "   \n" + "<tbody>\n" + "\n" + "\n" + "\n" + str6 + "\n" + "\n" + "\n" + "\n" + "\n" + "</tbody>\n" + "</table>\n" + "\n" + "</div>\n" + "\n" + "\n" + "\n" + "<!----------------------------------------------------------------->\n" + "\n" + "<br/>\n" + "</body>\n" + "</html>                             ";
 
 
         return values1;
@@ -464,7 +469,7 @@ public class Cims_Display extends AppCompatActivity {
     }
 
     private final void LoadBack() {
-        Cims_Display.this.finish();
+        finish();
         BaseConfig.Druglistselindex = "";
 
     }
@@ -489,7 +494,7 @@ public class Cims_Display extends AppCompatActivity {
          * Instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
-            mContext = c;
+            this.mContext = c;
         }
 
         /**

@@ -20,17 +20,17 @@ public class PostPatIdDocIdMtestIdRequest {
 
 
     @com.google.gson.annotations.SerializedName("JsonValue")
-    private String jsonValue = null;
+    private String jsonValue;
 
 
     @com.google.gson.annotations.SerializedName("MethodName")
-    private String methodName = null;
+    private String methodName;
 
     public PostPatIdDocIdMtestIdRequest() {
     }
 
     public final String getJsonValue() {
-        return jsonValue;
+        return this.jsonValue;
     }
 
     public final void setJsonValue(String jsonValue) {
@@ -38,7 +38,7 @@ public class PostPatIdDocIdMtestIdRequest {
     }
 
     public final String getMethodName() {
-        return methodName;
+        return this.methodName;
     }
 
     public final void setMethodName(String methodName) {
@@ -55,16 +55,16 @@ public class PostPatIdDocIdMtestIdRequest {
         }
 
         public final PostPatIdDocIdMtestIdRequest build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final PostPatIdDocIdMtestIdRequestBuilder jsonValue(String value) {
-            toBuild.setJsonValue(value);
+        public final PostPatIdDocIdMtestIdRequest.PostPatIdDocIdMtestIdRequestBuilder jsonValue(String value) {
+            this.toBuild.setJsonValue(value);
             return this;
         }
 
-        public final PostPatIdDocIdMtestIdRequestBuilder methodName(String value) {
-            toBuild.setMethodName(value);
+        public final PostPatIdDocIdMtestIdRequest.PostPatIdDocIdMtestIdRequestBuilder methodName(String value) {
+            this.toBuild.setMethodName(value);
             return this;
         }
     }

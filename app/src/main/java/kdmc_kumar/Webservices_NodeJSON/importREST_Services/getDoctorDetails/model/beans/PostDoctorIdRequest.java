@@ -18,13 +18,13 @@ package kdmc_kumar.Webservices_NodeJSON.importREST_Services.getDoctorDetails.mod
 public class PostDoctorIdRequest {
 
 
-    private String docid = null;
+    private String docid;
 
     public PostDoctorIdRequest() {
     }
 
     public final String getDocid() {
-        return docid;
+        return this.docid;
     }
 
     public final void setDocid(String docid) {
@@ -41,11 +41,11 @@ public class PostDoctorIdRequest {
         }
 
         public final PostDoctorIdRequest build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final PostDoctorIdRequestBuilder docid(String value) {
-            toBuild.setDocid(value);
+        public final PostDoctorIdRequest.PostDoctorIdRequestBuilder docid(String value) {
+            this.toBuild.setDocid(value);
             return this;
         }
     }

@@ -423,7 +423,7 @@ class Initialization : CoreActivity() {
                 // Check if the database exists before copying
                 //  val initialiseDatabase = File(BaseConfig.AppDBFolderName).exists()
 
-                shipdb();
+                shipdb()
 
                 val db = BaseConfig.GetDb()
 
@@ -518,7 +518,7 @@ class Initialization : CoreActivity() {
             try {
 
 
-                getApplicationUpdateNodeJs();
+                getApplicationUpdateNodeJs()
 
 
             } catch (e: Exception) {

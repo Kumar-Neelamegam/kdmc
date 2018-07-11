@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.layout;
 
 
 public class OperationReport extends AppCompatActivity {
@@ -15,7 +16,7 @@ public class OperationReport extends AppCompatActivity {
     protected final void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_operation_report);
+        this.setContentView(layout.activity_operation_report);
        // getSupportActionBar().setTitle(R.string.operation_report);
        // getActionBar();
 

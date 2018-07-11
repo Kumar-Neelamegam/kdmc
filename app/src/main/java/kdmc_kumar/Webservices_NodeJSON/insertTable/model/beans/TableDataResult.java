@@ -25,21 +25,21 @@ public class TableDataResult {
 
 
     @com.google.gson.annotations.SerializedName("LocalID")
-    private List<String> localID = null;
+    private List<String> localID;
 
 
     @com.google.gson.annotations.SerializedName("ServerID")
-    private List<ServerID> serverID = null;
+    private List<ServerID> serverID;
 
     public TableDataResult() {
     }
 
     public final List<String> getLocalID() {
-        return localID;
+        return this.localID;
     }
 
     public final List<ServerID> getServerID() {
-        return serverID;
+        return this.serverID;
     }
 
     public void setLocalID(List<String> localID) {
@@ -60,16 +60,16 @@ public class TableDataResult {
         }
 
         public final TableDataResult build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final TableDataResultBuilder localID(List<String> value) {
-            toBuild.setLocalID(value);
+        public final TableDataResult.TableDataResultBuilder localID(List<String> value) {
+            this.toBuild.setLocalID(value);
             return this;
         }
 
-        public final TableDataResultBuilder serverID(List<ServerID> value) {
-            toBuild.setServerID(value);
+        public final TableDataResult.TableDataResultBuilder serverID(List<ServerID> value) {
+            this.toBuild.setServerID(value);
             return this;
         }
     }

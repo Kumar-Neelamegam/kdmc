@@ -19,11 +19,12 @@ import android.animation.TypeEvaluator;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 
 /**
  * This evaluator can be used to perform type interpolation between <code>Rect</code> values.
  */
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
 public class RectEvaluator implements TypeEvaluator<Rect> {
 
     /**
@@ -52,7 +53,7 @@ public class RectEvaluator implements TypeEvaluator<Rect> {
      * @param reuseRect A Rect to be modified and returned by evaluate.
      */
     public RectEvaluator(Rect reuseRect) {
-        mRect = reuseRect;
+        this.mRect = reuseRect;
     }
 
     /**
@@ -78,11 +79,11 @@ public class RectEvaluator implements TypeEvaluator<Rect> {
         int top = startValue.top + (int) ((endValue.top - startValue.top) * fraction);
         int right = startValue.right + (int) ((endValue.right - startValue.right) * fraction);
         int bottom = startValue.bottom + (int) ((endValue.bottom - startValue.bottom) * fraction);
-        if (mRect == null) {
+        if (this.mRect == null) {
             return new Rect(left, top, right, bottom);
         } else {
-            mRect.set(left, top, right, bottom);
-            return mRect;
+            this.mRect.set(left, top, right, bottom);
+            return this.mRect;
         }
     }
 }

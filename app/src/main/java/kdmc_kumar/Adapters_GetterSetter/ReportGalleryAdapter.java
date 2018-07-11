@@ -5,10 +5,14 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.BitmapFactory.Options;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
+import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.util.Base64;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,13 +20,17 @@ import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.RelativeLayout.LayoutParams;
 import android.widget.TextView;
 import android.widget.ZoomControls;
 
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.RowItem;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
+import kdmc_kumar.Adapters_GetterSetter.ReportGalleryAdapter.MyViewHolder;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 
@@ -30,31 +38,31 @@ import kdmc_kumar.Core_Modules.BaseConfig;
  * Created by Ponnusamy M on 4/3/2017.
  */
 
-public class ReportGalleryAdapter extends RecyclerView.Adapter<ReportGalleryAdapter.MyViewHolder> {
+public class ReportGalleryAdapter extends Adapter<MyViewHolder> {
 
 
-    private final ArrayList<RowItem> rowItemr;
-    private String Image_Path = null;
+    private final ArrayList<CommonDataObjects.RowItem> rowItemr;
+    private String Image_Path;
     private final String BUNDLE_PATIENTID;
 
-    public ReportGalleryAdapter(ArrayList<RowItem> rowItem, String PatientId) {
-        this.rowItemr = rowItem;
-        BUNDLE_PATIENTID = PatientId;
+    public ReportGalleryAdapter(ArrayList<CommonDataObjects.RowItem> rowItem, String PatientId) {
+        rowItemr = rowItem;
+        this.BUNDLE_PATIENTID = PatientId;
     }
 
     @NonNull
     @Override
-    public final MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.newreportlistrow, parent, false);
+    public final ReportGalleryAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(layout.newreportlistrow, parent, false);
 
-        return new MyViewHolder(view);
+        return new ReportGalleryAdapter.MyViewHolder(view);
     }
 
     @Override
-    public final void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
-        RowItem rowItem = null;
+    public final void onBindViewHolder(@NonNull ReportGalleryAdapter.MyViewHolder holder, int position) {
+        CommonDataObjects.RowItem rowItem = null;
         try {
-            rowItem = rowItemr.get(position);
+            rowItem = this.rowItemr.get(position);
 
             holder.txtDesc.setText(rowItem.getDesc());
             holder.txtTitle.setText(rowItem.getTitle());
@@ -71,8 +79,8 @@ public class ReportGalleryAdapter extends RecyclerView.Adapter<ReportGalleryAdap
         }
 
 
-        final RowItem finalRowItem = rowItem;
-        final RowItem finalRowItem1 = rowItem;
+        CommonDataObjects.RowItem finalRowItem = rowItem;
+        CommonDataObjects.RowItem finalRowItem1 = rowItem;
         holder.card_view.setOnClickListener(v -> {
             try {
 
@@ -80,33 +88,33 @@ public class ReportGalleryAdapter extends RecyclerView.Adapter<ReportGalleryAdap
                 BaseConfig.reportname = finalRowItem.getTitle();
 
                 //Image_Path= finalRowItem1.getFile_Path();
-                Image_Path = BaseConfig.AppDatabaseName + "/Uploads/" + finalRowItem1.getFile_Path();
+                this.Image_Path = BaseConfig.AppDatabaseName + "/Uploads/" + finalRowItem1.getFile_Path();
                 LayoutInflater layoutInflater = LayoutInflater.from(v.getContext());
-                View promptView = layoutInflater.inflate(R.layout.reportimageview_zoom_dialog, null);
-                AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(v.getContext());
+                View promptView = layoutInflater.inflate(layout.reportimageview_zoom_dialog, null);
+                Builder alertDialogBuilder = new Builder(v.getContext());
                 alertDialogBuilder.setView(promptView);
 
-                final ImageView reportphoto = promptView.findViewById(R.id.imageZoom);
+                ImageView reportphoto = promptView.findViewById(id.imageZoom);
 
-                final TextView nameagegen1 = promptView.findViewById(R.id.nameagegen);
+                TextView nameagegen1 = promptView.findViewById(id.nameagegen);
 
-                final TextView patient_name = promptView.findViewById(R.id.amt);
+                TextView patient_name = promptView.findViewById(id.amt);
 
-                final ZoomControls zoom = promptView.findViewById(R.id.zoomControls1);
+                ZoomControls zoom = promptView.findViewById(id.zoomControls1);
 
 
                 //SelectedGetPatientReports(2, "select ImageUrl,ReportPhoto,ReportType from ReportGallery where ReportType='" + BaseConfig.reportname.toString().trim() + "' and Patid='" + BUNDLE_PATIENTID + "';", v.getContext());
 
                 nameagegen1.setText(String.format("Report Name: %s", BaseConfig.reportname));
 
-                BaseConfig.Glide_LoadImageView( reportphoto,  Image_Path);
+                BaseConfig.Glide_LoadImageView( reportphoto, this.Image_Path);
 
 
 
-                String Patient_Name = BaseConfig.GetValues("select name as ret_values from Patreg where Patid='" + BUNDLE_PATIENTID + '\'');
+                String Patient_Name = BaseConfig.GetValues("select name as ret_values from Patreg where Patid='" + this.BUNDLE_PATIENTID + '\'');
 
 
-                patient_name.setText(String.format("Patient Name: %s-%s", Patient_Name, BUNDLE_PATIENTID));
+                patient_name.setText(String.format("Patient Name: %s-%s", Patient_Name, this.BUNDLE_PATIENTID));
 
 
                 zoom.setOnZoomInClickListener(v12 -> {
@@ -115,7 +123,7 @@ public class ReportGalleryAdapter extends RecyclerView.Adapter<ReportGalleryAdap
                     int w = reportphoto.getWidth();
                     int h = reportphoto.getHeight();
 
-                    RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(w + 10, h + 10);
+                    LayoutParams params = new LayoutParams(w + 10, h + 10);
                     params.addRule(RelativeLayout.CENTER_IN_PARENT);
 
                     reportphoto.setLayoutParams(params);
@@ -127,15 +135,15 @@ public class ReportGalleryAdapter extends RecyclerView.Adapter<ReportGalleryAdap
                     int w = reportphoto.getWidth();
                     int h = reportphoto.getHeight();
 
-                    RelativeLayout.LayoutParams params =
-                            new RelativeLayout.LayoutParams(w - 10, h - 10);
+                    LayoutParams params =
+                            new LayoutParams(w - 10, h - 10);
                     params.addRule(RelativeLayout.CENTER_IN_PARENT);
 
                     reportphoto.setLayoutParams(params);
                 });
 
 
-                alertDialogBuilder.setCancelable(false).setPositiveButton(promptView.getContext().getString(R.string.ok),
+                alertDialogBuilder.setCancelable(false).setPositiveButton(promptView.getContext().getString(string.ok),
                         (dialog, id) -> {
 
 
@@ -152,7 +160,7 @@ public class ReportGalleryAdapter extends RecyclerView.Adapter<ReportGalleryAdap
 
     @Override
     public final int getItemCount() {
-        return rowItemr.size();
+        return this.rowItemr.size();
     }
 
     private void SelectedGetPatientReports(int id, String Query, Context context) {
@@ -168,7 +176,7 @@ public class ReportGalleryAdapter extends RecyclerView.Adapter<ReportGalleryAdap
             if (c.moveToFirst()) {
                 do {
 
-                    Image_Path = c.getString(c.getColumnIndex("ImageUrl"));
+                    this.Image_Path = c.getString(c.getColumnIndex("ImageUrl"));
 
 
                 } while (c.moveToNext());
@@ -186,7 +194,7 @@ public class ReportGalleryAdapter extends RecyclerView.Adapter<ReportGalleryAdap
 
         byte[] decodedString = Base64.decode(base64.trim(), Base64.DEFAULT);
         // bimatp factory
-        BitmapFactory.Options options = new BitmapFactory.Options();
+        Options options = new Options();
 
         // downsizing image as it throws OutOfMemory Exception for larger
         // images
@@ -195,7 +203,7 @@ public class ReportGalleryAdapter extends RecyclerView.Adapter<ReportGalleryAdap
         return BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
     }
 
-    static class MyViewHolder extends RecyclerView.ViewHolder {
+    static class MyViewHolder extends ViewHolder {
         final ImageView imageView;
         final LinearLayout rootLayout;
 
@@ -206,11 +214,11 @@ public class ReportGalleryAdapter extends RecyclerView.Adapter<ReportGalleryAdap
         MyViewHolder(View itemView) {
             super(itemView);
 
-            txtDesc = itemView.findViewById(R.id.desc);
-            txtTitle = itemView.findViewById(R.id.title);
-            imageView = itemView.findViewById(R.id.img_icon);
-            rootLayout = itemView.findViewById(R.id.list_root);
-            card_view = itemView.findViewById(R.id.card_view);
+            this.txtDesc = itemView.findViewById(id.desc);
+            this.txtTitle = itemView.findViewById(id.title);
+            this.imageView = itemView.findViewById(id.img_icon);
+            this.rootLayout = itemView.findViewById(id.list_root);
+            this.card_view = itemView.findViewById(id.card_view);
         }
     }
 

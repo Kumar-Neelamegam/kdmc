@@ -3,7 +3,9 @@ package kdmc_kumar.Masters_Modules.PreferredTestTemplate;
 import android.content.Context;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.GridLayoutManager;
+import android.support.v7.widget.GridLayoutManager.SpanSizeLookup;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.RecyclerView.Adapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,15 +15,19 @@ import android.widget.ToggleButton;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.drawable;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import kdmc_kumar.Masters_Modules.PreferredTestTemplate.SectionedExpandableGridAdapter.ViewHolder;
 
 /**
  * Created by lenovo on 2/23/2016.
  */
-public class SectionedExpandableGridAdapter extends RecyclerView.Adapter<SectionedExpandableGridAdapter.ViewHolder> {
+public class SectionedExpandableGridAdapter extends Adapter<ViewHolder> {
 
     //view type
-    private static final int VIEW_TYPE_SECTION = R.layout.layout_test_template_section;
-    private static final int VIEW_TYPE_ITEM = R.layout.layout_test_template_item; //TODO : change this
+    private static final int VIEW_TYPE_SECTION = layout.layout_test_template_section;
+    private static final int VIEW_TYPE_ITEM = layout.layout_test_template_item; //TODO : change this
     //context
     private final Context mContext;
     //listeners
@@ -33,61 +39,61 @@ public class SectionedExpandableGridAdapter extends RecyclerView.Adapter<Section
 
     //**********************************************************************************************
     public SectionedExpandableGridAdapter(Context context, ArrayList<Object> dataArrayList,
-                                          final GridLayoutManager gridLayoutManager, ItemClickListener itemClickListener,
+                                          GridLayoutManager gridLayoutManager, ItemClickListener itemClickListener,
                                           SectionStateChangeListener sectionStateChangeListener) {
-        mContext = context;
-        mItemClickListener = itemClickListener;
-        mSectionStateChangeListener = sectionStateChangeListener;
-        mDataArrayList = dataArrayList;
+        this.mContext = context;
+        this.mItemClickListener = itemClickListener;
+        this.mSectionStateChangeListener = sectionStateChangeListener;
+        this.mDataArrayList = dataArrayList;
 
-        gridLayoutManager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
+        gridLayoutManager.setSpanSizeLookup(new SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                return isSection(position) ? gridLayoutManager.getSpanCount() : 1;
+                return SectionedExpandableGridAdapter.this.isSection(position) ? gridLayoutManager.getSpanCount() : 1;
             }
         });
     }
 
     //**********************************************************************************************
     private boolean isSection(int position) {
-        return mDataArrayList.get(position) instanceof Section;
+        return this.mDataArrayList.get(position) instanceof Section;
     }
 
     //**********************************************************************************************
     @NonNull
     @Override
-    public final ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        return new ViewHolder(LayoutInflater.from(mContext).inflate(viewType, parent, false), viewType);
+    public final SectionedExpandableGridAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        return new SectionedExpandableGridAdapter.ViewHolder(LayoutInflater.from(this.mContext).inflate(viewType, parent, false), viewType);
     }
 
     //**********************************************************************************************
     @Override
-    public final void onBindViewHolder(@NonNull ViewHolder holder, int position) {
+    public final void onBindViewHolder(@NonNull SectionedExpandableGridAdapter.ViewHolder holder, int position) {
         switch (holder.viewType) {
 
-            case VIEW_TYPE_ITEM:
-                final Item item = (Item) mDataArrayList.get(position);
+            case SectionedExpandableGridAdapter.VIEW_TYPE_ITEM:
+                Item item = (Item) this.mDataArrayList.get(position);
 
                 holder.itemTextView.setText(item.getTestName());
                 holder.getItemTextView2.setText(item.getSubtestname());
 
 
-                holder.view.setOnClickListener(v -> mItemClickListener.itemClicked(item));
+                holder.view.setOnClickListener(v -> this.mItemClickListener.itemClicked(item));
 
 
                 break;
 
-            case VIEW_TYPE_SECTION:
-                final Section section = (Section) mDataArrayList.get(position);
+            case SectionedExpandableGridAdapter.VIEW_TYPE_SECTION:
+                Section section = (Section) this.mDataArrayList.get(position);
                 holder.sectionTextView.setText(section.getName());
-                holder.sectionTextView.setOnClickListener(v -> mItemClickListener.itemClicked(section));
+                holder.sectionTextView.setOnClickListener(v -> this.mItemClickListener.itemClicked(section));
                 holder.sectionToggleButton.setChecked(section.isExpanded);
                 holder.sectionToggleButton.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    mSectionStateChangeListener.onSectionStateChanged(section, isChecked);
+                    this.mSectionStateChangeListener.onSectionStateChanged(section, isChecked);
                     if (holder.sectionToggleButton.isChecked()) {
-                        holder.sectionToggleButton.setBackground(mContext.getResources().getDrawable(R.drawable.icon_minus_control));
+                        holder.sectionToggleButton.setBackground(this.mContext.getResources().getDrawable(drawable.icon_minus_control));
                     } else {
-                        holder.sectionToggleButton.setBackground(mContext.getResources().getDrawable(R.drawable.icon_plus_control));
+                        holder.sectionToggleButton.setBackground(this.mContext.getResources().getDrawable(drawable.icon_plus_control));
                     }
                 });
 
@@ -101,13 +107,13 @@ public class SectionedExpandableGridAdapter extends RecyclerView.Adapter<Section
     //**********************************************************************************************
     @Override
     public final int getItemCount() {
-        return mDataArrayList.size();
+        return this.mDataArrayList.size();
     }
 
     //**********************************************************************************************
     @Override
     public final int getItemViewType(int position) {
-        return isSection(position) ? VIEW_TYPE_SECTION : VIEW_TYPE_ITEM;
+        return this.isSection(position) ? SectionedExpandableGridAdapter.VIEW_TYPE_SECTION : SectionedExpandableGridAdapter.VIEW_TYPE_ITEM;
     }
 
     //**********************************************************************************************
@@ -118,24 +124,24 @@ public class SectionedExpandableGridAdapter extends RecyclerView.Adapter<Section
         final int viewType;
 
         //for section
-        TextView sectionTextView = null;
-        ToggleButton sectionToggleButton = null;
+        TextView sectionTextView;
+        ToggleButton sectionToggleButton;
 
         //for item
-        TextView itemTextView = null;
-        TextView getItemTextView2 = null;
+        TextView itemTextView;
+        TextView getItemTextView2;
 
         ViewHolder(View view, int viewType) {
             super(view);
             this.viewType = viewType;
             this.view = view;
-            if (viewType == VIEW_TYPE_ITEM) {
-                itemTextView = view.findViewById(R.id.txt_testname);
-                getItemTextView2 = view.findViewById(R.id.txt_subtestname);
+            if (viewType == SectionedExpandableGridAdapter.VIEW_TYPE_ITEM) {
+                this.itemTextView = view.findViewById(id.txt_testname);
+                this.getItemTextView2 = view.findViewById(id.txt_subtestname);
 
             } else {
-                sectionTextView = view.findViewById(R.id.text_section);
-                sectionToggleButton = view.findViewById(R.id.toggle_button_section);
+                this.sectionTextView = view.findViewById(id.text_section);
+                this.sectionToggleButton = view.findViewById(id.toggle_button_section);
             }
         }
     }

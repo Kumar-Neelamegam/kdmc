@@ -31,115 +31,115 @@ public class JsonValue {
 
 
     @com.google.gson.annotations.SerializedName("AGE")
-    private String aGE = null;
+    private String aGE;
 
 
     @com.google.gson.annotations.SerializedName("DATETIME")
-    private String dATETIME = null;
+    private String dATETIME;
 
 
     @com.google.gson.annotations.SerializedName("DIAGNOSIS")
-    private String dIAGNOSIS = null;
+    private String dIAGNOSIS;
 
 
     @com.google.gson.annotations.SerializedName("DIAGNOSISID")
-    private String dIAGNOSISID = null;
+    private String dIAGNOSISID;
 
 
     @com.google.gson.annotations.SerializedName("DOCTORID")
-    private String dOCTORID = null;
+    private String dOCTORID;
 
 
     @com.google.gson.annotations.SerializedName("DOCTORSPEC")
-    private String dOCTORSPEC = null;
+    private String dOCTORSPEC;
 
     @com.google.gson.annotations.SerializedName("DOCTORNAME")
-    private String dOCTORNAME = null;
+    private String dOCTORNAME;
 
     @com.google.gson.annotations.SerializedName("HOSPITALNAME")
-    private String hOSPITALNAME = null;
+    private String hOSPITALNAME;
 
 
     @com.google.gson.annotations.SerializedName("GENDER")
-    private String gENDER = null;
+    private String gENDER;
 
 
     @com.google.gson.annotations.SerializedName("INVESTIGATIONID")
-    private String iNVESTIGATIONID = null;
+    private String iNVESTIGATIONID;
 
 
     @com.google.gson.annotations.SerializedName("MEDICINEID")
-    private String mEDICINEID = null;
+    private String mEDICINEID;
 
 
     @com.google.gson.annotations.SerializedName("NEXTVISITDATE")
-    private String nEXTVISITDATE = null;
+    private String nEXTVISITDATE;
 
 
     @com.google.gson.annotations.SerializedName("PATIENTID")
-    private String pATIENTID = null;
+    private String pATIENTID;
 
 
     @com.google.gson.annotations.SerializedName("PATIENTNAME")
-    private String pATIENTNAME = null;
+    private String pATIENTNAME;
 
 
     @com.google.gson.annotations.SerializedName("SYMPTOMS")
-    private String sYMPTOMS = null;
+    private String sYMPTOMS;
 
     public JsonValue() {
     }
 
     public final String getAGE() {
-        return getaGE();
+        return this.getaGE();
     }
 
     public final String getDATETIME() {
-        return getdATETIME();
+        return this.getdATETIME();
     }
 
     public final String getDIAGNOSIS() {
-        return getdIAGNOSIS();
+        return this.getdIAGNOSIS();
     }
 
     public final String getDIAGNOSISID() {
-        return getdIAGNOSISID();
+        return this.getdIAGNOSISID();
     }
 
     public final String getDOCTORID() {
-        return getdOCTORID();
+        return this.getdOCTORID();
     }
 
     public final String getDOCTORNAME() {
-        return getdOCTORNAME();
+        return this.getdOCTORNAME();
     }
 
     public final String getGENDER() {
-        return getgENDER();
+        return this.getgENDER();
     }
 
     public final String getINVESTIGATIONID() {
-        return getiNVESTIGATIONID();
+        return this.getiNVESTIGATIONID();
     }
 
     public final String getMEDICINEID() {
-        return getmEDICINEID();
+        return this.getmEDICINEID();
     }
 
     public final String getNEXTVISITDATE() {
-        return getnEXTVISITDATE();
+        return this.getnEXTVISITDATE();
     }
 
     public final String getPATIENTID() {
-        return getpATIENTID();
+        return this.getpATIENTID();
     }
 
     public final String getPATIENTNAME() {
-        return getpATIENTNAME();
+        return this.getpATIENTNAME();
     }
 
     public final String getSYMPTOMS() {
-        return getsYMPTOMS();
+        return this.getsYMPTOMS();
     }
 
 
@@ -196,7 +196,7 @@ public class JsonValue {
     }
 
     public final String getdOCTORSPEC() {
-        return dOCTORSPEC;
+        return this.dOCTORSPEC;
     }
 
     public final void setdOCTORSPEC(String dOCTORSPEC) {
@@ -204,7 +204,7 @@ public class JsonValue {
     }
 
     public final String gethOSPITALNAME() {
-        return hOSPITALNAME;
+        return this.hOSPITALNAME;
     }
 
     public final void sethOSPITALNAME(String hOSPITALNAME) {
@@ -212,55 +212,55 @@ public class JsonValue {
     }
 
     public String getaGE() {
-        return aGE;
+        return this.aGE;
     }
 
     public String getdATETIME() {
-        return dATETIME;
+        return this.dATETIME;
     }
 
     public String getdIAGNOSIS() {
-        return dIAGNOSIS;
+        return this.dIAGNOSIS;
     }
 
     public String getdIAGNOSISID() {
-        return dIAGNOSISID;
+        return this.dIAGNOSISID;
     }
 
     public String getdOCTORID() {
-        return dOCTORID;
+        return this.dOCTORID;
     }
 
     public String getdOCTORNAME() {
-        return dOCTORNAME;
+        return this.dOCTORNAME;
     }
 
     public String getgENDER() {
-        return gENDER;
+        return this.gENDER;
     }
 
     public String getiNVESTIGATIONID() {
-        return iNVESTIGATIONID;
+        return this.iNVESTIGATIONID;
     }
 
     public String getmEDICINEID() {
-        return mEDICINEID;
+        return this.mEDICINEID;
     }
 
     public String getnEXTVISITDATE() {
-        return nEXTVISITDATE;
+        return this.nEXTVISITDATE;
     }
 
     public String getpATIENTID() {
-        return pATIENTID;
+        return this.pATIENTID;
     }
 
     public String getpATIENTNAME() {
-        return pATIENTNAME;
+        return this.pATIENTNAME;
     }
 
     public String getsYMPTOMS() {
-        return sYMPTOMS;
+        return this.sYMPTOMS;
     }
 
     /**
@@ -273,71 +273,71 @@ public class JsonValue {
         }
 
         public final JsonValue build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final JsonValueBuilder aGE(String value) {
-            toBuild.setaGE(value);
+        public final JsonValue.JsonValueBuilder aGE(String value) {
+            this.toBuild.setaGE(value);
             return this;
         }
 
-        public final JsonValueBuilder dATETIME(String value) {
-            toBuild.setdATETIME(value);
+        public final JsonValue.JsonValueBuilder dATETIME(String value) {
+            this.toBuild.setdATETIME(value);
             return this;
         }
 
-        public final JsonValueBuilder dIAGNOSIS(String value) {
-            toBuild.setdIAGNOSIS(value);
+        public final JsonValue.JsonValueBuilder dIAGNOSIS(String value) {
+            this.toBuild.setdIAGNOSIS(value);
             return this;
         }
 
-        public final JsonValueBuilder dIAGNOSISID(String value) {
-            toBuild.setdIAGNOSISID(value);
+        public final JsonValue.JsonValueBuilder dIAGNOSISID(String value) {
+            this.toBuild.setdIAGNOSISID(value);
             return this;
         }
 
-        public final JsonValueBuilder dOCTORID(String value) {
-            toBuild.setdOCTORID(value);
+        public final JsonValue.JsonValueBuilder dOCTORID(String value) {
+            this.toBuild.setdOCTORID(value);
             return this;
         }
 
-        public final JsonValueBuilder dOCTORNAME(String value) {
-            toBuild.setdOCTORNAME(value);
+        public final JsonValue.JsonValueBuilder dOCTORNAME(String value) {
+            this.toBuild.setdOCTORNAME(value);
             return this;
         }
 
-        public final JsonValueBuilder gENDER(String value) {
-            toBuild.setgENDER(value);
+        public final JsonValue.JsonValueBuilder gENDER(String value) {
+            this.toBuild.setgENDER(value);
             return this;
         }
 
-        public final JsonValueBuilder iNVESTIGATIONID(String value) {
-            toBuild.setiNVESTIGATIONID(value);
+        public final JsonValue.JsonValueBuilder iNVESTIGATIONID(String value) {
+            this.toBuild.setiNVESTIGATIONID(value);
             return this;
         }
 
-        public final JsonValueBuilder mEDICINEID(String value) {
-            toBuild.setmEDICINEID(value);
+        public final JsonValue.JsonValueBuilder mEDICINEID(String value) {
+            this.toBuild.setmEDICINEID(value);
             return this;
         }
 
-        public final JsonValueBuilder nEXTVISITDATE(String value) {
-            toBuild.setnEXTVISITDATE(value);
+        public final JsonValue.JsonValueBuilder nEXTVISITDATE(String value) {
+            this.toBuild.setnEXTVISITDATE(value);
             return this;
         }
 
-        public final JsonValueBuilder pATIENTID(String value) {
-            toBuild.setpATIENTID(value);
+        public final JsonValue.JsonValueBuilder pATIENTID(String value) {
+            this.toBuild.setpATIENTID(value);
             return this;
         }
 
-        public final JsonValueBuilder pATIENTNAME(String value) {
-            toBuild.setpATIENTNAME(value);
+        public final JsonValue.JsonValueBuilder pATIENTNAME(String value) {
+            this.toBuild.setpATIENTNAME(value);
             return this;
         }
 
-        public final JsonValueBuilder sYMPTOMS(String value) {
-            toBuild.setsYMPTOMS(value);
+        public final JsonValue.JsonValueBuilder sYMPTOMS(String value) {
+            this.toBuild.setsYMPTOMS(value);
             return this;
         }
     }

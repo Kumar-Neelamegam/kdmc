@@ -20,17 +20,17 @@ public class PostIsUpdateMaxDocIdRequest {
 
 
     @com.google.gson.annotations.SerializedName("DocId")
-    private String docId = null;
+    private String docId;
 
 
     @com.google.gson.annotations.SerializedName("IsUpdateMax")
-    private String isUpdateMax = null;
+    private String isUpdateMax;
 
     public PostIsUpdateMaxDocIdRequest() {
     }
 
     public final String getDocId() {
-        return docId;
+        return this.docId;
     }
 
     public final void setDocId(String docId) {
@@ -38,7 +38,7 @@ public class PostIsUpdateMaxDocIdRequest {
     }
 
     public final String getIsUpdateMax() {
-        return isUpdateMax;
+        return this.isUpdateMax;
     }
 
     public final void setIsUpdateMax(String isUpdateMax) {
@@ -55,16 +55,16 @@ public class PostIsUpdateMaxDocIdRequest {
         }
 
         public final PostIsUpdateMaxDocIdRequest build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final PostIsUpdateMaxDocIdRequestBuilder docId(String value) {
-            toBuild.setDocId(value);
+        public final PostIsUpdateMaxDocIdRequest.PostIsUpdateMaxDocIdRequestBuilder docId(String value) {
+            this.toBuild.setDocId(value);
             return this;
         }
 
-        public final PostIsUpdateMaxDocIdRequestBuilder isUpdateMax(String value) {
-            toBuild.setIsUpdateMax(value);
+        public final PostIsUpdateMaxDocIdRequest.PostIsUpdateMaxDocIdRequestBuilder isUpdateMax(String value) {
+            this.toBuild.setIsUpdateMax(value);
             return this;
         }
     }

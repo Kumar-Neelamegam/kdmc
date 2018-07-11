@@ -20,6 +20,8 @@ import android.content.res.ColorStateList;
 import android.graphics.drawable.Drawable;
 import android.graphics.drawable.RippleDrawable;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.support.annotation.NonNull;
 import android.support.v4.graphics.drawable.DrawableCompat;
 import android.view.View;
@@ -44,8 +46,8 @@ public class SeekBarCompat {
      * @param view
      * @param markerDrawable
      */
-    public static void setOutlineProvider(View view, final MarkerDrawable markerDrawable) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+    public static void setOutlineProvider(View view, MarkerDrawable markerDrawable) {
+        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             SeekBarCompatDontCrash.setOutlineProvider(view, markerDrawable);
         }
     }
@@ -58,7 +60,7 @@ public class SeekBarCompat {
      * @return
      */
     public static Drawable getRipple(ColorStateList colorStateList) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             return SeekBarCompatDontCrash.getRipple(colorStateList);
         } else {
             return new AlmostRippleDrawable(colorStateList);
@@ -71,7 +73,7 @@ public class SeekBarCompat {
      * @param colorStateList The ColorStateList the track ripple will be changed to
      */
     public static void setRippleColor(@NonNull Drawable drawable, ColorStateList colorStateList) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             ((RippleDrawable) drawable).setColor(colorStateList);
         } else {
             ((AlmostRippleDrawable) drawable).setColor(colorStateList);
@@ -89,7 +91,7 @@ public class SeekBarCompat {
      * @param bottom
      */
     public static void setHotspotBounds(Drawable drawable, int left, int top, int right, int bottom) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
             //We don't want the full size rect, Lollipop ripple would be too big
             int size = (right - left) / 8;
             DrawableCompat.setHotspotBounds(drawable, left + size, top + size, right - size, bottom - size);
@@ -107,7 +109,7 @@ public class SeekBarCompat {
      */
     @SuppressWarnings("deprecation")
     public static void setBackground(View view, Drawable background) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN) {
             SeekBarCompatDontCrash.setBackground(view, background);
         } else {
             view.setBackgroundDrawable(background);
@@ -122,20 +124,20 @@ public class SeekBarCompat {
      * @see TextView#setTextDirection(int)
      */
     public static void setTextDirection(TextView textView, int textDirection) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR1) {
+        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR1) {
             SeekBarCompatDontCrash.setTextDirection(textView, textDirection);
         }
     }
 
     public static boolean isInScrollingContainer(ViewParent p) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (VERSION.SDK_INT >= VERSION_CODES.ICE_CREAM_SANDWICH) {
             return SeekBarCompatDontCrash.isInScrollingContainer(p);
         }
         return false;
     }
 
     public static boolean isHardwareAccelerated(View view) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+        if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
             return SeekBarCompatDontCrash.isHardwareAccelerated(view);
         }
         return false;

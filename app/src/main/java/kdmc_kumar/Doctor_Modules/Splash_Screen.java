@@ -1,6 +1,7 @@
 package kdmc_kumar.Doctor_Modules;
 
 import android.Manifest;
+import android.Manifest.permission;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.app.ProgressDialog;
@@ -32,6 +33,9 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.anim;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Utilities_Others.CustomIntent;
 import kdmc_kumar.Utilities_Others.LocalSharedPref;
@@ -45,20 +49,20 @@ public class Splash_Screen extends AppCompatActivity {
     private static final String SPLASH_SCREEN_OPTION_3 = "Option 3";
     private static final int REQUEST_PERMISSIONS = 20;
     private final Handler handler = new Handler();
-    @BindView(R.id.top_banner_splash)
+    @BindView(id.top_banner_splash)
     ImageView top_banner;
-    @BindView(R.id.app_logo)
+    @BindView(id.app_logo)
     ImageView app_logo;
-    TextView txvwTitle = null;
-    @BindView(R.id.app_title)
+    TextView txvwTitle;
+    @BindView(id.app_title)
     TextView mLogo;
-    @BindView(R.id.textprgrs)
+    @BindView(id.textprgrs)
     TextView progress_status;
-    @BindView(R.id.progressBar)
+    @BindView(id.progressBar)
     ProgressBar progressBar;
-    private int progress = 0;
-    private int progressStatus = 0;
-    private ProgressDialog pDialog = null;
+    private int progress;
+    private int progressStatus;
+    private final ProgressDialog pDialog;
 
     public Splash_Screen() {
     }
@@ -98,18 +102,17 @@ public class Splash_Screen extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.new_splash_layout);
+        this.setContentView(layout.new_splash_layout);
 
         try {
 
             BaseConfig.bkproc = 1;
 
 
-            BaseConfig.LoadAppConfiguration(Splash_Screen.this);
+            BaseConfig.LoadAppConfiguration(this);
 
 
-
-            GetIniliz();
+            this.GetIniliz();
 
 
         } catch (RuntimeException e) {
@@ -127,10 +130,10 @@ public class Splash_Screen extends AppCompatActivity {
             String LanguageCode=localSharedPref.getValue("LocaleLanguage");
             if(!LanguageCode.equalsIgnoreCase("")&&!LanguageCode.isEmpty()) {
                 Locale myLocale = new Locale(LanguageCode);
-                Resources res = getResources();
+                Resources res = this.getResources();
                 Configuration conf = res.getConfiguration();
                 conf.locale = myLocale;
-                onConfigurationChanged(conf);
+                this.onConfigurationChanged(conf);
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -146,9 +149,9 @@ public class Splash_Screen extends AppCompatActivity {
     private final void GetIMEI() {
         try {
 
-            TelephonyManager tm = (TelephonyManager) getSystemService(Context.TELEPHONY_SERVICE);
+            TelephonyManager tm = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
 
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+            if (ContextCompat.checkSelfPermission(this, permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
 
                 return;
             }
@@ -165,7 +168,7 @@ public class Splash_Screen extends AppCompatActivity {
     private final void GetMAC() {
         try {
             //Get Mac Address
-            WifiManager manager = (WifiManager) getApplicationContext().getSystemService(Context.WIFI_SERVICE);
+            WifiManager manager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
             WifiInfo info = manager.getConnectionInfo();
             BaseConfig.MacId = info.getMacAddress();
 
@@ -180,37 +183,36 @@ public class Splash_Screen extends AppCompatActivity {
 
     private final void GetIniliz() {
 
-        ButterKnife.bind(Splash_Screen.this);
+        ButterKnife.bind(this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
         //Getting Imei and mac id....
-        GetIMEI();
-        GetMAC();
+        this.GetIMEI();
+        this.GetMAC();
 
 
-        String category = SPLASH_SCREEN_OPTION_3;
+        String category = Splash_Screen.SPLASH_SCREEN_OPTION_3;
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null && extras.containsKey(SPLASH_SCREEN_OPTION)) {
-            category = extras.getString(SPLASH_SCREEN_OPTION, SPLASH_SCREEN_OPTION_1);
+        Bundle extras = this.getIntent().getExtras();
+        if (extras != null && extras.containsKey(Splash_Screen.SPLASH_SCREEN_OPTION)) {
+            category = extras.getString(Splash_Screen.SPLASH_SCREEN_OPTION, Splash_Screen.SPLASH_SCREEN_OPTION_1);
         }
 
-        mLogo.setAlpha((float) 0);
-        setAnimation(category);
+        this.mLogo.setAlpha((float) 0);
+        this.setAnimation(category);
 
-        Animation anim_app_banner = AnimationUtils.loadAnimation(this, R.anim.up_to_bottom_splash);
-        top_banner.startAnimation(anim_app_banner);
+        Animation anim_app_banner = AnimationUtils.loadAnimation(this, anim.up_to_bottom_splash);
+        this.top_banner.startAnimation(anim_app_banner);
 
-        BaseConfig.Glide_LoadImageView(app_logo, BaseConfig.AppLogo);
+        BaseConfig.Glide_LoadImageView(this.app_logo, BaseConfig.AppLogo);
 
-        Animation anim_app_logo = AnimationUtils.loadAnimation(this, R.anim.push_left_in);
-        app_logo.startAnimation(anim_app_logo);
+        Animation anim_app_logo = AnimationUtils.loadAnimation(this, anim.push_left_in);
+        this.app_logo.startAnimation(anim_app_logo);
 
 
+        this.CallNextIntent();
 
-        CallNextIntent();
-
-        configApplicationLanguage();
+        this.configApplicationLanguage();
 
     }
 
@@ -219,20 +221,20 @@ public class Splash_Screen extends AppCompatActivity {
         new Thread(new Runnable() {
             public void run() {
 
-                while (progressStatus < 100) {
-                    progressStatus = doSomeWork();
+                while (Splash_Screen.this.progressStatus < 100) {
+                    Splash_Screen.this.progressStatus = this.doSomeWork();
 
-                    handler.post(() -> {
-                        progressBar.setProgress(progressStatus);
-                        progress_status.setText((String.valueOf(progressStatus)));
+                    Splash_Screen.this.handler.post(() -> {
+                        Splash_Screen.this.progressBar.setProgress(Splash_Screen.this.progressStatus);
+                        Splash_Screen.this.progress_status.setText((String.valueOf(Splash_Screen.this.progressStatus)));
                     });
                 }
 
-                handler.post(() -> {
+                Splash_Screen.this.handler.post(() -> {
 
-                    progressBar.setVisibility(View.GONE);
+                    Splash_Screen.this.progressBar.setVisibility(View.GONE);
 
-                    finish();
+                    Splash_Screen.this.finish();
 
                     try {
 
@@ -240,16 +242,16 @@ public class Splash_Screen extends AppCompatActivity {
                         boolean pinlay = BaseConfig.LoadReportsBooleanStatus(chkquery);
                         if (pinlay) {
 
-                            finish();
+                            Splash_Screen.this.finish();
                             String PINNO = BaseConfig.GetValues("select pin as ret_values from drsettings");
-                            Intent intent = new Intent(getApplicationContext(), PinPassword.class);
+                            Intent intent = new Intent(Splash_Screen.this.getApplicationContext(), PinPassword.class);
                             intent.putExtra("PINNUMBER", PINNO);
-                            startActivity(intent);
+                            Splash_Screen.this.startActivity(intent);
                             CustomIntent.customType(Splash_Screen.this, 1);
                         } else {
-                            finish();
-                            Intent intent = new Intent(getApplicationContext(), Login.class);
-                            startActivity(intent);
+                            Splash_Screen.this.finish();
+                            Intent intent = new Intent(Splash_Screen.this.getApplicationContext(), Login.class);
+                            Splash_Screen.this.startActivity(intent);
                             CustomIntent.customType(Splash_Screen.this, 1);
 
 
@@ -271,9 +273,9 @@ public class Splash_Screen extends AppCompatActivity {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-                ++progress;
+                ++Splash_Screen.this.progress;
                 return
-                        progress;
+                        Splash_Screen.this.progress;
             }
         }).start();
 
@@ -285,18 +287,18 @@ public class Splash_Screen extends AppCompatActivity {
      */
     private void setAnimation(String category) {
 
-        animation1();
+        this.animation1();
 
     }
 
     private void animation1() {
-        ObjectAnimator scaleXAnimation = ObjectAnimator.ofFloat(mLogo, "scaleX", 5.0F, 1.0F);
+        ObjectAnimator scaleXAnimation = ObjectAnimator.ofFloat(this.mLogo, "scaleX", 5.0F, 1.0F);
         scaleXAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
         scaleXAnimation.setDuration(1200L);
-        ObjectAnimator scaleYAnimation = ObjectAnimator.ofFloat(mLogo, "scaleY", 5.0F, 1.0F);
+        ObjectAnimator scaleYAnimation = ObjectAnimator.ofFloat(this.mLogo, "scaleY", 5.0F, 1.0F);
         scaleYAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
         scaleYAnimation.setDuration(1200L);
-        ObjectAnimator alphaAnimation = ObjectAnimator.ofFloat(mLogo, "alpha", 0.0F, 1.0F);
+        ObjectAnimator alphaAnimation = ObjectAnimator.ofFloat(this.mLogo, "alpha", 0.0F, 1.0F);
         alphaAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
         alphaAnimation.setDuration(1200L);
         AnimatorSet animatorSet = new AnimatorSet();

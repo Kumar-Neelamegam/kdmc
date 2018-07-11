@@ -3,6 +3,7 @@ package kdmc_kumar.Doctor_Modules;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.content.SharedPreferences;
+import android.content.SharedPreferences.Editor;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -29,6 +30,11 @@ import java.io.IOException;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.color;
+import displ.mobydocmarathi.com.R.drawable;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Utilities_Others.CircleImageView;
@@ -40,42 +46,42 @@ import kdmc_kumar.Webservices_NodeJSON.ExportWebservices_NODEJS;
 public class ChangePassword extends AppCompatActivity {
 
 
-    @BindView(R.id.parent_layout)
+    @BindView(id.parent_layout)
     CoordinatorLayout parentLayout;
-    @BindView(R.id.toolbar)
+    @BindView(id.toolbar)
     Toolbar toolbarChangepassword;
-    @BindView(R.id.ic_back)
+    @BindView(id.ic_back)
     AppCompatImageView icBack;
-    @BindView(R.id.txvw_title)
+    @BindView(id.txvw_title)
     TextView txvwTitle;
-    @BindView(R.id.ic_home)
+    @BindView(id.ic_home)
     AppCompatImageView icHome;
-    @BindView(R.id.ic_exit)
+    @BindView(id.ic_exit)
     AppCompatImageView icExit;
-    @BindView(R.id.nestedscrollview_changepassword)
+    @BindView(id.nestedscrollview_changepassword)
     NestedScrollView nestedscrollviewChangepassword;
-    @BindView(R.id.imgvw_doctor_photo)
+    @BindView(id.imgvw_doctor_photo)
     CircleImageView imgvwDoctorPhoto;
-    @BindView(R.id.txtvw_doctorname)
+    @BindView(id.txtvw_doctorname)
     TextView txtvwDoctorname;
-    @BindView(R.id.txtvw_hospitalname)
+    @BindView(id.txtvw_hospitalname)
     TextView txtvwHospitalname;
-    @BindView(R.id.txtvw_specialization)
+    @BindView(id.txtvw_specialization)
     TextView txtvwSpecialization;
-    @BindView(R.id.edt_username)
+    @BindView(id.edt_username)
     EditText edtUsername;
-    @BindView(R.id.edt_entercurrent_password)
+    @BindView(id.edt_entercurrent_password)
     EditText edtEntercurrentPassword;
-    @BindView(R.id.edt_enter_new_password)
+    @BindView(id.edt_enter_new_password)
     EditText edtEnterNewPassword;
-    @BindView(R.id.edt_enter_confirm_password)
+    @BindView(id.edt_enter_confirm_password)
     EditText edtEnterConfirmPassword;
-    @BindView(R.id.button_cancel)
+    @BindView(id.button_cancel)
     Button Btn_cancel;
-    @BindView(R.id.button_submit)
+    @BindView(id.button_submit)
     Button Btn_update;
 
-    private ConnectionDetector cd = null;
+    private ConnectionDetector cd;
 
     public ChangePassword() {
     }
@@ -86,13 +92,13 @@ public class ChangePassword extends AppCompatActivity {
     protected final void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.kdmc_layout_change_password);
+        this.setContentView(layout.kdmc_layout_change_password);
 
 
         try {
-            GETINITIALIZE();
+            this.GETINITIALIZE();
 
-            CONTROLLISTENERS();
+            this.CONTROLLISTENERS();
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
@@ -102,116 +108,116 @@ public class ChangePassword extends AppCompatActivity {
         String Query="select docimage as ret_values from Drreg where Docid='" + BaseConfig.doctorId + '\'';
         String DoctorPhoto = BaseConfig.GetValues(Query);
         if (DoctorPhoto != null && DoctorPhoto.length() > 0) {
-            BaseConfig.LoadPatientImage(DoctorPhoto, imgvwDoctorPhoto, 100);
+            BaseConfig.LoadPatientImage(DoctorPhoto, this.imgvwDoctorPhoto, 100);
         }
-        txtvwDoctorname.setText(String.format("%s - %s", BaseConfig.doctorname, BaseConfig.docacademic));
-        txtvwHospitalname.setText(BaseConfig.HOSPITALNAME);
-        txtvwSpecialization.setText(BaseConfig.docspecli);
+        this.txtvwDoctorname.setText(String.format("%s - %s", BaseConfig.doctorname, BaseConfig.docacademic));
+        this.txtvwHospitalname.setText(BaseConfig.HOSPITALNAME);
+        this.txtvwSpecialization.setText(BaseConfig.docspecli);
 
-        edtUsername.setText(BaseConfig.username);
+        this.edtUsername.setText(BaseConfig.username);
 
-        Btn_cancel.setOnClickListener(v -> {
-            ChangePassword.this.finish();
-            Intent changepassword = new Intent(ChangePassword.this, Dashboard_NavigationMenu.class);
-            startActivity(changepassword);
+        this.Btn_cancel.setOnClickListener(v -> {
+            finish();
+            Intent changepassword = new Intent(this, Dashboard_NavigationMenu.class);
+            this.startActivity(changepassword);
         });
 
 
-        Btn_update.setOnClickListener(v -> {
+        this.Btn_update.setOnClickListener(v -> {
 
-            if (cd.isConnectingToInternet()) {
-                if (edtEntercurrentPassword.getText().length() > 0) {
-                    if (GetCurrentPassword()) {
-                        if (edtEnterNewPassword.getText().length() > 0 && edtEnterConfirmPassword.getText().length() > 0) {
-                            if (edtEnterNewPassword.getText().length() >= 6 && edtEnterNewPassword.getText().length() <= 10) {
-                                if (edtEnterNewPassword.getText().toString().equalsIgnoreCase(edtEnterConfirmPassword.getText().toString())) {
+            if (this.cd.isConnectingToInternet()) {
+                if (this.edtEntercurrentPassword.getText().length() > 0) {
+                    if (this.GetCurrentPassword()) {
+                        if (this.edtEnterNewPassword.getText().length() > 0 && this.edtEnterConfirmPassword.getText().length() > 0) {
+                            if (this.edtEnterNewPassword.getText().length() >= 6 && this.edtEnterNewPassword.getText().length() <= 10) {
+                                if (this.edtEnterNewPassword.getText().toString().equalsIgnoreCase(this.edtEnterConfirmPassword.getText().toString())) {
 
 
-                                    UpdatePasswordProcess();
+                                    this.UpdatePasswordProcess();
 
 
                                 } else {
-                                    showSimplePopUp("New and confirm password fields does not match");
+                                    this.showSimplePopUp("New and confirm password fields does not match");
                                 }
                             } else {
-                                Toast.makeText(ChangePassword.this, "length should be between 6 and 10", Toast.LENGTH_LONG).show();
+                                Toast.makeText(this, "length should be between 6 and 10", Toast.LENGTH_LONG).show();
                             }
                         } else {
-                            showSimplePopUp("Enter new and confirm password");
-                            edtEnterConfirmPassword.setText(null);
-                            edtEnterConfirmPassword.requestFocus();
-                            edtEnterNewPassword.setText(null);
-                            edtEnterNewPassword.requestFocus();
+                            this.showSimplePopUp("Enter new and confirm password");
+                            this.edtEnterConfirmPassword.setText(null);
+                            this.edtEnterConfirmPassword.requestFocus();
+                            this.edtEnterNewPassword.setText(null);
+                            this.edtEnterNewPassword.requestFocus();
 
                         }
                     } else {
-                        showSimplePopUp("Invalid current password");
-                        edtEntercurrentPassword.setText(null);
-                        edtEntercurrentPassword.requestFocus();
+                        this.showSimplePopUp("Invalid current password");
+                        this.edtEntercurrentPassword.setText(null);
+                        this.edtEntercurrentPassword.requestFocus();
                     }
                 } else {
-                    showSimplePopUp("Enter current password");
-                    edtEntercurrentPassword.setError("Required");
-                    edtEntercurrentPassword.requestFocus();
+                    this.showSimplePopUp("Enter current password");
+                    this.edtEntercurrentPassword.setError("Required");
+                    this.edtEntercurrentPassword.requestFocus();
                 }
             } else {
-                Toast.makeText(ChangePassword.this, "Data Connection Not Available - Please Enable", Toast.LENGTH_LONG).show();
+                Toast.makeText(this, "Data Connection Not Available - Please Enable", Toast.LENGTH_LONG).show();
             }
         });
 
     }
 
     public void UpdatePasswordProcess() {
-        String cnfpswd = Base64.encodeToString(edtEnterConfirmPassword.getText().toString().getBytes(), Base64.DEFAULT).trim();
+        String cnfpswd = Base64.encodeToString(this.edtEnterConfirmPassword.getText().toString().getBytes(), Base64.DEFAULT).trim();
 
-        final String Update_Query_Password = "update users set password='" + cnfpswd + "',dt='1',status='1' where username='" + edtUsername.getText().toString() + '\'';
+        String Update_Query_Password = "update users set password='" + cnfpswd + "',dt='1',status='1' where username='" + this.edtUsername.getText() + '\'';
 
         BaseConfig.SaveData(Update_Query_Password);
 
         try {
-            ExportMobyDoctorUpdatedInformation();
+            this.ExportMobyDoctorUpdatedInformation();
         } catch (IOException e) {
             e.printStackTrace();
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         }
 
-        ShowSweetAlert("New password saved successfully - please re-login");
+        this.ShowSweetAlert("New password saved successfully - please re-login");
 
-        updateSharedPreferencePassword(edtEnterConfirmPassword.getText().toString().trim());
+        this.updateSharedPreferencePassword(this.edtEnterConfirmPassword.getText().toString().trim());
     }
 
 
     private void GETINITIALIZE() {
 
-        ButterKnife.bind(ChangePassword.this);
+        ButterKnife.bind(this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
-        txvwTitle.setText(String.format("%s - %s", getString(R.string.app_name), getString(R.string.change_pwd)));
+        this.txvwTitle.setText(String.format("%s - %s", this.getString(string.app_name), this.getString(string.change_pwd)));
 
-        setSupportActionBar(toolbarChangepassword);
+        this.setSupportActionBar(this.toolbarChangepassword);
 
 
-        cd = new ConnectionDetector(getApplicationContext());
+        this.cd = new ConnectionDetector(this.getApplicationContext());
 
     }
 
 
     private void CONTROLLISTENERS() {
 
-        icHome.setOnClickListener(view -> {
+        this.icHome.setOnClickListener(view -> {
 
-            ChangePassword.this.finish();
-            Intent intent = new Intent(getApplicationContext(), Dashboard_NavigationMenu.class);
-            startActivity(intent);
+            finish();
+            Intent intent = new Intent(this.getApplicationContext(), Dashboard_NavigationMenu.class);
+            this.startActivity(intent);
 
         });
 
 
-        icExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(ChangePassword.this, null));
+        this.icExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(this, null));
 
 
-        icBack.setOnClickListener(view -> LoadBack());
+        this.icBack.setOnClickListener(view -> this.LoadBack());
 
 
     }
@@ -227,17 +233,17 @@ public class ChangePassword extends AppCompatActivity {
     private final void ShowSweetAlert(String str) {
 
         new CustomKDMCDialog(this)
-                .setLayoutColor(R.color.green_500)
-                .setImage(R.drawable.ic_success_done)
-                .setTitle(this.getString(R.string.information)).setNegativeButtonVisible(View.GONE)
+                .setLayoutColor(color.green_500)
+                .setImage(drawable.ic_success_done)
+                .setTitle(getString(string.information)).setNegativeButtonVisible(View.GONE)
                 .setDescription(str)
                 .setNegativeButtonVisible(View.GONE)
-                .setPossitiveButtonTitle(this.getString(R.string.ok))
+                .setPossitiveButtonTitle(getString(string.ok))
                 .setOnPossitiveListener(() -> {
 
-                    ChangePassword.this.finish();
-                    Intent intent = new Intent(getApplicationContext(), Login.class);
-                    startActivity(intent);
+                    finish();
+                    Intent intent = new Intent(this.getApplicationContext(), Login.class);
+                    this.startActivity(intent);
                 });
 
     }
@@ -248,11 +254,11 @@ public class ChangePassword extends AppCompatActivity {
         SQLiteDatabase db = BaseConfig.GetDb();//);
 
         Cursor c = db.rawQuery(
-                "select password from users where username='" + edtUsername.getText() + "';", null);
+                "select password from users where username='" + this.edtUsername.getText() + "';", null);
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    String oldpswd = Base64.encodeToString(edtEntercurrentPassword.getText().toString().getBytes(), Base64.DEFAULT).trim();
+                    String oldpswd = Base64.encodeToString(this.edtEntercurrentPassword.getText().toString().getBytes(), Base64.DEFAULT).trim();
 
                     if (oldpswd.equals(c.getString(c.getColumnIndex("password")))) {
 
@@ -271,28 +277,28 @@ public class ChangePassword extends AppCompatActivity {
     private void
     showSimplePopUp(String msg) {
 
-        int image=R.drawable.ic_success_done;
-        int color=R.color.green_500;
+        int image= drawable.ic_success_done;
+        int color= color.green_500;
         if(2 ==1)//Success
         {
-            image=R.drawable.ic_success_done;
-            color=R.color.green_500;
+            image= drawable.ic_success_done;
+            color= color.green_500;
         }else if(2 ==2)//Warning
         {
-            image=R.drawable.ic_warning_black_24dp;
-            color=R.color.orange_500;
+            image= drawable.ic_warning_black_24dp;
+            color= color.orange_500;
         }
 
         new CustomKDMCDialog(this)
                 .setNegativeButtonVisible(View.GONE)
                 .setLayoutColor(color)
                 .setImage(image).setNegativeButtonVisible(View.GONE)
-                .setTitle(this.getString(R.string.information))
+                .setTitle(getString(string.information))
                 .setDescription(msg)
                 .setOnPossitiveListener(() -> {
 
                 })
-                .setPossitiveButtonTitle(this.getString(R.string.ok));
+                .setPossitiveButtonTitle(getString(string.ok));
 
 
     }
@@ -300,21 +306,21 @@ public class ChangePassword extends AppCompatActivity {
     @Override
     public final void onBackPressed() {
 
-        LoadBack();
+        this.LoadBack();
 
     }
 
 
     private void updateSharedPreferencePassword(String cnfpswd) {
         SharedPreferences sp = PreferenceManager.getDefaultSharedPreferences(this);
-        SharedPreferences.Editor editor = sp.edit();
+        Editor editor = sp.edit();
         editor.putString("PWD", cnfpswd);
         editor.apply();
         editor.commit();
     }
 
 
-    public void ExportMobyDoctorUpdatedInformation() throws IOException, XmlPullParserException {
+    public void ExportMobyDoctorUpdatedInformation() {
 
         try {
             SQLiteDatabase db = BaseConfig.GetDb();//ctx);
@@ -353,7 +359,7 @@ public class ChangePassword extends AppCompatActivity {
                 String methodName = "updatepasswordDr";
                 String jsonData = export_jsonarray.toString();
 
-                String results = ExportWebservices_NODEJS.postDataExportData(methodName, jsonData, ChangePassword.this);
+                String results = ExportWebservices_NODEJS.postDataExportData(methodName, jsonData, this);
 
                 JSONArray jsonArray = new JSONArray(results);
 

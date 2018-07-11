@@ -2,10 +2,13 @@ package kdmc_kumar.Core_Modules;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
+import android.app.DatePickerDialog.OnDateSetListener;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
@@ -16,7 +19,9 @@ import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatImageView;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.AdapterView.OnItemSelectedListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -41,6 +46,9 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.DashBoardAdapter;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
 import kdmc_kumar.CaseNotes_Modules.CaseNotes;
@@ -51,160 +59,160 @@ import kdmc_kumar.Utilities_Others.toggle.LabeledSwitch;
 public class Patient_Registration extends AppCompatActivity {
 
     //Declaration
-    @BindView(R.id.patient_parent_layout)
+    @BindView(id.patient_parent_layout)
     CoordinatorLayout patientParentLayout;
-    @BindView(R.id.patientregistration_nesetedscrollview)
+    @BindView(id.patientregistration_nesetedscrollview)
     NestedScrollView patientregistrationNesetedscrollview;
-    @BindView(R.id.imgvw_patientphoto)
+    @BindView(id.imgvw_patientphoto)
     ImageView imgvwPatientphoto;
-    @BindView(R.id.imgvw_camera)
+    @BindView(id.imgvw_camera)
     ImageView imgvwCamera;
-    @BindView(R.id.imgvw_browse)
+    @BindView(id.imgvw_browse)
     ImageView imgvwBrowse;
-    @BindView(R.id.upperlayout)
+    @BindView(id.upperlayout)
     LinearLayout upperlayout;
-    @BindView(R.id.textvw_patient_name)
+    @BindView(id.textvw_patient_name)
     TextView textvwPatientName;
-    @BindView(R.id.edt_patient_name)
+    @BindView(id.edt_patient_name)
     EditText edtPatientName;
-    @BindView(R.id.textvw_age)
+    @BindView(id.textvw_age)
     TextView textvwAge;
-    @BindView(R.id.edt_age)
+    @BindView(id.edt_age)
     EditText edtAge;
-    @BindView(R.id.textvw_gender)
+    @BindView(id.textvw_gender)
     TextView textvwGender;
-    @BindView(R.id.spinner_gender)
+    @BindView(id.spinner_gender)
     Spinner spinnerGender;
-    @BindView(R.id.textvw_country)
+    @BindView(id.textvw_country)
     TextView textvwCountry;
-    @BindView(R.id.autocomplete_country)
+    @BindView(id.autocomplete_country)
     AutoCompleteTextView autocompleteCountry;
-    @BindView(R.id.textvw_state)
+    @BindView(id.textvw_state)
     TextView textvwState;
-    @BindView(R.id.autocomplete_state)
+    @BindView(id.autocomplete_state)
     AutoCompleteTextView autocompleteState;
-    @BindView(R.id.textvw_city)
+    @BindView(id.textvw_city)
     TextView textvwCity;
-    @BindView(R.id.autocomplete_city)
+    @BindView(id.autocomplete_city)
     AutoCompleteTextView autocompleteCity;
-    @BindView(R.id.textvw_willing_smsalert)
+    @BindView(id.textvw_willing_smsalert)
     TextView textvwWillingSmsalert;
-    @BindView(R.id.spinner_willing_receive)
+    @BindView(id.spinner_willing_receive)
     LabeledSwitch spinnerWillingReceive;
-    @BindView(R.id.textvw_fee_exemption)
+    @BindView(id.textvw_fee_exemption)
     TextView textvwFeeExemption;
-    @BindView(R.id.spinner_fee_exemption)
+    @BindView(id.spinner_fee_exemption)
     LabeledSwitch spinnerFeeExemption;
-    @BindView(R.id.textvw_address1)
+    @BindView(id.textvw_address1)
     TextView textvwAddress1;
-    @BindView(R.id.edt_address1)
+    @BindView(id.edt_address1)
     EditText edtAddress1;
-    @BindView(R.id.spinner_bloodgroup)
+    @BindView(id.spinner_bloodgroup)
     Spinner spinnerBloodgroup;
-    @BindView(R.id.spinner_martial_status)
+    @BindView(id.spinner_martial_status)
     Spinner spinnerMartialStatus;
-    @BindView(R.id.spinner_prefix)
+    @BindView(id.spinner_prefix)
     Spinner spinnerPrefix;
-    @BindView(R.id.txtvw_fathername)
+    @BindView(id.txtvw_fathername)
     TextView txtvw_FatherName;
-    @BindView(R.id.edt_fathername)
+    @BindView(id.edt_fathername)
     EditText edtFathername;
-    @BindView(R.id.edt_dateofbirth)
+    @BindView(id.edt_dateofbirth)
     EditText edtDateofbirth;
-    @BindView(R.id.edt_caste)
+    @BindView(id.edt_caste)
     EditText edtCaste;
-    @BindView(R.id.edt_income)
+    @BindView(id.edt_income)
     EditText edtIncome;
-    @BindView(R.id.edt_occupation)
+    @BindView(id.edt_occupation)
     EditText edtOccupation;
-    @BindView(R.id.edt_address2)
+    @BindView(id.edt_address2)
     EditText edtAddress2;
-    @BindView(R.id.edt_pincode)
+    @BindView(id.edt_pincode)
     EditText edtPincode;
-    @BindView(R.id.edt_email)
+    @BindView(id.edt_email)
     EditText edtEmail;
-    @BindView(R.id.edt_mobilenumber2)
+    @BindView(id.edt_mobilenumber2)
     EditText edtMobilenumber2;
-    @BindView(R.id.edt_caretaker)
+    @BindView(id.edt_caretaker)
     EditText edtCaretaker;
-    @BindView(R.id.edt_caretaker_number)
+    @BindView(id.edt_caretaker_number)
     EditText edtCaretakerNumber;
-    @BindView(R.id.edt_relationship)
+    @BindView(id.edt_relationship)
     AutoCompleteTextView edtRelationship;
-    @BindView(R.id.preferrednumber)
+    @BindView(id.preferrednumber)
     RadioGroup edtPreferredNumber;
-    @BindView(R.id.rbtn_caretaker)
+    @BindView(id.rbtn_caretaker)
     RadioButton rbtn_caretaker;
-    @BindView(R.id.rbtn_self)
+    @BindView(id.rbtn_self)
     RadioButton rbtn_self;
-    @BindView(R.id.toggle_donate_blood)
+    @BindView(id.toggle_donate_blood)
     LabeledSwitch toggleDonateBlood;
-    @BindView(R.id.toggle_donate_eyes)
+    @BindView(id.toggle_donate_eyes)
     LabeledSwitch toggleDonateEyes;
-    @BindView(R.id.edt_refdoc_name)
+    @BindView(id.edt_refdoc_name)
     EditText edtRefdocName;
-    @BindView(R.id.edt_ref_doctor_mobile_no)
+    @BindView(id.edt_ref_doctor_mobile_no)
     EditText edtRefDoctorMobileNo;
-    @BindView(R.id.edt_policy_name)
+    @BindView(id.edt_policy_name)
     EditText edtPolicyName;
-    @BindView(R.id.edt_nameof_insurance)
+    @BindView(id.edt_nameof_insurance)
     EditText edtNameofInsurance;
-    @BindView(R.id.edt_amount_insured)
+    @BindView(id.edt_amount_insured)
     EditText edtAmountInsured;
-    @BindView(R.id.edt_valid_year)
+    @BindView(id.edt_valid_year)
     EditText edtValidYear;
-    @BindView(R.id.edt_authorized_hospital)
+    @BindView(id.edt_authorized_hospital)
     EditText edtAuthorizedHospital;
-    @BindView(R.id.edt_aadhardcard)
+    @BindView(id.edt_aadhardcard)
     EditText edtAadhardcard;
-    @BindView(R.id.edt_bpl_card)
+    @BindView(id.edt_bpl_card)
     EditText edtBplCard;
-    @BindView(R.id.button_cancel)
+    @BindView(id.button_cancel)
     Button buttonCancel;
-    @BindView(R.id.button_submit)
+    @BindView(id.button_submit)
     Button buttonSubmit;
 
 
-    @BindView(R.id.layout_mobile1)
+    @BindView(id.layout_mobile1)
     LinearLayout layout_mobile1;
 
-    @BindView(R.id.layout_fee_exemption)
+    @BindView(id.layout_fee_exemption)
     LinearLayout layout_fee_exemption_category;
 
 
-    @BindView(R.id.textvw_mobile1)
+    @BindView(id.textvw_mobile1)
     TextView TxtvwMobile1;
-    @BindView(R.id.textvw_fee_exemption_category)
+    @BindView(id.textvw_fee_exemption_category)
     TextView TxtvwFeeExemption;
 
-    @BindView(R.id.edt_mobile1)
+    @BindView(id.edt_mobile1)
     EditText edtMobile1;
-    @BindView(R.id.spinner_fee_category)
+    @BindView(id.spinner_fee_category)
     Spinner spinnerFeeExemption_category;
 
-    @BindView(R.id.toolbar)
+    @BindView(id.toolbar)
     Toolbar toolbar;
-    @BindView(R.id.toolbar_back)
+    @BindView(id.toolbar_back)
     AppCompatImageView toolbarBack;
-    @BindView(R.id.toolbar_title)
+    @BindView(id.toolbar_title)
     TextView toolbarTitle;
-    @BindView(R.id.toolbar_exit)
+    @BindView(id.toolbar_exit)
     AppCompatImageView toolbarExit;
 
     String QUERY_COUNTRY = "select Country as dvalue FROM Mstr_Country";
     String PATIENT_PHOTO_PATH = "";
     String str_PatientId = "";
-    private int DATE_DIALOG_ID = 123;
+    private final int DATE_DIALOG_ID = 123;
 
     @Override
     protected final void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.kdmc_patient_registration);
+        this.setContentView(layout.kdmc_patient_registration);
 
         try {
-            GETINITIALIZE();
+            this.GETINITIALIZE();
 
-            CONTROLLISTENERS();
+            this.CONTROLLISTENERS();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -214,109 +222,109 @@ public class Patient_Registration extends AppCompatActivity {
     private void CONTROLLISTENERS() {
 
         //---------Autocomplete------
-        autocompleteCountry.setThreshold(1);
-        autocompleteState.setThreshold(1);
-        autocompleteCity.setThreshold(1);
-        edtRelationship.setThreshold(1);
+        this.autocompleteCountry.setThreshold(1);
+        this.autocompleteState.setThreshold(1);
+        this.autocompleteCity.setThreshold(1);
+        this.edtRelationship.setThreshold(1);
 
         //Load Country
-        BaseConfig.AutocompleteTextChange(autocompleteCountry, QUERY_COUNTRY);
+        BaseConfig.AutocompleteTextChange(this.autocompleteCountry, this.QUERY_COUNTRY);
 
         //Load relationship
         String QUERY_RELATIONSHIP = "select Relationship as dvalue from Mstr_Relationship";
-        BaseConfig.AutocompleteTextChange(edtRelationship, QUERY_RELATIONSHIP);
+        BaseConfig.AutocompleteTextChange(this.edtRelationship, QUERY_RELATIONSHIP);
 
         //-------Spinners---------
         //exemption category
         String Query_FeeExemption = "select FeeExemption as dvalue from Mstr_FeeExemptions where IsActive=1";
-        BaseConfig.LoadValuesSpinner(spinnerFeeExemption_category, this, Query_FeeExemption, "Select");
+        BaseConfig.LoadValuesSpinner(this.spinnerFeeExemption_category, this, Query_FeeExemption, "Select");
 
         //Bloodgroup
         String Query_Bloodgroup = "select Bloodgroup as dvalue from Mstr_BloodGroup where IsActive=1";
-        BaseConfig.LoadValuesSpinner(spinnerBloodgroup, this, Query_Bloodgroup, "Select");
+        BaseConfig.LoadValuesSpinner(this.spinnerBloodgroup, this, Query_Bloodgroup, "Select");
 
 
         //Load Gender
         String Query_Gender = "select Gender as dvalue from Mstr_Gender where IsActive=1";
-        BaseConfig.LoadValuesSpinner(spinnerGender, this, Query_Gender, "Select");
+        BaseConfig.LoadValuesSpinner(this.spinnerGender, this, Query_Gender, "Select");
 
         //Load Martial status
         String Query_MaritalStatus = "select Marital_Status as dvalue from Mstr_MaritalStatus where IsActive=1";
-        BaseConfig.LoadValuesSpinner(spinnerMartialStatus, this, Query_MaritalStatus, "Select");
+        BaseConfig.LoadValuesSpinner(this.spinnerMartialStatus, this, Query_MaritalStatus, "Select");
 
         //Load prefix
         String Query_Prefix = "select Prefix as dvalue from Mstr_Prefix where IsActive=1";
-        BaseConfig.LoadValuesSpinner(spinnerPrefix, this, Query_Prefix, "Select");
+        BaseConfig.LoadValuesSpinner(this.spinnerPrefix, this, Query_Prefix, "Select");
 
-        toolbarExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(this, null));
+        this.toolbarExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(this, null));
 
-        toolbarBack.setOnClickListener(view -> LoadBack());
+        this.toolbarBack.setOnClickListener(view -> this.LoadBack());
 
-        autocompleteCountry.setOnItemClickListener((parent, view, position, id) -> {
+        this.autocompleteCountry.setOnItemClickListener((parent, view, position, id) -> {
 
             //Load State
-            String Country_ID = BaseConfig.GetValues("select ServerId as ret_values from Mstr_Country where Country='" + autocompleteCountry.getText().toString() + "' and IsActive=1");
+            String Country_ID = BaseConfig.GetValues("select ServerId as ret_values from Mstr_Country where Country='" + this.autocompleteCountry.getText() + "' and IsActive=1");
             String QUERY_STATE = "select State as dvalue from Mstr_State where CountryID='" + Country_ID + "' and IsActive=1";
-            BaseConfig.AutocompleteTextChange(autocompleteState, QUERY_STATE);
+            BaseConfig.AutocompleteTextChange(this.autocompleteState, QUERY_STATE);
 
         });
 
-        autocompleteState.setOnItemClickListener((parent, view, position, id) -> {
+        this.autocompleteState.setOnItemClickListener((parent, view, position, id) -> {
 
             //Load City
-            String Country_ID = BaseConfig.GetValues("select ServerId as ret_values from Mstr_Country where Country='" + autocompleteCountry.getText().toString() + "' and IsActive=1");
-            String State_ID = BaseConfig.GetValues("select ServerId as ret_values from Mstr_State where State='" + autocompleteState.getText().toString() + "' and IsActive=1");
+            String Country_ID = BaseConfig.GetValues("select ServerId as ret_values from Mstr_Country where Country='" + this.autocompleteCountry.getText() + "' and IsActive=1");
+            String State_ID = BaseConfig.GetValues("select ServerId as ret_values from Mstr_State where State='" + this.autocompleteState.getText() + "' and IsActive=1");
             String QUERY_CITY = "select City as dvalue from Mstr_City where CountryID='" + Country_ID + "' and StateID='" + State_ID + "' and IsActive=1";
-            BaseConfig.AutocompleteTextChange(autocompleteCity, QUERY_CITY);
+            BaseConfig.AutocompleteTextChange(this.autocompleteCity, QUERY_CITY);
 
 
         });
 
 
-        imgvwCamera.setOnClickListener(view -> pickImageFromSource(Sources.CAMERA));
-        imgvwBrowse.setOnClickListener(view -> pickImageFromSource(Sources.GALLERY));
+        this.imgvwCamera.setOnClickListener(view -> this.pickImageFromSource(Sources.CAMERA));
+        this.imgvwBrowse.setOnClickListener(view -> this.pickImageFromSource(Sources.GALLERY));
 
 
-        buttonCancel.setOnClickListener(v -> LoadBack());
+        this.buttonCancel.setOnClickListener(v -> this.LoadBack());
 
-        buttonSubmit.setOnClickListener(v -> Savelocal());
+        this.buttonSubmit.setOnClickListener(v -> this.Savelocal());
 
-        spinnerWillingReceive.setOnToggledListener((labeledSwitch, isOn) -> {
+        this.spinnerWillingReceive.setOnToggledListener((labeledSwitch, isOn) -> {
             if (isOn) {
-                layout_mobile1.setVisibility(View.VISIBLE);
+                this.layout_mobile1.setVisibility(View.VISIBLE);
             } else {
-                if (spinnerFeeExemption.isOn())
-                    layout_mobile1.setVisibility(View.INVISIBLE);
+                if (this.spinnerFeeExemption.isOn())
+                    this.layout_mobile1.setVisibility(View.INVISIBLE);
                 else
-                    layout_mobile1.setVisibility(View.GONE);
+                    this.layout_mobile1.setVisibility(View.GONE);
             }
         });
 
-        spinnerFeeExemption.setOnToggledListener((labeledSwitch, isOn) -> {
+        this.spinnerFeeExemption.setOnToggledListener((labeledSwitch, isOn) -> {
 
             if (isOn) {
-                layout_fee_exemption_category.setVisibility(View.VISIBLE);
+                this.layout_fee_exemption_category.setVisibility(View.VISIBLE);
             } else {
-                if (spinnerWillingReceive.isOn())
-                    layout_fee_exemption_category.setVisibility(View.INVISIBLE);
+                if (this.spinnerWillingReceive.isOn())
+                    this.layout_fee_exemption_category.setVisibility(View.INVISIBLE);
                 else
-                    layout_fee_exemption_category.setVisibility(View.GONE);
+                    this.layout_fee_exemption_category.setVisibility(View.GONE);
             }
 
         });
 
-        spinnerMartialStatus.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        this.spinnerMartialStatus.setOnItemSelectedListener(new OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
-                if (spinnerMartialStatus.getSelectedItemPosition() > 0) {
-                    String str = spinnerMartialStatus.getSelectedItem().toString();
+                if (Patient_Registration.this.spinnerMartialStatus.getSelectedItemPosition() > 0) {
+                    String str = Patient_Registration.this.spinnerMartialStatus.getSelectedItem().toString();
                     if (str.equalsIgnoreCase("Married")) {
                         //set title as spouse name
-                        txtvw_FatherName.setText("Spouse Name");
+                        Patient_Registration.this.txtvw_FatherName.setText("Spouse Name");
                     } else {
                         //set title as father name
-                        txtvw_FatherName.setText("Father Name");
+                        Patient_Registration.this.txtvw_FatherName.setText("Father Name");
                     }
 
                 }
@@ -330,11 +338,11 @@ public class Patient_Registration extends AppCompatActivity {
         });
 
 
-        edtDateofbirth.setFocusableInTouchMode(false);
+        this.edtDateofbirth.setFocusableInTouchMode(false);
         Calendar myCalendar = Calendar.getInstance();
 
 
-        DatePickerDialog.OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
+        OnDateSetListener date = (view, year, monthOfYear, dayOfMonth) -> {
 
             myCalendar.set(Calendar.YEAR, year);
             myCalendar.set(Calendar.MONTH, monthOfYear);
@@ -342,18 +350,18 @@ public class Patient_Registration extends AppCompatActivity {
 
             String myFormat = "dd/MM/yyyy"; //In which you need put here
             SimpleDateFormat sdf = new SimpleDateFormat(myFormat,Locale.ENGLISH);
-            edtDateofbirth.setText(sdf.format(myCalendar.getTime()));
+            this.edtDateofbirth.setText(sdf.format(myCalendar.getTime()));
 
 
-            String AgeStr = getAge(year, monthOfYear, dayOfMonth);
+            String AgeStr = this.getAge(year, monthOfYear, dayOfMonth);
 
-            edtAge.setText(AgeStr);
+            this.edtAge.setText(AgeStr);
 
 
 
         };
 
-        edtDateofbirth.setOnClickListener(new View.OnClickListener() {
+        this.edtDateofbirth.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
 
@@ -388,11 +396,11 @@ public class Patient_Registration extends AppCompatActivity {
 
     @SuppressLint("CheckResult")
     private void pickImageFromSource(Sources source) {
-        RxImagePicker.with(Patient_Registration.this).requestImage(source)
+        RxImagePicker.with(this).requestImage(source)
                 .flatMap(uri -> {
 
 
-                    return RxImageConverters.uriToFile(Patient_Registration.this, uri, createTempFile());
+                    return RxImageConverters.uriToFile(this, uri, this.createTempFile());
 
                     //return RxImageConverters.uriToBitmap(Patient_Registration.this, uri);
 
@@ -403,16 +411,16 @@ public class Patient_Registration extends AppCompatActivity {
 
     private void onImagePicked(Object result) {
 
-        PATIENT_PHOTO_PATH = result.toString();
+        this.PATIENT_PHOTO_PATH = result.toString();
 
         // Toast.makeText(this, String.format("Result: %s", result), Toast.LENGTH_LONG).show();
 
         if (result instanceof Bitmap) {
-            imgvwPatientphoto.setImageBitmap((Bitmap) result);
+            this.imgvwPatientphoto.setImageBitmap((Bitmap) result);
         } else {
             Glide.with(this)
                     .load(result) // works for File or Uri
-                    .into(imgvwPatientphoto);
+                    .into(this.imgvwPatientphoto);
         }
 
     }
@@ -425,12 +433,12 @@ public class Patient_Registration extends AppCompatActivity {
 
     private void Savelocal() {
 
-        if (CheckValidation()) {
+        if (this.CheckValidation()) {
 
-            SUBMIT_FORM();
+            this.SUBMIT_FORM();
 
         } else {
-            Toast.makeText(Patient_Registration.this, R.string.missing, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, string.missing, Toast.LENGTH_LONG).show();
 
         }
 
@@ -450,73 +458,73 @@ public class Patient_Registration extends AppCompatActivity {
 
             String str_PatientPin = "", str_PtientNamePrefix = "";
 
-            str_PatientName = BaseConfig.GetWidgetOperations(edtPatientName, 1);
-            str_Age = BaseConfig.GetWidgetOperations(edtAge, 1);
-            str_Gender = BaseConfig.GetWidgetOperations(spinnerGender, 1);
-            str_Country = BaseConfig.GetWidgetOperations(autocompleteCountry, 1);
-            str_State = BaseConfig.GetWidgetOperations(autocompleteState, 1);
-            str_City = BaseConfig.GetWidgetOperations(autocompleteCity, 1);
-            str_Willingtosms = BaseConfig.GetWidgetOperations(spinnerWillingReceive, 1);
-            str_FeeExemption = spinnerFeeExemption.isOn()? "Yes":"No";//BaseConfig.GetWidgetOperations(spinnerFeeExemption, 1);
+            str_PatientName = BaseConfig.GetWidgetOperations(this.edtPatientName, 1);
+            str_Age = BaseConfig.GetWidgetOperations(this.edtAge, 1);
+            str_Gender = BaseConfig.GetWidgetOperations(this.spinnerGender, 1);
+            str_Country = BaseConfig.GetWidgetOperations(this.autocompleteCountry, 1);
+            str_State = BaseConfig.GetWidgetOperations(this.autocompleteState, 1);
+            str_City = BaseConfig.GetWidgetOperations(this.autocompleteCity, 1);
+            str_Willingtosms = BaseConfig.GetWidgetOperations(this.spinnerWillingReceive, 1);
+            str_FeeExemption = this.spinnerFeeExemption.isOn()? "Yes":"No";//BaseConfig.GetWidgetOperations(spinnerFeeExemption, 1);
             str_FeeExemption = str_FeeExemption.equalsIgnoreCase("Yes") ? "1" : "0";
-            str_Mobile1 = BaseConfig.GetWidgetOperations(edtMobile1, 1);
-            str_FeeExemption_Category = BaseConfig.GetWidgetOperations(spinnerFeeExemption_category, 1);
-            str_Address1 = BaseConfig.GetWidgetOperations(edtAddress1, 1);
-            str_BloodGroup = BaseConfig.GetWidgetOperations(spinnerBloodgroup, 1);
-            str_MaritalStatus = BaseConfig.GetWidgetOperations(spinnerMartialStatus, 1);
-            str_Prefix = BaseConfig.GetWidgetOperations(spinnerPrefix, 1);
+            str_Mobile1 = BaseConfig.GetWidgetOperations(this.edtMobile1, 1);
+            str_FeeExemption_Category = BaseConfig.GetWidgetOperations(this.spinnerFeeExemption_category, 1);
+            str_Address1 = BaseConfig.GetWidgetOperations(this.edtAddress1, 1);
+            str_BloodGroup = BaseConfig.GetWidgetOperations(this.spinnerBloodgroup, 1);
+            str_MaritalStatus = BaseConfig.GetWidgetOperations(this.spinnerMartialStatus, 1);
+            str_Prefix = BaseConfig.GetWidgetOperations(this.spinnerPrefix, 1);
 
-            str_DateOfBirth = BaseConfig.GetWidgetOperations(edtDateofbirth, 1);
-            str_Caste = BaseConfig.GetWidgetOperations(edtCaste, 1);
-            str_Income = BaseConfig.GetWidgetOperations(edtIncome, 1);
-            str_Occupation = BaseConfig.GetWidgetOperations(edtOccupation, 1);
-            str_Address2 = BaseConfig.GetWidgetOperations(edtAddress2, 1);
-            str_Pincode = BaseConfig.GetWidgetOperations(edtPincode, 1);
-            str_Email = BaseConfig.GetWidgetOperations(edtEmail, 1);
-            str_MobileNo2 = BaseConfig.GetWidgetOperations(edtMobilenumber2, 1);
-            str_CareTakerName = BaseConfig.GetWidgetOperations(edtCaretaker, 1);
-            str_ContactNumber = BaseConfig.GetWidgetOperations(edtCaretakerNumber, 1);
-            str_Relationship = BaseConfig.GetWidgetOperations(edtRelationship, 1);
-            str_PreferredNumber = BaseConfig.GetWidgetOperations(edtPreferredNumber, 1);
-            str_Willingtodonateblood = BaseConfig.GetWidgetOperations(toggleDonateBlood, 1);
-            str_Willingtodonateeyes = BaseConfig.GetWidgetOperations(toggleDonateEyes, 1);
-            str_Referreddoctor = BaseConfig.GetWidgetOperations(edtRefdocName, 1);
-            str_ReferredMobileNo = BaseConfig.GetWidgetOperations(edtRefDoctorMobileNo, 1);
-            str_PolicyName = BaseConfig.GetWidgetOperations(edtPolicyName, 1);
-            str_Nameofinsurance = BaseConfig.GetWidgetOperations(edtNameofInsurance, 1);
-            str_AmountInsured = BaseConfig.GetWidgetOperations(edtAmountInsured, 1);
-            str_ValidTill = BaseConfig.GetWidgetOperations(edtValidYear, 1);
-            str_Authroized = BaseConfig.GetWidgetOperations(edtAuthorizedHospital, 1);
-            str_Aadhardcard = BaseConfig.GetWidgetOperations(edtAadhardcard, 1);
-            str_BPLCardNo = BaseConfig.GetWidgetOperations(edtBplCard, 1);
-            str_PhotoURL = PATIENT_PHOTO_PATH;
+            str_DateOfBirth = BaseConfig.GetWidgetOperations(this.edtDateofbirth, 1);
+            str_Caste = BaseConfig.GetWidgetOperations(this.edtCaste, 1);
+            str_Income = BaseConfig.GetWidgetOperations(this.edtIncome, 1);
+            str_Occupation = BaseConfig.GetWidgetOperations(this.edtOccupation, 1);
+            str_Address2 = BaseConfig.GetWidgetOperations(this.edtAddress2, 1);
+            str_Pincode = BaseConfig.GetWidgetOperations(this.edtPincode, 1);
+            str_Email = BaseConfig.GetWidgetOperations(this.edtEmail, 1);
+            str_MobileNo2 = BaseConfig.GetWidgetOperations(this.edtMobilenumber2, 1);
+            str_CareTakerName = BaseConfig.GetWidgetOperations(this.edtCaretaker, 1);
+            str_ContactNumber = BaseConfig.GetWidgetOperations(this.edtCaretakerNumber, 1);
+            str_Relationship = BaseConfig.GetWidgetOperations(this.edtRelationship, 1);
+            str_PreferredNumber = BaseConfig.GetWidgetOperations(this.edtPreferredNumber, 1);
+            str_Willingtodonateblood = BaseConfig.GetWidgetOperations(this.toggleDonateBlood, 1);
+            str_Willingtodonateeyes = BaseConfig.GetWidgetOperations(this.toggleDonateEyes, 1);
+            str_Referreddoctor = BaseConfig.GetWidgetOperations(this.edtRefdocName, 1);
+            str_ReferredMobileNo = BaseConfig.GetWidgetOperations(this.edtRefDoctorMobileNo, 1);
+            str_PolicyName = BaseConfig.GetWidgetOperations(this.edtPolicyName, 1);
+            str_Nameofinsurance = BaseConfig.GetWidgetOperations(this.edtNameofInsurance, 1);
+            str_AmountInsured = BaseConfig.GetWidgetOperations(this.edtAmountInsured, 1);
+            str_ValidTill = BaseConfig.GetWidgetOperations(this.edtValidYear, 1);
+            str_Authroized = BaseConfig.GetWidgetOperations(this.edtAuthorizedHospital, 1);
+            str_Aadhardcard = BaseConfig.GetWidgetOperations(this.edtAadhardcard, 1);
+            str_BPLCardNo = BaseConfig.GetWidgetOperations(this.edtBplCard, 1);
+            str_PhotoURL = this.PATIENT_PHOTO_PATH;
 
             String DefaultPhotoPath = BaseConfig.AppDBFolderName + "/male_avatar.jpg";
 
             str_PhotoURL = str_PhotoURL.equalsIgnoreCase("") ? DefaultPhotoPath : str_PhotoURL;
 
-            str_Patient_Prefix = GetGenderPrefix(str_Gender, str_MaritalStatus, str_Patient_Prefix);
+            str_Patient_Prefix = this.GetGenderPrefix(str_Gender, str_MaritalStatus, str_Patient_Prefix);
 
             if (str_MaritalStatus.equalsIgnoreCase("Married")) {
-                str_SpouseName = BaseConfig.GetWidgetOperations(edtFathername, 1);
+                str_SpouseName = BaseConfig.GetWidgetOperations(this.edtFathername, 1);
             } else if (str_MaritalStatus.equalsIgnoreCase("Unmarried")) {
-                str_FatherName = BaseConfig.GetWidgetOperations(edtFathername, 1);
+                str_FatherName = BaseConfig.GetWidgetOperations(this.edtFathername, 1);
             }else
             {
-                str_FatherName = BaseConfig.GetWidgetOperations(edtFathername, 1);
+                str_FatherName = BaseConfig.GetWidgetOperations(this.edtFathername, 1);
             }
 
             str_PatientPin = BaseConfig.GeneratePatientLoginPin();
 
             str_PtientNamePrefix = str_Patient_Prefix+" . "+str_PatientName;
 
-            str_PatientId = BaseConfig.GeneratePatientRegistrationID();
+            this.str_PatientId = BaseConfig.GeneratePatientRegistrationID();
 
             SQLiteDatabase db = BaseConfig.GetDb();
             ContentValues value = new ContentValues();
             value.put("PatientName", str_PtientNamePrefix);
             value.put("Patient_Prefix", str_Patient_Prefix);
-            value.put("PatientId", str_PatientId);
+            value.put("PatientId", this.str_PatientId);
             value.put("Age", str_Age);
             value.put("Gender", str_Gender);
             value.put("Country", str_Country);
@@ -567,9 +575,9 @@ public class Patient_Registration extends AppCompatActivity {
             db.insert("Bind_Patient_Registration", null, value);
 
 
-            str_FeeExemption = spinnerFeeExemption.isOn()? "Yes":"No";
+            str_FeeExemption = this.spinnerFeeExemption.isOn()? "Yes":"No";
             value = new ContentValues();
-            value.put("Patid", str_PatientId);
+            value.put("Patid", this.str_PatientId);
             value.put("Docid", BaseConfig.doctorId);
             value.put("name", str_PtientNamePrefix);
             value.put("prefix", str_Patient_Prefix);
@@ -625,7 +633,7 @@ public class Patient_Registration extends AppCompatActivity {
             //Insert as current patient list
             value = new ContentValues();
             value.put("date", BaseConfig.Device_OnlyDate2());
-            value.put("patid", str_PatientId);
+            value.put("patid", this.str_PatientId);
             value.put("docid", BaseConfig.doctorId);
             value.put("IsUpdate", 0);
             value.put("ServerId", 0);
@@ -636,7 +644,7 @@ public class Patient_Registration extends AppCompatActivity {
 
             db.close();
 
-            GotoClinicalInfo();
+            this.GotoClinicalInfo();
 
         }
         catch (Exception e) {
@@ -665,13 +673,13 @@ public class Patient_Registration extends AppCompatActivity {
     public void GotoClinicalInfo() {
 
         try {
-            Toast.makeText(this, R.string.success_message_patient_registration, Toast.LENGTH_SHORT).show();
-            Patient_Registration.this.finish();
-            Intent intent = new Intent(getApplicationContext(), CaseNotes.class);
+            Toast.makeText(this, string.success_message_patient_registration, Toast.LENGTH_SHORT).show();
+            finish();
+            Intent intent = new Intent(this.getApplicationContext(), CaseNotes.class);
             intent.putExtra("CONTINUE_STATUS", "True");
-            intent.putExtra("PASSING_PATIENT_ID", str_PatientId);
-            CustomIntent.customType(Patient_Registration.this, 4);
-            startActivity(intent);
+            intent.putExtra("PASSING_PATIENT_ID", this.str_PatientId);
+            CustomIntent.customType(this, 4);
+            this.startActivity(intent);
         }
         catch (Exception e) {
             e.printStackTrace();
@@ -683,89 +691,89 @@ public class Patient_Registration extends AppCompatActivity {
 
         boolean ret = true;
 
-        if (!Validation1.isEmailAddressChk(edtEmail, false)) {
+        if (!Validation1.isEmailAddressChk(this.edtEmail, false)) {
             ret = false;
         }
 
-        if (edtAddress1.getText().length() == 0) {
-            edtAddress1.requestFocus();
-            edtAddress1.setError("Required");
-            edtAddress1.setHint("Enter patient address");
+        if (this.edtAddress1.getText().length() == 0) {
+            this.edtAddress1.requestFocus();
+            this.edtAddress1.setError("Required");
+            this.edtAddress1.setHint("Enter patient address");
             ret = false;
         }
 
-        if (spinnerFeeExemption.isOn()) {
-            if (spinnerFeeExemption_category.getSelectedItemPosition() == 0) {
-                BaseConfig.CheckSpinner2(spinnerFeeExemption_category);
+        if (this.spinnerFeeExemption.isOn()) {
+            if (this.spinnerFeeExemption_category.getSelectedItemPosition() == 0) {
+                BaseConfig.CheckSpinner2(this.spinnerFeeExemption_category);
                 ret = false;
             }
         }
 
 
-        if (spinnerWillingReceive.isOn()) {
-            if (edtMobile1.getText().length() == 0) {
-                edtMobile1.requestFocus();
-                edtMobile1.setError("Required");
-                edtMobile1.setHint("Enter mobile no");
+        if (this.spinnerWillingReceive.isOn()) {
+            if (this.edtMobile1.getText().length() == 0) {
+                this.edtMobile1.requestFocus();
+                this.edtMobile1.setError("Required");
+                this.edtMobile1.setHint("Enter mobile no");
                 ret = false;
-            } else if (!Validation1.isMobileNumber(edtMobile1, false)) {
+            } else if (!Validation1.isMobileNumber(this.edtMobile1, false)) {
                 ret = false;
             }
 
         }
 
 
-        if (autocompleteCity.getText().length() == 0) {
+        if (this.autocompleteCity.getText().length() == 0) {
 
-            autocompleteCity.requestFocus();
-            autocompleteCity.setError("Required");
-            autocompleteCity.setHint("Enter city name");
+            this.autocompleteCity.requestFocus();
+            this.autocompleteCity.setError("Required");
+            this.autocompleteCity.setHint("Enter city name");
             ret = false;
         }
 
-        if (autocompleteState.getText().length() == 0) {
-            autocompleteState.requestFocus();
-            autocompleteState.setError("Required");
-            autocompleteState.setHint("Enter state name");
+        if (this.autocompleteState.getText().length() == 0) {
+            this.autocompleteState.requestFocus();
+            this.autocompleteState.setError("Required");
+            this.autocompleteState.setHint("Enter state name");
             ret = false;
         }
 
-        if (autocompleteCountry.getText().length() == 0) {
-            autocompleteCountry.requestFocus();
-            autocompleteCountry.setError("Required");
-            autocompleteCountry.setHint("Enter country name");
+        if (this.autocompleteCountry.getText().length() == 0) {
+            this.autocompleteCountry.requestFocus();
+            this.autocompleteCountry.setError("Required");
+            this.autocompleteCountry.setHint("Enter country name");
             ret = false;
         }
 
-        if (spinnerGender.getSelectedItemPosition() == 0) {
-            BaseConfig.CheckSpinner2(spinnerGender);
+        if (this.spinnerGender.getSelectedItemPosition() == 0) {
+            BaseConfig.CheckSpinner2(this.spinnerGender);
             ret = false;
         }
 
 
-        if (edtAge.getText().length() == 0) {
-            edtAge.requestFocus();
-            edtAge.setError("Required");
-            edtAge.setHint("Enter age");
+        if (this.edtAge.getText().length() == 0) {
+            this.edtAge.requestFocus();
+            this.edtAge.setError("Required");
+            this.edtAge.setHint("Enter age");
             ret = false;
         }
 
         int Age = 0;
-        if (edtAge.getText().length() > 0) {
-            Age = Integer.parseInt(String.valueOf(edtAge.getText()));
+        if (this.edtAge.getText().length() > 0) {
+            Age = Integer.parseInt(String.valueOf(this.edtAge.getText()));
         }
 
         if (Integer.parseInt(String.valueOf(Age)) > 110) {
-            edtAge.requestFocus();
-            edtAge.setError("Age value should be within 110");
-            edtAge.setHint("Enter valid age");
+            this.edtAge.requestFocus();
+            this.edtAge.setError("Age value should be within 110");
+            this.edtAge.setHint("Enter valid age");
             ret = false;
         }
 
-        if (edtPatientName.getText().toString().trim().length() == 0 && edtPatientName.getText().toString().trim().isEmpty()) {
-            edtPatientName.requestFocus();
-            edtPatientName.setError("Required");
-            edtPatientName.setHint("Enter patient name");
+        if (this.edtPatientName.getText().toString().trim().length() == 0 && this.edtPatientName.getText().toString().trim().isEmpty()) {
+            this.edtPatientName.requestFocus();
+            this.edtPatientName.setError("Required");
+            this.edtPatientName.setHint("Enter patient name");
             ret = false;
         }
 
@@ -777,49 +785,49 @@ public class Patient_Registration extends AppCompatActivity {
 
     private void GETINITIALIZE() {
 
-        ButterKnife.bind(Patient_Registration.this);
+        ButterKnife.bind(this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         BaseConfig.welcometoast = 0;
 
-        toolbarTitle.setText(String.format("%s - %s", getString(R.string.app_name), getString(R.string.patientregistration)));
+        this.toolbarTitle.setText(String.format("%s - %s", this.getString(string.app_name), this.getString(string.patientregistration)));
 
-        setSupportActionBar(toolbar);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            ViewCompat.setTransitionName(toolbarTitle, DashBoardAdapter.VIEW_NAME_HEADER_TITLE);
+        this.setSupportActionBar(this.toolbar);
+        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+            ViewCompat.setTransitionName(this.toolbarTitle, DashBoardAdapter.VIEW_NAME_HEADER_TITLE);
         }
 
-        BaseConfig.HighlightMandatory(getString(R.string.str_patient_name), textvwPatientName);
-        BaseConfig.HighlightMandatory(getString(R.string.str_age), textvwAge);
-        BaseConfig.HighlightMandatory(getString(R.string.gender), textvwGender);
-        BaseConfig.HighlightMandatory(getString(R.string.str_country), textvwCountry);
-        BaseConfig.HighlightMandatory(getString(R.string.str_state), textvwState);
-        BaseConfig.HighlightMandatory(getString(R.string.str_city), textvwCity);
-        BaseConfig.HighlightMandatory(getString(R.string.str_willingsms), textvwWillingSmsalert);
-        BaseConfig.HighlightMandatory(getString(R.string.str_feeexemp), textvwFeeExemption);
-        BaseConfig.HighlightMandatory(getString(R.string.str_address1), textvwAddress1);
+        BaseConfig.HighlightMandatory(this.getString(string.str_patient_name), this.textvwPatientName);
+        BaseConfig.HighlightMandatory(this.getString(string.str_age), this.textvwAge);
+        BaseConfig.HighlightMandatory(this.getString(string.gender), this.textvwGender);
+        BaseConfig.HighlightMandatory(this.getString(string.str_country), this.textvwCountry);
+        BaseConfig.HighlightMandatory(this.getString(string.str_state), this.textvwState);
+        BaseConfig.HighlightMandatory(this.getString(string.str_city), this.textvwCity);
+        BaseConfig.HighlightMandatory(this.getString(string.str_willingsms), this.textvwWillingSmsalert);
+        BaseConfig.HighlightMandatory(this.getString(string.str_feeexemp), this.textvwFeeExemption);
+        BaseConfig.HighlightMandatory(this.getString(string.str_address1), this.textvwAddress1);
 
-        BaseConfig.HighlightMandatory(getString(R.string.mobile_1), TxtvwMobile1);
-        BaseConfig.HighlightMandatory(getString(R.string.txt_fee_exemption_category), TxtvwFeeExemption);
+        BaseConfig.HighlightMandatory(this.getString(string.mobile_1), this.TxtvwMobile1);
+        BaseConfig.HighlightMandatory(this.getString(string.txt_fee_exemption_category), this.TxtvwFeeExemption);
 
-        BaseConfig.ClearError(edtPatientName);
-        BaseConfig.ClearError(edtAge);
-        BaseConfig.ClearError(autocompleteCountry);
-        BaseConfig.ClearError(autocompleteState);
-        BaseConfig.ClearError(autocompleteCity);
-        BaseConfig.ClearError(edtAddress1);
+        BaseConfig.ClearError(this.edtPatientName);
+        BaseConfig.ClearError(this.edtAge);
+        BaseConfig.ClearError(this.autocompleteCountry);
+        BaseConfig.ClearError(this.autocompleteState);
+        BaseConfig.ClearError(this.autocompleteCity);
+        BaseConfig.ClearError(this.edtAddress1);
 
     }
 
     @Override
     public void onBackPressed() {
         super.onBackPressed();
-        LoadBack();
+        this.LoadBack();
         System.gc();
     }
 
 
     public void LoadBack() {
-       BaseConfig.globalStartIntent2(Patient_Registration.this, Dashboard_NavigationMenu.class, null);
+       BaseConfig.globalStartIntent2(this, Dashboard_NavigationMenu.class, null);
     }
 
 

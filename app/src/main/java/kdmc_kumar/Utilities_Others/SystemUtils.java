@@ -10,7 +10,7 @@ public class SystemUtils {
     /**
      * recommend default thread pool size according to system available processors, {@link #getDefaultThreadPoolSize()}
      **/
-    public static final int DEFAULT_THREAD_POOL_SIZE = getDefaultThreadPoolSize();
+    public static final int DEFAULT_THREAD_POOL_SIZE = SystemUtils.getDefaultThreadPoolSize();
 
     private SystemUtils() {
         throw new AssertionError();
@@ -23,7 +23,7 @@ public class SystemUtils {
      * @see {@link #getDefaultThreadPoolSize(int)} max is 8
      */
     public static int getDefaultThreadPoolSize() {
-        return getDefaultThreadPoolSize(8);
+        return SystemUtils.getDefaultThreadPoolSize(8);
     }
 
     /**

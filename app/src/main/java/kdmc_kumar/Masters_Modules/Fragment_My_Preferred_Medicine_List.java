@@ -15,18 +15,21 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
 import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.Fav_MedicineList;
 import kdmc_kumar.Adapters_GetterSetter.FavMedicineRecylerAdapter;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 public class Fragment_My_Preferred_Medicine_List extends Fragment {
 
 
-    @BindView(R.id.recyler_View)
+    @BindView(id.recyler_View)
     RecyclerView recyclerView;
 
     View root_view;
-    private GridLayoutManager gridLayoutManager = null;
+    private GridLayoutManager gridLayoutManager;
     public Fragment_My_Preferred_Medicine_List() {
     }
 
@@ -38,20 +41,19 @@ public class Fragment_My_Preferred_Medicine_List extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        root_view = inflater.inflate(R.layout.kdmc_layout_masters_main_recyler, container, false);
+        this.root_view = inflater.inflate(layout.kdmc_layout_masters_main_recyler, container, false);
 
-        ButterKnife.bind(this, root_view);
+        ButterKnife.bind(this, this.root_view);
 
 
+        this.gridLayoutManager = new GridLayoutManager(this.getActivity(), 2);
+        this.gridLayoutManager.setSpanCount(1);
+        this.recyclerView.setHasFixedSize(true);
+        this.recyclerView.setLayoutManager(this.gridLayoutManager);
 
-        gridLayoutManager = new GridLayoutManager(getActivity(), 2);
-        gridLayoutManager.setSpanCount(1);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(gridLayoutManager);
+        this.LoadRecyclerView();
 
-        LoadRecyclerView();
-
-        return root_view;
+        return this.root_view;
     }
     ///////////////////////////////////////////////////////////////////////////////////////////////
 
@@ -59,7 +61,7 @@ public class Fragment_My_Preferred_Medicine_List extends Fragment {
     private final void LoadRecyclerView() {
 
 
-        ArrayList<CommonDataObjects.Fav_MedicineList> Fav_MedicineList = new ArrayList<>();
+        ArrayList<Fav_MedicineList> Fav_MedicineList = new ArrayList<>();
         SQLiteDatabase db = BaseConfig.GetDb();
 
         String Value_testname, Value_Id;
@@ -72,7 +74,7 @@ public class Fragment_My_Preferred_Medicine_List extends Fragment {
 
                     Value_Id = c.getString(c.getColumnIndex("id"));
                     Value_testname = c.getString(c.getColumnIndex("medicine"));
-                    CommonDataObjects.Fav_MedicineList item = new CommonDataObjects.Fav_MedicineList(Value_testname, Value_Id);
+                    Fav_MedicineList item = new Fav_MedicineList(Value_testname, Value_Id);
                     Fav_MedicineList.add(item);
 
                 } while (c.moveToNext());
@@ -81,8 +83,8 @@ public class Fragment_My_Preferred_Medicine_List extends Fragment {
 
 
         FavMedicineRecylerAdapter FavRecylerAdapter = new FavMedicineRecylerAdapter(Fav_MedicineList);
-        recyclerView.setLayoutManager(new GridLayoutManager(recyclerView.getContext(), 2));
-        recyclerView.setAdapter(FavRecylerAdapter);
+        this.recyclerView.setLayoutManager(new GridLayoutManager(this.recyclerView.getContext(), 2));
+        this.recyclerView.setAdapter(FavRecylerAdapter);
 
         c.close();
         db.close();

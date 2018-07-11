@@ -16,12 +16,14 @@
 
 package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils;
 
+import android.R.id;
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -38,7 +40,7 @@ import displ.mobydocmarathi.com.R;
 /**
  * Created by Andrey Kulikov on 15.11.14.
  */
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
 class ViewOverlayPreJellybean extends FrameLayout {
 
     private static final Field FIELD_VIEW_PARENT = ReflectionUtils.getPrivateField(View.class, "mParent");
@@ -47,21 +49,21 @@ class ViewOverlayPreJellybean extends FrameLayout {
 
     public ViewOverlayPreJellybean(Context context) {
         super(context);
-        init();
+        this.init();
     }
 
     public ViewOverlayPreJellybean(Context context, AttributeSet attrs) {
         super(context, attrs);
-        init();
+        this.init();
     }
 
     public ViewOverlayPreJellybean(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
-        init();
+        this.init();
     }
 
     private void init() {
-        mDrawableOverlays = new ArrayList<Drawable>();
+        this.mDrawableOverlays = new ArrayList<Drawable>();
     }
 
     @Override
@@ -82,8 +84,8 @@ class ViewOverlayPreJellybean extends FrameLayout {
                 // LayoutTransition will cause the child to delay removal - cancel it
                 ViewGroupUtils.cancelLayoutTransition(parent);
                 // fail-safe if view is still attached for any reason
-                if (child.getParent() != null && FIELD_VIEW_PARENT != null) {
-                    ReflectionUtils.setFieldValue(child, FIELD_VIEW_PARENT, null);
+                if (child.getParent() != null && ViewOverlayPreJellybean.FIELD_VIEW_PARENT != null) {
+                    ReflectionUtils.setFieldValue(child, ViewOverlayPreJellybean.FIELD_VIEW_PARENT, null);
                 }
             }
             if (child.getParent() != null) {
@@ -91,8 +93,8 @@ class ViewOverlayPreJellybean extends FrameLayout {
             }
         }
         child.setTag(R.id.overlay_layout_params_backup, child.getLayoutParams());
-        addView(child, initParams(child, left, top));
-        invalidate();
+        this.addView(child, this.initParams(child, left, top));
+        this.invalidate();
     }
 
     @Override
@@ -111,15 +113,15 @@ class ViewOverlayPreJellybean extends FrameLayout {
 
     public void moveView(View view, int left, int top) {
         if (view.getParent() == this) {
-            view.setLayoutParams(initParams(view, left, top));
+            view.setLayoutParams(this.initParams(view, left, top));
         }
     }
 
-    private LayoutParams initParams(View view, int left, int top) {
+    private FrameLayout.LayoutParams initParams(View view, int left, int top) {
         int[] loc = new int[2];
-        getLocationOnScreen(loc);
+        this.getLocationOnScreen(loc);
 
-        final LayoutParams layoutParams = new LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
+        FrameLayout.LayoutParams layoutParams = new FrameLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT,
                 ViewGroup.LayoutParams.WRAP_CONTENT);
         left -= loc[0];
         top -= loc[1];
@@ -140,20 +142,20 @@ class ViewOverlayPreJellybean extends FrameLayout {
 
     public synchronized void addDrawable(Drawable drawable) {
         if (drawable != null) {
-            this.mDrawableOverlays.add(drawable);
-            invalidate();
+            mDrawableOverlays.add(drawable);
+            this.invalidate();
         }
     }
 
     public synchronized void removeDrawable(Drawable drawable) {
-        mDrawableOverlays.remove(drawable);
-        invalidate();
+        this.mDrawableOverlays.remove(drawable);
+        this.invalidate();
     }
 
     @Override
     protected void onDraw(Canvas canvas) {
         super.onDraw(canvas);
-        for (Drawable drawable : mDrawableOverlays) {
+        for (Drawable drawable : this.mDrawableOverlays) {
             drawable.draw(canvas);
         }
     }
@@ -161,7 +163,7 @@ class ViewOverlayPreJellybean extends FrameLayout {
     public static ViewOverlayPreJellybean getOverlay(ViewGroup sceneRoot) {
         if (sceneRoot != null) {
             ViewGroup group = sceneRoot;
-            while (group.getId() != android.R.id.content && group.getParent() != null &&
+            while (group.getId() != id.content && group.getParent() != null &&
                     group.getParent() instanceof ViewGroup) {
                 group = (ViewGroup) group.getParent();
             }
@@ -171,7 +173,7 @@ class ViewOverlayPreJellybean extends FrameLayout {
                     return (ViewOverlayPreJellybean) child;
                 }
             }
-            final LayoutParams params = new LayoutParams(
+            FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
             params.gravity = Gravity.FILL;
             ViewOverlayPreJellybean viewOverlay = new ViewOverlayPreJellybean(sceneRoot.getContext());

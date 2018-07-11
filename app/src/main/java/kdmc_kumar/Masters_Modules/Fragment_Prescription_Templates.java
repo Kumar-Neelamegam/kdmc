@@ -15,7 +15,10 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
 import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.TemplateGetSet;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 
@@ -25,7 +28,7 @@ import kdmc_kumar.Adapters_GetterSetter.*;
 public class Fragment_Prescription_Templates extends Fragment {
 
 
-    @BindView(R.id.recyler_View)
+    @BindView(id.recyler_View)
     RecyclerView recyclerView;
 
     View root_view;
@@ -41,28 +44,28 @@ public class Fragment_Prescription_Templates extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        root_view = inflater.inflate(R.layout.kdmc_layout_masters_main_recyler, container, false);
+        this.root_view = inflater.inflate(layout.kdmc_layout_masters_main_recyler, container, false);
 
-        ButterKnife.bind(this, root_view);
+        ButterKnife.bind(this, this.root_view);
 
-        GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
+        GridLayoutManager gridLayoutManager = new GridLayoutManager(this.getActivity(), 2);
         gridLayoutManager.setSpanCount(1);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(gridLayoutManager);
+        this.recyclerView.setHasFixedSize(true);
+        this.recyclerView.setLayoutManager(gridLayoutManager);
 
 
-        TemplateRecylerAdapter templateRecylerAdapter = new TemplateRecylerAdapter(selectTemplateList());
-        recyclerView.setLayoutManager(new GridLayoutManager(recyclerView.getContext(), 2));
-        recyclerView.setAdapter(templateRecylerAdapter);
+        TemplateRecylerAdapter templateRecylerAdapter = new TemplateRecylerAdapter(this.selectTemplateList());
+        this.recyclerView.setLayoutManager(new GridLayoutManager(this.recyclerView.getContext(), 2));
+        this.recyclerView.setAdapter(templateRecylerAdapter);
 
 
 
-        return root_view;
+        return this.root_view;
     }
 
 
-    private  ArrayList<CommonDataObjects.TemplateGetSet>  selectTemplateList() {
-        ArrayList<CommonDataObjects.TemplateGetSet> templateGetSets = new ArrayList<>();
+    private  ArrayList<TemplateGetSet>  selectTemplateList() {
+        ArrayList<TemplateGetSet> templateGetSets = new ArrayList<>();
         SQLiteDatabase db = BaseConfig.GetDb();
         String pimg64 = "";
         int i = 1;
@@ -73,7 +76,7 @@ public class Fragment_Prescription_Templates extends Fragment {
             if (c.moveToFirst()) {
                 do {
 
-                    templateGetSets.add(new CommonDataObjects.TemplateGetSet(c.getString(c.getColumnIndex("TemplateName")), c.getString(c.getColumnIndex("id"))));
+                    templateGetSets.add(new TemplateGetSet(c.getString(c.getColumnIndex("TemplateName")), c.getString(c.getColumnIndex("id"))));
 
 
                     ++i;

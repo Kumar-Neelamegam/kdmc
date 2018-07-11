@@ -21,9 +21,13 @@ import android.animation.TimeInterpolator;
 import android.annotation.TargetApi;
 import android.graphics.PointF;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.view.View;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.id;
+import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.Transition.TransitionListener;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.AnimatorUtils;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.PointFProperty;
 
@@ -32,13 +36,13 @@ import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.Point
  * position to the end position. It takes into account the canceled position so that it
  * will not blink out or shift suddenly when the transition is interrupted.
  */
-@TargetApi(Build.VERSION_CODES.HONEYCOMB)
+@TargetApi(VERSION_CODES.HONEYCOMB)
 public class TranslationAnimationCreator {
 
     public static final PointFProperty<View> TRANSLATIONS_PROPERTY;
 
     static {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (VERSION.SDK_INT >= VERSION_CODES.ICE_CREAM_SANDWICH) {
             TRANSLATIONS_PROPERTY = new PointFProperty<View>() {
                 @Override
                 public void set(View view, PointF topLeft) {
@@ -72,7 +76,7 @@ public class TranslationAnimationCreator {
                                     Transition transition) {
         float terminalX = view.getTranslationX();
         float terminalY = view.getTranslationY();
-        int[] startPosition = (int[]) values.view.getTag(R.id.transitionPosition);
+        int[] startPosition = (int[]) values.view.getTag(id.transitionPosition);
         if (startPosition != null) {
             startX = startPosition[0] - viewPosX + terminalX;
             startY = startPosition[1] - viewPosY + terminalY;
@@ -83,11 +87,11 @@ public class TranslationAnimationCreator {
 
         view.setTranslationX(startX);
         view.setTranslationY(startY);
-        Animator anim = AnimatorUtils.ofPointF(view, TRANSLATIONS_PROPERTY,
+        Animator anim = AnimatorUtils.ofPointF(view, TranslationAnimationCreator.TRANSLATIONS_PROPERTY,
                 startX, startY, endX, endY);
 
         if (anim != null) {
-            TransitionPositionListener listener = new TransitionPositionListener(view, values.view,
+            TranslationAnimationCreator.TransitionPositionListener listener = new TranslationAnimationCreator.TransitionPositionListener(view, values.view,
                     startPosX, startPosY, terminalX, terminalY);
             transition.addListener(listener);
             anim.addListener(listener);
@@ -98,7 +102,7 @@ public class TranslationAnimationCreator {
     }
 
     private static class TransitionPositionListener extends AnimatorListenerAdapter implements
-            Transition.TransitionListener {
+            TransitionListener {
 
         private final View mViewInHierarchy;
         private final View mMovingView;
@@ -112,26 +116,26 @@ public class TranslationAnimationCreator {
 
         private TransitionPositionListener(View movingView, View viewInHierarchy,
                                            int startX, int startY, float terminalX, float terminalY) {
-            mMovingView = movingView;
-            mViewInHierarchy = viewInHierarchy;
-            mStartX = startX - Math.round(mMovingView.getTranslationX());
-            mStartY = startY - Math.round(mMovingView.getTranslationY());
-            mTerminalX = terminalX;
-            mTerminalY = terminalY;
-            mTransitionPosition = (int[]) mViewInHierarchy.getTag(R.id.transitionPosition);
-            if (mTransitionPosition != null) {
-                mViewInHierarchy.setTag(R.id.transitionPosition, null);
+            this.mMovingView = movingView;
+            this.mViewInHierarchy = viewInHierarchy;
+            this.mStartX = startX - Math.round(this.mMovingView.getTranslationX());
+            this.mStartY = startY - Math.round(this.mMovingView.getTranslationY());
+            this.mTerminalX = terminalX;
+            this.mTerminalY = terminalY;
+            this.mTransitionPosition = (int[]) this.mViewInHierarchy.getTag(id.transitionPosition);
+            if (this.mTransitionPosition != null) {
+                this.mViewInHierarchy.setTag(id.transitionPosition, null);
             }
         }
 
         @Override
         public void onAnimationCancel(Animator animation) {
-            if (mTransitionPosition == null) {
-                mTransitionPosition = new int[2];
+            if (this.mTransitionPosition == null) {
+                this.mTransitionPosition = new int[2];
             }
-            mTransitionPosition[0] = Math.round(mStartX + mMovingView.getTranslationX());
-            mTransitionPosition[1] = Math.round(mStartY + mMovingView.getTranslationY());
-            mViewInHierarchy.setTag(R.id.transitionPosition, mTransitionPosition);
+            this.mTransitionPosition[0] = Math.round(this.mStartX + this.mMovingView.getTranslationX());
+            this.mTransitionPosition[1] = Math.round(this.mStartY + this.mMovingView.getTranslationY());
+            this.mViewInHierarchy.setTag(id.transitionPosition, this.mTransitionPosition);
         }
 
         @Override
@@ -140,16 +144,16 @@ public class TranslationAnimationCreator {
 
         @Override
         public void onAnimationPause(Animator animator) {
-            mPausedX = mMovingView.getTranslationX();
-            mPausedY = mMovingView.getTranslationY();
-            mMovingView.setTranslationX(mTerminalX);
-            mMovingView.setTranslationY(mTerminalY);
+            this.mPausedX = this.mMovingView.getTranslationX();
+            this.mPausedY = this.mMovingView.getTranslationY();
+            this.mMovingView.setTranslationX(this.mTerminalX);
+            this.mMovingView.setTranslationY(this.mTerminalY);
         }
 
         @Override
         public void onAnimationResume(Animator animator) {
-            mMovingView.setTranslationX(mPausedX);
-            mMovingView.setTranslationY(mPausedY);
+            this.mMovingView.setTranslationX(this.mPausedX);
+            this.mMovingView.setTranslationY(this.mPausedY);
         }
 
         @Override
@@ -158,8 +162,8 @@ public class TranslationAnimationCreator {
 
         @Override
         public void onTransitionEnd(Transition transition) {
-            mMovingView.setTranslationX(mTerminalX);
-            mMovingView.setTranslationY(mTerminalY);
+            this.mMovingView.setTranslationX(this.mTerminalX);
+            this.mMovingView.setTranslationY(this.mTerminalY);
         }
 
         @Override

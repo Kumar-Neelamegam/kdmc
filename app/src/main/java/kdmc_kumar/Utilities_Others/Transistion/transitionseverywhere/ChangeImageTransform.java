@@ -24,25 +24,30 @@ import android.graphics.Matrix;
 import android.graphics.Rect;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 import java.util.Map;
 
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.MatrixUtils;
+import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.MatrixUtils.MatrixEvaluator;
+import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.MatrixUtils.NullMatrixEvaluator;
 
 /**
  * This Transition captures an ImageView's matrix before and after the
  * scene change and animates it during the transition.
  * <p/>
  * <p>In combination with ChangeBounds, ChangeImageTransform allows ImageViews
- * that change size, shape, or {@link ImageView.ScaleType} to animate contents
+ * that change size, shape, or {@link ScaleType} to animate contents
  * smoothly.</p>
  */
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
 public class ChangeImageTransform extends Transition {
 
     private static final String TAG = "ChangeImageTransform";
@@ -51,14 +56,14 @@ public class ChangeImageTransform extends Transition {
     private static final String PROPNAME_BOUNDS = "android:changeImageTransform:bounds";
 
     private static final String[] sTransitionProperties = {
-            PROPNAME_MATRIX,
-            PROPNAME_BOUNDS,
+            ChangeImageTransform.PROPNAME_MATRIX,
+            ChangeImageTransform.PROPNAME_BOUNDS,
     };
 
     private static final Property<ImageView, Matrix> ANIMATED_TRANSFORM_PROPERTY;
 
     static {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (VERSION.SDK_INT >= VERSION_CODES.ICE_CREAM_SANDWICH) {
             ANIMATED_TRANSFORM_PROPERTY = new Property<ImageView, Matrix>(Matrix.class,
                     "animatedTransform") {
 
@@ -102,10 +107,10 @@ public class ChangeImageTransform extends Transition {
         int bottom = view.getBottom();
 
         Rect bounds = new Rect(left, top, right, bottom);
-        values.put(PROPNAME_BOUNDS, bounds);
+        values.put(ChangeImageTransform.PROPNAME_BOUNDS, bounds);
         Matrix matrix;
-        ImageView.ScaleType scaleType = imageView.getScaleType();
-        if (scaleType == ImageView.ScaleType.FIT_XY) {
+        ScaleType scaleType = imageView.getScaleType();
+        if (scaleType == ScaleType.FIT_XY) {
             matrix = imageView.getImageMatrix();
             if (!matrix.isIdentity()) {
                 matrix = new Matrix(matrix);
@@ -124,27 +129,27 @@ public class ChangeImageTransform extends Transition {
         } else {
             matrix = new Matrix(imageView.getImageMatrix());
         }
-        values.put(PROPNAME_MATRIX, matrix);
+        values.put(ChangeImageTransform.PROPNAME_MATRIX, matrix);
     }
 
     @Override
     public void captureStartValues(TransitionValues transitionValues) {
-        captureValues(transitionValues);
+        this.captureValues(transitionValues);
     }
 
     @Override
     public void captureEndValues(TransitionValues transitionValues) {
-        captureValues(transitionValues);
+        this.captureValues(transitionValues);
     }
 
     @Override
     public String[] getTransitionProperties() {
-        return sTransitionProperties;
+        return ChangeImageTransform.sTransitionProperties;
     }
 
     /**
      * Creates an Animator for ImageViews moving, changing dimensions, and/or changing
-     * {@link ImageView.ScaleType}.
+     * {@link ScaleType}.
      *
      * @param sceneRoot   The root of the transition hierarchy.
      * @param startValues The values for a specific target in the start scene.
@@ -158,14 +163,14 @@ public class ChangeImageTransform extends Transition {
         if (startValues == null || endValues == null) {
             return null;
         }
-        Rect startBounds = (Rect) startValues.values.get(PROPNAME_BOUNDS);
-        Rect endBounds = (Rect) endValues.values.get(PROPNAME_BOUNDS);
+        Rect startBounds = (Rect) startValues.values.get(ChangeImageTransform.PROPNAME_BOUNDS);
+        Rect endBounds = (Rect) endValues.values.get(ChangeImageTransform.PROPNAME_BOUNDS);
         if (startBounds == null || endBounds == null) {
             return null;
         }
 
-        Matrix startMatrix = (Matrix) startValues.values.get(PROPNAME_MATRIX);
-        Matrix endMatrix = (Matrix) endValues.values.get(PROPNAME_MATRIX);
+        Matrix startMatrix = (Matrix) startValues.values.get(ChangeImageTransform.PROPNAME_MATRIX);
+        Matrix endMatrix = (Matrix) endValues.values.get(ChangeImageTransform.PROPNAME_MATRIX);
 
         boolean matricesEqual = (startMatrix == null && endMatrix == null) ||
                 (startMatrix != null && startMatrix.equals(endMatrix));
@@ -181,7 +186,7 @@ public class ChangeImageTransform extends Transition {
 
         ObjectAnimator animator;
         if (drawableWidth == 0 || drawableHeight == 0) {
-            animator = createMatrixAnimator(imageView, new MatrixUtils.NullMatrixEvaluator(),
+            animator = this.createMatrixAnimator(imageView, new NullMatrixEvaluator(),
                     MatrixUtils.IDENTITY_MATRIX, MatrixUtils.IDENTITY_MATRIX);
         } else {
             if (startMatrix == null) {
@@ -191,15 +196,15 @@ public class ChangeImageTransform extends Transition {
                 endMatrix = MatrixUtils.IDENTITY_MATRIX;
             }
             MatrixUtils.animateTransform(imageView, startMatrix);
-            animator = createMatrixAnimator(imageView, new MatrixUtils.MatrixEvaluator(),
+            animator = this.createMatrixAnimator(imageView, new MatrixEvaluator(),
                     startMatrix, endMatrix);
         }
         return animator;
     }
 
     private ObjectAnimator createMatrixAnimator(ImageView imageView, TypeEvaluator<Matrix> evaluator,
-                                                Matrix startMatrix, final Matrix endMatrix) {
-        return ObjectAnimator.ofObject(imageView, ANIMATED_TRANSFORM_PROPERTY,
+                                                Matrix startMatrix, Matrix endMatrix) {
+        return ObjectAnimator.ofObject(imageView, ChangeImageTransform.ANIMATED_TRANSFORM_PROPERTY,
                 evaluator, startMatrix, endMatrix);
     }
 

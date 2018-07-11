@@ -8,7 +8,7 @@ class Utils {
     }
 
     public static void CopyStream(InputStream is, OutputStream os) {
-        final int buffer_size = 1024;
+        int buffer_size = 1024;
         try {
             byte[] bytes = new byte[buffer_size];
             while (true) {

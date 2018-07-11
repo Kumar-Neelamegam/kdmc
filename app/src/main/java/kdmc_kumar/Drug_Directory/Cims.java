@@ -1,10 +1,13 @@
 package kdmc_kumar.Drug_Directory;
 
+import android.R.id;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.view.ViewCompat;
@@ -31,8 +34,11 @@ import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.DrugItem;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.RowItemVaccination;
+import displ.mobydocmarathi.com.R.color;
+import displ.mobydocmarathi.com.R.drawable;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
 import kdmc_kumar.Adapters_GetterSetter.DrugRecylerAdapter;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.DashBoardAdapter;
@@ -44,34 +50,34 @@ public class Cims extends AppCompatActivity {
     private final Context context = this;
     //declaration
     BaseConfig bcnfg = new BaseConfig();
-    String[] values1 = new String[]{"1001"};
-    String[] values2 = new String[]{"1001  Gastrointestinal and hepatobiliary System   		7-LA"};
-    private DownloadFilesIssue1 objbgtsk1 = new DownloadFilesIssue1();
-    private DownloadFilesIssue2 objbgtsk2 = new DownloadFilesIssue2();
-    private DownloadFilesIssue3 objbgtsk3 = new DownloadFilesIssue3();
-    private DownloadFilesIssue4 objbgtsk4 = new DownloadFilesIssue4();
-    private DownloadFilesIssue5 objbgtsk5 = new DownloadFilesIssue5();
-    private DownloadFilesIssue6 objbgtsk6 = new DownloadFilesIssue6();
-    ArrayList<HashMap<String, String>> titles_list = null;
-    ArrayAdapter<RowItemVaccination> adapter = null;
-    private AutoCompleteTextView system = null;
-    private AutoCompleteTextView druggeneric = null;
-    private AutoCompleteTextView chemicalname = null;
-    private AutoCompleteTextView brandname = null;
-    private AutoCompleteTextView odm = null;
-    private AutoCompleteTextView composition = null;
-    private TextView counttxt = null;
-    private List<RowItemVaccination> rowItems = null;
+    String[] values1 = {"1001"};
+    String[] values2 = {"1001  Gastrointestinal and hepatobiliary System   		7-LA"};
+    private Cims.DownloadFilesIssue1 objbgtsk1 = new Cims.DownloadFilesIssue1();
+    private Cims.DownloadFilesIssue2 objbgtsk2 = new Cims.DownloadFilesIssue2();
+    private Cims.DownloadFilesIssue3 objbgtsk3 = new Cims.DownloadFilesIssue3();
+    private Cims.DownloadFilesIssue4 objbgtsk4 = new Cims.DownloadFilesIssue4();
+    private Cims.DownloadFilesIssue5 objbgtsk5 = new Cims.DownloadFilesIssue5();
+    private Cims.DownloadFilesIssue6 objbgtsk6 = new Cims.DownloadFilesIssue6();
+    ArrayList<HashMap<String, String>> titles_list;
+    ArrayAdapter<CommonDataObjects.RowItemVaccination> adapter;
+    private AutoCompleteTextView system;
+    private AutoCompleteTextView druggeneric;
+    private AutoCompleteTextView chemicalname;
+    private AutoCompleteTextView brandname;
+    private AutoCompleteTextView odm;
+    private AutoCompleteTextView composition;
+    private TextView counttxt;
+    private List<CommonDataObjects.RowItemVaccination> rowItems;
     private final List<String> list = new ArrayList<>();
     private final List<String> listcnt = new ArrayList<>();
-    private final ArrayList<DrugItem> drugItemList = new ArrayList<>();
-    private Button search = null;
-    private Button clear = null;
-    private RecyclerView medlist = null;
+    private final ArrayList<CommonDataObjects.DrugItem> drugItemList = new ArrayList<>();
+    private Button search;
+    private Button clear;
+    private RecyclerView medlist;
     //Testing datatable layout
-    TableRow tablerw = null;
-    private DrugRecylerAdapter drugRecylerAdapter = null;
-    LinearLayoutManager mLayoutManager = null;
+    TableRow tablerw;
+    private DrugRecylerAdapter drugRecylerAdapter;
+    LinearLayoutManager mLayoutManager;
 
 
     private final List<String> list1 = new ArrayList<>();
@@ -80,7 +86,7 @@ public class Cims extends AppCompatActivity {
     private final List<String> list4 = new ArrayList<>();
     private final List<String> list5 = new ArrayList<>();
     private final List<String> list6 = new ArrayList<>();
-    private Typeface tfavv = null;
+    private final Typeface tfavv;
     @BindView(R.id.toolbar)
     Toolbar toolbar;
     @BindView(R.id.toolbar_back)
@@ -90,7 +96,7 @@ public class Cims extends AppCompatActivity {
     @BindView(R.id.toolbar_exit)
     AppCompatImageView toolbarExit;
     // #######################################################################################################
-    private GridLayoutManager lLayout = null;
+    private GridLayoutManager lLayout;
 
     public Cims() {
     }
@@ -99,13 +105,13 @@ public class Cims extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_cims);
+        this.setContentView(layout.activity_cims);
 
         try {
 
-            GETINITIALIZE();
+            this.GETINITIALIZE();
 
-            CONTROLLISTENERS();
+            this.CONTROLLISTENERS();
 
 
         } catch (RuntimeException e) {
@@ -127,83 +133,83 @@ public class Cims extends AppCompatActivity {
 
         BaseConfig.welcometoast = 0;
 
-        ButterKnife.bind(Cims.this);
+        ButterKnife.bind(this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
-        toolbarTitle.setText(String.format("%s - %s", getString(R.string.app_name), getString(R.string.drug_dir2)));
+        this.toolbarTitle.setText(String.format("%s - %s", this.getString(string.app_name), this.getString(string.drug_dir2)));
 
-        setSupportActionBar(toolbar);
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
-            ViewCompat.setTransitionName(toolbar, DashBoardAdapter.VIEW_NAME_HEADER_TITLE);
+        this.setSupportActionBar(this.toolbar);
+        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+            ViewCompat.setTransitionName(this.toolbar, DashBoardAdapter.VIEW_NAME_HEADER_TITLE);
         }
 
        // toolbar.setBackgroundColor(Color.parseColor(Cims.this.getResources().getString(Integer.parseInt(BaseConfig.SetActionBarColour))));
 
 
-        toolbarExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(Cims.this, null));
+        this.toolbarExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(this, null));
 
-        toolbarBack.setOnClickListener(view -> LoadBack());
-
-
-        rowItems = new ArrayList<>();
-
-        search = findViewById(R.id.button1);
-        clear = findViewById(R.id.button2);
-        medlist = findViewById(R.id.listView1);
-
-        lLayout = new GridLayoutManager(Cims.this, 2);
-        medlist.setHasFixedSize(true);
-        medlist.setLayoutManager(lLayout);
-        medlist.setNestedScrollingEnabled(false);
-        medlist.setItemAnimator(new DefaultItemAnimator());
+        this.toolbarBack.setOnClickListener(view -> this.LoadBack());
 
 
-        assert medlist != null;
+        this.rowItems = new ArrayList<>();
 
-        counttxt = findViewById(R.id.textView7);
+        this.search = this.findViewById(R.id.button1);
+        this.clear = this.findViewById(R.id.button2);
+        this.medlist = this.findViewById(R.id.listView1);
 
-        system = findViewById(R.id.AutoCompleteTextView1);
-        system.setThreshold(1);
-        druggeneric = findViewById(R.id.AutoCompleteTextView2);
-        druggeneric.setThreshold(1);
-        chemicalname = findViewById(R.id.AutoCompleteTextView3);
-        chemicalname.setThreshold(1);
-        brandname = findViewById(R.id.AutoCompleteTextView4);
-        brandname.setThreshold(1);
-        odm = findViewById(R.id.AutoCompleteTextView5);
-        odm.setThreshold(1);
-        composition = findViewById(R.id.AutoCompleteTextView6);
-        composition.setThreshold(1);
+        this.lLayout = new GridLayoutManager(this, 2);
+        this.medlist.setHasFixedSize(true);
+        this.medlist.setLayoutManager(this.lLayout);
+        this.medlist.setNestedScrollingEnabled(false);
+        this.medlist.setItemAnimator(new DefaultItemAnimator());
 
-        counttxt.setText(R.string.total_records);
+
+        assert this.medlist != null;
+
+        this.counttxt = this.findViewById(R.id.textView7);
+
+        this.system = this.findViewById(R.id.AutoCompleteTextView1);
+        this.system.setThreshold(1);
+        this.druggeneric = this.findViewById(R.id.AutoCompleteTextView2);
+        this.druggeneric.setThreshold(1);
+        this.chemicalname = this.findViewById(R.id.AutoCompleteTextView3);
+        this.chemicalname.setThreshold(1);
+        this.brandname = this.findViewById(R.id.AutoCompleteTextView4);
+        this.brandname.setThreshold(1);
+        this.odm = this.findViewById(R.id.AutoCompleteTextView5);
+        this.odm.setThreshold(1);
+        this.composition = this.findViewById(R.id.AutoCompleteTextView6);
+        this.composition.setThreshold(1);
+
+        this.counttxt.setText(string.total_records);
 
 
         if (!BaseConfig.Druglistselindex.isEmpty()) {
-            LoadBackData();
+            this.LoadBackData();
         }
 
 
         //Loading cims1 data background....
-        objbgtsk1.execute();
-        objbgtsk2.execute();
-        objbgtsk3.execute();
-        objbgtsk4.execute();
-        objbgtsk5.execute();
-        objbgtsk6.execute();
+        this.objbgtsk1.execute();
+        this.objbgtsk2.execute();
+        this.objbgtsk3.execute();
+        this.objbgtsk4.execute();
+        this.objbgtsk5.execute();
+        this.objbgtsk6.execute();
 
     }
 
     private final void LoadBackData() {
-        system.setText(BaseConfig.b.getString("system"));
-        druggeneric.setText(BaseConfig.b.getString("druggeneric"));
-        chemicalname.setText(BaseConfig.b.getString("chemicalname"));
-        brandname.setText(BaseConfig.b.getString("brandname"));
-        odm.setText(BaseConfig.b.getString("odm"));
-        composition.setText(BaseConfig.b.getString("composition"));
+        this.system.setText(BaseConfig.b.getString("system"));
+        this.druggeneric.setText(BaseConfig.b.getString("druggeneric"));
+        this.chemicalname.setText(BaseConfig.b.getString("chemicalname"));
+        this.brandname.setText(BaseConfig.b.getString("brandname"));
+        this.odm.setText(BaseConfig.b.getString("odm"));
+        this.composition.setText(BaseConfig.b.getString("composition"));
 
-        SelectedDrugDetails();
+        this.SelectedDrugDetails();
 
-        search.requestFocus();
+        this.search.requestFocus();
 
     }
 
@@ -211,28 +217,28 @@ public class Cims extends AppCompatActivity {
     private void CONTROLLISTENERS() {
 
 
-        search.setOnClickListener(v -> {
-            if (system.getText().toString().isEmpty() && druggeneric.getText().toString().isEmpty() && chemicalname.getText().toString().isEmpty() && brandname.getText().toString().isEmpty() && odm.getText().toString().isEmpty() && composition.getText().toString().isEmpty()) {
-                BaseConfig.showSimplePopUp("Enter values for drug informations", "Warning", context, R.drawable.ic_warning_black_24dp, R.color.orange_500);
+        this.search.setOnClickListener(v -> {
+            if (this.system.getText().toString().isEmpty() && this.druggeneric.getText().toString().isEmpty() && this.chemicalname.getText().toString().isEmpty() && this.brandname.getText().toString().isEmpty() && this.odm.getText().toString().isEmpty() && this.composition.getText().toString().isEmpty()) {
+                BaseConfig.showSimplePopUp("Enter values for drug informations", "Warning", this.context, drawable.ic_warning_black_24dp, color.orange_500);
             } else {
-                SelectedDrugDetails();
+                this.SelectedDrugDetails();
             }
 
-            BaseConfig.HideKeyboard(Cims.this);
+            BaseConfig.HideKeyboard(this);
 
         });
 
 
-        clear.setOnClickListener(v -> {
+        this.clear.setOnClickListener(v -> {
             // TODO Auto-generated method stub
-            system.setText("");
-            druggeneric.setText("");
-            chemicalname.setText("");
-            brandname.setText("");
-            odm.setText("");
-            composition.setText("");
-            counttxt.setText("Total Records :");
-            list.clear();
+            this.system.setText("");
+            this.druggeneric.setText("");
+            this.chemicalname.setText("");
+            this.brandname.setText("");
+            this.odm.setText("");
+            this.composition.setText("");
+            this.counttxt.setText("Total Records :");
+            this.list.clear();
 
             BaseConfig.Druglistselindex = "";
         });
@@ -245,55 +251,55 @@ public class Cims extends AppCompatActivity {
         SQLiteDatabase db = BaseConfig.GetDb();//);
         String WhereCondition = "";
 
-        if (!system.getText().toString().isEmpty()) {
-            WhereCondition = "where SYSTEM='" + system.getText().toString() + '\'';
+        if (!this.system.getText().toString().isEmpty()) {
+            WhereCondition = "where SYSTEM='" + this.system.getText() + '\'';
 
 
         }
 
-        if (!druggeneric.getText().toString().isEmpty()) {
-            WhereCondition = !system.getText().toString().equals("") ? WhereCondition + "and DRUGGENERICNAME='" + druggeneric.getText().toString() + "'" : "where DRUGGENERICNAME='" + druggeneric.getText().toString() + "'";
+        if (!this.druggeneric.getText().toString().isEmpty()) {
+            WhereCondition = !this.system.getText().toString().equals("") ? WhereCondition + "and DRUGGENERICNAME='" + this.druggeneric.getText() + "'" : "where DRUGGENERICNAME='" + this.druggeneric.getText() + "'";
         }
 
-        if (!chemicalname.getText().toString().isEmpty()) {
-            WhereCondition = !system.getText().toString().equals("") || !druggeneric.getText().toString().equals("") ? WhereCondition + "and CHEMICALNAME='" + chemicalname.getText().toString() + "'" : "where CHEMICALNAME='" + chemicalname.getText().toString() + "'";
+        if (!this.chemicalname.getText().toString().isEmpty()) {
+            WhereCondition = !this.system.getText().toString().equals("") || !this.druggeneric.getText().toString().equals("") ? WhereCondition + "and CHEMICALNAME='" + this.chemicalname.getText() + "'" : "where CHEMICALNAME='" + this.chemicalname.getText() + "'";
         }
 
-        if (!brandname.getText().toString().isEmpty()) {
-            WhereCondition = !system.getText().toString().equals("") || !druggeneric.getText().toString().equals("") || !chemicalname.getText().toString().equals("") ? WhereCondition + "and MARKETNAMEOFDRUG='" + brandname.getText().toString() + "'" : "where MARKETNAMEOFDRUG='" + brandname.getText().toString() + "'";
+        if (!this.brandname.getText().toString().isEmpty()) {
+            WhereCondition = !this.system.getText().toString().equals("") || !this.druggeneric.getText().toString().equals("") || !this.chemicalname.getText().toString().equals("") ? WhereCondition + "and MARKETNAMEOFDRUG='" + this.brandname.getText() + "'" : "where MARKETNAMEOFDRUG='" + this.brandname.getText() + "'";
         }
 
-        if (!odm.getText().toString().isEmpty()) {
-            WhereCondition = !system.getText().toString().equals("") || !druggeneric.getText().toString().equals("") || !chemicalname.getText().toString().equals("") || !brandname.getText().toString().equals("") ? WhereCondition + "and PHARMACOMPANY='" + odm.getText().toString() + "'" : "where PHARMACOMPANY='" + odm.getText().toString() + "'";
+        if (!this.odm.getText().toString().isEmpty()) {
+            WhereCondition = !this.system.getText().toString().equals("") || !this.druggeneric.getText().toString().equals("") || !this.chemicalname.getText().toString().equals("") || !this.brandname.getText().toString().equals("") ? WhereCondition + "and PHARMACOMPANY='" + this.odm.getText() + "'" : "where PHARMACOMPANY='" + this.odm.getText() + "'";
         }
 
-        if (!composition.getText().toString().isEmpty()) {
-            WhereCondition = !system.getText().toString().equals("") || !druggeneric.getText().toString().equals("") || !chemicalname.getText().toString().equals("") || !brandname.getText().toString().equals("") || !odm.getText().toString().equals("") ? WhereCondition + "and COMPOSITION='" + composition.getText().toString() + "'" : "where COMPOSITION='" + composition.getText().toString() + "'";
+        if (!this.composition.getText().toString().isEmpty()) {
+            WhereCondition = !this.system.getText().toString().equals("") || !this.druggeneric.getText().toString().equals("") || !this.chemicalname.getText().toString().equals("") || !this.brandname.getText().toString().equals("") || !this.odm.getText().toString().equals("") ? WhereCondition + "and COMPOSITION='" + this.composition.getText() + "'" : "where COMPOSITION='" + this.composition.getText() + "'";
         }
 
         String Query = "select distinct MARKETNAMEOFDRUG,serverid,SYSTEM,PHARMACOMPANY,DOSAGE from cims1 " + WhereCondition + ';';
         Cursor c = db.rawQuery(Query, null);
 
         int count = 1;
-        list.clear();
-        listcnt.clear();
-        drugItemList.clear();
+        this.list.clear();
+        this.listcnt.clear();
+        this.drugItemList.clear();
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
-                    DrugItem item = new DrugItem();
+                    CommonDataObjects.DrugItem item = new CommonDataObjects.DrugItem();
                     item.setBrandName(c.getString(c.getColumnIndex("MARKETNAMEOFDRUG")));
                     item.setDosage(c.getString(c.getColumnIndex("DOSAGE")));
                     item.setPharmaCompany(c.getString(c.getColumnIndex("MARKETNAMEOFDRUG")));
                     item.setSystem(c.getString(c.getColumnIndex("SYSTEM")));
                     item.setServerid(c.getString(c.getColumnIndex("serverid")));
-                    drugItemList.add(item);
+                    this.drugItemList.add(item);
                     String pdtls = String.valueOf(count) + ". \t" + c.getString(c.getColumnIndex("SYSTEM")) + " \t- \t" + c.getString(c.getColumnIndex("MARKETNAMEOFDRUG")) + " \t- \t" + c.getString(c.getColumnIndex("PHARMACOMPANY")) + " \t- \t" + c.getString(c.getColumnIndex("DOSAGE"));//+" - "+c.getString(c.getColumnIndex("MARKETNAMEOFDRUG"));
                     String dataindx = c.getString(c.getColumnIndex("serverid"));
 
-                    list.add(pdtls);
+                    this.list.add(pdtls);
 
-                    listcnt.add(dataindx);
+                    this.listcnt.add(dataindx);
 
                     count++;
 
@@ -302,22 +308,22 @@ public class Cims extends AppCompatActivity {
         }
 
 
-        ArrayAdapter<String> CountryDataAdapter = new ArrayAdapter<>(context, android.R.layout.simple_list_item_1, android.R.id.text1, list);
+        ArrayAdapter<String> CountryDataAdapter = new ArrayAdapter<>(this.context, android.R.layout.simple_list_item_1, id.text1, this.list);
         CountryDataAdapter.setDropDownViewResource(android.R.layout.simple_list_item_1);
-        drugRecylerAdapter = new DrugRecylerAdapter(drugItemList);
+        this.drugRecylerAdapter = new DrugRecylerAdapter(this.drugItemList);
 
-        assert medlist != null;
+        assert this.medlist != null;
 
 
-        medlist.setAdapter(drugRecylerAdapter);
+        this.medlist.setAdapter(this.drugRecylerAdapter);
 
-        counttxt.setText(String.format("%s %s", getString(R.string.total_records_txt), String.valueOf(list.size())));
+        this.counttxt.setText(String.format("%s %s", this.getString(string.total_records_txt), String.valueOf(this.list.size())));
         c.close();
         db.close();
 
-        if (String.valueOf(list.size()).equals("0")) {
+        if (String.valueOf(this.list.size()).equals("0")) {
 
-            Toast.makeText(this, getResources().getString(R.string.no_details), Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, this.getResources().getString(string.no_details), Toast.LENGTH_SHORT).show();
         }
 
     }
@@ -326,7 +332,7 @@ public class Cims extends AppCompatActivity {
     @Override
     public final void onBackPressed() {
         // Do Here what ever you want do on back press;
-        LoadBack();
+        this.LoadBack();
     }
 
     private void LoadData(AutoCompleteTextView autotxt, Context cntxt, String Query, int id) {
@@ -345,7 +351,7 @@ public class Cims extends AppCompatActivity {
 
 
                         String counrtyname = c.getString(c.getColumnIndex("dvalue"));
-                        list1.add(counrtyname);
+                        this.list1.add(counrtyname);
 
                     } while (c.moveToNext());
                 }
@@ -360,7 +366,7 @@ public class Cims extends AppCompatActivity {
 
 
                         String counrtyname = c.getString(c.getColumnIndex("dvalue"));
-                        list2.add(counrtyname);
+                        this.list2.add(counrtyname);
 
                     } while (c.moveToNext());
                 }
@@ -375,7 +381,7 @@ public class Cims extends AppCompatActivity {
 
 
                         String counrtyname = c.getString(c.getColumnIndex("dvalue"));
-                        list3.add(counrtyname);
+                        this.list3.add(counrtyname);
 
                     } while (c.moveToNext());
                 }
@@ -390,7 +396,7 @@ public class Cims extends AppCompatActivity {
 
 
                         String counrtyname = c.getString(c.getColumnIndex("dvalue"));
-                        list4.add(counrtyname);
+                        this.list4.add(counrtyname);
 
                     } while (c.moveToNext());
                 }
@@ -405,7 +411,7 @@ public class Cims extends AppCompatActivity {
 
 
                         String counrtyname = c.getString(c.getColumnIndex("dvalue"));
-                        list5.add(counrtyname);
+                        this.list5.add(counrtyname);
 
                     } while (c.moveToNext());
                 }
@@ -420,7 +426,7 @@ public class Cims extends AppCompatActivity {
 
 
                         String counrtyname = c.getString(c.getColumnIndex("dvalue"));
-                        list6.add(counrtyname);
+                        this.list6.add(counrtyname);
 
                     } while (c.moveToNext());
                 }
@@ -433,9 +439,9 @@ public class Cims extends AppCompatActivity {
 
     }
 
-    private final void spinner2meth(final Context cntxt, List<String> list, AutoCompleteTextView spinnertxt) {
+    private final void spinner2meth(Context cntxt, List<String> list, AutoCompleteTextView spinnertxt) {
         // TODO Auto-generated method stub
-        ArrayAdapter<String> adapter = new ArrayAdapter<String>(cntxt,/*android.R.layout.simple_spinner_dropdown_item*/R.layout.simple_list, list) {
+        ArrayAdapter<String> adapter = new ArrayAdapter<String>(cntxt,/*android.R.layout.simple_spinner_dropdown_item*/layout.simple_list, list) {
             @NonNull
             public View getView(int position, View convertView, @NonNull android.view.ViewGroup parent) {
 
@@ -447,14 +453,14 @@ public class Cims extends AppCompatActivity {
 
             public View getDropDownView(int position, View convertView, @NonNull android.view.ViewGroup parent) {
                 TextView v = (TextView) super.getView(position, convertView, parent);
-                v.setTypeface(tfavv);
+                v.setTypeface(Cims.this.tfavv);
                 //v.setTextColor(Color.BLACK);
                 v.setTextSize(14.0F);
                 return v;
             }
         };
 
-        adapter.setDropDownViewResource(R.layout.simple_list);
+        adapter.setDropDownViewResource(layout.simple_list);
 
         spinnertxt.setAdapter(adapter);
 
@@ -471,14 +477,14 @@ public class Cims extends AppCompatActivity {
         protected final void onPostExecute(Void result) {
             //Log.e("Drug Background", "Testing Drug Bk 1.0");
 
-            spinner2meth(Cims.this, list1, system);
+            Cims.this.spinner2meth(Cims.this, Cims.this.list1, Cims.this.system);
             /*
 
              */
 
 
-            objbgtsk1.cancel(true);
-            objbgtsk1 = new DownloadFilesIssue1();
+            Cims.this.objbgtsk1.cancel(true);
+            Cims.this.objbgtsk1 = new Cims.DownloadFilesIssue1();
         }
 
         @Override
@@ -486,7 +492,7 @@ public class Cims extends AppCompatActivity {
             // TODO Auto-generated method stub
             //Log.e("Drug Background", "Testing Drug Bk 1.0");
 
-            LoadData(system, context, "select distinct SYSTEM  as dvalue from cims1  where SYSTEM!='' order by SYSTEM;", 1);
+            Cims.this.LoadData(Cims.this.system, Cims.this.context, "select distinct SYSTEM  as dvalue from cims1  where SYSTEM!='' order by SYSTEM;", 1);
             /*LoadData(druggeneric,context,"select distinct DRUGGENERICNAME  as dvalue from cims1  where DRUGGENERICNAME!='' order by DRUGGENERICNAME;",2);
 
 
@@ -508,10 +514,10 @@ public class Cims extends AppCompatActivity {
         protected final void onPostExecute(Void result) {
             //Log.e("Drug Background", "Testing Drug Bk 2.0");
 
-            spinner2meth(Cims.this, list2, druggeneric);
+            Cims.this.spinner2meth(Cims.this, Cims.this.list2, Cims.this.druggeneric);
 
-            objbgtsk2.cancel(true);
-            objbgtsk2 = new DownloadFilesIssue2();
+            Cims.this.objbgtsk2.cancel(true);
+            Cims.this.objbgtsk2 = new Cims.DownloadFilesIssue2();
         }
 
         @Override
@@ -519,7 +525,7 @@ public class Cims extends AppCompatActivity {
             // TODO Auto-generated method stub
             //Log.e("Drug Background", "Testing Drug Bk 2.0");
 
-            LoadData(druggeneric, context, "select distinct DRUGGENERICNAME  as dvalue from cims1  where DRUGGENERICNAME!='' order by DRUGGENERICNAME;", 2);
+            Cims.this.LoadData(Cims.this.druggeneric, Cims.this.context, "select distinct DRUGGENERICNAME  as dvalue from cims1  where DRUGGENERICNAME!='' order by DRUGGENERICNAME;", 2);
 
             return null;
         }
@@ -535,9 +541,9 @@ public class Cims extends AppCompatActivity {
 
         protected final void onPostExecute(Void result) {
             //Log.e("Drug Background", "Testing Drug Bk 3.0");
-            spinner2meth(Cims.this, list3, chemicalname);
-            objbgtsk3.cancel(true);
-            objbgtsk3 = new DownloadFilesIssue3();
+            Cims.this.spinner2meth(Cims.this, Cims.this.list3, Cims.this.chemicalname);
+            Cims.this.objbgtsk3.cancel(true);
+            Cims.this.objbgtsk3 = new Cims.DownloadFilesIssue3();
         }
 
         @Override
@@ -545,7 +551,7 @@ public class Cims extends AppCompatActivity {
             // TODO Auto-generated method stub
             //Log.e("Drug Background", "Testing Drug Bk 3.0");
 
-            LoadData(chemicalname, context, "select distinct CHEMICALNAME  as dvalue from cims1 where CHEMICALNAME!='' order by CHEMICALNAME;", 3);
+            Cims.this.LoadData(Cims.this.chemicalname, Cims.this.context, "select distinct CHEMICALNAME  as dvalue from cims1 where CHEMICALNAME!='' order by CHEMICALNAME;", 3);
 
             return null;
         }
@@ -562,11 +568,11 @@ public class Cims extends AppCompatActivity {
         protected final void onPostExecute(Void result) {
             //Log.e("Drug Background", "Testing Drug Bk 4.0");
 
-            spinner2meth(Cims.this, list4, brandname);
+            Cims.this.spinner2meth(Cims.this, Cims.this.list4, Cims.this.brandname);
 
 
-            objbgtsk4.cancel(true);
-            objbgtsk4 = new DownloadFilesIssue4();
+            Cims.this.objbgtsk4.cancel(true);
+            Cims.this.objbgtsk4 = new Cims.DownloadFilesIssue4();
         }
 
         @Override
@@ -574,7 +580,7 @@ public class Cims extends AppCompatActivity {
             // TODO Auto-generated method stub
             //Log.e("Drug Background", "Testing Drug Bk 4.0");
 
-            LoadData(brandname, context, "select distinct MARKETNAMEOFDRUG  as dvalue from cims1 where MARKETNAMEOFDRUG!='' order by MARKETNAMEOFDRUG;", 4);
+            Cims.this.LoadData(Cims.this.brandname, Cims.this.context, "select distinct MARKETNAMEOFDRUG  as dvalue from cims1 where MARKETNAMEOFDRUG!='' order by MARKETNAMEOFDRUG;", 4);
 
             return null;
         }
@@ -591,10 +597,10 @@ public class Cims extends AppCompatActivity {
         protected final void onPostExecute(Void result) {
             //Log.e("Drug Background", "Testing Drug Bk 5.0");
 
-            spinner2meth(Cims.this, list5, odm);
+            Cims.this.spinner2meth(Cims.this, Cims.this.list5, Cims.this.odm);
 
-            objbgtsk5.cancel(true);
-            objbgtsk5 = new DownloadFilesIssue5();
+            Cims.this.objbgtsk5.cancel(true);
+            Cims.this.objbgtsk5 = new Cims.DownloadFilesIssue5();
         }
 
         @Override
@@ -602,7 +608,7 @@ public class Cims extends AppCompatActivity {
             // TODO Auto-generated method stub
             //Log.e("Drug Background", "Testing Drug Bk 5.0");
 
-            LoadData(odm, context, "select distinct PHARMACOMPANY  as dvalue from cims1 where PHARMACOMPANY!='' order by PHARMACOMPANY;", 5);
+            Cims.this.LoadData(Cims.this.odm, Cims.this.context, "select distinct PHARMACOMPANY  as dvalue from cims1 where PHARMACOMPANY!='' order by PHARMACOMPANY;", 5);
 
 
             return null;
@@ -620,11 +626,11 @@ public class Cims extends AppCompatActivity {
         protected final void onPostExecute(Void result) {
             //Log.e("Drug Background", "Testing Drug Bk 6.0");
 
-            spinner2meth(Cims.this, list6, composition);
+            Cims.this.spinner2meth(Cims.this, Cims.this.list6, Cims.this.composition);
 
 
-            objbgtsk6.cancel(true);
-            objbgtsk6 = new DownloadFilesIssue6();
+            Cims.this.objbgtsk6.cancel(true);
+            Cims.this.objbgtsk6 = new Cims.DownloadFilesIssue6();
         }
 
         @Override
@@ -632,7 +638,7 @@ public class Cims extends AppCompatActivity {
             // TODO Auto-generated method stub
             //Log.e("Drug Background", "Testing Drug Bk 6.0");
 
-            LoadData(composition, context, "select distinct COMPOSITION  as dvalue from cims1 where COMPOSITION!='' order by COMPOSITION;", 6);
+            Cims.this.LoadData(Cims.this.composition, Cims.this.context, "select distinct COMPOSITION  as dvalue from cims1 where COMPOSITION!='' order by COMPOSITION;", 6);
 
             return null;
         }

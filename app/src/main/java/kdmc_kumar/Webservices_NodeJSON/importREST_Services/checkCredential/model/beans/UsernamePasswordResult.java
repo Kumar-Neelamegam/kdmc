@@ -19,13 +19,13 @@ public class UsernamePasswordResult {
 
 
     @com.google.gson.annotations.SerializedName("Results")
-    private String results = null;
+    private String results;
 
     public UsernamePasswordResult() {
     }
 
     public final String getResults() {
-        return results;
+        return this.results;
     }
 
     public void setResults(String results) {
@@ -42,11 +42,11 @@ public class UsernamePasswordResult {
         }
 
         public final UsernamePasswordResult build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final UsernamePasswordResultBuilder results(String value) {
-            toBuild.setResults(value);
+        public final UsernamePasswordResult.UsernamePasswordResultBuilder results(String value) {
+            this.toBuild.setResults(value);
             return this;
         }
     }

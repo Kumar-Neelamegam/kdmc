@@ -2,6 +2,7 @@ package kdmc_kumar.Utilities_Others;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
 import android.util.Base64;
 
@@ -18,11 +19,11 @@ public class ImageZipper_Main {
     private int maxWidth = 612;
     private int maxHeight = 816;
     private int quality = 50;
-    private int orientation = 0;
-    private Bitmap.CompressFormat compressFormat = Bitmap.CompressFormat.JPEG;
+    private int orientation;
+    private CompressFormat compressFormat = CompressFormat.JPEG;
 
     public ImageZipper_Main(Context context) {
-        destinationDirectory = context.getCacheDir().getPath() + File.separator + "images";
+        this.destinationDirectory = context.getCacheDir().getPath() + File.separator + "images";
     }
 
     public static String getBase64forImage(File compressFile) {
@@ -54,22 +55,22 @@ public class ImageZipper_Main {
         return this;
     }
 
-    public final ImageZipper_Main setCompressFormat(Bitmap.CompressFormat compressFormat) {
+    public final ImageZipper_Main setCompressFormat(CompressFormat compressFormat) {
         this.compressFormat = compressFormat;
         return this;
     }
 
     public final Bitmap compressToBitmap(File imageFile) throws IOException {
-        return Compressor.decodeBitmapAndCompress(imageFile, maxHeight, maxWidth, orientation);
+        return Compressor.decodeBitmapAndCompress(imageFile, this.maxHeight, this.maxWidth, this.orientation);
     }
 
     public final File compressToFile(File imageFile) throws IOException {
-        return compressToFile(imageFile, imageFile.getName(), orientation);
+        return this.compressToFile(imageFile, imageFile.getName(), this.orientation);
     }
 
     private File compressToFile(File imageFile, String fileName, int orientation) throws IOException {
-        return Compressor.compressImageFile(imageFile, maxHeight, maxWidth,
-                destinationDirectory + File.separator + fileName, quality, compressFormat, orientation);
+        return Compressor.compressImageFile(imageFile, this.maxHeight, this.maxWidth,
+                this.destinationDirectory + File.separator + fileName, this.quality, this.compressFormat, orientation);
     }
 
 }

@@ -24,14 +24,14 @@ public class Validation {
 
     // call this method when you need to check email validation
     public static boolean isEmailAddress(TextView dremail, boolean required) {
-        return isValid1(dremail, EMAIL_REGEX, EMAIL_MSG, required);
+        return Validation.isValid1(dremail, Validation.EMAIL_REGEX, Validation.EMAIL_MSG, required);
     }
 
     // //////////////////////////////////////////////////////////////////////////////////
     // //////////////////////////////////////////////////////////////////////////////////
     // call this method when you need to check phone number validation
     public static boolean isPhoneNumber(TextView editText, boolean required) {
-        return isValid1(editText, PHONE_REGEX, PHONE_MSG, required);
+        return Validation.isValid1(editText, Validation.PHONE_REGEX, Validation.PHONE_MSG, required);
     }
 
     // //////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +43,7 @@ public class Validation {
         dremail.setError(null);
 
         // text required and editText is blank, so return false
-        if (required && !hasText1(dremail))
+        if (required && !Validation.hasText1(dremail))
             return false;
 
         // pattern doesn't match so returning false
@@ -63,7 +63,7 @@ public class Validation {
 
         // length 0 means there is no text
         if (text.length() == 0) {
-            dremail.setError(REQUIRED_MSG);
+            dremail.setError(Validation.REQUIRED_MSG);
             return false;
         }
 
@@ -73,7 +73,7 @@ public class Validation {
     // //////////////////////////////////////////////////////////////////////////////////
     // call this method when you need to check phone number validation
     public static boolean isName(TextView editText, boolean required) {
-        return isValid2(editText, required);
+        return Validation.isValid2(editText, required);
     }
 
     // //////////////////////////////////////////////////////////////////////////////////
@@ -85,12 +85,12 @@ public class Validation {
         drname.setError(null);
 
         // text required and editText is blank, so return false
-        if (required && !hasText1(drname))
+        if (required && !Validation.hasText1(drname))
             return false;
 
         // pattern doesn't match so returning false
-        if (required && !Pattern.matches(Validation.NAME_REGEX, text)) {
-            drname.setError(Validation.NAME_MSG);
+        if (required && !Pattern.matches(NAME_REGEX, text)) {
+            drname.setError(NAME_MSG);
             return false;
         }
 
@@ -105,7 +105,7 @@ public class Validation {
 
         // length 0 means there is no text
         if (text.length() == 0) {
-            drname.setError(REQUIRED_MSG);
+            drname.setError(Validation.REQUIRED_MSG);
             return false;
         }
 
@@ -125,7 +125,7 @@ public class Validation {
         editText.setError(null);
 
         // text required and editText is blank, so return false
-        if (required && !hasText(editText))
+        if (required && !Validation.hasText(editText))
             return false;
 
         // pattern doesn't match so returning false
@@ -147,7 +147,7 @@ public class Validation {
 
         // length 0 means there is no text
         if (text.length() == 0) {
-            editText.setError(REQUIRED_MSG);
+            editText.setError(Validation.REQUIRED_MSG);
             return false;
         }
 
@@ -163,7 +163,7 @@ public class Validation {
 
         // length 0 means there is no text
         if (text.length() == 0) {
-            pwd.setError(REQUIRED_MSG);
+            pwd.setError(Validation.REQUIRED_MSG);
             // pwd.requestFocus();
             return false;
         }

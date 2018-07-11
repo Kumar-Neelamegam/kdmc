@@ -19,15 +19,21 @@ package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
+import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.support.v4.util.ArrayMap;
 import android.util.Log;
 import android.view.View;
+import android.view.View.OnAttachStateChangeListener;
 import android.view.ViewGroup;
 import android.view.ViewTreeObserver;
+import android.view.ViewTreeObserver.OnPreDrawListener;
 
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.id;
+import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.Transition.TransitionListenerAdapter;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.ViewGroupOverlayUtils;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.ViewGroupUtils;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.ViewUtils;
@@ -68,7 +74,7 @@ import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.ViewU
  */
 public class TransitionManager {
 
-    private static String LOG_TAG = "TransitionManager";
+    private static final String LOG_TAG = "TransitionManager";
 
     private static Transition sDefaultTransition = new AutoTransition();
 
@@ -77,7 +83,7 @@ public class TransitionManager {
     ArrayMap<Scene, Transition> mSceneTransitions = new ArrayMap<Scene, Transition>();
     ArrayMap<Scene, ArrayMap<Scene, Transition>> mScenePairTransitions =
             new ArrayMap<Scene, ArrayMap<Scene, Transition>>();
-    private static ArrayList<ViewGroup> sPendingTransitions = new ArrayList<ViewGroup>();
+    private static final ArrayList<ViewGroup> sPendingTransitions = new ArrayList<ViewGroup>();
 
 
     /**
@@ -89,7 +95,7 @@ public class TransitionManager {
      * @hide pending later changes
      */
     public void setDefaultTransition(Transition transition) {
-        sDefaultTransition = transition;
+        TransitionManager.sDefaultTransition = transition;
     }
 
     /**
@@ -101,7 +107,7 @@ public class TransitionManager {
      * @see #setDefaultTransition(Transition)
      */
     public static Transition getDefaultTransition() {
-        return sDefaultTransition;
+        return TransitionManager.sDefaultTransition;
     }
 
     /**
@@ -114,7 +120,7 @@ public class TransitionManager {
      *                   using the default transition instead.
      */
     public void setTransition(Scene scene, Transition transition) {
-        mSceneTransitions.put(scene, transition);
+        this.mSceneTransitions.put(scene, transition);
     }
 
     /**
@@ -130,10 +136,10 @@ public class TransitionManager {
      *                   using the default transition instead.
      */
     public void setTransition(Scene fromScene, Scene toScene, Transition transition) {
-        ArrayMap<Scene, Transition> sceneTransitionMap = mScenePairTransitions.get(toScene);
+        ArrayMap<Scene, Transition> sceneTransitionMap = this.mScenePairTransitions.get(toScene);
         if (sceneTransitionMap == null) {
             sceneTransitionMap = new ArrayMap<Scene, Transition>();
-            mScenePairTransitions.put(toScene, sceneTransitionMap);
+            this.mScenePairTransitions.put(toScene, sceneTransitionMap);
         }
         sceneTransitionMap.put(fromScene, transition);
     }
@@ -155,7 +161,7 @@ public class TransitionManager {
             // TODO: cached in Scene instead? long-term, cache in View itself
             Scene currScene = Scene.getCurrentScene(sceneRoot);
             if (currScene != null) {
-                ArrayMap<Scene, Transition> sceneTransitionMap = mScenePairTransitions.get(scene);
+                ArrayMap<Scene, Transition> sceneTransitionMap = this.mScenePairTransitions.get(scene);
                 if (sceneTransitionMap != null) {
                     transition = sceneTransitionMap.get(currScene);
                     if (transition != null) {
@@ -164,8 +170,8 @@ public class TransitionManager {
                 }
             }
         }
-        transition = mSceneTransitions.get(scene);
-        return (transition != null) ? transition : sDefaultTransition;
+        transition = this.mSceneTransitions.get(scene);
+        return (transition != null) ? transition : TransitionManager.sDefaultTransition;
     }
 
     /**
@@ -180,11 +186,11 @@ public class TransitionManager {
      */
     private static void changeScene(Scene scene, Transition transition) {
 
-        final ViewGroup sceneRoot = scene.getSceneRoot();
-        if (!sPendingTransitions.contains(sceneRoot)) {
+        ViewGroup sceneRoot = scene.getSceneRoot();
+        if (!TransitionManager.sPendingTransitions.contains(sceneRoot)) {
             Transition transitionClone = null;
-            if (isTransitionsAllowed()) {
-                sPendingTransitions.add(sceneRoot);
+            if (TransitionManager.isTransitionsAllowed()) {
+                TransitionManager.sPendingTransitions.add(sceneRoot);
 
                 if (transition != null) {
                     transitionClone = transition.clone();
@@ -198,33 +204,33 @@ public class TransitionManager {
                 }
             }
 
-            sceneChangeSetup(sceneRoot, transitionClone);
+            TransitionManager.sceneChangeSetup(sceneRoot, transitionClone);
 
             scene.enter();
 
-            sceneChangeRunTransition(sceneRoot, transitionClone);
+            TransitionManager.sceneChangeRunTransition(sceneRoot, transitionClone);
         }
     }
 
     private static ArrayList<Transition> getRunningTransitions(ViewGroup viewGroup) {
-        ArrayList<Transition> transitions = (ArrayList<Transition>) viewGroup.getTag(R.id.runningTransitions);
+        ArrayList<Transition> transitions = (ArrayList<Transition>) viewGroup.getTag(id.runningTransitions);
         if (transitions == null) {
             transitions = new ArrayList<Transition>();
-            viewGroup.setTag(R.id.runningTransitions, transitions);
+            viewGroup.setTag(id.runningTransitions, transitions);
         }
         return transitions;
     }
 
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
-    private static void sceneChangeRunTransition(final ViewGroup sceneRoot,
-                                                 final Transition transition) {
-        if (transition != null && sceneRoot != null && isTransitionsAllowed()) {
+    @TargetApi(VERSION_CODES.HONEYCOMB_MR1)
+    private static void sceneChangeRunTransition(ViewGroup sceneRoot,
+                                                 Transition transition) {
+        if (transition != null && sceneRoot != null && TransitionManager.isTransitionsAllowed()) {
             ViewGroupOverlayUtils.initializeOverlay(sceneRoot);
-            MultiListener listener = new MultiListener(transition, sceneRoot);
+            TransitionManager.MultiListener listener = new TransitionManager.MultiListener(transition, sceneRoot);
             sceneRoot.addOnAttachStateChangeListener(listener);
             sceneRoot.getViewTreeObserver().addOnPreDrawListener(listener);
         } else {
-            sPendingTransitions.remove(sceneRoot);
+            TransitionManager.sPendingTransitions.remove(sceneRoot);
         }
     }
 
@@ -236,21 +242,21 @@ public class TransitionManager {
      * from the hierarchy before the OnPreDraw event takes place; it's used to
      * clean up things since the OnPreDraw listener didn't get called in time.
      */
-    @TargetApi(Build.VERSION_CODES.HONEYCOMB_MR1)
-    private static class MultiListener implements ViewTreeObserver.OnPreDrawListener,
-            View.OnAttachStateChangeListener {
+    @TargetApi(VERSION_CODES.HONEYCOMB_MR1)
+    private static class MultiListener implements OnPreDrawListener,
+            OnAttachStateChangeListener {
 
         Transition mTransition;
         ViewGroup mSceneRoot;
 
         MultiListener(Transition transition, ViewGroup sceneRoot) {
-            mTransition = transition;
-            mSceneRoot = sceneRoot;
+            this.mTransition = transition;
+            this.mSceneRoot = sceneRoot;
         }
 
         private void removeListeners() {
-            mSceneRoot.getViewTreeObserver().removeOnPreDrawListener(this);
-            mSceneRoot.removeOnAttachStateChangeListener(this);
+            this.mSceneRoot.getViewTreeObserver().removeOnPreDrawListener(this);
+            this.mSceneRoot.removeOnAttachStateChangeListener(this);
         }
 
         @Override
@@ -259,50 +265,50 @@ public class TransitionManager {
 
         @Override
         public void onViewDetachedFromWindow(View v) {
-            removeListeners();
+            this.removeListeners();
 
-            sPendingTransitions.remove(mSceneRoot);
-            ArrayList<Transition> runningTransitions = getRunningTransitions(mSceneRoot);
+            TransitionManager.sPendingTransitions.remove(this.mSceneRoot);
+            ArrayList<Transition> runningTransitions = TransitionManager.getRunningTransitions(this.mSceneRoot);
             if (runningTransitions.size() > 0) {
                 for (Transition runningTransition : runningTransitions) {
-                    runningTransition.resume(mSceneRoot);
+                    runningTransition.resume(this.mSceneRoot);
                 }
             }
-            mTransition.clearValues(true);
+            this.mTransition.clearValues(true);
         }
 
         @Override
         public boolean onPreDraw() {
-            removeListeners();
+            this.removeListeners();
 
             // Don't start the transition if it's no longer pending.
-            if (!sPendingTransitions.remove(mSceneRoot)) {
+            if (!TransitionManager.sPendingTransitions.remove(this.mSceneRoot)) {
                 return true;
             }
 
             // Add to running list, handle end to remove it
-            ArrayList<Transition> currentTransitions = getRunningTransitions(mSceneRoot);
+            ArrayList<Transition> currentTransitions = TransitionManager.getRunningTransitions(this.mSceneRoot);
             ArrayList<Transition> previousRunningTransitions = null;
             if (currentTransitions.size() > 0) {
                 previousRunningTransitions = new ArrayList<Transition>(currentTransitions);
             }
-            currentTransitions.add(mTransition);
-            mTransition.addListener(new Transition.TransitionListenerAdapter() {
+            currentTransitions.add(this.mTransition);
+            this.mTransition.addListener(new TransitionListenerAdapter() {
                 @Override
                 public void onTransitionEnd(Transition transition) {
-                    ArrayList<Transition> currentTransitions = getRunningTransitions(mSceneRoot);
+                    ArrayList<Transition> currentTransitions = TransitionManager.getRunningTransitions(TransitionManager.MultiListener.this.mSceneRoot);
                     currentTransitions.remove(transition);
                     transition.removeListener(this);
                 }
             });
-            boolean somethingCanBeChanged = cancelAllSystemLayoutTransitions(mSceneRoot);
-            mTransition.captureValues(mSceneRoot, false);
+            boolean somethingCanBeChanged = TransitionManager.cancelAllSystemLayoutTransitions(this.mSceneRoot);
+            this.mTransition.captureValues(this.mSceneRoot, false);
             if (previousRunningTransitions != null) {
                 for (Transition runningTransition : previousRunningTransitions) {
-                    runningTransition.resume(mSceneRoot);
+                    runningTransition.resume(this.mSceneRoot);
                 }
             }
-            mTransition.playTransition(mSceneRoot);
+            this.mTransition.playTransition(this.mSceneRoot);
 
             return !somethingCanBeChanged;
         }
@@ -314,16 +320,16 @@ public class TransitionManager {
             ViewGroup viewGroup = (ViewGroup) view;
             canceled = ViewGroupUtils.cancelLayoutTransition(viewGroup);
             for (int i = 0; i < viewGroup.getChildCount(); i++) {
-                canceled = cancelAllSystemLayoutTransitions(viewGroup.getChildAt(i)) || canceled;
+                canceled = TransitionManager.cancelAllSystemLayoutTransitions(viewGroup.getChildAt(i)) || canceled;
             }
         }
         return canceled;
     }
 
     private static void sceneChangeSetup(ViewGroup sceneRoot, Transition transition) {
-        if (isTransitionsAllowed()) {
+        if (TransitionManager.isTransitionsAllowed()) {
             // Capture current values
-            ArrayList<Transition> runningTransitions = getRunningTransitions(sceneRoot);
+            ArrayList<Transition> runningTransitions = TransitionManager.getRunningTransitions(sceneRoot);
 
             if (runningTransitions.size() > 0) {
                 for (Transition runningTransition : runningTransitions) {
@@ -354,7 +360,7 @@ public class TransitionManager {
     public void transitionTo(Scene scene) {
         // Auto transition if there is no transition declared for the Scene, but there is
         // a root or parent view
-        changeScene(scene, getTransition(scene));
+        TransitionManager.changeScene(scene, this.getTransition(scene));
     }
 
     /**
@@ -364,7 +370,7 @@ public class TransitionManager {
      * @param scene The Scene to change to
      */
     public static void go(Scene scene) {
-        changeScene(scene, sDefaultTransition);
+        TransitionManager.changeScene(scene, TransitionManager.sDefaultTransition);
     }
 
     /**
@@ -382,7 +388,7 @@ public class TransitionManager {
      *                   value of null causes the scene change to happen with no transition.
      */
     public static void go(Scene scene, Transition transition) {
-        changeScene(scene, transition);
+        TransitionManager.changeScene(scene, transition);
     }
 
     /**
@@ -394,8 +400,8 @@ public class TransitionManager {
      *
      * @param sceneRoot The root of the View hierarchy to run the transition on.
      */
-    public static void beginDelayedTransition(final ViewGroup sceneRoot) {
-        beginDelayedTransition(sceneRoot, null);
+    public static void beginDelayedTransition(ViewGroup sceneRoot) {
+        TransitionManager.beginDelayedTransition(sceneRoot, null);
     }
 
     /**
@@ -421,20 +427,20 @@ public class TransitionManager {
      * @param transition The transition to use for this change. A
      *                   value of null causes the TransitionManager to use the default transition.
      */
-    public static void beginDelayedTransition(final ViewGroup sceneRoot, Transition transition) {
-        if (!sPendingTransitions.contains(sceneRoot) && ViewUtils.isLaidOut(sceneRoot, true)) {
+    public static void beginDelayedTransition(ViewGroup sceneRoot, Transition transition) {
+        if (!TransitionManager.sPendingTransitions.contains(sceneRoot) && ViewUtils.isLaidOut(sceneRoot, true)) {
             if (Transition.DBG) {
-                Log.d(LOG_TAG, "beginDelayedTransition: root, transition = " +
+                Log.d(TransitionManager.LOG_TAG, "beginDelayedTransition: root, transition = " +
                         sceneRoot + ", " + transition);
             }
-            sPendingTransitions.add(sceneRoot);
+            TransitionManager.sPendingTransitions.add(sceneRoot);
             if (transition == null) {
-                transition = sDefaultTransition;
+                transition = TransitionManager.sDefaultTransition;
             }
-            final Transition transitionClone = transition.clone();
-            sceneChangeSetup(sceneRoot, transitionClone);
+            Transition transitionClone = transition.clone();
+            TransitionManager.sceneChangeSetup(sceneRoot, transitionClone);
             Scene.setCurrentScene(sceneRoot, null);
-            sceneChangeRunTransition(sceneRoot, transitionClone);
+            TransitionManager.sceneChangeRunTransition(sceneRoot, transitionClone);
         }
     }
 
@@ -443,15 +449,15 @@ public class TransitionManager {
      *
      * @param sceneRoot The root of the View hierarchy to end transitions on.
      */
-    public static void endTransitions(final ViewGroup sceneRoot) {
-        sPendingTransitions.remove(sceneRoot);
+    public static void endTransitions(ViewGroup sceneRoot) {
+        TransitionManager.sPendingTransitions.remove(sceneRoot);
 
-        final ArrayList<Transition> runningTransitions = getRunningTransitions(sceneRoot);
+        ArrayList<Transition> runningTransitions = TransitionManager.getRunningTransitions(sceneRoot);
         if (runningTransitions != null && !runningTransitions.isEmpty()) {
             // Make a copy in case this is called by an onTransitionEnd listener
             ArrayList<Transition> copy = new ArrayList(runningTransitions);
             for (int i = copy.size() - 1; i >= 0; i--) {
-                final Transition transition = copy.get(i);
+                Transition transition = copy.get(i);
                 transition.forceToEnd(sceneRoot);
             }
         }
@@ -462,7 +468,7 @@ public class TransitionManager {
      * for Android versions < 4.0
      */
     public static boolean isTransitionsAllowed() {
-        return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH;
+        return VERSION.SDK_INT >= VERSION_CODES.ICE_CREAM_SANDWICH;
     }
 
     /**

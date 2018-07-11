@@ -19,13 +19,13 @@ public class IsUpdateMaxDocIdResult {
 
 
     @com.google.gson.annotations.SerializedName("Results")
-    private String results = null;
+    private String results;
 
     public IsUpdateMaxDocIdResult() {
     }
 
     public final String getResults() {
-        return results;
+        return this.results;
     }
 
     public void setResults(String results) {
@@ -42,11 +42,11 @@ public class IsUpdateMaxDocIdResult {
         }
 
         public final IsUpdateMaxDocIdResult build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final IsUpdateMaxDocIdResultBuilder results(String value) {
-            toBuild.setResults(value);
+        public final IsUpdateMaxDocIdResult.IsUpdateMaxDocIdResultBuilder results(String value) {
+            this.toBuild.setResults(value);
             return this;
         }
     }

@@ -11,7 +11,6 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
-import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -21,37 +20,37 @@ import kdmc_kumar.Webservices_NodeJSON.importREST_Services.checkCredential.model
 
 public class CheckLoginFactory extends ControllerFactory<CheckLogin> {
     public CheckLoginFactory(MagnetMobileClient magnetClient) {
-        super(CheckLogin.class, CheckLoginSchemaFactory.getInstance().getSchema(), magnetClient);
+        super(CheckLogin.class, CheckLoginFactory.CheckLoginSchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller CheckLogin
     public static class CheckLoginSchemaFactory extends AbstractControllerSchemaFactory {
-        private static CheckLoginSchemaFactory __instance = null;
+        private static CheckLoginFactory.CheckLoginSchemaFactory __instance;
 
         private CheckLoginSchemaFactory() {
         }
 
-        static CheckLoginSchemaFactory getInstance() {
-            synchronized (CheckLoginSchemaFactory.class) {
-                if (null == __instance) {
-                    __instance = new CheckLoginSchemaFactory();
+        static CheckLoginFactory.CheckLoginSchemaFactory getInstance() {
+            synchronized (CheckLoginFactory.CheckLoginSchemaFactory.class) {
+                if (null == CheckLoginFactory.CheckLoginSchemaFactory.__instance) {
+                    CheckLoginFactory.CheckLoginSchemaFactory.__instance = new CheckLoginFactory.CheckLoginSchemaFactory();
                 }
 
-                return __instance;
+                return CheckLoginFactory.CheckLoginSchemaFactory.__instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != schema) {
+                if (null != this.schema) {
                     return;
                 }
 
-                schema = new RequestSchema();
-                schema.setRootPath("");
+                this.schema = new RequestSchema();
+                this.schema.setRootPath("");
 
                 //controller schema for controller method postUsernamePassword
-                JMethod method1 = addMethod("postUsernamePassword",
+                RequestSchema.JMethod method1 = this.addMethod("postUsernamePassword",
                         "data/login",
                         "POST",
                         UsernamePasswordResult.class,

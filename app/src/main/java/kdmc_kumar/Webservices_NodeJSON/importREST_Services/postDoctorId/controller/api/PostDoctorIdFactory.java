@@ -10,7 +10,6 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
-import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -20,37 +19,37 @@ import kdmc_kumar.Webservices_NodeJSON.importREST_Services.postDoctorId.model.be
 
 public class PostDoctorIdFactory extends ControllerFactory<PostDoctorId> {
     public PostDoctorIdFactory(MagnetMobileClient magnetClient) {
-        super(PostDoctorId.class, PostDoctorIdSchemaFactory.getInstance().getSchema(), magnetClient);
+        super(PostDoctorId.class, PostDoctorIdFactory.PostDoctorIdSchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller PostDoctorId
     public static class PostDoctorIdSchemaFactory extends AbstractControllerSchemaFactory {
-        private static PostDoctorIdSchemaFactory __instance = null;
+        private static PostDoctorIdFactory.PostDoctorIdSchemaFactory __instance;
 
         private PostDoctorIdSchemaFactory() {
         }
 
-        static PostDoctorIdSchemaFactory getInstance() {
-            synchronized (PostDoctorIdSchemaFactory.class) {
-                if (null == __instance) {
-                    __instance = new PostDoctorIdSchemaFactory();
+        static PostDoctorIdFactory.PostDoctorIdSchemaFactory getInstance() {
+            synchronized (PostDoctorIdFactory.PostDoctorIdSchemaFactory.class) {
+                if (null == PostDoctorIdFactory.PostDoctorIdSchemaFactory.__instance) {
+                    PostDoctorIdFactory.PostDoctorIdSchemaFactory.__instance = new PostDoctorIdFactory.PostDoctorIdSchemaFactory();
                 }
 
-                return __instance;
+                return PostDoctorIdFactory.PostDoctorIdSchemaFactory.__instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != schema) {
+                if (null != this.schema) {
                     return;
                 }
 
-                schema = new RequestSchema();
-                schema.setRootPath("");
+                this.schema = new RequestSchema();
+                this.schema.setRootPath("");
 
                 //controller schema for controller method postDoctorId
-                JMethod method1 = addMethod("postDoctorId",
+                RequestSchema.JMethod method1 = this.addMethod("postDoctorId",
                         "importMastersSP/postDoctorId",
                         "POST",
                         DoctorIdResult.class,

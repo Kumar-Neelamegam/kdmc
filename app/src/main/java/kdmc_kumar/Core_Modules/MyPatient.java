@@ -234,7 +234,6 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
                 final CharSequence[] items = {
                         getString(R.string.today_appointment),
-                        getString(R.string.upcoming_patient),
                         getString(R.string.search_patient_online),
                         getString(R.string.admit_patient_request),
                         getString(R.string.close)
@@ -255,7 +254,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                             UpcomingPatients();
 
 
-                        }  else if (items[item].toString().equalsIgnoreCase(getString(R.string.search_patient_online))) {
+                        } else if (items[item].toString().equalsIgnoreCase(getString(R.string.search_patient_online))) {
 
                             SearchPatientOnline(dialog);
 
@@ -333,7 +332,6 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                 imgNoMedia.setVisibility(visibility);
 
 
-
             } else {
 
                 BaseConfig.listViewType = ListViewType.ListView;
@@ -352,8 +350,6 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
                 int visibility = Integer.parseInt(ListCount) == 0 ? View.VISIBLE : View.GONE;
                 imgNoMedia.setVisibility(visibility);
-
-
 
 
             }
@@ -375,7 +371,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
                 try {
 
-                    new LoadPatientInfo( 1,1).execute();
+                    new LoadPatientInfo(1, 1).execute();
 
                     Toast.makeText(MyPatient.this, "Please wait refreshing patient list...", Toast.LENGTH_LONG).show();
 
@@ -750,20 +746,15 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
         if (q) {
 
-            String Query1 = "select Id as dstatus1  from Medicaltestdtls where (LENGTH(testvalue)>=1) and (substr(Actdate,0,12)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "'  or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "') and  Ptid='" + PATID + "' ";
+            String Query1 = "select IsResultAvailable as ret_values from Medicaltest where Ptid='" + PATID + "' and (substr(Actdate,0,11)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "'  or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "')";
+            String IsResultAvailable = BaseConfig.GetValues(Query1);
 
-            String Query2 = "select Id as dstatus1  from Scantest where (LENGTH(scanvalue)>=1) and (substr(Actdate,0,12)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "') and  Ptid='" + PATID + "' ";
-
-            String Query3 = "select Id as dstatus1  from XRAY where (LENGTH(xrayvalue)>=1) and (substr(Actdate,0,12)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "') and  Ptid='" + PATID + "' ";
-
-            String Query4 = "select Id as dstatus1  from ECGTEST where (LENGTH(Ecg)>=1) and (substr(Actdate,0,12)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "') and  Ptid='" + PATID + "' ";
-
-            String Query5 = "select Id as dstatus1  from EEG where (LENGTH(Summary)>=1) and (substr(Actdate,0,12)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "') and  Ptid='" + PATID + "' ";
-
-            if (LoadReportsBooleanStatus(Query1)) {
+             if (IsResultAvailable.equalsIgnoreCase("1")) {
                 return "1";
-            } else {
+            } else if (IsResultAvailable.equalsIgnoreCase("2")) {
                 return "2";
+            } else {
+                return "0";
             }
 
         } else {
@@ -1046,7 +1037,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
     public class LoadPatientInfo extends AsyncTask<Void, Void, Void> {
 
         int PASSING_ID = 1;
-        int PASSING_LOAD_FILTER=0;
+        int PASSING_LOAD_FILTER = 0;
 
         LoadPatientInfo(int Id, int FilterId) {
             this.PASSING_ID = Id;
@@ -1139,7 +1130,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                                 try {
                                     CheckPatientsOnline();
 
-                                    new LoadPatientInfo(1,1).execute();
+                                    new LoadPatientInfo(1, 1).execute();
 
 
                                 } catch (Exception e) {
@@ -1166,7 +1157,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                                 try {
                                     CheckPatientsOnline();
 
-                                    new LoadPatientInfo(1,1).execute();
+                                    new LoadPatientInfo(1, 1).execute();
 
 
                                 } catch (Exception e) {

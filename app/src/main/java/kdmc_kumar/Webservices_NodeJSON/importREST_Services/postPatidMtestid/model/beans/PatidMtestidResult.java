@@ -19,13 +19,13 @@ public class PatidMtestidResult {
 
 
     @com.google.gson.annotations.SerializedName("Results")
-    private String results = null;
+    private String results;
 
     public PatidMtestidResult() {
     }
 
     public final String getResults() {
-        return results;
+        return this.results;
     }
 
     public void setResults(String results) {
@@ -42,11 +42,11 @@ public class PatidMtestidResult {
         }
 
         public final PatidMtestidResult build() {
-            return toBuild;
+            return this.toBuild;
         }
 
-        public final PatidMtestidResultBuilder results(String value) {
-            toBuild.setResults(value);
+        public final PatidMtestidResult.PatidMtestidResultBuilder results(String value) {
+            this.toBuild.setResults(value);
             return this;
         }
     }

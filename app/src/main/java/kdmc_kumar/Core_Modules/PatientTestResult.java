@@ -17,7 +17,11 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
+import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
+import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu.NotificationClass;
 import kdmc_kumar.Inpatient_Module.OperationTheater;
 import kdmc_kumar.MyPatient_Module.ExtraReports.Profile_ANCTestReport;
 import kdmc_kumar.MyPatient_Module.ExtraReports.Profile_Blood_Report;
@@ -28,21 +32,21 @@ import kdmc_kumar.MyPatient_Module.MyPatientDrawer;
 
 public class PatientTestResult extends AppCompatActivity {
     private static final int WRAP_CONTENT = 21;
-    private final ArrayList<Dashboard_NavigationMenu.NotificationClass> notificationListTest = new ArrayList<>();
-    private ImageView lab_patitent_image = null;
-    private String value = null;
-    private TextView patientname = null;
-    private TextView patientid = null;
-    private TextView patientage = null;
-    private TextView patientgender = null;
+    private final ArrayList<NotificationClass> notificationListTest = new ArrayList<>();
+    private ImageView lab_patitent_image;
+    private String value;
+    private TextView patientname;
+    private TextView patientid;
+    private TextView patientage;
+    private TextView patientgender;
 
 
-    private Toolbar toolbar = null;
-    private ImageView back = null;
-    private ImageView exit = null;
-    private TextView Title = null;
+    private Toolbar toolbar;
+    private ImageView back;
+    private ImageView exit;
+    private TextView Title;
 
-    private Button more_details = null;
+    private Button more_details;
     String strPatid = "", strMtestId = "";
     private final String compareExamination = "All examination of blood";
     private final String compareStoolReport = "All stool test";
@@ -56,54 +60,54 @@ public class PatientTestResult extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_patient_test_result);
+        this.setContentView(layout.activity_patient_test_result);
 
 
         // #######################################################################################################
 
-        toolbar = findViewById(R.id.toolbar);
-        exit = toolbar.findViewById(R.id.ic_exit);
-        back = toolbar.findViewById(R.id.ic_back);
-        Title = toolbar.findViewById(R.id.txvw_title);
-        Title.setText(getString(R.string.app_name) + " - " + "Lab Reports");
+        this.toolbar = this.findViewById(id.toolbar);
+        this.exit = this.toolbar.findViewById(id.ic_exit);
+        this.back = this.toolbar.findViewById(id.ic_back);
+        this.Title = this.toolbar.findViewById(id.txvw_title);
+        this.Title.setText(this.getString(string.app_name) + " - " + "Lab Reports");
 
-        setSupportActionBar(toolbar);
+        this.setSupportActionBar(this.toolbar);
 
-        exit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(PatientTestResult.this, null));
+        this.exit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(this, null));
 
 
-        back.setOnClickListener(view -> LoadBack());
+        this.back.setOnClickListener(view -> this.LoadBack());
         // #######################################################################################################
 
 
-        value = getIntent().getExtras().getString("PatientId");
+        this.value = this.getIntent().getExtras().getString("PatientId");
 
-        lab_patitent_image = findViewById(R.id.lab_patitent_image);
-        patientname = findViewById(R.id.lab_patient_name);
-        patientid = findViewById(R.id.lab_patient_id);
-        patientage = findViewById(R.id.lab_patient_age);
-        patientgender = findViewById(R.id.lab_patient_gender);
+        this.lab_patitent_image = this.findViewById(id.lab_patitent_image);
+        this.patientname = this.findViewById(id.lab_patient_name);
+        this.patientid = this.findViewById(id.lab_patient_id);
+        this.patientage = this.findViewById(id.lab_patient_age);
+        this.patientgender = this.findViewById(id.lab_patient_gender);
 
-        more_details = findViewById(R.id.more_info);
+        this.more_details = this.findViewById(id.more_info);
 
-        more_details.setOnClickListener(v -> {
+        this.more_details.setOnClickListener(v -> {
 
             ((Activity) v.getContext()).finish();
             Intent lib = new Intent(v.getContext(), MyPatientDrawer.class);
-            lib.putExtra(BaseConfig.BUNDLE_PATIENT_ID, value);
+            lib.putExtra(BaseConfig.BUNDLE_PATIENT_ID, this.value);
             lib.putExtra("TEST_REPORT", "True");
             v.getContext().startActivity(lib);
 
         });
 
-        LinearLayout parentLayout = findViewById(R.id.insert_rows);
+        LinearLayout parentLayout = this.findViewById(id.insert_rows);
 
         // TODO: 3/24/2017 set Patient Details
-        setPatientDetails(value, lab_patitent_image, patientname, patientid, patientage, patientgender);
+        PatientTestResult.setPatientDetails(this.value, this.lab_patitent_image, this.patientname, this.patientid, this.patientage, this.patientgender);
 
 
         // TODO: 3/24/2017 Checked M.Ponnusamy in Medical Test Notification
-        notificationListTest.clear();
+        this.notificationListTest.clear();
 
         boolean status_value;
 
@@ -113,54 +117,54 @@ public class PatientTestResult extends AppCompatActivity {
         String comparePBSName = "blood sug pp";
 
 
-        String Query = "select Id as dstatus1  from Medicaltestdtls where Ptid='" + value + "' and (substr(Actdate,0,11)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "'  or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "')";
+        String Query = "select Id as dstatus1  from Medicaltestdtls where Ptid='" + this.value + "' and (substr(Actdate,0,11)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "'  or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "')";
 
         //Log.e("Test result query: ", Query);
         //Log.e("Test result query: ", Query);
         //Log.e("Test result query: ", Query);
 
-        status_value = LoadReportsBooleanStatus(Query);
+        status_value = PatientTestResult.LoadReportsBooleanStatus(Query);
 
 
         if (status_value) {
             SQLiteDatabase db = BaseConfig.GetDb();//PatientTestResult.this);
 
-            Cursor c = db.rawQuery("select *  from Medicaltestdtls where Ptid='" + value + "' and (substr(Actdate,0,11)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "'  or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "')", null);
+            Cursor c = db.rawQuery("select *  from Medicaltestdtls where Ptid='" + this.value + "' and (substr(Actdate,0,11)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "'  or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "')", null);
 
             if (c != null) {
                 if (c.moveToFirst()) {
                     do {
-                        Dashboard_NavigationMenu.NotificationClass objClass = new Dashboard_NavigationMenu.NotificationClass();
+                        NotificationClass objClass = new NotificationClass();
 
 
-                        if (checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(compareRBSName)) {
-                            objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
-                            objClass.TestValues = String.valueOf(checkNull(c.getString(c.getColumnIndex("temperature"))));
+                        if (PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(compareRBSName)) {
+                            objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
+                            objClass.TestValues = String.valueOf(PatientTestResult.checkNull(c.getString(c.getColumnIndex("temperature"))));
                             objClass.destinationClass = OperationTheater.class.getSimpleName();
 
 
-                        } else if (checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(compareFBSName)) {
-                            objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
-                            objClass.TestValues = String.valueOf(checkNull(c.getString(c.getColumnIndex("bps"))));
+                        } else if (PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(compareFBSName)) {
+                            objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
+                            objClass.TestValues = String.valueOf(PatientTestResult.checkNull(c.getString(c.getColumnIndex("bps"))));
                             objClass.destinationClass = OperationTheater.class.getSimpleName();
 
 
-                        } else if (checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(comparePBSName)) {
-                            objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
-                            objClass.TestValues = String.valueOf(checkNull(c.getString(c.getColumnIndex("bpd"))));
+                        } else if (PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(comparePBSName)) {
+                            objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
+                            objClass.TestValues = String.valueOf(PatientTestResult.checkNull(c.getString(c.getColumnIndex("bpd"))));
                             objClass.destinationClass = OperationTheater.class.getSimpleName();
 
 
-                        } else if (checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(compareExamination)) //EXAMINATION OF BLOOD - All examination of blood
+                        } else if (PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(this.compareExamination)) //EXAMINATION OF BLOOD - All examination of blood
                         {
                             String MTESTID = c.getString(c.getColumnIndex("mtestid"));
-                            String QueryCheck = "select Id as dstatus1 from Bind_examination_blood_test where Patid='" + value + "' and Mtestid='" + MTESTID.trim() + '\'';
+                            String QueryCheck = "select Id as dstatus1 from Bind_examination_blood_test where Patid='" + this.value + "' and Mtestid='" + MTESTID.trim() + '\'';
 
                             boolean q = BaseConfig.LoadReportsBooleanStatus(QueryCheck);
 
                             if (q) {//==true
 
-                                objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
+                                objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
                                 objClass.TestValues = "More";
                                 objClass.destinationClass = OperationTheater.class.getSimpleName();
                                 objClass.Patid = c.getString(c.getColumnIndex("Ptid"));
@@ -168,22 +172,22 @@ public class PatientTestResult extends AppCompatActivity {
 
                             } else//false
                             {
-                                objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
+                                objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
                                 objClass.TestValues = "-";
                                 objClass.destinationClass = OperationTheater.class.getSimpleName();
 
                             }
 
-                        } else if (checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(compareStoolReport)) //STOOL REPORT
+                        } else if (PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(this.compareStoolReport)) //STOOL REPORT
                         {
                             String MTESTID = c.getString(c.getColumnIndex("mtestid"));
-                            String QueryCheck = "select Id as dstatus1 from Bind_stool_report where Patid='" + value + "' and Mtestid='" + MTESTID.trim() + '\'';
+                            String QueryCheck = "select Id as dstatus1 from Bind_stool_report where Patid='" + this.value + "' and Mtestid='" + MTESTID.trim() + '\'';
 
                             boolean q = BaseConfig.LoadReportsBooleanStatus(QueryCheck);
 
                             if (q) {//==true
 
-                                objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
+                                objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
                                 objClass.TestValues = "More";
                                 objClass.destinationClass = OperationTheater.class.getSimpleName();
                                 objClass.Patid = c.getString(c.getColumnIndex("Ptid"));
@@ -191,22 +195,22 @@ public class PatientTestResult extends AppCompatActivity {
 
                             } else//false
                             {
-                                objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
+                                objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
                                 objClass.TestValues = "-";
                                 objClass.destinationClass = OperationTheater.class.getSimpleName();
 
                             }
 
-                        } else if (checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(compareUrineReport)) //URINE REPORT
+                        } else if (PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(this.compareUrineReport)) //URINE REPORT
                         {
                             String MTESTID = c.getString(c.getColumnIndex("mtestid"));
-                            String QueryCheck = "select Id as dstatus1 from Bind_urine_test where Patid='" + value + "' and Mtestid='" + MTESTID.trim() + '\'';
+                            String QueryCheck = "select Id as dstatus1 from Bind_urine_test where Patid='" + this.value + "' and Mtestid='" + MTESTID.trim() + '\'';
 
                             boolean q = BaseConfig.LoadReportsBooleanStatus(QueryCheck);
 
                             if (q) {//==true
 
-                                objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
+                                objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
                                 objClass.TestValues = "More";
                                 objClass.destinationClass = OperationTheater.class.getSimpleName();
                                 objClass.Patid = c.getString(c.getColumnIndex("Ptid"));
@@ -214,22 +218,22 @@ public class PatientTestResult extends AppCompatActivity {
 
                             } else//false
                             {
-                                objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
+                                objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
                                 objClass.TestValues = "-";
                                 objClass.destinationClass = OperationTheater.class.getSimpleName();
 
                             }
 
-                        } else if (checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(compareAncfpReport)) //ANC FP REPORT
+                        } else if (PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(this.compareAncfpReport)) //ANC FP REPORT
                         {
                             String MTESTID = c.getString(c.getColumnIndex("mtestid"));
-                            String QueryCheck = "select Id as dstatus1 from Bind_anc_fp_test where Patid='" + value + "' and Mtestid='" + MTESTID.trim() + '\'';
+                            String QueryCheck = "select Id as dstatus1 from Bind_anc_fp_test where Patid='" + this.value + "' and Mtestid='" + MTESTID.trim() + '\'';
 
                             boolean q = BaseConfig.LoadReportsBooleanStatus(QueryCheck);
 
                             if (q) {//==true
 
-                                objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
+                                objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
                                 objClass.TestValues = "More";
                                 objClass.destinationClass = OperationTheater.class.getSimpleName();
                                 objClass.Patid = c.getString(c.getColumnIndex("Ptid"));
@@ -237,22 +241,22 @@ public class PatientTestResult extends AppCompatActivity {
 
                             } else//false
                             {
-                                objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
+                                objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
                                 objClass.TestValues = "-";
                                 objClass.destinationClass = OperationTheater.class.getSimpleName();
 
                             }
 
-                        } else if (checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(compareHIVReport)) //HIV REPORT
+                        } else if (PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname"))).equalsIgnoreCase(this.compareHIVReport)) //HIV REPORT
                         {
                             String MTESTID = c.getString(c.getColumnIndex("mtestid"));
-                            String QueryCheck = "select Id as dstatus1 from Bind_HIV_Report where Patid='" + value + "' and Mtestid='" + MTESTID.trim() + '\'';
+                            String QueryCheck = "select Id as dstatus1 from Bind_HIV_Report where Patid='" + this.value + "' and Mtestid='" + MTESTID.trim() + '\'';
 
                             boolean q = BaseConfig.LoadReportsBooleanStatus(QueryCheck);
 
                             if (q) {//==true
 
-                                objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
+                                objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
                                 objClass.TestValues = "More";
                                 objClass.destinationClass = OperationTheater.class.getSimpleName();
                                 objClass.Patid = c.getString(c.getColumnIndex("Ptid"));
@@ -260,21 +264,21 @@ public class PatientTestResult extends AppCompatActivity {
 
                             } else//false
                             {
-                                objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
+                                objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
                                 objClass.TestValues = "-";
                                 objClass.destinationClass = OperationTheater.class.getSimpleName();
 
                             }
 
                         } else {
-                            objClass.TestName = String.valueOf(c.getString(c.getColumnIndex("testname")) + " - " + checkNull(c.getString(c.getColumnIndex("subtestname"))));
-                            objClass.TestValues = String.valueOf(checkNull(c.getString(c.getColumnIndex("testvalue"))));
+                            objClass.TestName = c.getString(c.getColumnIndex("testname")) + " - " + PatientTestResult.checkNull(c.getString(c.getColumnIndex("subtestname")));
+                            objClass.TestValues = String.valueOf(PatientTestResult.checkNull(c.getString(c.getColumnIndex("testvalue"))));
                             objClass.destinationClass = OperationTheater.class.getSimpleName();
 
                         }
 
 
-                        notificationListTest.add(objClass);
+                        this.notificationListTest.add(objClass);
                     }
                     while (c.moveToNext());
                 }
@@ -287,7 +291,7 @@ public class PatientTestResult extends AppCompatActivity {
         }
 
         try {
-            showNotificationForTestValues(parentLayout);
+            this.showNotificationForTestValues(parentLayout);
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
@@ -332,19 +336,19 @@ public class PatientTestResult extends AppCompatActivity {
 
     private final void showNotificationForTestValues(LinearLayout parentLayout) {
 
-        LinearLayout rootLayout = new LinearLayout(PatientTestResult.this);
+        LinearLayout rootLayout = new LinearLayout(this);
         rootLayout.setOrientation(LinearLayout.VERTICAL);
-        LayoutInflater inflator = PatientTestResult.this.getLayoutInflater();
+        LayoutInflater inflator = getLayoutInflater();
 
 
-        for (int i = 0; i <= notificationListTest.size() - 1; i++) {
+        for (int i = 0; i <= this.notificationListTest.size() - 1; i++) {
 
 
-            LinearLayout layout = (LinearLayout) inflator.inflate(R.layout.patient_test_result_row, null);
-            LinearLayout viewRoot = layout.findViewById(R.id.row_lay);
-            TextView TestName = layout.findViewById(R.id.lab_testname);
-            TextView TestValue = layout.findViewById(R.id.lab_testvalue);
-            final Dashboard_NavigationMenu.NotificationClass notifyObj = notificationListTest.get(i);
+            LinearLayout layout = (LinearLayout) inflator.inflate(layout.patient_test_result_row, null);
+            LinearLayout viewRoot = layout.findViewById(id.row_lay);
+            TextView TestName = layout.findViewById(id.lab_testname);
+            TextView TestValue = layout.findViewById(id.lab_testvalue);
+            NotificationClass notifyObj = this.notificationListTest.get(i);
 
             TestName.setText(notifyObj.TestName);
             TestValue.setText(notifyObj.TestValues);
@@ -357,27 +361,27 @@ public class PatientTestResult extends AppCompatActivity {
                 String str_testname = testname[1];
                 String testvalues = TestValue.getText().toString();
 
-                if (str_testname.equalsIgnoreCase(compareExamination))//blood test
+                if (str_testname.equalsIgnoreCase(this.compareExamination))//blood test
                 {
                     if (testvalues.equalsIgnoreCase("More")) {
-                        startActivity(new Intent(PatientTestResult.this, Profile_Blood_Report.class).putExtra("PTID", notifyObj.Patid).putExtra("MTESTID", notifyObj.MtestId));
+                        this.startActivity(new Intent(this, Profile_Blood_Report.class).putExtra("PTID", notifyObj.Patid).putExtra("MTESTID", notifyObj.MtestId));
 
                     }
-                } else if (str_testname.equalsIgnoreCase(compareStoolReport))//stool test
+                } else if (str_testname.equalsIgnoreCase(this.compareStoolReport))//stool test
                 {
                     if (testvalues.equalsIgnoreCase("More")) {
-                        startActivity(new Intent(PatientTestResult.this, Profile_StoolReport.class).putExtra("PTID", notifyObj.Patid).putExtra("MTESTID", notifyObj.MtestId));
+                        this.startActivity(new Intent(this, Profile_StoolReport.class).putExtra("PTID", notifyObj.Patid).putExtra("MTESTID", notifyObj.MtestId));
 
                     }
-                } else if (str_testname.equalsIgnoreCase(compareUrineReport))//urine test
+                } else if (str_testname.equalsIgnoreCase(this.compareUrineReport))//urine test
                 {
                     if (testvalues.equalsIgnoreCase("More")) {
-                        startActivity(new Intent(PatientTestResult.this, Profile_UrineReport.class).putExtra("PTID", notifyObj.Patid).putExtra("MTESTID", notifyObj.MtestId));
+                        this.startActivity(new Intent(this, Profile_UrineReport.class).putExtra("PTID", notifyObj.Patid).putExtra("MTESTID", notifyObj.MtestId));
 
                     }
-                } else if (str_testname.equalsIgnoreCase(compareAncfpReport)) {
+                } else if (str_testname.equalsIgnoreCase(this.compareAncfpReport)) {
                     if (testvalues.equalsIgnoreCase("More")) {
-                        startActivity(new Intent(PatientTestResult.this, Profile_ANCTestReport.class).putExtra("PTID", notifyObj.Patid).putExtra("MTESTID", notifyObj.MtestId));
+                        this.startActivity(new Intent(this, Profile_ANCTestReport.class).putExtra("PTID", notifyObj.Patid).putExtra("MTESTID", notifyObj.MtestId));
 
                     }
 
@@ -399,9 +403,9 @@ public class PatientTestResult extends AppCompatActivity {
         }
 
 
-        if (notificationListTest.size() > 0) {
+        if (this.notificationListTest.size() > 0) {
             parentLayout.addView(rootLayout);
-            DisplayMetrics metrics = PatientTestResult.this.getResources().getDisplayMetrics();
+            DisplayMetrics metrics = getResources().getDisplayMetrics();
             int width = metrics.widthPixels;
             int height = metrics.heightPixels;
 
@@ -446,7 +450,7 @@ public class PatientTestResult extends AppCompatActivity {
     public final void onBackPressed() {
         super.onBackPressed();
 
-        LoadBack();
+        this.LoadBack();
 
     }
 

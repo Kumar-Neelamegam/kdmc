@@ -1,5 +1,6 @@
 package kdmc_kumar.MyPatient_Module;
 
+import android.R.color;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -16,6 +17,8 @@ import android.widget.ImageView;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
+import displ.mobydocmarathi.com.R.id;
+import displ.mobydocmarathi.com.R.layout;
 import kdmc_kumar.Adapters_GetterSetter.PDFReportItems;
 import kdmc_kumar.Adapters_GetterSetter.PdfReportAdapter;
 import kdmc_kumar.Core_Modules.BaseConfig;
@@ -31,52 +34,52 @@ public class PDFReport_Profile extends android.support.v4.app.Fragment {
 
 //**********************************************************************************************
 
-    private RecyclerView listView = null;
-    private PdfReportAdapter adapter = null;
+    private RecyclerView listView;
+    private PdfReportAdapter adapter;
 
     private final ArrayList<PDFReportItems> rowItems = new ArrayList<>();
 
-    private String BUNDLE_PATIENT_ID = null;
-    private ImageView no_data = null;
-    private SwipeRefreshLayout mSwipeRefreshLayout = null;
-    private GridLayoutManager lLayout = null;
+    private String BUNDLE_PATIENT_ID;
+    private ImageView no_data;
+    private SwipeRefreshLayout mSwipeRefreshLayout;
+    private GridLayoutManager lLayout;
 
     public PDFReport_Profile() {
     }
 
     //**********************************************************************************************
     public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View rootView = LayoutInflater.from(container.getContext()).inflate(R.layout.fragment_mypatient_reportgalleryfragment, container, false);
+        View rootView = LayoutInflater.from(container.getContext()).inflate(layout.fragment_mypatient_reportgalleryfragment, container, false);
 
-        Bundle args = getArguments();
-        BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
+        Bundle args = this.getArguments();
+        this.BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
 
-        listView = rootView.findViewById(R.id.listView1);
-        mSwipeRefreshLayout = rootView.findViewById(R.id.swipeRefreshLayout);
+        this.listView = rootView.findViewById(id.listView1);
+        this.mSwipeRefreshLayout = rootView.findViewById(swipeRefreshLayout);
 
-        lLayout = new GridLayoutManager(getActivity(), 1);
-        listView.setHasFixedSize(true);
-        listView.setLayoutManager(lLayout);
-        listView.setNestedScrollingEnabled(false);
+        this.lLayout = new GridLayoutManager(this.getActivity(), 1);
+        this.listView.setHasFixedSize(true);
+        this.listView.setLayoutManager(this.lLayout);
+        this.listView.setNestedScrollingEnabled(false);
 
-        no_data = rootView.findViewById(R.id.img_nodata);
+        this.no_data = rootView.findViewById(id.img_nodata);
 
         try {
 
-            SelectedGetPatientPDFReports("select * from Bind_PDFInfo where PATIENTID='" + BUNDLE_PATIENT_ID + "';");
+            this.SelectedGetPatientPDFReports("select * from Bind_PDFInfo where PATIENTID='" + this.BUNDLE_PATIENT_ID + "';");
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
-        mSwipeRefreshLayout = rootView.findViewById(swipeRefreshLayout);
-        mSwipeRefreshLayout.setColorSchemeResources(android.R.color.holo_green_dark, android.R.color.holo_red_dark, android.R.color.holo_blue_bright);
-        mSwipeRefreshLayout.setOnRefreshListener(() -> {
+        this.mSwipeRefreshLayout = rootView.findViewById(swipeRefreshLayout);
+        this.mSwipeRefreshLayout.setColorSchemeResources(color.holo_green_dark, color.holo_red_dark, color.holo_blue_bright);
+        this.mSwipeRefreshLayout.setOnRefreshListener(() -> {
 
             try {
 
-                SelectedGetPatientPDFReports("select * from Bind_PDFInfo where PATIENTID='" + BUNDLE_PATIENT_ID + "';");
+                this.SelectedGetPatientPDFReports("select * from Bind_PDFInfo where PATIENTID='" + this.BUNDLE_PATIENT_ID + "';");
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -111,7 +114,7 @@ public class PDFReport_Profile extends android.support.v4.app.Fragment {
 
 
                         PDFReportItems item = new PDFReportItems(Id, PATIENTID, PATIENTNAME, SYMP, DIAGNOSIS, VISITEDON);
-                        rowItems.add(item);
+                        this.rowItems.add(item);
 
 
                     } while (c.moveToNext());
@@ -119,26 +122,26 @@ public class PDFReport_Profile extends android.support.v4.app.Fragment {
                 }
             }
 
-            listView.setHasFixedSize(true);
-            assert listView != null;
+            this.listView.setHasFixedSize(true);
+            assert this.listView != null;
 
-            adapter = new PdfReportAdapter(rowItems, BUNDLE_PATIENT_ID, getActivity());
+            this.adapter = new PdfReportAdapter(this.rowItems, this.BUNDLE_PATIENT_ID, this.getActivity());
 
-            listView.setAdapter(adapter);
+            this.listView.setAdapter(this.adapter);
 
             c.close();
             db.close();
 
-            if (no_data != null) {
-                if (rowItems.size() > 0) {
-                    no_data.setVisibility(View.GONE);
-                } else if (rowItems.size() == 0) {
-                    no_data.setVisibility(View.VISIBLE);
+            if (this.no_data != null) {
+                if (this.rowItems.size() > 0) {
+                    this.no_data.setVisibility(View.GONE);
+                } else if (this.rowItems.size() == 0) {
+                    this.no_data.setVisibility(View.VISIBLE);
                 }
             }
 
             // Stop refresh animation
-            mSwipeRefreshLayout.setRefreshing(false);
+            this.mSwipeRefreshLayout.setRefreshing(false);
 
 
         } catch (NumberFormatException e) {

@@ -20,6 +20,7 @@ import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
+import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
 import android.graphics.Rect;
@@ -27,18 +28,21 @@ import android.graphics.RectF;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
+import android.os.Build.VERSION_CODES;
 import android.view.View;
+import android.view.View.MeasureSpec;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ImageView.ScaleType;
 
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.ViewUtils;
 
 /**
  * Static utility methods for Transitions.
  */
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
 public class TransitionUtils {
-    private static int MAX_IMAGE_SIZE = (1024 * 1024);
+    private static final int MAX_IMAGE_SIZE = (1024 * 1024);
 
     public static Animator mergeAnimators(Animator animator1, Animator animator2) {
         if (animator1 == null) {
@@ -100,13 +104,13 @@ public class TransitionUtils {
         int bottom = Math.round(bounds.bottom);
 
         ImageView copy = new ImageView(view.getContext());
-        copy.setScaleType(ImageView.ScaleType.CENTER_CROP);
-        Bitmap bitmap = createViewBitmap(view, matrix, bounds);
+        copy.setScaleType(ScaleType.CENTER_CROP);
+        Bitmap bitmap = TransitionUtils.createViewBitmap(view, matrix, bounds);
         if (bitmap != null) {
             copy.setImageBitmap(bitmap);
         }
-        int widthSpec = View.MeasureSpec.makeMeasureSpec(right - left, View.MeasureSpec.EXACTLY);
-        int heightSpec = View.MeasureSpec.makeMeasureSpec(bottom - top, View.MeasureSpec.EXACTLY);
+        int widthSpec = MeasureSpec.makeMeasureSpec(right - left, MeasureSpec.EXACTLY);
+        int heightSpec = MeasureSpec.makeMeasureSpec(bottom - top, MeasureSpec.EXACTLY);
         copy.measure(widthSpec, heightSpec);
         copy.layout(left, top, right, bottom);
         return copy;
@@ -121,14 +125,14 @@ public class TransitionUtils {
         if (width <= 0 || height <= 0) {
             return null;
         }
-        float scale = Math.min(1f, ((float)MAX_IMAGE_SIZE) / (width * height));
+        float scale = Math.min(1f, ((float) TransitionUtils.MAX_IMAGE_SIZE) / (width * height));
         if (drawable instanceof BitmapDrawable && scale == 1f) {
             // return same bitmap if scale down not needed
             return ((BitmapDrawable) drawable).getBitmap();
         }
         int bitmapWidth = (int) (width * scale);
         int bitmapHeight = (int) (height * scale);
-        Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+        Bitmap bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Config.ARGB_8888);
         Canvas canvas = new Canvas(bitmap);
         Rect existingBounds = drawable.getBounds();
         int left = existingBounds.left;
@@ -159,13 +163,13 @@ public class TransitionUtils {
         int bitmapWidth = Math.round(bounds.width());
         int bitmapHeight = Math.round(bounds.height());
         if (bitmapWidth > 0 && bitmapHeight > 0) {
-            float scale = Math.min(1f, ((float)MAX_IMAGE_SIZE) / (bitmapWidth * bitmapHeight));
+            float scale = Math.min(1f, ((float) TransitionUtils.MAX_IMAGE_SIZE) / (bitmapWidth * bitmapHeight));
             bitmapWidth *= scale;
             bitmapHeight *= scale;
             matrix.postTranslate(-bounds.left, -bounds.top);
             matrix.postScale(scale, scale);
             try {
-                bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Bitmap.Config.ARGB_8888);
+                bitmap = Bitmap.createBitmap(bitmapWidth, bitmapHeight, Config.ARGB_8888);
                 Canvas canvas = new Canvas(bitmap);
                 canvas.concat(matrix);
                 view.draw(canvas);

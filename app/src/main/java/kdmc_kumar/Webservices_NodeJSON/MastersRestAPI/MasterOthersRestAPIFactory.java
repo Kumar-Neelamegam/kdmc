@@ -10,7 +10,6 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
-import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -19,37 +18,37 @@ import kdmc_kumar.Core_Modules.BaseConfig;
 
 public class MasterOthersRestAPIFactory extends ControllerFactory<MasterOthersRestAPI> {
     public MasterOthersRestAPIFactory(MagnetMobileClient magnetClient) {
-        super(MasterOthersRestAPI.class, MasterOthersRestAPISchemaFactory.getInstance().getSchema(), magnetClient);
+        super(MasterOthersRestAPI.class, MasterOthersRestAPIFactory.MasterOthersRestAPISchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller MasterOthersRestAPI
     public static class MasterOthersRestAPISchemaFactory extends AbstractControllerSchemaFactory {
-        private static MasterOthersRestAPISchemaFactory __instance = null;
+        private static MasterOthersRestAPIFactory.MasterOthersRestAPISchemaFactory __instance;
 
         private MasterOthersRestAPISchemaFactory() {
         }
 
-        static MasterOthersRestAPISchemaFactory getInstance() {
-            synchronized (MasterOthersRestAPISchemaFactory.class) {
-                if (null == __instance) {
-                    __instance = new MasterOthersRestAPISchemaFactory();
+        static MasterOthersRestAPIFactory.MasterOthersRestAPISchemaFactory getInstance() {
+            synchronized (MasterOthersRestAPIFactory.MasterOthersRestAPISchemaFactory.class) {
+                if (null == MasterOthersRestAPIFactory.MasterOthersRestAPISchemaFactory.__instance) {
+                    MasterOthersRestAPIFactory.MasterOthersRestAPISchemaFactory.__instance = new MasterOthersRestAPIFactory.MasterOthersRestAPISchemaFactory();
                 }
 
-                return __instance;
+                return MasterOthersRestAPIFactory.MasterOthersRestAPISchemaFactory.__instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != schema) {
+                if (null != this.schema) {
                     return;
                 }
 
-                schema = new RequestSchema();
-                schema.setRootPath("");
+                this.schema = new RequestSchema();
+                this.schema.setRootPath("");
 
                 //controller schema for controller method table1
-                JMethod method1 = addMethod("table1",
+                RequestSchema.JMethod method1 = this.addMethod("table1",
                         BaseConfig.AppNodeIP + "/Get_Masters_OtherTables",
                         "GET",
                         String.class,
