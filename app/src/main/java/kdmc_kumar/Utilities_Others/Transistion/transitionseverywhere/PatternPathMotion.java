@@ -23,7 +23,6 @@ import android.graphics.PathMeasure;
 import android.util.AttributeSet;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.styleable;
 
 /**
  * A PathMotion that takes a Path pattern and applies it to the separation between two points.
@@ -49,19 +48,19 @@ public class PatternPathMotion extends PathMotion {
      * Constructs a PatternPathMotion with a straight-line pattern.
      */
     public PatternPathMotion() {
-        this.mPatternPath.lineTo(1, 0);
-        this.mOriginalPatternPath = this.mPatternPath;
+        mPatternPath.lineTo(1, 0);
+        mOriginalPatternPath = mPatternPath;
     }
 
     public PatternPathMotion(Context context, AttributeSet attrs) {
-        TypedArray a = context.obtainStyledAttributes(attrs, styleable.PatternPathMotion);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.PatternPathMotion);
         try {
-            String pathData = a.getString(styleable.PatternPathMotion_patternPathData);
+            String pathData = a.getString(R.styleable.PatternPathMotion_patternPathData);
             if (pathData == null) {
                 throw new RuntimeException("pathData must be supplied for patternPathMotion");
             }
             Path pattern = PathParser.createPathFromPathData(pathData);
-            this.setPatternPath(pattern);
+            setPatternPath(pattern);
         } finally {
             a.recycle();
         }
@@ -77,7 +76,7 @@ public class PatternPathMotion extends PathMotion {
      * @param patternPath A Path to be used as a pattern for two-dimensional motion.
      */
     public PatternPathMotion(Path patternPath) {
-        this.setPatternPath(patternPath);
+        setPatternPath(patternPath);
     }
 
     /**
@@ -89,7 +88,7 @@ public class PatternPathMotion extends PathMotion {
      * @attr ref android.R.styleable#PatternPathMotion_patternPathData
      */
     public Path getPatternPath() {
-        return this.mOriginalPatternPath;
+        return mOriginalPatternPath;
     }
 
     /**
@@ -115,16 +114,16 @@ public class PatternPathMotion extends PathMotion {
             throw new IllegalArgumentException("pattern must not end at the starting point");
         }
 
-        this.mTempMatrix.setTranslate(-startX, -startY);
+        mTempMatrix.setTranslate(-startX, -startY);
         float dx = endX - startX;
         float dy = endY - startY;
         float distance = (float) Math.hypot(dx, dy);
         float scale = 1 / distance;
-        this.mTempMatrix.postScale(scale, scale);
+        mTempMatrix.postScale(scale, scale);
         double angle = Math.atan2(dy, dx);
-        this.mTempMatrix.postRotate((float) Math.toDegrees(-angle));
-        patternPath.transform(this.mTempMatrix, this.mPatternPath);
-        this.mOriginalPatternPath = patternPath;
+        mTempMatrix.postRotate((float) Math.toDegrees(-angle));
+        patternPath.transform(mTempMatrix, mPatternPath);
+        mOriginalPatternPath = patternPath;
     }
 
     @Override
@@ -134,11 +133,11 @@ public class PatternPathMotion extends PathMotion {
         float length = (float) Math.hypot(dx, dy);
         double angle = Math.atan2(dy, dx);
 
-        this.mTempMatrix.setScale(length, length);
-        this.mTempMatrix.postRotate((float) Math.toDegrees(angle));
-        this.mTempMatrix.postTranslate(startX, startY);
+        mTempMatrix.setScale(length, length);
+        mTempMatrix.postRotate((float) Math.toDegrees(angle));
+        mTempMatrix.postTranslate(startX, startY);
         Path path = new Path();
-        this.mPatternPath.transform(this.mTempMatrix, path);
+        mPatternPath.transform(mTempMatrix, path);
         return path;
     }
 

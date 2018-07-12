@@ -19,8 +19,6 @@ package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils;
 import android.annotation.TargetApi;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.ViewOverlay;
@@ -85,12 +83,12 @@ public class ViewGroupOverlayUtils {
         }
     }
 
-    @TargetApi(VERSION_CODES.JELLY_BEAN_MR2)
-    static class JellyBeanMR2ViewGroupUtils extends ViewGroupOverlayUtils.BaseViewGroupOverlayUtils {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    static class JellyBeanMR2ViewGroupUtils extends BaseViewGroupOverlayUtils {
 
         @Override
         public void addOverlay(ViewGroup sceneRoot, View overlayView, int screenX, int screenY) {
-            this.moveViewInOverlay(sceneRoot, overlayView, screenX, screenY);
+            moveViewInOverlay(sceneRoot, overlayView, screenX, screenY);
             sceneRoot.getOverlay().add(overlayView);
         }
 
@@ -117,7 +115,7 @@ public class ViewGroupOverlayUtils {
         @Override
         public void addCrossfadeOverlay(boolean useParentOverlay, View view, int fadeBehavior,
                                         BitmapDrawable startDrawable, BitmapDrawable endDrawable) {
-            ViewOverlay overlay = JellyBeanMR2ViewGroupUtils.getViewOverlay(useParentOverlay, view);
+            ViewOverlay overlay = getViewOverlay(useParentOverlay, view);
             if (fadeBehavior == Crossfade.FADE_BEHAVIOR_REVEAL) {
                 overlay.add(endDrawable);
             }
@@ -136,7 +134,7 @@ public class ViewGroupOverlayUtils {
         @Override
         public void removeCrossfadeOverlay(boolean useParentOverlay, View view, int fadeBehavior,
                                            BitmapDrawable startDrawable, BitmapDrawable endDrawable) {
-            ViewOverlay overlay = JellyBeanMR2ViewGroupUtils.getViewOverlay(useParentOverlay, view);
+            ViewOverlay overlay = getViewOverlay(useParentOverlay, view);
             overlay.remove(startDrawable);
             if (fadeBehavior == Crossfade.FADE_BEHAVIOR_REVEAL) {
                 overlay.remove(endDrawable);
@@ -149,41 +147,41 @@ public class ViewGroupOverlayUtils {
 
     }
 
-    private static final ViewGroupOverlayUtils.BaseViewGroupOverlayUtils IMPL;
+    private static final BaseViewGroupOverlayUtils IMPL;
 
     static {
-        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR2) {
-            IMPL = new ViewGroupOverlayUtils.JellyBeanMR2ViewGroupUtils();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            IMPL = new JellyBeanMR2ViewGroupUtils();
         } else {
-            IMPL = new ViewGroupOverlayUtils.BaseViewGroupOverlayUtils();
+            IMPL = new BaseViewGroupOverlayUtils();
         }
     }
 
     public static void addOverlay(ViewGroup sceneRoot, View overlayView, int screenX, int screenY) {
         if (overlayView != null) {
-            ViewGroupOverlayUtils.IMPL.addOverlay(sceneRoot, overlayView, screenX, screenY);
+            IMPL.addOverlay(sceneRoot, overlayView, screenX, screenY);
         }
     }
 
     public static void initializeOverlay(ViewGroup sceneRoot) {
-        ViewGroupOverlayUtils.IMPL.initializeOverlay(sceneRoot);
+        IMPL.initializeOverlay(sceneRoot);
     }
 
     public static void removeOverlay(ViewGroup sceneRoot, View overlayView) {
         if (overlayView != null) {
-            ViewGroupOverlayUtils.IMPL.removeOverlay(sceneRoot, overlayView);
+            IMPL.removeOverlay(sceneRoot, overlayView);
         }
     }
 
     public static void moveViewInOverlay(ViewGroup sceneRoot, View overlayView, int screenX, int screenY) {
         if (overlayView != null) {
-            ViewGroupOverlayUtils.IMPL.moveViewInOverlay(sceneRoot, overlayView, screenX, screenY);
+            IMPL.moveViewInOverlay(sceneRoot, overlayView, screenX, screenY);
         }
     }
 
     public static int[] getLocationOnScreenOfOverlayView(ViewGroup sceneRoot, View overlayView) {
         if (overlayView != null) {
-            return ViewGroupOverlayUtils.IMPL.getLocationOnScreenOfOverlayView(sceneRoot, overlayView);
+            return IMPL.getLocationOnScreenOfOverlayView(sceneRoot, overlayView);
         } else {
             return new int[2];
         }
@@ -192,14 +190,14 @@ public class ViewGroupOverlayUtils {
     public static void addCrossfadeOverlay(boolean useParentOverlay, View view, int fadeBehavior,
                              BitmapDrawable startDrawable, BitmapDrawable endDrawable) {
         if (view != null) {
-            ViewGroupOverlayUtils.IMPL.addCrossfadeOverlay(useParentOverlay, view, fadeBehavior, startDrawable, endDrawable);
+            IMPL.addCrossfadeOverlay(useParentOverlay, view, fadeBehavior, startDrawable, endDrawable);
         }
     }
 
     public static void removeCrossfadeOverlay(boolean useParentOverlay, View view, int fadeBehavior,
                                 BitmapDrawable startDrawable, BitmapDrawable endDrawable) {
         if (view != null) {
-            ViewGroupOverlayUtils.IMPL.removeCrossfadeOverlay(useParentOverlay, view, fadeBehavior, startDrawable, endDrawable);
+            IMPL.removeCrossfadeOverlay(useParentOverlay, view, fadeBehavior, startDrawable, endDrawable);
         }
     }
 }

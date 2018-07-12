@@ -2,7 +2,6 @@ package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere;
 
 import android.content.Context;
 import android.content.res.Resources;
-import android.content.res.Resources.NotFoundException;
 import android.content.res.TypedArray;
 import android.content.res.XmlResourceParser;
 import android.support.v4.util.ArrayMap;
@@ -19,7 +18,6 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.InvocationTargetException;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.styleable;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.extra.Scale;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.extra.TranslationTransition;
 
@@ -27,14 +25,14 @@ public class TransitionInflater {
 
     private static final Class<?>[] sConstructorSignature = new Class[] {
             Context.class, AttributeSet.class};
-    private static final ArrayMap<String, Constructor> sConstructors =
+    private final static ArrayMap<String, Constructor> sConstructors =
             new ArrayMap<String, Constructor>();
 
 
-    private final Context mContext;
+    private Context mContext;
 
     private TransitionInflater(Context context) {
-        this.mContext = context;
+        mContext = context;
     }
 
     /**
@@ -49,20 +47,22 @@ public class TransitionInflater {
      *
      * @param resource The resource id of the transition to load
      * @return The loaded Transition object
-     * @throws NotFoundException when the
+     * @throws Resources.NotFoundException when the
      *                                                         transition cannot be loaded
      */
     public Transition inflateTransition(int resource) {
-        XmlResourceParser parser = this.mContext.getResources().getXml(resource);
+        XmlResourceParser parser = mContext.getResources().getXml(resource);
         try {
-            return this.createTransitionFromXml(parser, Xml.asAttributeSet(parser), null);
+            return createTransitionFromXml(parser, Xml.asAttributeSet(parser), null);
         } catch (XmlPullParserException e) {
-            InflateException ex = new InflateException(e.getMessage(), e);
+            InflateException ex = new InflateException(e.getMessage());
+            ex.initCause(e);
             throw ex;
         } catch (IOException e) {
             InflateException ex = new InflateException(
                     parser.getPositionDescription()
-                            + ": " + e.getMessage(), e);
+                            + ": " + e.getMessage());
+            ex.initCause(e);
             throw ex;
         } finally {
             parser.close();
@@ -74,20 +74,22 @@ public class TransitionInflater {
      *
      * @param resource The resource id of the transition manager to load
      * @return The loaded TransitionManager object
-     * @throws NotFoundException when the
+     * @throws Resources.NotFoundException when the
      *                                                         transition manager cannot be loaded
      */
     public TransitionManager inflateTransitionManager(int resource, ViewGroup sceneRoot) {
-        XmlResourceParser parser = this.mContext.getResources().getXml(resource);
+        XmlResourceParser parser = mContext.getResources().getXml(resource);
         try {
-            return this.createTransitionManagerFromXml(parser, Xml.asAttributeSet(parser), sceneRoot);
+            return createTransitionManagerFromXml(parser, Xml.asAttributeSet(parser), sceneRoot);
         } catch (XmlPullParserException e) {
-            InflateException ex = new InflateException(e.getMessage(), e);
+            InflateException ex = new InflateException(e.getMessage());
+            ex.initCause(e);
             throw ex;
         } catch (IOException e) {
             InflateException ex = new InflateException(
                     parser.getPositionDescription()
-                            + ": " + e.getMessage(), e);
+                            + ": " + e.getMessage());
+            ex.initCause(e);
             throw ex;
         } finally {
             parser.close();
@@ -119,47 +121,47 @@ public class TransitionInflater {
 
             String  name = parser.getName();
             if ("fade".equals(name)) {
-                transition = new Fade(this.mContext, attrs);
+                transition = new Fade(mContext, attrs);
             } else if ("changeBounds".equals(name)) {
-                transition = new ChangeBounds(this.mContext, attrs);
+                transition = new ChangeBounds(mContext, attrs);
             } else if ("slide".equals(name)) {
-                transition = new Slide(this.mContext, attrs);
+                transition = new Slide(mContext, attrs);
             } else if ("explode".equals(name)) {
-                transition = new Explode(this.mContext, attrs);
+                transition = new Explode(mContext, attrs);
             } else if ("changeImageTransform".equals(name)) {
-                transition = new ChangeImageTransform(this.mContext, attrs);
+                transition = new ChangeImageTransform(mContext, attrs);
             } else if ("changeTransform".equals(name)) {
-                transition = new ChangeTransform(this.mContext, attrs);
+                transition = new ChangeTransform(mContext, attrs);
             } else if ("changeClipBounds".equals(name)) {
-                transition = new ChangeClipBounds(this.mContext, attrs);
+                transition = new ChangeClipBounds(mContext, attrs);
             } else if ("autoTransition".equals(name)) {
-                transition = new AutoTransition(this.mContext, attrs);
+                transition = new AutoTransition(mContext, attrs);
             } else if ("recolor".equals(name)) {
-                transition = new Recolor(this.mContext, attrs);
+                transition = new Recolor(mContext, attrs);
             } else if ("changeScroll".equals(name)) {
-                transition = new ChangeScroll(this.mContext, attrs);
+                transition = new ChangeScroll(mContext, attrs);
             } else if ("transitionSet".equals(name)) {
-                transition = new TransitionSet(this.mContext, attrs);
+                transition = new TransitionSet(mContext, attrs);
             } else if ("scale".equals(name)) {
-                transition = new Scale(this.mContext, attrs);
+                transition = new Scale(mContext, attrs);
             } else if ("translation".equals(name)) {
-                transition = new TranslationTransition(this.mContext, attrs);
+                transition = new TranslationTransition(mContext, attrs);
             } else if ("transition".equals(name)) {
-                transition = (Transition) this.createCustom(attrs, Transition.class, "transition");
+                transition = (Transition) createCustom(attrs, Transition.class, "transition");
             } else if ("targets".equals(name)) {
-                this.getTargetIds(parser, attrs, parent);
+                getTargetIds(parser, attrs, parent);
             } else if ("arcMotion".equals(name)) {
-                parent.setPathMotion(new ArcMotion(this.mContext, attrs));
+                parent.setPathMotion(new ArcMotion(mContext, attrs));
             } else if ("pathMotion".equals(name)) {
-                parent.setPathMotion((PathMotion) this.createCustom(attrs, PathMotion.class, "pathMotion"));
+                parent.setPathMotion((PathMotion)createCustom(attrs, PathMotion.class, "pathMotion"));
             } else if ("patternPathMotion".equals(name)) {
-                parent.setPathMotion(new PatternPathMotion(this.mContext, attrs));
+                parent.setPathMotion(new PatternPathMotion(mContext, attrs));
             } else {
                 throw new RuntimeException("Unknown scene name: " + parser.getName());
             }
             if (transition != null) {
                 if (!parser.isEmptyElementTag()) {
-                    this.createTransitionFromXml(parser, attrs, transition);
+                    createTransitionFromXml(parser, attrs, transition);
                 }
                 if (transitionSet != null) {
                     transitionSet.addTransition(transition);
@@ -181,21 +183,21 @@ public class TransitionInflater {
         }
 
         try {
-            synchronized (TransitionInflater.sConstructors) {
-                Constructor constructor = TransitionInflater.sConstructors.get(className);
+            synchronized (sConstructors) {
+                Constructor constructor = sConstructors.get(className);
                 if (constructor == null) {
-                    Class c = this.mContext.getClassLoader().loadClass(className)
+                    Class c = mContext.getClassLoader().loadClass(className)
                             .asSubclass(expectedType);
                     if (c != null) {
-                        constructor = c.getConstructor(TransitionInflater.sConstructorSignature);
+                        constructor = c.getConstructor(sConstructorSignature);
                         if (!constructor.isAccessible()) {
                             constructor.setAccessible(true);
                         }
-                        TransitionInflater.sConstructors.put(className, constructor);
+                        sConstructors.put(className, constructor);
                     }
                 }
 
-                return constructor.newInstance(this.mContext, attrs);
+                return constructor.newInstance(mContext, attrs);
             }
         } catch (InstantiationException e) {
             throw new InflateException("Could not instantiate " + expectedType + " class " +
@@ -231,27 +233,27 @@ public class TransitionInflater {
 
             String  name = parser.getName();
             if (name.equals("target")) {
-                TypedArray a = this.mContext.obtainStyledAttributes(attrs, styleable.TransitionTarget);
-                int id = a.getResourceId(styleable.TransitionTarget_targetId, 0);
+                TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.TransitionTarget);
+                int id = a.getResourceId(R.styleable.TransitionTarget_targetId, 0);
                 String transitionName;
                 if (id != 0) {
                     transition.addTarget(id);
-                } else if ((id = a.getResourceId(styleable.TransitionTarget_excludeId, 0)) != 0) {
+                } else if ((id = a.getResourceId(R.styleable.TransitionTarget_excludeId, 0)) != 0) {
                     transition.excludeTarget(id, true);
-                } else if ((transitionName = a.getString(styleable.TransitionTarget_targetName))
+                } else if ((transitionName = a.getString(R.styleable.TransitionTarget_targetName))
                         != null) {
                     transition.addTarget(transitionName);
-                } else if ((transitionName = a.getString(styleable.TransitionTarget_excludeName))
+                } else if ((transitionName = a.getString(R.styleable.TransitionTarget_excludeName))
                         != null) {
                     transition.excludeTarget(transitionName, true);
                 } else {
-                    String className = a.getString(styleable.TransitionTarget_excludeClass);
+                    String className = a.getString(R.styleable.TransitionTarget_excludeClass);
                     try {
                         if (className != null) {
                             Class clazz = Class.forName(className);
                             transition.excludeTarget(clazz, true);
                         } else if ((className =
-                                a.getString(styleable.TransitionTarget_targetClass)) != null) {
+                                a.getString(R.styleable.TransitionTarget_targetClass)) != null) {
                             Class clazz = Class.forName(className);
                             transition.addTarget(clazz);
                         }
@@ -288,7 +290,7 @@ public class TransitionInflater {
             if (name.equals("transitionManager")) {
                 transitionManager = new TransitionManager();
             } else if (name.equals("transition") && (transitionManager != null)) {
-                this.loadTransition(attrs, sceneRoot, transitionManager);
+                loadTransition(attrs, sceneRoot, transitionManager);
             } else {
                 throw new RuntimeException("Unknown scene name: " + parser.getName());
             }
@@ -297,17 +299,17 @@ public class TransitionInflater {
     }
 
     private void loadTransition(AttributeSet attrs, ViewGroup sceneRoot,
-                                TransitionManager transitionManager) throws NotFoundException {
+                                TransitionManager transitionManager) throws Resources.NotFoundException {
 
-        TypedArray a = this.mContext.obtainStyledAttributes(attrs, styleable.TransitionManager);
-        int transitionId = a.getResourceId(styleable.TransitionManager_transition, -1);
-        int fromId = a.getResourceId(styleable.TransitionManager_fromScene, -1);
-        Scene fromScene = (fromId < 0) ? null: Scene.getSceneForLayout(sceneRoot, fromId, this.mContext);
-        int toId = a.getResourceId(styleable.TransitionManager_toScene, -1);
-        Scene toScene = (toId < 0) ? null : Scene.getSceneForLayout(sceneRoot, toId, this.mContext);
+        TypedArray a = mContext.obtainStyledAttributes(attrs, R.styleable.TransitionManager);
+        int transitionId = a.getResourceId(R.styleable.TransitionManager_transition, -1);
+        int fromId = a.getResourceId(R.styleable.TransitionManager_fromScene, -1);
+        Scene fromScene = (fromId < 0) ? null: Scene.getSceneForLayout(sceneRoot, fromId, mContext);
+        int toId = a.getResourceId(R.styleable.TransitionManager_toScene, -1);
+        Scene toScene = (toId < 0) ? null : Scene.getSceneForLayout(sceneRoot, toId, mContext);
 
         if (transitionId >= 0) {
-            Transition transition = this.inflateTransition(transitionId);
+            Transition transition = inflateTransition(transitionId);
             if (transition != null) {
                 if (toScene == null) {
                     throw new RuntimeException("No toScene for transition ID " + transitionId);

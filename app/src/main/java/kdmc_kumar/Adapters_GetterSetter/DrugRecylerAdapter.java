@@ -4,8 +4,6 @@ import android.content.Intent;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,10 +13,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.DrugItem;
-import kdmc_kumar.Adapters_GetterSetter.DrugRecylerAdapter.MyViewHolder;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Drug_Directory.Cims_Display;
 
@@ -26,27 +20,27 @@ import kdmc_kumar.Drug_Directory.Cims_Display;
  * Created by Ponnusamy M on 4/3/2017.
  */
 
-public class DrugRecylerAdapter extends Adapter<MyViewHolder> {
+public class DrugRecylerAdapter extends RecyclerView.Adapter<DrugRecylerAdapter.MyViewHolder> {
 
-    private final ArrayList<DrugItem> drugItems;
+    private final ArrayList<CommonDataObjects.DrugItem> drugItems;
 
-    public DrugRecylerAdapter(ArrayList<DrugItem> drugItems) {
+    public DrugRecylerAdapter(ArrayList<CommonDataObjects.DrugItem> drugItems) {
         this.drugItems = drugItems;
     }
 
     @NonNull
     @Override
-    public final DrugRecylerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public final MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(layout.newdruglistrow, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.newdruglistrow, parent, false);
 
-        return new DrugRecylerAdapter.MyViewHolder(view);
+        return new MyViewHolder(view);
     }
 
     @Override
-    public final void onBindViewHolder(@NonNull DrugRecylerAdapter.MyViewHolder holder, int position) {
+    public final void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        DrugItem rowItem = this.drugItems.get(position);
+        final CommonDataObjects.DrugItem rowItem = drugItems.get(position);
 
         holder.BrandName.setText(rowItem.getBrandName());
         holder.CompanyName.setText(rowItem.getPharmaCompany());
@@ -62,11 +56,11 @@ public class DrugRecylerAdapter extends Adapter<MyViewHolder> {
 
     @Override
     public final int getItemCount() {
-        return this.drugItems.size();
+        return drugItems.size();
     }
 
-    static class MyViewHolder extends ViewHolder {
-        ImageView imageView;
+    static class MyViewHolder extends RecyclerView.ViewHolder {
+        ImageView imageView = null;
 
         final TextView systemView;
         final TextView CompanyName;
@@ -77,11 +71,11 @@ public class DrugRecylerAdapter extends Adapter<MyViewHolder> {
         MyViewHolder(View itemView) {
             super(itemView);
 
-            this.systemView = itemView.findViewById(id.system);
-            this.CompanyName = itemView.findViewById(id.company_name);
-            this.BrandName = itemView.findViewById(id.brand_name);
-            this.Dosage = itemView.findViewById(id.dosage);
-            this.card_view = itemView.findViewById(id.card_view);
+            systemView = itemView.findViewById(R.id.system);
+            CompanyName = itemView.findViewById(R.id.company_name);
+            BrandName = itemView.findViewById(R.id.brand_name);
+            Dosage = itemView.findViewById(R.id.dosage);
+            card_view = itemView.findViewById(R.id.card_view);
         }
     }
 }

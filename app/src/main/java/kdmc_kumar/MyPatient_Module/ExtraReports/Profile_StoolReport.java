@@ -11,24 +11,20 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
-import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 
 public class Profile_StoolReport extends AppCompatActivity {
-    private WebView blood_report;
-    private Toolbar toolbar;
+    private WebView blood_report = null;
+    private Toolbar toolbar = null;
 
-    private ImageView ic_back;
+    private ImageView ic_back = null;
     private String MTESTID = "";
     private String PTID = "";
 
@@ -38,46 +34,46 @@ public class Profile_StoolReport extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(layout.activity_profile__blood__report);
-        this.toolbar = this.findViewById(id.toolbar);
+        setContentView(R.layout.activity_profile__blood__report);
+        toolbar = findViewById(R.id.toolbar);
 
-        TextView title = this.toolbar.findViewById(id.txvw_title);
-        title.setText(this.getString(string.report_stool));
+        TextView title = toolbar.findViewById(R.id.txvw_title);
+        title.setText(getString(R.string.report_stool));
 
-        Bundle b = this.getIntent().getExtras();
+        Bundle b = getIntent().getExtras();
 
-        this.PTID = b.getString("PTID");
-        this.MTESTID = b.getString("MTESTID");
+        PTID = b.getString("PTID");
+        MTESTID = b.getString("MTESTID");
 
-        this.ic_back = this.toolbar.findViewById(id.ic_back);
+        ic_back = toolbar.findViewById(R.id.ic_back);
 
-        this.ic_back.setOnClickListener(view -> finish());
+        ic_back.setOnClickListener(view -> Profile_StoolReport.this.finish());
 
-        this.blood_report = this.findViewById(id.blood_report);
+        blood_report = findViewById(R.id.blood_report);
 
-        this.blood_report.getSettings().setJavaScriptEnabled(true);
-        this.blood_report.setWebChromeClient(new WebChromeClient());
-        this.blood_report.getSettings().setJavaScriptEnabled(true);
-        this.blood_report.setLayerType(View.LAYER_TYPE_NONE, null);
-        this.blood_report.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        this.blood_report.getSettings().setRenderPriority(RenderPriority.HIGH);
-        this.blood_report.getSettings().setDefaultTextEncodingName("utf-8");
+        blood_report.getSettings().setJavaScriptEnabled(true);
+        blood_report.setWebChromeClient(new WebChromeClient());
+        blood_report.getSettings().setJavaScriptEnabled(true);
+        blood_report.setLayerType(View.LAYER_TYPE_NONE, null);
+        blood_report.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        blood_report.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        blood_report.getSettings().setDefaultTextEncodingName("utf-8");
 
-        this.blood_report.setWebChromeClient(new Profile_StoolReport.MyWebChromeClient());
+        blood_report.setWebChromeClient(new MyWebChromeClient());
 
-        this.blood_report.setBackgroundColor(0x00000000);
-        this.blood_report.setVerticalScrollBarEnabled(true);
-        this.blood_report.setHorizontalScrollBarEnabled(true);
+        blood_report.setBackgroundColor(0x00000000);
+        blood_report.setVerticalScrollBarEnabled(true);
+        blood_report.setHorizontalScrollBarEnabled(true);
 
         //MyDynamicToast.informationMessage(this, getString(R.string.loading_blood_report));
-        this.blood_report.getSettings().setJavaScriptEnabled(true);
-        this.blood_report.getSettings().setAllowContentAccess(true);
+        blood_report.getSettings().setJavaScriptEnabled(true);
+        blood_report.getSettings().setAllowContentAccess(true);
 
 
-        this.blood_report.addJavascriptInterface(new Profile_StoolReport.WebAppInterface(this), "android");
+        blood_report.addJavascriptInterface(new WebAppInterface(this), "android");
         try {
 
-            this.blood_report.loadDataWithBaseURL("file:///android_asset/", this.LoadInvetigationData(), "text/html", "utf-8", null);
+            blood_report.loadDataWithBaseURL("file:///android_asset/", LoadInvetigationData(), "text/html", "utf-8", null);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -91,7 +87,7 @@ public class Profile_StoolReport extends AppCompatActivity {
         String Id = "", Patid = "", Docid = "", Actdate = "", IsActive = "", IsUpdate = "", ServerId = "", Mtestid = "", Testid = "", Subtestid = "", HID = "", IsPaid = "", colour = "", consistency = "", musus = "", blood = "", parasites = "", occult_blood_test = "", cpi_cells = "", pus_cells = "", red_blood_cells = "", macrophages = "", fat = "", starch = "", undigeted_food = "", any_other_finding = "", vegetative_forms = "", protozoa = "", flagellates = "", cyst = "", ova = "", larvae = "", result = "";
 
         SQLiteDatabase db = BaseConfig.GetDb();
-        String Query = "select * from Bind_stool_report where Patid='" + this.PTID + "' and Mtestid='" + this.MTESTID + '\'';
+        String Query = "select * from Bind_stool_report where Patid='" + PTID + "' and Mtestid='" + MTESTID + '\'';
         //String Query = "select * from Bind_examination_blood_test where Patid='PID/2017/188/2870' and Mtestid='MTID/2017/188/DOCID/2017/05/81/4C19/2'";
         //Log.e("Load Invetigation Data: ", Query);
 
@@ -168,34 +164,34 @@ public class Profile_StoolReport extends AppCompatActivity {
                 "<font class=\"sub\">\n" +
                 "<i class=\"fa fa-puzzle-piece fa-2x\" \n" +
                 "aria-hidden=\"true\">\n" +
-                "</i> " + this.getString(string.profile_stool_physicalexamination) + "</font>\n" +
+                "</i> " + getString(R.string.profile_stool_physicalexamination) + "</font>\n" +
                 '\n' +
                 '\n' +
                 '\n' +
                 "<table class=\"table table-bordered\">\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>     " + this.getString(string.profile_stool_colour) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>     " + getString(R.string.profile_stool_colour) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + colour + " </td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_blood) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_blood) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + blood + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_consistency) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_consistency) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + consistency + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b> " + this.getString(string.profile_stool_parasites) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b> " + getString(R.string.profile_stool_parasites) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + parasites + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_mussus) + " </b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_mussus) + " </b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + musus + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
@@ -208,13 +204,13 @@ public class Profile_StoolReport extends AppCompatActivity {
                 "<font class=\"sub\">\n" +
                 "<i class=\"fa fa-flask fa-2x\" \n" +
                 "aria-hidden=\"true\">\n" +
-                "</i> " + this.getString(string.profile_stool_chemialexam) + "</font>\n" +
+                "</i> " + getString(R.string.profile_stool_chemialexam) + "</font>\n" +
                 '\n' +
                 '\n' +
                 "<table class=\"table table-bordered\">\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_occultblood) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_occultblood) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + occult_blood_test + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
@@ -230,78 +226,78 @@ public class Profile_StoolReport extends AppCompatActivity {
                 "<font class=\"sub\">\n" +
                 "<i class=\"fa fa-snowflake-o fa-2x\" \n" +
                 "aria-hidden=\"true\">\n" +
-                "</i>  " + this.getString(string.profile_stool_mircrospicexam) + "</font>\n" +
+                "</i>  " + getString(R.string.profile_stool_mircrospicexam) + "</font>\n" +
                 '\n' +
                 '\n' +
                 "<table class=\"table table-bordered\">\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_cpicells) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_cpicells) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + cpi_cells + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_puscells) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_puscells) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + pus_cells + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_vege) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_vege) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + vegetative_forms + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_redblood) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_redblood) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + red_blood_cells + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_protozoa) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_protozoa) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + protozoa + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_macrophages) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_macrophages) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + macrophages + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_flagellates) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_flagellates) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + flagellates + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_fat) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_fat) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + fat + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_cyst) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_cyst) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + cyst + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_starch) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_starch) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + starch + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_ova) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_ova) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + ova + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_undigested) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_undigested) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + undigeted_food + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_larvae) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_larvae) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + larvae + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_anyother) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_anyother) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + any_other_finding + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
@@ -321,7 +317,7 @@ public class Profile_StoolReport extends AppCompatActivity {
                 "<table class=\"table table-bordered\">\n" +
                 '\n' +
                 "<tr>\n" +
-                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + this.getString(string.profile_stool_result) + "</b></td> \n" +
+                "<td height=\"20\" width=\"50%\" style=\"color:#3d5987;\"></i><b>  " + getString(R.string.profile_stool_result) + "</b></td> \n" +
                 "<td height=\"20\" width=\"50%\" style=\"color:#000000;\">   " + result + "</td>\n" +
                 "</tr>\n" +
                 '\n' +
@@ -347,13 +343,13 @@ public class Profile_StoolReport extends AppCompatActivity {
     @Override
     public final void onBackPressed() {
         //super.onBackPressed();
-        finish();
+        this.finish();
 
     }
 
     @Override
     public final boolean onOptionsItemSelected(MenuItem item) {
-        this.onBackPressed();
+        onBackPressed();
         return true;
     }
 
@@ -367,7 +363,7 @@ public class Profile_StoolReport extends AppCompatActivity {
          * Instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
-            this.mContext = c;
+            mContext = c;
         }
 
         /**
@@ -375,7 +371,7 @@ public class Profile_StoolReport extends AppCompatActivity {
          */
         @JavascriptInterface
         public final void showToast(String toast) {
-            Toast.makeText(this.mContext, toast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
 
 
         }

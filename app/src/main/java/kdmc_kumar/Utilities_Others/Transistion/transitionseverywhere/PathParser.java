@@ -17,7 +17,6 @@ package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere;
 import android.annotation.TargetApi;
 import android.graphics.Path;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.util.Log;
 
 import java.util.ArrayList;
@@ -26,7 +25,7 @@ import java.util.Arrays;
 /**
  * @hide
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class PathParser {
     static final String LOGTAG = PathParser.class.getSimpleName();
     /**
@@ -35,10 +34,10 @@ public class PathParser {
      */
     public static Path createPathFromPathData(String pathData) {
         Path path = new Path();
-        PathParser.PathDataNode[] nodes = PathParser.createNodesFromPathData(pathData);
+        PathDataNode[] nodes = createNodesFromPathData(pathData);
         if (nodes != null) {
             try {
-                PathParser.PathDataNode.nodesToPath(nodes, path);
+                PathDataNode.nodesToPath(nodes, path);
             } catch (RuntimeException e) {
                 throw new RuntimeException("Error in parsing " + pathData, e);
             }
@@ -50,39 +49,39 @@ public class PathParser {
      * @param pathData The string representing a path, the same as "d" string in svg file.
      * @return an array of the PathDataNode.
      */
-    public static PathParser.PathDataNode[] createNodesFromPathData(String pathData) {
+    public static PathDataNode[] createNodesFromPathData(String pathData) {
         if (pathData == null) {
             return null;
         }
         int start = 0;
         int end = 1;
-        ArrayList<PathParser.PathDataNode> list = new ArrayList<PathParser.PathDataNode>();
+        ArrayList<PathDataNode> list = new ArrayList<PathDataNode>();
         while (end < pathData.length()) {
-            end = PathParser.nextStart(pathData, end);
+            end = nextStart(pathData, end);
             String s = pathData.substring(start, end).trim();
             if (s.length() > 0) {
-                float[] val = PathParser.getFloats(s);
-                PathParser.addNode(list, s.charAt(0), val);
+                float[] val = getFloats(s);
+                addNode(list, s.charAt(0), val);
             }
             start = end;
             end++;
         }
         if ((end - start) == 1 && start < pathData.length()) {
-            PathParser.addNode(list, pathData.charAt(start), new float[0]);
+            addNode(list, pathData.charAt(start), new float[0]);
         }
-        return list.toArray(new PathParser.PathDataNode[list.size()]);
+        return list.toArray(new PathDataNode[list.size()]);
     }
     /**
      * @param source The array of PathDataNode to be duplicated.
      * @return a deep copy of the <code>source</code>.
      */
-    public static PathParser.PathDataNode[] deepCopyNodes(PathParser.PathDataNode[] source) {
+    public static PathDataNode[] deepCopyNodes(PathDataNode[] source) {
         if (source == null) {
             return null;
         }
-        PathParser.PathDataNode[] copy = new PathParser.PathDataNode[source.length];
+        PathDataNode[] copy = new PathDataNode[source.length];
         for (int i = 0; i < source.length; i ++) {
-            copy[i] = new PathParser.PathDataNode(source[i]);
+            copy[i] = new PathDataNode(source[i]);
         }
         return copy;
     }
@@ -91,7 +90,7 @@ public class PathParser {
      * @param nodesTo The target path represented in an array of PathDataNode
      * @return whether the <code>nodesFrom</code> can morph into <code>nodesTo</code>
      */
-    public static boolean canMorph(PathParser.PathDataNode[] nodesFrom, PathParser.PathDataNode[] nodesTo) {
+    public static boolean canMorph(PathDataNode[] nodesFrom, PathDataNode[] nodesTo) {
         if (nodesFrom == null || nodesTo == null) {
             return false;
         }
@@ -113,7 +112,7 @@ public class PathParser {
      * @param target The target path represented in an array of PathDataNode
      * @param source The source path represented in an array of PathDataNode
      */
-    public static void updateNodes(PathParser.PathDataNode[] target, PathParser.PathDataNode[] source) {
+    public static void updateNodes(PathDataNode[] target, PathDataNode[] source) {
         for (int i = 0; i < source.length; i ++) {
             target[i].mType = source[i].mType;
             for (int j = 0; j < source[i].mParams.length; j ++) {
@@ -137,8 +136,8 @@ public class PathParser {
         }
         return end;
     }
-    private static void addNode(ArrayList<PathParser.PathDataNode> list, char cmd, float[] val) {
-        list.add(new PathParser.PathDataNode(cmd, val));
+    private static void addNode(ArrayList<PathDataNode> list, char cmd, float[] val) {
+        list.add(new PathDataNode(cmd, val));
     }
     private static class ExtractFloatResult {
         // We need to return the position of the next separator and whether the
@@ -162,13 +161,13 @@ public class PathParser {
             int count = 0;
             int startPosition = 1;
             int endPosition = 0;
-            PathParser.ExtractFloatResult result = new PathParser.ExtractFloatResult();
+            ExtractFloatResult result = new ExtractFloatResult();
             int totalLength = s.length();
             // The startPosition should always be the first character of the
             // current number, and endPosition is the character after the current
             // number.
             while (startPosition < totalLength) {
-                PathParser.extract(s, startPosition, result);
+                extract(s, startPosition, result);
                 endPosition = result.mEndPosition;
                 if (startPosition < endPosition) {
                     results[count++] = Float.parseFloat(
@@ -193,7 +192,7 @@ public class PathParser {
      * @param result the result of the extraction, including the position of the
      * the starting position of next number, whether it is ending with a '-'.
      */
-    private static void extract(String s, int start, PathParser.ExtractFloatResult result) {
+    private static void extract(String s, int start, ExtractFloatResult result) {
         // Now looking for ' ', ',', '.' or '-' from the start.
         int currentIndex = start;
         boolean foundSeparator = false;
@@ -245,14 +244,14 @@ public class PathParser {
      */
     public static class PathDataNode {
         private char mType;
-        private final float[] mParams;
+        private float[] mParams;
         private PathDataNode(char type, float[] params) {
-            this.mType = type;
-            this.mParams = params;
+            mType = type;
+            mParams = params;
         }
-        private PathDataNode(PathParser.PathDataNode n) {
-            this.mType = n.mType;
-            this.mParams = Arrays.copyOf(n.mParams, n.mParams.length);
+        private PathDataNode(PathDataNode n) {
+            mType = n.mType;
+            mParams = Arrays.copyOf(n.mParams, n.mParams.length);
         }
         /**
          * Convert an array of PathDataNode to Path.
@@ -260,11 +259,11 @@ public class PathParser {
          * @param node The source array of PathDataNode.
          * @param path The target Path object.
          */
-        public static void nodesToPath(PathParser.PathDataNode[] node, Path path) {
+        public static void nodesToPath(PathDataNode[] node, Path path) {
             float[] current = new float[6];
             char previousCommand = 'm';
             for (int i = 0; i < node.length; i++) {
-                PathParser.PathDataNode.addCommand(path, current, previousCommand, node[i].mType, node[i].mParams);
+                addCommand(path, current, previousCommand, node[i].mType, node[i].mParams);
                 previousCommand = node[i].mType;
             }
         }
@@ -277,10 +276,10 @@ public class PathParser {
          * @param nodeTo The end value as a PathDataNode
          * @param fraction The fraction to interpolate.
          */
-        public void interpolatePathDataNode(PathParser.PathDataNode nodeFrom,
-                                            PathParser.PathDataNode nodeTo, float fraction) {
+        public void interpolatePathDataNode(PathDataNode nodeFrom,
+                                            PathDataNode nodeTo, float fraction) {
             for (int i = 0; i < nodeFrom.mParams.length; i++) {
-                this.mParams[i] = nodeFrom.mParams[i] * (1 - fraction)
+                mParams[i] = nodeFrom.mParams[i] * (1 - fraction)
                     + nodeTo.mParams[i] * fraction;
             }
         }
@@ -486,7 +485,7 @@ public class PathParser {
                         break;
                     case 'a': // Draws an elliptical arc
                         // (rx ry x-axis-rotation large-arc-flag sweep-flag x y)
-                        PathParser.PathDataNode.drawArc(path,
+                        drawArc(path,
                             currentX,
                             currentY,
                             val[k + 5] + currentX,
@@ -502,7 +501,7 @@ public class PathParser {
                         ctrlPointY = currentY;
                         break;
                     case 'A': // Draws an elliptical arc
-                        PathParser.PathDataNode.drawArc(path,
+                        drawArc(path,
                             currentX,
                             currentY,
                             val[k + 5],
@@ -556,14 +555,14 @@ public class PathParser {
             /* Solve for intersecting unit circles */
             double dsq = dx * dx + dy * dy;
             if (dsq == 0.0) {
-                Log.w(PathParser.LOGTAG, " Points are coincident");
+                Log.w(LOGTAG, " Points are coincident");
                 return; /* Points are coincident */
             }
             double disc = 1.0 / dsq - 1.0 / 4.0;
             if (disc < 0.0) {
-                Log.w(PathParser.LOGTAG, "Points are too far apart " + dsq);
+                Log.w(LOGTAG, "Points are too far apart " + dsq);
                 float adjust = (float) (Math.sqrt(dsq) / 1.99999);
-                PathParser.PathDataNode.drawArc(p, x0, y0, x1, y1, a * adjust,
+                drawArc(p, x0, y0, x1, y1, a * adjust,
                     b * adjust, theta, isMoreThanHalf, isPositiveArc);
                 return; /* Points are too far apart */
             }
@@ -594,7 +593,7 @@ public class PathParser {
             double tcx = cx;
             cx = cx * cosTheta - cy * sinTheta;
             cy = tcx * sinTheta + cy * cosTheta;
-            PathParser.PathDataNode.arcToBezier(p, cx, cy, a, b, x0, y0, thetaD, eta0, sweep);
+            arcToBezier(p, cx, cy, a, b, x0, y0, thetaD, eta0, sweep);
         }
         /**
          * Converts an arc to cubic Bezier segments and records them in p.

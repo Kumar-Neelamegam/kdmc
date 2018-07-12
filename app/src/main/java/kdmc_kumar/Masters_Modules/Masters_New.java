@@ -7,20 +7,14 @@ import android.content.Intent;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuff.Mode;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.TabLayout;
-import android.support.design.widget.TabLayout.OnTabSelectedListener;
-import android.support.design.widget.TabLayout.Tab;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.ViewCompat;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatImageView;
@@ -29,7 +23,6 @@ import android.text.Editable;
 import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -42,11 +35,6 @@ import android.widget.Toast;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.color;
-import displ.mobydocmarathi.com.R.drawable;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.DashBoardAdapter;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
@@ -58,93 +46,93 @@ import kdmc_kumar.Utilities_Others.ViewAnimation;
 public class Masters_New extends AppCompatActivity {
 
     //**********************************************************************************************
-    public boolean rotate;
+    public boolean rotate = false;
     /**
      * Muthukumar N
      * 08-05-2018
      */
     //**********************************************************************************************
     //Declaration
-    @BindView(id.content)
+    @BindView(R.id.content)
     RelativeLayout content;
-    @BindView(id.tab_layout)
+    @BindView(R.id.tab_layout)
     TabLayout tabLayout;
-    @BindView(id.simpleFrameLayout)
+    @BindView(R.id.simpleFrameLayout)
     FrameLayout simpleFrameLayout;
-    @BindView(id.back_drop)
+    @BindView(R.id.back_drop)
     View backDrop;
-    @BindView(id.lyt_1)
+    @BindView(R.id.lyt_1)
     LinearLayout lyt1;
-    @BindView(id.fab_1)
+    @BindView(R.id.fab_1)
     FloatingActionButton fab1;
-    @BindView(id.lyt_2)
+    @BindView(R.id.lyt_2)
     LinearLayout lyt2;
-    @BindView(id.fab_2)
+    @BindView(R.id.fab_2)
     FloatingActionButton fab2;
-    @BindView(id.lyt_3)
+    @BindView(R.id.lyt_3)
     LinearLayout lyt3;
-    @BindView(id.fab_3)
+    @BindView(R.id.fab_3)
     FloatingActionButton fab3;
-    @BindView(id.fab_add)
+    @BindView(R.id.fab_add)
     FloatingActionButton fabAdd;
 
-    @BindView(id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(id.toolbar_back)
+    @BindView(R.id.toolbar_back)
     AppCompatImageView toolbarBack;
-    @BindView(id.toolbar_title)
+    @BindView(R.id.toolbar_title)
     TextView toolbarTitle;
-    @BindView(id.toolbar_exit)
+    @BindView(R.id.toolbar_exit)
     AppCompatImageView toolbarExit;
     //**********************************************************************************************
 
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(layout.kdmc_layout_masters);
+        setContentView(R.layout.kdmc_layout_masters);
 
 
         try {
-            this.GETINITIALIZE();
-            this.CONTROLLISTENERS();
+            GETINITIALIZE();
+            CONTROLLISTENERS();
         } catch (Exception e) {
             //e.printStackTrace();
         }
 
 
     }
-   public static Tab Category,Brand;
+   public static TabLayout.Tab Category=null,Brand=null;
     //**********************************************************************************************
     private void CONTROLLISTENERS() {
 
 
-        Tab Items = this.tabLayout.newTab();
+        TabLayout.Tab Items = tabLayout.newTab();
         Items.setText("Prescription Templates");
-        Items.setIcon(drawable.dashboard_ic_prescription);
-        this.tabLayout.addTab(Items);
+        Items.setIcon(R.drawable.dashboard_ic_prescription);
+        tabLayout.addTab(Items);
 
-        Masters_New.Category = this.tabLayout.newTab();
-        Masters_New.Category.setText("My Preferred Medicine List");
-        Masters_New.Category.setIcon(drawable.dashboard_ic_case_book);
-        this.tabLayout.addTab(Masters_New.Category);
+         Category = tabLayout.newTab();
+        Category.setText("My Preferred Medicine List");
+        Category.setIcon(R.drawable.dashboard_ic_case_book);
+        tabLayout.addTab(Category);
 
-        Masters_New.Brand = this.tabLayout.newTab();
-        Masters_New.Brand.setText("My Preferred Test List");
-        Masters_New.Brand.setIcon(drawable.dashboard_ic_medical_test);
-        this.tabLayout.addTab(Masters_New.Brand);
+         Brand = tabLayout.newTab();
+        Brand.setText("My Preferred Test List");
+        Brand.setIcon(R.drawable.dashboard_ic_medical_test);
+        tabLayout.addTab(Brand);
 
 
-        this.tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
+        tabLayout.setTabGravity(TabLayout.GRAVITY_FILL);
 
-        this.tabLayout.getTabAt(0).getIcon().setColorFilter(Color.WHITE, Mode.SRC_IN);
-        this.tabLayout.getTabAt(1).getIcon().setColorFilter(this.getResources().getColor(color.grey_20), Mode.SRC_IN);
-        this.tabLayout.getTabAt(2).getIcon().setColorFilter(this.getResources().getColor(color.grey_20), Mode.SRC_IN);
+        tabLayout.getTabAt(0).getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(1).getIcon().setColorFilter(getResources().getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN);
+        tabLayout.getTabAt(2).getIcon().setColorFilter(getResources().getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN);
 
-        this.tabLayout.setOnTabSelectedListener(new OnTabSelectedListener() {
+        tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override
-            public void onTabSelected(Tab tab) {
+            public void onTabSelected(TabLayout.Tab tab) {
 
-                tab.getIcon().setColorFilter(Color.WHITE, Mode.SRC_IN);
+                tab.getIcon().setColorFilter(Color.WHITE, PorterDuff.Mode.SRC_IN);
                 // get the current selected tab's position and replace the fragment accordingly
                 Fragment fragment = null;
                 switch (tab.getPosition()) {
@@ -164,22 +152,22 @@ public class Masters_New extends AppCompatActivity {
 
                 }
 
-                FragmentManager fm = Masters_New.this.getSupportFragmentManager();
+                FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(id.simpleFrameLayout, fragment);
+                ft.replace(R.id.simpleFrameLayout, fragment);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.commit();
 
             }
 
             @Override
-            public void onTabUnselected(Tab tab) {
-                tab.getIcon().setColorFilter(Masters_New.this.getResources().getColor(color.grey_20), Mode.SRC_IN);
+            public void onTabUnselected(TabLayout.Tab tab) {
+                tab.getIcon().setColorFilter(getResources().getColor(R.color.grey_20), PorterDuff.Mode.SRC_IN);
 
             }
 
             @Override
-            public void onTabReselected(Tab tab) {
+            public void onTabReselected(TabLayout.Tab tab) {
 
                 // get the current selected tab's position and replace the fragment accordingly
                 Fragment fragment = null;
@@ -200,9 +188,9 @@ public class Masters_New extends AppCompatActivity {
 
                 }
 
-                FragmentManager fm = Masters_New.this.getSupportFragmentManager();
+                FragmentManager fm = getSupportFragmentManager();
                 FragmentTransaction ft = fm.beginTransaction();
-                ft.replace(id.simpleFrameLayout, fragment);
+                ft.replace(R.id.simpleFrameLayout, fragment);
                 ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
                 ft.commit();
 
@@ -211,39 +199,39 @@ public class Masters_New extends AppCompatActivity {
 
 
         Fragment fragment = new Fragment_Prescription_Templates();
-        FragmentManager fm = this.getSupportFragmentManager();
+        FragmentManager fm = getSupportFragmentManager();
         FragmentTransaction ft = fm.beginTransaction();
-        ft.replace(id.simpleFrameLayout, fragment);
+        ft.replace(R.id.simpleFrameLayout, fragment);
         ft.setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN);
         ft.commit();
 
 
-        ViewAnimation.initShowOut(this.lyt1);
-        ViewAnimation.initShowOut(this.lyt2);
-        ViewAnimation.initShowOut(this.lyt3);
+        ViewAnimation.initShowOut(lyt1);
+        ViewAnimation.initShowOut(lyt2);
+        ViewAnimation.initShowOut(lyt3);
 
-        this.backDrop.setVisibility(View.GONE);
+        backDrop.setVisibility(View.GONE);
 
-        this.fabAdd.setOnClickListener(v -> this.toggleFabMode(v));
+        fabAdd.setOnClickListener(v -> toggleFabMode(v));
 
-        this.backDrop.setOnClickListener(v -> this.toggleFabMode(this.fabAdd));
+        backDrop.setOnClickListener(v -> toggleFabMode(fabAdd));
 
-        this.fab1.setOnClickListener(v -> {
-            this.toggleFabMode(v);
-            this.startActivity(new Intent(this, templates_addnew.class));
+        fab1.setOnClickListener(v -> {
+            toggleFabMode(v);
+            startActivity(new Intent(Masters_New.this, templates_addnew.class));
             BaseConfig.temp_flag="true";
         });
 
-        this.fab2.setOnClickListener(v -> {
-            this.toggleFabMode(v);
-            this.addMedicineNamePopupDialog((Activity) this.fab1.getContext());
+        fab2.setOnClickListener(v -> {
+            toggleFabMode(v);
+            addMedicineNamePopupDialog((Activity) fab1.getContext());
         });
 
-        this.fab3.setOnClickListener(v -> {
+        fab3.setOnClickListener(v -> {
 
-            this.toggleFabMode(v);
+            toggleFabMode(v);
 
-            this.addTestPopupDialog((Activity) this.fab3.getContext());
+            addTestPopupDialog((Activity) fab3.getContext());
 
 
         });
@@ -254,11 +242,11 @@ public class Masters_New extends AppCompatActivity {
     public void addMedicineNamePopupDialog(Activity activity) {
         try {
             AlertDialog alertDialog =null;
-            LayoutInflater li = LayoutInflater.from(this.getApplicationContext());
-            View prompt = li.inflate(layout.popup_medicine_layout, null);
-            Builder alertDialogBuilder = new Builder(this);
-            AutoCompleteTextView medicine_name = prompt.findViewById(id.medcineName);
-            Button add = prompt.findViewById(id.add);
+            LayoutInflater li = LayoutInflater.from(getApplicationContext());
+            final View prompt = li.inflate(R.layout.popup_medicine_layout, null);
+            final AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
+            final AutoCompleteTextView medicine_name = prompt.findViewById(R.id.medcineName);
+            final Button add = prompt.findViewById(R.id.add);
             alertDialogBuilder.setView(prompt);
 
             medicine_name.setThreshold(1);
@@ -293,11 +281,11 @@ public class Masters_New extends AppCompatActivity {
             alertDialog=alertDialogBuilder.show();
 
             AlertDialog finalAlertDialog = alertDialog;
-            add.setOnClickListener(new OnClickListener() {
+            add.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
 
-                    if (Masters_New.this.checkValidation(medicine_name)) {
+                    if (checkValidation(medicine_name)) {
 
                         String Get_Medicine = medicine_name.getText().toString();
 
@@ -307,10 +295,10 @@ public class Masters_New extends AppCompatActivity {
 
                             medicine_name.setText("");
                             medicine_name.setFocusable(true);
-                            BaseConfig.KDMC_COMMON_DILOAGS(3, activity, "Information", "Already selected medicine added in mypreferred list..", Masters_New.this.getString(string.ok));
+                            BaseConfig.KDMC_COMMON_DILOAGS(3, activity, "Information", "Already selected medicine added in mypreferred list..", getString(R.string.ok));
 
                         } else {
-                            Masters_New.this.InsertTODB(medicine_name);
+                            InsertTODB(medicine_name);
                             finalAlertDialog.cancel();
                         }
 
@@ -336,13 +324,13 @@ public class Masters_New extends AppCompatActivity {
 
             AlertDialog alertDialog =null;
 
-                    LayoutInflater li = LayoutInflater.from(this.getApplicationContext());
-            View prompt = li.inflate(layout.popup_test_layout, null);
-            Builder alertDialogBuilder = new Builder(this);
-            AutoCompleteTextView auto_test = prompt.findViewById(id.auto_test);
-            AutoCompleteTextView auto_subtest = prompt.findViewById(id.auto_subtest);
-            EditText templatename = prompt.findViewById(id.edt_templatename);
-            Button add = prompt.findViewById(id.ic_add);
+                    LayoutInflater li = LayoutInflater.from(getApplicationContext());
+            final View prompt = li.inflate(R.layout.popup_test_layout, null);
+            final AlertDialog.Builder alertDialogBuilder = new android.support.v7.app.AlertDialog.Builder(this);
+            final AutoCompleteTextView auto_test = prompt.findViewById(R.id.auto_test);
+            final AutoCompleteTextView auto_subtest = prompt.findViewById(R.id.auto_subtest);
+            final EditText templatename = prompt.findViewById(R.id.edt_templatename);
+            final Button add = prompt.findViewById(R.id.ic_add);
             alertDialogBuilder.setView(prompt);
             alertDialog=alertDialogBuilder.show();
 
@@ -387,7 +375,7 @@ public class Masters_New extends AppCompatActivity {
 
 
                     if (auto_subtest.getText().toString().length() > 0) {
-                        String Query = "select SubTest as dvalue from Testname where IsActive=1 and Testname='" + auto_test.getText() + '\'';
+                        String Query = "select SubTest as dvalue from Testname where IsActive=1 and Testname='" + auto_test.getText().toString() + '\'';
                         BaseConfig.SelectedGetPatientDetailsFilterOthers(Query,activity, auto_subtest, charSequence.toString());
                         //LoadValues(SubTest, prefered_test.this, Query, 1);
                         //spinner2meth(prefered_test.this, Loadlist1, SubTest);
@@ -404,10 +392,10 @@ public class Masters_New extends AppCompatActivity {
 
 
             AlertDialog finalAlertDialog = alertDialog;
-            add.setOnClickListener(new OnClickListener() {
+            add.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (Masters_New.this.checkValidation(auto_test)) {
+                    if (checkValidation(auto_test)) {
                         String Get_TemplateName = templatename.getText().toString();
                         String Get_TestName = auto_test.getText().toString();
                         String Get_SubTestName = auto_subtest.getText().toString();
@@ -419,7 +407,7 @@ public class Masters_New extends AppCompatActivity {
                             auto_test.setText("");
                             auto_subtest.setText("");
                             auto_test.setFocusable(true);
-                            BaseConfig.KDMC_COMMON_DILOAGS(3, activity, "Information", "Already selected testname and subtest added in mypreferred list..", Masters_New.this.getString(string.ok));
+                            BaseConfig.KDMC_COMMON_DILOAGS(3, activity, "Information", "Already selected testname and subtest added in mypreferred list..", getString(R.string.ok));
 
                         } else {
                             SQLiteDatabase db = BaseConfig.GetDb();
@@ -437,17 +425,17 @@ public class Masters_New extends AppCompatActivity {
                             finalAlertDialog.cancel();
 
                             new CustomKDMCDialog(activity)
-                                    .setLayoutColor(color.green_500)
-                                    .setImage(drawable.ic_success_done)
+                                    .setLayoutColor(R.color.green_500)
+                                    .setImage(R.drawable.ic_success_done)
                                     .setNegativeButtonVisible(View.GONE)
-                                    .setTitle(activity.getString(string.information))
+                                    .setTitle(activity.getString(R.string.information))
                                     .setOnPossitiveListener(() -> {
 
                                     })
                                     .setDescription("Preferred Test & Subtest - Saved Successfully")
-                                    .setPossitiveButtonTitle(activity.getString(string.ok));
+                                    .setPossitiveButtonTitle(activity.getString(R.string.ok));
 
-                            Masters_New.Brand.select();
+                            Brand.select();
                         }
 
 
@@ -482,17 +470,17 @@ public class Masters_New extends AppCompatActivity {
         db.close();
 
         new CustomKDMCDialog(this)
-                .setLayoutColor(color.green_500)
-                .setImage(drawable.ic_success_done)
-                .setTitle(getString(string.information))
+                .setLayoutColor(R.color.green_500)
+                .setImage(R.drawable.ic_success_done)
+                .setTitle(this.getString(R.string.information))
                 .setOnPossitiveListener(() -> {
 
                 })
                 .setNegativeButtonVisible(View.GONE)
                 .setDescription("Preferred Medicine - Saved Successfully")
-                .setPossitiveButtonTitle(getString(string.ok));
+                .setPossitiveButtonTitle(this.getString(R.string.ok));
 
-        Masters_New.Category.select();
+        Category.select();
 
     }
 
@@ -508,17 +496,17 @@ public class Masters_New extends AppCompatActivity {
     }
 
     private void toggleFabMode(View v) {
-        this.rotate = ViewAnimation.rotateFab(v, !this.rotate);
-        if (this.rotate) {
-            ViewAnimation.showIn(this.lyt1);
-            ViewAnimation.showIn(this.lyt2);
-            ViewAnimation.showIn(this.lyt3);
-            this.backDrop.setVisibility(View.VISIBLE);
+        rotate = ViewAnimation.rotateFab(v, !rotate);
+        if (rotate) {
+            ViewAnimation.showIn(lyt1);
+            ViewAnimation.showIn(lyt2);
+            ViewAnimation.showIn(lyt3);
+            backDrop.setVisibility(View.VISIBLE);
         } else {
-            ViewAnimation.showOut(this.lyt1);
-            ViewAnimation.showOut(this.lyt2);
-            ViewAnimation.showOut(this.lyt3);
-            this.backDrop.setVisibility(View.GONE);
+            ViewAnimation.showOut(lyt1);
+            ViewAnimation.showOut(lyt2);
+            ViewAnimation.showOut(lyt3);
+            backDrop.setVisibility(View.GONE);
         }
     }
 
@@ -527,20 +515,20 @@ public class Masters_New extends AppCompatActivity {
     private void GETINITIALIZE() {
         BaseConfig.welcometoast = 0;
 
-        ButterKnife.bind(this);
+        ButterKnife.bind(Masters_New.this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
-        this.toolbarTitle.setText(String.format("%s - %s", this.getString(string.app_name), this.getString(string.master)));
+        toolbarTitle.setText(String.format("%s - %s", getString(R.string.app_name), getString(R.string.master)));
 
-        this.setSupportActionBar(this.toolbar);
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            ViewCompat.setTransitionName(this.toolbar, DashBoardAdapter.VIEW_NAME_HEADER_TITLE);
+        setSupportActionBar(toolbar);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ViewCompat.setTransitionName(toolbar, DashBoardAdapter.VIEW_NAME_HEADER_TITLE);
         }
 
 
-        this.toolbarExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(this, null));
+        toolbarExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(Masters_New.this, null));
 
-        this.toolbarBack.setOnClickListener(view -> this.LoadBack());
+        toolbarBack.setOnClickListener(view -> LoadBack());
 
 
 
@@ -551,9 +539,9 @@ public class Masters_New extends AppCompatActivity {
     private void LoadBack()
     {
 
-        finish();
-        Intent intent = new Intent(this,Dashboard_NavigationMenu.class);
-        this.startActivity(intent);
+        Masters_New.this.finish();
+        Intent intent = new Intent(Masters_New.this,Dashboard_NavigationMenu.class);
+        startActivity(intent);
         BaseConfig.Druglistselindex = "";
 
     }
@@ -564,9 +552,9 @@ public class Masters_New extends AppCompatActivity {
     @Override
     public void onBackPressed() {
 
-        finish();
-        Intent intent = new Intent(this, Dashboard_NavigationMenu.class);
-        this.startActivity(intent);
+        Masters_New.this.finish();
+        Intent intent = new Intent(Masters_New.this, Dashboard_NavigationMenu.class);
+        startActivity(intent);
         CustomIntent.customType(this, 4);
 
     }

@@ -10,6 +10,7 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
+import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -18,37 +19,37 @@ import kdmc_kumar.Core_Modules.BaseConfig;
 
 public class Masters_RESTAPIFactory extends ControllerFactory<Masters_RESTAPI> {
     public Masters_RESTAPIFactory(MagnetMobileClient magnetClient) {
-        super(Masters_RESTAPI.class, Masters_RESTAPIFactory.Masters_RESTAPISchemaFactory.getInstance().getSchema(), magnetClient);
+        super(Masters_RESTAPI.class, Masters_RESTAPISchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller Masters_RESTAPI
     public static class Masters_RESTAPISchemaFactory extends AbstractControllerSchemaFactory {
-        private static Masters_RESTAPIFactory.Masters_RESTAPISchemaFactory __instance;
+        private static Masters_RESTAPISchemaFactory __instance = null;
 
         private Masters_RESTAPISchemaFactory() {
         }
 
-        static Masters_RESTAPIFactory.Masters_RESTAPISchemaFactory getInstance() {
-            synchronized (Masters_RESTAPIFactory.Masters_RESTAPISchemaFactory.class) {
-                if (null == Masters_RESTAPIFactory.Masters_RESTAPISchemaFactory.__instance) {
-                    Masters_RESTAPIFactory.Masters_RESTAPISchemaFactory.__instance = new Masters_RESTAPIFactory.Masters_RESTAPISchemaFactory();
+        static Masters_RESTAPISchemaFactory getInstance() {
+            synchronized (Masters_RESTAPISchemaFactory.class) {
+                if (null == __instance) {
+                    __instance = new Masters_RESTAPISchemaFactory();
                 }
 
-                return Masters_RESTAPIFactory.Masters_RESTAPISchemaFactory.__instance;
+                return __instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != this.schema) {
+                if (null != schema) {
                     return;
                 }
 
-                this.schema = new RequestSchema();
-                this.schema.setRootPath("");
+                schema = new RequestSchema();
+                schema.setRootPath("");
 
                 //controller schema for controller method table1
-                RequestSchema.JMethod method1 = this.addMethod("table1",
+                JMethod method1 = addMethod("table1",
                         BaseConfig.AppNodeIP + "/Get_Masters_Tables",
                         "GET",
                         String.class,

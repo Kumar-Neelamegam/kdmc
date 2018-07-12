@@ -18,13 +18,12 @@ package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils;
 import android.annotation.TargetApi;
 import android.graphics.PointF;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.util.Property;
 
 /**
  * Created by Andrey Kulikov on 15.08.15.
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public abstract class PointFProperty<T> extends Property<T, PointF> {
 
     public PointFProperty() {

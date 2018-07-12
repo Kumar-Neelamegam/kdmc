@@ -21,8 +21,6 @@ import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,7 +29,7 @@ import android.view.ViewGroup;
  * This transition captures the scroll properties of targets before and after
  * the scene change and animates any changes.
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class ChangeScroll extends Transition {
 
     private static final String PROPNAME_SCROLL_X = "android:changeScroll:x";
@@ -45,31 +43,31 @@ public class ChangeScroll extends Transition {
 
     @Override
     public void captureStartValues(TransitionValues transitionValues) {
-        this.captureValues(transitionValues);
+        captureValues(transitionValues);
     }
 
     @Override
     public void captureEndValues(TransitionValues transitionValues) {
-        this.captureValues(transitionValues);
+        captureValues(transitionValues);
     }
 
     private void captureValues(TransitionValues transitionValues) {
-        transitionValues.values.put(ChangeScroll.PROPNAME_SCROLL_X, transitionValues.view.getScrollX());
-        transitionValues.values.put(ChangeScroll.PROPNAME_SCROLL_Y, transitionValues.view.getScrollY());
+        transitionValues.values.put(PROPNAME_SCROLL_X, transitionValues.view.getScrollX());
+        transitionValues.values.put(PROPNAME_SCROLL_Y, transitionValues.view.getScrollY());
     }
 
     @Override
     public Animator createAnimator(ViewGroup sceneRoot, TransitionValues startValues,
                                    TransitionValues endValues) {
         if (startValues == null || endValues == null ||
-                VERSION.SDK_INT < VERSION_CODES.ICE_CREAM_SANDWICH) {
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             return null;
         }
-        View view = endValues.view;
-        int startX = (Integer) startValues.values.get(ChangeScroll.PROPNAME_SCROLL_X);
-        int endX = (Integer) endValues.values.get(ChangeScroll.PROPNAME_SCROLL_X);
-        int startY = (Integer) startValues.values.get(ChangeScroll.PROPNAME_SCROLL_Y);
-        int endY = (Integer) endValues.values.get(ChangeScroll.PROPNAME_SCROLL_Y);
+        final View view = endValues.view;
+        int startX = (Integer) startValues.values.get(PROPNAME_SCROLL_X);
+        int endX = (Integer) endValues.values.get(PROPNAME_SCROLL_X);
+        int startY = (Integer) startValues.values.get(PROPNAME_SCROLL_Y);
+        int endY = (Integer) endValues.values.get(PROPNAME_SCROLL_Y);
         Animator scrollXAnimator = null;
         Animator scrollYAnimator = null;
         if (startX != endX) {

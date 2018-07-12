@@ -1,6 +1,5 @@
 package kdmc_kumar.Utilities_Others;
 
-import android.R.id;
 import android.app.Activity;
 import android.content.ClipData;
 import android.content.ClipboardManager;
@@ -9,11 +8,8 @@ import android.content.res.Resources;
 import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.PorterDuff;
-import android.graphics.PorterDuff.Mode;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.support.annotation.ColorInt;
 import android.support.annotation.ColorRes;
 import android.support.annotation.DrawableRes;
@@ -27,7 +23,6 @@ import android.view.Menu;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
 import android.widget.Toast;
 
@@ -39,7 +34,6 @@ import java.util.Date;
 import java.util.Locale;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.color;
 
 public class Tools {
 
@@ -47,26 +41,26 @@ public class Tools {
     }
 
     public static void setSystemBarColor(Activity act) {
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = act.getWindow();
-            window.addFlags(LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
-            window.setStatusBarColor(act.getResources().getColor(color.colorPrimaryDark));
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.setStatusBarColor(act.getResources().getColor(R.color.colorPrimaryDark));
         }
     }
 
     public static void setSystemBarColor(Activity act, @ColorRes int color) {
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = act.getWindow();
-            window.addFlags(LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-            window.clearFlags(LayoutParams.FLAG_TRANSLUCENT_STATUS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS);
             window.setStatusBarColor(act.getResources().getColor(color));
         }
     }
 
     public static void setSystemBarLight(Activity act) {
-        if (VERSION.SDK_INT >= VERSION_CODES.M) {
-            View view = act.findViewById(id.content);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            View view = act.findViewById(android.R.id.content);
             int flags = view.getSystemUiVisibility();
             flags |= View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR;
             view.setSystemUiVisibility(flags);
@@ -74,9 +68,9 @@ public class Tools {
     }
 
     public static void clearSystemBarLight(Activity act) {
-        if (VERSION.SDK_INT >= VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Window window = act.getWindow();
-            window.setStatusBarColor(ContextCompat.getColor(act, color.colorPrimaryDark));
+            window.setStatusBarColor(ContextCompat.getColor(act, R.color.colorPrimaryDark));
         }
     }
 
@@ -84,9 +78,9 @@ public class Tools {
      * Making notification bar transparent
      */
     public static void setSystemBarTransparent(Activity act) {
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             Window window = act.getWindow();
-            window.addFlags(LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
+            window.addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
             window.setStatusBarColor(Color.TRANSPARENT);
         }
     }
@@ -100,7 +94,7 @@ public class Tools {
         }
     }
 
-    public static void displayImageRound(Context ctx, ImageView img, @DrawableRes int drawable) {
+    public static void displayImageRound(final Context ctx, final ImageView img, @DrawableRes int drawable) {
         try {
             Glide.with(ctx).asBitmap().load(Integer.valueOf(drawable)).into(new BitmapImageViewTarget(img) {
                 @Override
@@ -148,17 +142,17 @@ public class Tools {
         Toast.makeText(context, "Text copied to clipboard", Toast.LENGTH_SHORT).show();
     }
 
-    public static void nestedScrollTo(NestedScrollView nested, View targetView) {
+    public static void nestedScrollTo(final NestedScrollView nested, final View targetView) {
         nested.post(() -> nested.scrollTo(500, targetView.getBottom()));
     }
 
     public static int dip2px(Context context, float dpValue) {
-        float scale = context.getResources().getDisplayMetrics().density;
+        final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (dpValue * scale + 0.5f);
     }
 
     public static int px2dip(Context context, float pxValue) {
-        float scale = context.getResources().getDisplayMetrics().density;
+        final float scale = context.getResources().getDisplayMetrics().density;
         return (int) (pxValue / scale + 0.5f);
     }
 
@@ -173,7 +167,7 @@ public class Tools {
     }
 
     public static boolean toggleArrow(boolean show, View view) {
-        return Tools.toggleArrow(show, view, true);
+        return toggleArrow(show, view, true);
     }
 
     private static boolean toggleArrow(boolean show, View view, boolean delay) {
@@ -189,7 +183,7 @@ public class Tools {
     public static void changeNavigateionIconColor(Toolbar toolbar, @ColorInt int color) {
         Drawable drawable = toolbar.getNavigationIcon();
         drawable.mutate();
-        drawable.setColorFilter(color, Mode.SRC_ATOP);
+        drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
     }
 
     public static void changeMenuIconColor(Menu menu, @ColorInt int color) {
@@ -197,7 +191,7 @@ public class Tools {
             Drawable drawable = menu.getItem(i).getIcon();
             if (drawable == null) continue;
             drawable.mutate();
-            drawable.setColorFilter(color, Mode.SRC_ATOP);
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         }
     }
 
@@ -205,7 +199,7 @@ public class Tools {
         try {
             Drawable drawable = toolbar.getOverflowIcon();
             drawable.mutate();
-            drawable.setColorFilter(color, Mode.SRC_ATOP);
+            drawable.setColorFilter(color, PorterDuff.Mode.SRC_ATOP);
         } catch (Exception ignored) {
         }
     }

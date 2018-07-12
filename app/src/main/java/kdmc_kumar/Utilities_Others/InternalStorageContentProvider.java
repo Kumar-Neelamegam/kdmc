@@ -24,8 +24,8 @@ public class InternalStorageContentProvider extends ContentProvider {
     private static final String TEMP_PHOTO_FILE_NAME = "temp_photo.jpg";
 
     static {
-        InternalStorageContentProvider.MIME_TYPES.put(".jpg", "image/jpeg");
-        InternalStorageContentProvider.MIME_TYPES.put(".jpeg", "image/jpeg");
+        MIME_TYPES.put(".jpg", "image/jpeg");
+        MIME_TYPES.put(".jpeg", "image/jpeg");
     }
 
     public InternalStorageContentProvider() {
@@ -34,10 +34,10 @@ public class InternalStorageContentProvider extends ContentProvider {
     @Override
     public final boolean onCreate() {
         try {
-            File mFile = new File(this.getContext().getFilesDir(), InternalStorageContentProvider.TEMP_PHOTO_FILE_NAME);
+            File mFile = new File(getContext().getFilesDir(), TEMP_PHOTO_FILE_NAME);
             if (!mFile.exists()) {
                 mFile.createNewFile();
-                this.getContext().getContentResolver().notifyChange(InternalStorageContentProvider.CONTENT_URI,
+                getContext().getContentResolver().notifyChange(CONTENT_URI,
                         null);
             }
             return (true);
@@ -51,10 +51,10 @@ public class InternalStorageContentProvider extends ContentProvider {
     @Override
     public final String getType(@NonNull Uri uri) {
         String path = uri.toString();
-        for (Iterator<String> iterator = InternalStorageContentProvider.MIME_TYPES.keySet().iterator(); iterator.hasNext(); ) {
+        for (Iterator<String> iterator = MIME_TYPES.keySet().iterator(); iterator.hasNext(); ) {
             String extension = iterator.next();
             if (path.endsWith(extension)) {
-                return (InternalStorageContentProvider.MIME_TYPES.get(extension));
+                return (MIME_TYPES.get(extension));
             }
         }
         return (null);
@@ -63,8 +63,8 @@ public class InternalStorageContentProvider extends ContentProvider {
     @Override
     public final ParcelFileDescriptor openFile(@NonNull Uri uri, @NonNull String mode)
             throws FileNotFoundException {
-        File f = new File(this.getContext().getFilesDir(),
-                InternalStorageContentProvider.TEMP_PHOTO_FILE_NAME);
+        File f = new File(getContext().getFilesDir(),
+                TEMP_PHOTO_FILE_NAME);
         if (f.exists()) {
             return (ParcelFileDescriptor.open(f,
                     ParcelFileDescriptor.MODE_READ_WRITE));

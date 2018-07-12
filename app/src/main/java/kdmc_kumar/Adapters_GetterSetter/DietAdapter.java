@@ -1,15 +1,11 @@
 package kdmc_kumar.Adapters_GetterSetter;
 
-import android.R.drawable;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -19,34 +15,31 @@ import android.widget.TextView;
 import java.util.List;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
-import kdmc_kumar.Adapters_GetterSetter.DietAdapter.MyViewHolder;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.*;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Inpatient_Module.AddDietActivity;
 
 
-public class DietAdapter extends Adapter<MyViewHolder> {
+public class DietAdapter extends RecyclerView.Adapter<DietAdapter.MyViewHolder> {
 
-    public final List<CommonDataObjects.Addgetset> moviesList;
+    public final List<Addgetset> moviesList;
 
-    public DietAdapter(List<CommonDataObjects.Addgetset> moviesList, Context ctx) {
+    public DietAdapter(List<Addgetset> moviesList, Context ctx) {
         this.moviesList = moviesList;
     }
 
     @NonNull
     @Override
-    public final DietAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public final MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = LayoutInflater.from(parent.getContext())
-                .inflate(layout.activity_diet_adapter, parent, false);
+                .inflate(R.layout.activity_diet_adapter, parent, false);
 
-        return new DietAdapter.MyViewHolder(itemView);
+        return new MyViewHolder(itemView);
     }
 
     @Override
-    public final void onBindViewHolder(@NonNull DietAdapter.MyViewHolder holder, int position) {
-        CommonDataObjects.Addgetset movie = this.moviesList.get(position);
+    public final void onBindViewHolder(@NonNull final MyViewHolder holder, final int position) {
+        final Addgetset movie = moviesList.get(position);
         holder.title.setText(movie.getDiet_name());
         holder.genre.setText(movie.getFood_name());
         holder.year.setText(movie.getCalc());
@@ -58,20 +51,20 @@ public class DietAdapter extends Adapter<MyViewHolder> {
 
 
         holder.rel_layout.setOnClickListener(view -> {
-            Builder adb = new Builder(view.getContext());
+            final AlertDialog.Builder adb = new AlertDialog.Builder(view.getContext());
 
 
-            adb.setTitle(string.delte);
+            adb.setTitle(R.string.delte);
 
-            adb.setIcon(drawable.ic_dialog_alert);
+            adb.setIcon(android.R.drawable.ic_dialog_alert);
 
 
-            adb.setPositiveButton(string.ok, (dialog, which) -> {
+            adb.setPositiveButton(R.string.ok, (dialog, which) -> {
 
                 SQLiteDatabase db = BaseConfig.GetDb();//view.getContext());
 
 
-                String Query = "UPDATE diet_entry SET IsDelete = 1 WHERE  Id='" + this.moviesList.get(position).getId() + "' ";
+                String Query = "UPDATE diet_entry SET IsDelete = 1 WHERE  Id='" + moviesList.get(position).getId() + "' ";
 
                 db.execSQL(Query);
                 //Log.e("delete Query", Query);
@@ -80,30 +73,30 @@ public class DietAdapter extends Adapter<MyViewHolder> {
                 //Update Total Calories Label
 
                 Integer alreadyValue=Integer.parseInt(AddDietActivity.calories_total.getText().toString());
-                Integer removeValue=Integer.parseInt(this.moviesList.get(position).getCalc());
+                Integer removeValue=Integer.parseInt(moviesList.get(position).getCalc());
                 Integer updateValue=alreadyValue-removeValue;
                 AddDietActivity.calories_total.setText(String.valueOf(updateValue));
 
                 db.close();
-                this.moviesList.remove(position);
+                moviesList.remove(position);
 
 
-                this.notifyDataSetChanged();
+                notifyDataSetChanged();
 
             });
 
 
-            adb.setNegativeButton(string.cancel, (dialog, which) -> dialog.dismiss());
+            adb.setNegativeButton(R.string.cancel, (dialog, which) -> dialog.dismiss());
             adb.show();
         });
     }
 
     @Override
     public final int getItemCount() {
-        return this.moviesList.size();
+        return moviesList.size();
     }
 
-    public static class MyViewHolder extends ViewHolder {
+    public static class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView title;
         final TextView year;
         final TextView genre;
@@ -113,12 +106,12 @@ public class DietAdapter extends Adapter<MyViewHolder> {
 
         MyViewHolder(View view) {
             super(view);
-            this.title = view.findViewById(id.title);
-            this.genre = view.findViewById(id.genre);
-            this.year = view.findViewById(id.year);
-            this.serialno = view.findViewById(id.serialno);
-            this.card_view = view.findViewById(id.card_view);
-            this.rel_layout = view.findViewById(id.rel_layout);
+            title = view.findViewById(R.id.title);
+            genre = view.findViewById(R.id.genre);
+            year = view.findViewById(R.id.year);
+            serialno = view.findViewById(R.id.serialno);
+            card_view = view.findViewById(R.id.card_view);
+            rel_layout = view.findViewById(R.id.rel_layout);
         }
     }
 

@@ -1,6 +1,5 @@
 package kdmc_kumar.Utilities_Others;
 
-import android.R.id;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.net.Uri;
@@ -18,7 +17,7 @@ import android.util.SparseIntArray;
  * Created by MG on 03-04-2016.
  */
 public abstract class RuntimePermissionsActivity extends AppCompatActivity {
-    private SparseIntArray mErrorString;
+    private SparseIntArray mErrorString = null;
 
     protected RuntimePermissionsActivity() {
     }
@@ -26,7 +25,7 @@ public abstract class RuntimePermissionsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.mErrorString = new SparseIntArray();
+        mErrorString = new SparseIntArray();
     }
 
     @Override
@@ -37,26 +36,26 @@ public abstract class RuntimePermissionsActivity extends AppCompatActivity {
             permissionCheck += permission;
         }
         if ((grantResults.length > 0) && permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            this.onPermissionsGranted(requestCode);
+            onPermissionsGranted(requestCode);
         } else {
-            Snackbar.make(this.findViewById(id.content), this.mErrorString.get(requestCode),
+            Snackbar.make(findViewById(android.R.id.content), mErrorString.get(requestCode),
                     Snackbar.LENGTH_INDEFINITE).setAction("ENABLE",
                     v -> {
                         Intent intent = new Intent();
                         intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
                         intent.addCategory(Intent.CATEGORY_DEFAULT);
-                        intent.setData(Uri.parse("package:" + this.getPackageName()));
+                        intent.setData(Uri.parse("package:" + getPackageName()));
                         intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
                         intent.addFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
                         intent.addFlags(Intent.FLAG_ACTIVITY_EXCLUDE_FROM_RECENTS);
-                        this.startActivity(intent);
+                        startActivity(intent);
                     }).show();
         }
     }
 
-    public final void requestAppPermissions(String[] requestedPermissions,
-                                            int stringId, int requestCode) {
-        this.mErrorString.put(requestCode, stringId);
+    public final void requestAppPermissions(final String[] requestedPermissions,
+                                            final int stringId, final int requestCode) {
+        mErrorString.put(requestCode, stringId);
         int permissionCheck = PackageManager.PERMISSION_GRANTED;
         boolean shouldShowRequestPermissionRationale = false;
         for (String permission : requestedPermissions) {
@@ -64,12 +63,12 @@ public abstract class RuntimePermissionsActivity extends AppCompatActivity {
             shouldShowRequestPermissionRationale = shouldShowRequestPermissionRationale || ActivityCompat.shouldShowRequestPermissionRationale(this, permission);
         }
         if (permissionCheck == PackageManager.PERMISSION_GRANTED) {
-            this.onPermissionsGranted(requestCode);
+            onPermissionsGranted(requestCode);
         } else {
             if (shouldShowRequestPermissionRationale) {
-                Snackbar.make(this.findViewById(id.content), stringId,
+                Snackbar.make(findViewById(android.R.id.content), stringId,
                         Snackbar.LENGTH_INDEFINITE).setAction("GRANT",
-                        v -> ActivityCompat.requestPermissions(this, requestedPermissions, requestCode)).show();
+                        v -> ActivityCompat.requestPermissions(RuntimePermissionsActivity.this, requestedPermissions, requestCode)).show();
             } else {
                 ActivityCompat.requestPermissions(this, requestedPermissions, requestCode);
             }

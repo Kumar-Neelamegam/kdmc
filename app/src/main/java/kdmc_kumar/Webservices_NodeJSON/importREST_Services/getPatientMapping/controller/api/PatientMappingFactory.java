@@ -10,6 +10,7 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
+import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -19,38 +20,38 @@ import kdmc_kumar.Webservices_NodeJSON.importREST_Services.getPatientMapping.mod
 
 public class PatientMappingFactory extends ControllerFactory<PatientMapping> {
     public PatientMappingFactory(MagnetMobileClient magnetClient) {
-        super(PatientMapping.class, PatientMappingFactory.PatientMappingSchemaFactory.getInstance().getSchema(), magnetClient);
+        super(PatientMapping.class, PatientMappingSchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller PatientMapping
     public static class PatientMappingSchemaFactory extends AbstractControllerSchemaFactory {
-        private static PatientMappingFactory.PatientMappingSchemaFactory __instance;
+        private static PatientMappingSchemaFactory __instance = null;
 
         private PatientMappingSchemaFactory() {
         }
 
-        static PatientMappingFactory.PatientMappingSchemaFactory getInstance() {
-            synchronized (PatientMappingFactory.PatientMappingSchemaFactory.class) {
-                if (null == PatientMappingFactory.PatientMappingSchemaFactory.__instance) {
-                    PatientMappingFactory.PatientMappingSchemaFactory.__instance = new PatientMappingFactory.PatientMappingSchemaFactory();
+        static PatientMappingSchemaFactory getInstance() {
+            synchronized (PatientMappingSchemaFactory.class) {
+                if (null == __instance) {
+                    __instance = new PatientMappingSchemaFactory();
                 }
 
-                return PatientMappingFactory.PatientMappingSchemaFactory.__instance;
+                return __instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != this.schema) {
+                if (null != schema) {
                     return;
                 }
 
-                this.schema = new RequestSchema();
-                this.schema.setRootPath("");
+                schema = new RequestSchema();
+                schema.setRootPath("");
 
 
                 //controller schema for controller method getPatientMapping
-                RequestSchema.JMethod method1 = this.addMethod("getPatientMapping",
+                JMethod method1 = addMethod("getPatientMapping",
                         "importMastersSP/importPatientMapping",
                         "POST",
                         PatientMappingResult.class,

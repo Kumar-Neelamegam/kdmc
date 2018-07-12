@@ -21,24 +21,24 @@ package kdmc_kumar.Webservices_NodeJSON.importREST_Services.checkCredential.mode
 public class PostUsernamePasswordRequest {
 
 
-    private String imei;
+    private String imei = null;
 
 
-    private String mac;
+    private String mac = null;
 
 
     @com.google.gson.annotations.SerializedName("Password")
-    private String password;
+    private String password = null;
 
 
     @com.google.gson.annotations.SerializedName("Username")
-    private String username;
+    private String username = null;
 
     public PostUsernamePasswordRequest() {
     }
 
     public final String getImei() {
-        return this.imei;
+        return imei;
     }
 
     public final void setImei(String imei) {
@@ -46,7 +46,7 @@ public class PostUsernamePasswordRequest {
     }
 
     public final String getMac() {
-        return this.mac;
+        return mac;
     }
 
     public final void setMac(String mac) {
@@ -54,7 +54,7 @@ public class PostUsernamePasswordRequest {
     }
 
     public final String getPassword() {
-        return this.password;
+        return password;
     }
 
     public final void setPassword(String password) {
@@ -62,7 +62,7 @@ public class PostUsernamePasswordRequest {
     }
 
     public final String getUsername() {
-        return this.username;
+        return username;
     }
 
     public final void setUsername(String username) {
@@ -79,26 +79,26 @@ public class PostUsernamePasswordRequest {
         }
 
         public final PostUsernamePasswordRequest build() {
-            return this.toBuild;
+            return toBuild;
         }
 
-        public final PostUsernamePasswordRequest.PostUsernamePasswordRequestBuilder imei(String value) {
-            this.toBuild.setImei(value);
+        public final PostUsernamePasswordRequestBuilder imei(String value) {
+            toBuild.setImei(value);
             return this;
         }
 
-        public final PostUsernamePasswordRequest.PostUsernamePasswordRequestBuilder mac(String value) {
-            this.toBuild.setMac(value);
+        public final PostUsernamePasswordRequestBuilder mac(String value) {
+            toBuild.setMac(value);
             return this;
         }
 
-        public final PostUsernamePasswordRequest.PostUsernamePasswordRequestBuilder password(String value) {
-            this.toBuild.setPassword(value);
+        public final PostUsernamePasswordRequestBuilder password(String value) {
+            toBuild.setPassword(value);
             return this;
         }
 
-        public final PostUsernamePasswordRequest.PostUsernamePasswordRequestBuilder username(String value) {
-            this.toBuild.setUsername(value);
+        public final PostUsernamePasswordRequestBuilder username(String value) {
+            toBuild.setUsername(value);
             return this;
         }
     }

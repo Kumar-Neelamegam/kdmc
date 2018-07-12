@@ -16,11 +16,11 @@
 package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils;
 
 import android.animation.Animator;
+import android.animation.Animator.AnimatorPauseListener;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.graphics.Path;
-import android.os.Build;
-import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.util.Property;
 import android.view.View;
 
@@ -30,7 +30,7 @@ public class AnimatorUtils {
 
     static class BaseAnimatorCompat {
 
-        public void addPauseListener(Animator animator, Animator.AnimatorPauseListener listener) {
+        public void addPauseListener(Animator animator, AnimatorPauseListener listener) {
         }
 
         public void pause(Animator animator) {
@@ -67,8 +67,8 @@ public class AnimatorUtils {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    static class IceCreamSandwichAnimatorCompat extends AnimatorUtils.BaseAnimatorCompat {
+    @TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+    static class IceCreamSandwichAnimatorCompat extends BaseAnimatorCompat {
 
         @Override
         public void pause(Animator animator) {
@@ -82,7 +82,7 @@ public class AnimatorUtils {
         }
 
         @Override
-        public <T> Animator ofPointF(T target, PointFProperty<T> property, Path path) {
+        public <T> Animator ofPointF(final T target, final PointFProperty<T> property, final Path path) {
             return PathAnimatorCompat.ofPointF(target, property, path);
         }
 
@@ -116,18 +116,18 @@ public class AnimatorUtils {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
-    static class JellyBeanCompat extends AnimatorUtils.IceCreamSandwichAnimatorCompat {
+    @TargetApi(VERSION_CODES.JELLY_BEAN)
+    static class JellyBeanCompat extends IceCreamSandwichAnimatorCompat {
         @Override
         public boolean hasOverlappingRendering(View view) {
             return view.hasOverlappingRendering();
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
-    static class KitKatAnimatorCompat extends AnimatorUtils.JellyBeanCompat {
+    @TargetApi(VERSION_CODES.KITKAT)
+    static class KitKatAnimatorCompat extends JellyBeanCompat {
         @Override
-        public void addPauseListener(Animator animator, Animator.AnimatorPauseListener listener) {
+        public void addPauseListener(Animator animator, final AnimatorPauseListener listener) {
             animator.addPauseListener(listener);
         }
 
@@ -142,8 +142,8 @@ public class AnimatorUtils {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    static class LollipopAnimatorCompat extends AnimatorUtils.KitKatAnimatorCompat {
+    @TargetApi(VERSION_CODES.LOLLIPOP)
+    static class LollipopAnimatorCompat extends KitKatAnimatorCompat {
 
         @Override
         public <T> Animator ofPointF(T target, PointFProperty<T> property, Path path) {
@@ -152,44 +152,44 @@ public class AnimatorUtils {
 
     }
 
-    private static final AnimatorUtils.BaseAnimatorCompat IMPL;
+    private static final BaseAnimatorCompat IMPL;
 
     static {
-        int version = VERSION.SDK_INT;
-        if (version >= Build.VERSION_CODES.LOLLIPOP) {
-            IMPL = new AnimatorUtils.LollipopAnimatorCompat();
-        } else if (version >= Build.VERSION_CODES.KITKAT) {
-            IMPL = new AnimatorUtils.KitKatAnimatorCompat();
-        } else if (version >= Build.VERSION_CODES.JELLY_BEAN) {
-            IMPL = new AnimatorUtils.JellyBeanCompat();
-        } else if (version >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
-            IMPL = new AnimatorUtils.IceCreamSandwichAnimatorCompat();
+        final int version = android.os.Build.VERSION.SDK_INT;
+        if (version >= VERSION_CODES.LOLLIPOP) {
+            IMPL = new LollipopAnimatorCompat();
+        } else if (version >= VERSION_CODES.KITKAT) {
+            IMPL = new KitKatAnimatorCompat();
+        } else if (version >= VERSION_CODES.JELLY_BEAN) {
+            IMPL = new JellyBeanCompat();
+        } else if (version >= VERSION_CODES.ICE_CREAM_SANDWICH) {
+            IMPL = new IceCreamSandwichAnimatorCompat();
         } else {
-            IMPL = new AnimatorUtils.BaseAnimatorCompat();
+            IMPL = new BaseAnimatorCompat();
         }
     }
 
-    public static void addPauseListener(Animator animator, Animator.AnimatorPauseListener listener) {
-        AnimatorUtils.IMPL.addPauseListener(animator, listener);
+    public static void addPauseListener(Animator animator, AnimatorPauseListener listener) {
+        IMPL.addPauseListener(animator, listener);
     }
 
     public static void pause(Animator animator) {
-        AnimatorUtils.IMPL.pause(animator);
+        IMPL.pause(animator);
     }
 
     public static void resume(Animator animator) {
-        AnimatorUtils.IMPL.resume(animator);
+        IMPL.resume(animator);
     }
 
     public static <T> Animator ofPointF(T target, PointFProperty<T> property,
                                         float startLeft, float startTop,
                                         float endLeft, float endTop) {
-        return AnimatorUtils.IMPL.ofPointF(target, property, startLeft, startTop, endLeft, endTop);
+        return IMPL.ofPointF(target, property, startLeft, startTop, endLeft, endTop);
     }
 
     public static <T> Animator ofPointF(T target, PointFProperty<T> property, Path path) {
         if (path != null) {
-            return AnimatorUtils.IMPL.ofPointF(target, property, path);
+            return IMPL.ofPointF(target, property, path);
         } else {
             return null;
         }
@@ -199,9 +199,9 @@ public class AnimatorUtils {
                                         float startLeft, float startTop, float endLeft, float endTop) {
         if (startLeft != endLeft || startTop != endTop) {
             if (pathMotion == null || pathMotion.equals(PathMotion.STRAIGHT_PATH_MOTION)) {
-                return AnimatorUtils.ofPointF(target, property, startLeft, startTop, endLeft, endTop);
+                return ofPointF(target, property, startLeft, startTop, endLeft, endTop);
             } else {
-                return AnimatorUtils.ofPointF(target, property, pathMotion.getPath(startLeft, startTop,
+                return ofPointF(target, property, pathMotion.getPath(startLeft, startTop,
                         endLeft, endTop));
             }
         } else {
@@ -210,21 +210,21 @@ public class AnimatorUtils {
     }
 
     public static boolean isAnimatorStarted(Animator anim) {
-        return AnimatorUtils.IMPL.isAnimatorStarted(anim);
+        return IMPL.isAnimatorStarted(anim);
     }
 
     public static boolean hasOverlappingRendering(View view) {
-        return AnimatorUtils.IMPL.hasOverlappingRendering(view);
+        return IMPL.hasOverlappingRendering(view);
     }
 
     public static ObjectAnimator ofFloat(View view, Property<View, Float> property,
                                          float startFraction, float endFraction) {
-        return AnimatorUtils.IMPL.ofFloat(view, property, startFraction, endFraction);
+        return IMPL.ofFloat(view, property, startFraction, endFraction);
     }
 
     public static ObjectAnimator ofInt(View view, Property<View, Integer> property,
                                        float startFraction, float endFraction) {
-        return AnimatorUtils.IMPL.ofInt(view, property, startFraction, endFraction);
+        return IMPL.ofInt(view, property, startFraction, endFraction);
     }
 
 }

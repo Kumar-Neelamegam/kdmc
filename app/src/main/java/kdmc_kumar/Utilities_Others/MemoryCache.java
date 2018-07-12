@@ -17,17 +17,17 @@ class MemoryCache {
 
     @Nullable
     public final Bitmap get(String id) {
-        if (!this.cache.containsKey(id))
+        if (!cache.containsKey(id))
             return null;
-        SoftReference<Bitmap> ref = this.cache.get(id);
+        SoftReference<Bitmap> ref = cache.get(id);
         return ref.get();
     }
 
     public final void put(String id, Bitmap bitmap) {
-        this.cache.put(id, new SoftReference<>(bitmap));
+        cache.put(id, new SoftReference<>(bitmap));
     }
 
     public final void clear() {
-        this.cache.clear();
+        cache.clear();
     }
 }

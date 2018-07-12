@@ -4,11 +4,8 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,16 +15,13 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
 import kdmc_kumar.Core_Modules.BaseConfig;
-import kdmc_kumar.ReportFileUpload.FileAdapter.MyViewHolder;
 
 /**
  * Created by Ponnusamy M on 4/21/2017.
  */
 
-public class FileAdapter extends Adapter<MyViewHolder> {
+public class FileAdapter extends RecyclerView.Adapter<FileAdapter.MyViewHolder> {
 
     private ArrayList<FileGetSet> fileGetSets = new ArrayList<>();
     private final RecyclerView recyclerView;
@@ -40,30 +34,30 @@ public class FileAdapter extends Adapter<MyViewHolder> {
 
     @NonNull
     @Override
-    public final FileAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(layout.screen_list, parent, false);
-        return new FileAdapter.MyViewHolder(view);
+    public final MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.screen_list, parent, false);
+        return new MyViewHolder(view);
     }
 
     @Override
-    public final void onBindViewHolder(@NonNull FileAdapter.MyViewHolder holder, int position) {
+    public final void onBindViewHolder(@NonNull MyViewHolder holder, final int position) {
 
-        FileGetSet item = this.fileGetSets.get(position);
+        final FileGetSet item = fileGetSets.get(position);
 
         holder.name.setText(item.getUploadFileDetail());
         holder.type.setText(item.getReportType());
 
         BaseConfig.Glide_LoadImageView( holder.image, item.getImagePath() );
         holder.card_view.setOnClickListener(v -> {
-            Builder builder = new Builder(v.getContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(v.getContext());
 
             builder.setTitle("Confirm");
             builder.setMessage("Do you want to remove?");
             builder.setPositiveButton("Ok", (dialog, which) -> {
-                FileAdapter.deleteContacts(item.getId(), v.getContext());
+                deleteContacts(item.getId(), v.getContext());
 
-                this.fileGetSets.remove(position);
-                this.recyclerView.setAdapter(new FileAdapter(this.fileGetSets, this.recyclerView));
+                fileGetSets.remove(position);
+                recyclerView.setAdapter(new FileAdapter(fileGetSets, recyclerView));
             });
             builder.setNegativeButton("Cancel", (dialog, which) -> {
 
@@ -79,7 +73,7 @@ public class FileAdapter extends Adapter<MyViewHolder> {
 
     @Override
     public final int getItemCount() {
-        return this.fileGetSets.size();
+        return fileGetSets.size();
     }
 
     private static final void deleteContacts(String id, Context context) {
@@ -91,7 +85,7 @@ public class FileAdapter extends Adapter<MyViewHolder> {
         db.close();
     }
 
-    static class MyViewHolder extends ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView name;
         final TextView type;
         final ImageView image;
@@ -99,10 +93,10 @@ public class FileAdapter extends Adapter<MyViewHolder> {
 
         MyViewHolder(View itemView) {
             super(itemView);
-            this.name = itemView.findViewById(id.upload_file_details);
-            this.type = itemView.findViewById(id.upload_filetype);
-            this.image = itemView.findViewById(id.upload_image);
-            this.card_view = itemView.findViewById(id.card_view);
+            name = itemView.findViewById(R.id.upload_file_details);
+            type = itemView.findViewById(R.id.upload_filetype);
+            image = itemView.findViewById(R.id.upload_image);
+            card_view = itemView.findViewById(R.id.card_view);
 
 
         }

@@ -23,8 +23,8 @@ public class InputFilterMinMax implements InputFilter {
     @Override
     public final CharSequence filter(CharSequence charSequence, int i, int i1, Spanned spanned, int i2, int i3) {
         try {
-            int input = Integer.parseInt(spanned + charSequence);
-            if (InputFilterMinMax.isInRange(this.min, this.max, input))
+            int input = Integer.parseInt(spanned.toString() + charSequence.toString());
+            if (isInRange(min, max, input))
                 return null;
         } catch (NumberFormatException ignored) {
         }

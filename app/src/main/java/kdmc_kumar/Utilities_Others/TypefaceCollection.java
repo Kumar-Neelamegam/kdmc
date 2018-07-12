@@ -32,7 +32,7 @@ public class TypefaceCollection {
      * @return typeface collection
      */
     public static TypefaceCollection createSystemDefault() {
-        return new TypefaceCollection.Builder().set(Typeface.NORMAL, Typeface.DEFAULT).set(Typeface.BOLD, Typeface.DEFAULT_BOLD)
+        return new Builder().set(Typeface.NORMAL, Typeface.DEFAULT).set(Typeface.BOLD, Typeface.DEFAULT_BOLD)
                 .set(Typeface.ITALIC, Typeface.DEFAULT)
                 .set(Typeface.BOLD_ITALIC, Typeface.DEFAULT_BOLD)
                 .create();
@@ -62,12 +62,12 @@ public class TypefaceCollection {
      * @throws IllegalArgumentException when invalid typefaceStyle is passed
      */
     final Typeface getTypeface(int typefaceStyle) {
-        TypefaceCollection.validateTypefaceStyle(typefaceStyle);
-        return this.getmTypefaces().get(typefaceStyle);
+        validateTypefaceStyle(typefaceStyle);
+        return getmTypefaces().get(typefaceStyle);
     }
 
     public SparseArray<Typeface> getmTypefaces() {
-        return this.mTypefaces;
+        return mTypefaces;
     }
 
     /**
@@ -79,7 +79,7 @@ public class TypefaceCollection {
          * This typeface is set in fist {@link #set(int, android.graphics.Typeface)}
          * call and is used for all unset styles in {@link #create()} call
          */
-        private Typeface mDefaultTypeface;
+        private Typeface mDefaultTypeface = null;
         @Nullable
         private TypefaceCollection mCollection = new TypefaceCollection();
 
@@ -99,12 +99,12 @@ public class TypefaceCollection {
          * @return self
          * @throws IllegalArgumentException when invalid typefaceStyle is passed
          */
-        final TypefaceCollection.Builder set(int typefaceStyle, Typeface typeface) {
-            TypefaceCollection.validateTypefaceStyle(typefaceStyle);
-            if (this.mDefaultTypeface == null) {
-                this.mDefaultTypeface = typeface;
+        final Builder set(int typefaceStyle, Typeface typeface) {
+            validateTypefaceStyle(typefaceStyle);
+            if (mDefaultTypeface == null) {
+                mDefaultTypeface = typeface;
             }
-            this.mCollection.getmTypefaces().put(typefaceStyle, typeface);
+            mCollection.getmTypefaces().put(typefaceStyle, typeface);
             return this;
         }
 
@@ -118,28 +118,28 @@ public class TypefaceCollection {
          *                               has been set via {@link #set(int, android.graphics.Typeface)}
          */
         final TypefaceCollection create() {
-            if (this.mDefaultTypeface == null) {
+            if (mDefaultTypeface == null) {
                 throw new IllegalStateException("At least one typeface style have to be set!");
             }
 
-            if (this.mCollection.getmTypefaces().get(Typeface.NORMAL) == null) {
-                this.mCollection.getmTypefaces().put(Typeface.NORMAL, this.mDefaultTypeface);
+            if (mCollection.getmTypefaces().get(Typeface.NORMAL) == null) {
+                mCollection.getmTypefaces().put(Typeface.NORMAL, mDefaultTypeface);
             }
 
-            if (this.mCollection.getmTypefaces().get(Typeface.BOLD) == null) {
-                this.mCollection.getmTypefaces().put(Typeface.BOLD, this.mDefaultTypeface);
+            if (mCollection.getmTypefaces().get(Typeface.BOLD) == null) {
+                mCollection.getmTypefaces().put(Typeface.BOLD, mDefaultTypeface);
             }
 
-            if (this.mCollection.getmTypefaces().get(Typeface.ITALIC) == null) {
-                this.mCollection.getmTypefaces().put(Typeface.ITALIC, this.mDefaultTypeface);
+            if (mCollection.getmTypefaces().get(Typeface.ITALIC) == null) {
+                mCollection.getmTypefaces().put(Typeface.ITALIC, mDefaultTypeface);
             }
 
-            if (this.mCollection.getmTypefaces().get(Typeface.BOLD_ITALIC) == null) {
-                this.mCollection.getmTypefaces().put(Typeface.BOLD_ITALIC, this.mDefaultTypeface);
+            if (mCollection.getmTypefaces().get(Typeface.BOLD_ITALIC) == null) {
+                mCollection.getmTypefaces().put(Typeface.BOLD_ITALIC, mDefaultTypeface);
             }
 
-            TypefaceCollection collection = this.mCollection;
-            this.mCollection = null;
+            TypefaceCollection collection = mCollection;
+            mCollection = null;
             return collection;
         }
     }

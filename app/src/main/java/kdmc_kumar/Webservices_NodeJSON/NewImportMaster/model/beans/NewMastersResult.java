@@ -21,24 +21,24 @@ public class NewMastersResult {
   private String results;
 
   public String getResults() {
-    return this.results;
+    return results;
   }
 
   /**
   * Builder for NewMastersResult
   **/
   public static class NewMastersResultBuilder {
-    private final NewMastersResult toBuild = new NewMastersResult();
+    private NewMastersResult toBuild = new NewMastersResult();
 
     public NewMastersResultBuilder() {
     }
 
     public NewMastersResult build() {
-      return this.toBuild;
+      return toBuild;
     }
 
-    public NewMastersResult.NewMastersResultBuilder results(String value) {
-        this.toBuild.results = value;
+    public NewMastersResultBuilder results(String value) {
+      toBuild.results = value;
       return this;
     }
   }

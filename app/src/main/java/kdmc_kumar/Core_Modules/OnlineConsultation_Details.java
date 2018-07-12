@@ -1,7 +1,6 @@
 package kdmc_kumar.Core_Modules;
 
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -17,7 +16,6 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
-import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.EditText;
@@ -29,14 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.anim;
-import displ.mobydocmarathi.com.R.color;
-import displ.mobydocmarathi.com.R.drawable;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.OnlineConsultationReport;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
 import kdmc_kumar.Adapters_GetterSetter.OnlineConsultation_Detailed_Adapter;
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
@@ -44,30 +35,30 @@ import kdmc_kumar.Utilities_Others.Validation1;
 
 public class OnlineConsultation_Details extends AppCompatActivity {
 
-    private static final Bitmap reportimg;
-    TextView scrolltitle;
-    private TextView Patient_Id;
-    private TextView patient_name;
-    private TextView Age;
-    private TextView Gender;
-    private TextView treatmentfor;
-    private TextView patient_query;
-    private TextView visiteddate;
-    private EditText Docreply;
-    private ImageView Patient_photo;
-    private Button reject;
-    private Button cancel;
-    private Button reply;
-    ArrayList<HashMap<String, String>> titles_list;
-    private OnlineConsultation_Detailed_Adapter adapter;
-    private RecyclerView listView;
-    private ArrayList<OnlineConsultationReport> rowItems;
-    private Bundle b;
-    private String ServerId;
-    private String PatientId;
-    private String MedId;
+    private static Bitmap reportimg = null;
+    TextView scrolltitle = null;
+    private TextView Patient_Id = null;
+    private TextView patient_name = null;
+    private TextView Age = null;
+    private TextView Gender = null;
+    private TextView treatmentfor = null;
+    private TextView patient_query = null;
+    private TextView visiteddate = null;
+    private EditText Docreply = null;
+    private ImageView Patient_photo = null;
+    private Button reject = null;
+    private Button cancel = null;
+    private Button reply = null;
+    ArrayList<HashMap<String, String>> titles_list = null;
+    private OnlineConsultation_Detailed_Adapter adapter = null;
+    private RecyclerView listView = null;
+    private ArrayList<CommonDataObjects.OnlineConsultationReport> rowItems = null;
+    private Bundle b = null;
+    private String ServerId = null;
+    private String PatientId = null;
+    private String MedId = null;
 
-    private WebView profile_webvw;
+    private WebView profile_webvw = null;
     /**********************************************************************************************/
 
 
@@ -77,10 +68,10 @@ public class OnlineConsultation_Details extends AppCompatActivity {
       @param savedInstanceState
      */
     /***********************************************************************************************/
-    private Toolbar toolbar;
-    private ImageView home;
-    private ImageView exit;
-    private ImageView back;
+    private Toolbar toolbar = null;
+    private ImageView home = null;
+    private ImageView exit = null;
+    private ImageView back = null;
 
     public OnlineConsultation_Details() {
     }
@@ -90,59 +81,59 @@ public class OnlineConsultation_Details extends AppCompatActivity {
     protected final void onCreate(Bundle savedInstanceState) {
         // TODO Auto-generated method stubsuper.onCreate(savedInstanceState);
         super.onCreate(savedInstanceState);
-        this.setContentView(layout.kdmc_layout_onlineconsultation_details);
+        setContentView(R.layout.kdmc_layout_onlineconsultation_details);
 
 
         //getSupportActionBar().setTitle(getString(R.string.welcome) + " - " + BaseConfig.doctorname);
         BaseConfig.welcometoast = 0;
 
-        this.toolbar = this.findViewById(id.toolbar_mypatient);
+        toolbar = findViewById(R.id.toolbar_mypatient);
 
 
-        this.home = this.toolbar.findViewById(id.home_mp);
-        this.exit = this.toolbar.findViewById(id.exit_mp);
-        this.back = this.toolbar.findViewById(id.back_mp);
+        home = toolbar.findViewById(R.id.home_mp);
+        exit = toolbar.findViewById(R.id.exit_mp);
+        back = toolbar.findViewById(R.id.back_mp);
 
 
-        this.home.setOnClickListener(v -> {
+        home.setOnClickListener(v -> {
 
-            finish();
-            Intent intent = new Intent(this, Dashboard_NavigationMenu.class);
-            this.startActivityForResult(intent, 500);
-            this.overridePendingTransition(anim.abc_slide_in_top,
-                    anim.abc_slide_in_top);
+            OnlineConsultation_Details.this.finish();
+            Intent intent = new Intent(OnlineConsultation_Details.this, Dashboard_NavigationMenu.class);
+            startActivityForResult(intent, 500);
+            overridePendingTransition(R.anim.abc_slide_in_top,
+                    R.anim.abc_slide_in_top);
 
         });
 
-        this.exit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(this, null));
+        exit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(OnlineConsultation_Details.this, null));
 
-        this.back.setOnClickListener(view -> this.LoadBack());
+        back.setOnClickListener(view -> LoadBack());
 
 
         try {
             try {
 
-                this.b = this.getIntent().getExtras();
+                b = getIntent().getExtras();
 
-                if (this.b == null) {
-                    this.ServerId = "";
-                    this.PatientId = "";
-                    this.MedId = "";
+                if (b == null) {
+                    ServerId = "";
+                    PatientId = "";
+                    MedId = "";
                 } else {
-                    this.ServerId = this.b.getString("ServerId");
-                    this.PatientId = this.b.getString("PatientId");
-                    this.MedId = this.b.getString("MedId");
+                    ServerId = b.getString("ServerId");
+                    PatientId = b.getString("PatientId");
+                    MedId = b.getString("MedId");
 
                 }
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
 
-            this.getinitialize();
-            this.SelectedGetPatientDetails();
-            this.LoadWebview();
-            String Query="select ReportGallery,FileName from OnlineConsultancyDtls where ServerId='" + this.ServerId + "' and pid='" + this.PatientId + "';";
-            this.SelectedGetPatientReports(Query);
+            getinitialize();
+            SelectedGetPatientDetails();
+            LoadWebview();
+            String Query="select ReportGallery,FileName from OnlineConsultancyDtls where ServerId='" + ServerId + "' and pid='" + PatientId + "';";
+            SelectedGetPatientReports(Query);
 
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -153,33 +144,33 @@ public class OnlineConsultation_Details extends AppCompatActivity {
     //#######################################################################################################
     private final void LoadWebview() {
 
-        this.profile_webvw.getSettings().setJavaScriptEnabled(true);
-        this.profile_webvw.setLayerType(View.LAYER_TYPE_NONE, null);
-        this.profile_webvw.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        this.profile_webvw.getSettings().setRenderPriority(RenderPriority.HIGH);
-        this.profile_webvw.getSettings().setDefaultTextEncodingName("utf-8");
+        profile_webvw.getSettings().setJavaScriptEnabled(true);
+        profile_webvw.setLayerType(View.LAYER_TYPE_NONE, null);
+        profile_webvw.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        profile_webvw.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        profile_webvw.getSettings().setDefaultTextEncodingName("utf-8");
 
-        this.profile_webvw.setWebChromeClient(new OnlineConsultation_Details.MyWebChromeClient());
+        profile_webvw.setWebChromeClient(new MyWebChromeClient());
 
-        this.profile_webvw.setBackgroundColor(0x00000000);
-        this.profile_webvw.setVerticalScrollBarEnabled(true);
-        this.profile_webvw.setHorizontalScrollBarEnabled(true);
-
-
-        this.profile_webvw.getSettings().setJavaScriptEnabled(true);
-
-        this.profile_webvw.getSettings().setAllowContentAccess(true);
+        profile_webvw.setBackgroundColor(0x00000000);
+        profile_webvw.setVerticalScrollBarEnabled(true);
+        profile_webvw.setHorizontalScrollBarEnabled(true);
 
 
-        this.profile_webvw.setOnLongClickListener(v -> true);
+        profile_webvw.getSettings().setJavaScriptEnabled(true);
 
-        this.profile_webvw.setLongClickable(false);
+        profile_webvw.getSettings().setAllowContentAccess(true);
 
 
-        this.profile_webvw.addJavascriptInterface(new OnlineConsultation_Details.WebAppInterface(this), "android");
+        profile_webvw.setOnLongClickListener(v -> true);
+
+        profile_webvw.setLongClickable(false);
+
+
+        profile_webvw.addJavascriptInterface(new WebAppInterface(OnlineConsultation_Details.this), "android");
         try {
 
-            this.profile_webvw.loadDataWithBaseURL("file:///android_asset/", this.LoadPrescriptionDetails(), "text/html", "utf-8", null);
+            profile_webvw.loadDataWithBaseURL("file:///android_asset/", LoadPrescriptionDetails(), "text/html", "utf-8", null);
 
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -196,7 +187,7 @@ public class OnlineConsultation_Details extends AppCompatActivity {
 
         SQLiteDatabase db = BaseConfig.GetDb();//getActivity());
 
-        String Query = "select distinct Medicinename from OnlineSharedMedicine where pid='" + this.PatientId + "'  and status='" + this.MedId + "';";
+        String Query = "select distinct Medicinename from OnlineSharedMedicine where pid='" + PatientId + "'  and status='" + MedId + "';";
         Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
@@ -233,12 +224,12 @@ public class OnlineConsultation_Details extends AppCompatActivity {
                 '\n' +
                 "</head>\n" +
                 "<body>  \n" +
-                "<font class=\"sub\"><i class=\"fa fa-calendar fa-2x\" aria-hidden=\"true\"></i> " + this.getString(string.patientmedicinehistory) + "</font>\n" +
+                "<font class=\"sub\"><i class=\"fa fa-calendar fa-2x\" aria-hidden=\"true\"></i> " + getString(R.string.patientmedicinehistory) + "</font>\n" +
                 "<div class=\"table-responsive\"> <table class=\"table table-bordered\"><tr>\n" +
-                "  <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.medicinename) + "</font></th>\n" +
-                "  <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.interval) + "</font></th>\n" +
-                "\t<th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.frequency) + "</font></th>\n" +
-                "\t<th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.duration) + "</font></th>\n" +
+                "  <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.medicinename) + "</font></th>\n" +
+                "  <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.interval) + "</font></th>\n" +
+                "\t<th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.frequency) + "</font></th>\n" +
+                "\t<th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.duration) + "</font></th>\n" +
                 "  </tr>\n" +
                 " \n" + stringBuilder +
                 " \n" +
@@ -265,7 +256,7 @@ public class OnlineConsultation_Details extends AppCompatActivity {
             String name = "";
             SQLiteDatabase db = BaseConfig.GetDb();
 
-            Cursor c = db.rawQuery("select * from OnlineSharedMedicine where pid='" + this.PatientId + "'  and status='" + this.MedId + "';", null);
+            Cursor c = db.rawQuery("select * from OnlineSharedMedicine where pid='" + PatientId + "'  and status='" + MedId + "';", null);
             StringBuilder mednm = new StringBuilder();
             String photoo = "";
 
@@ -274,7 +265,7 @@ public class OnlineConsultation_Details extends AppCompatActivity {
                     do {
 
                         //mednm.append(c.getString(c.getColumnIndex("Medicinename")) + "\n");
-                        this.treatmentfor.setText(c.getString(c.getColumnIndex("TreatmentFor")));
+                        treatmentfor.setText(c.getString(c.getColumnIndex("TreatmentFor")));
 
                     } while (c.moveToNext());
 
@@ -285,19 +276,19 @@ public class OnlineConsultation_Details extends AppCompatActivity {
 
             c.close();
 
-            Cursor c1 = db.rawQuery("select * from OnlineConsultancy where ServerId='" + this.ServerId + "' and pid='" + this.PatientId + "';", null);
+            Cursor c1 = db.rawQuery("select * from OnlineConsultancy where ServerId='" + ServerId + "' and pid='" + PatientId + "';", null);
             if (c1 != null) {
                 if (c1.moveToFirst()) {
                     do {
 
-                        this.patient_name.setText(c1.getString(c1.getColumnIndex("pname")));
+                        patient_name.setText(c1.getString(c1.getColumnIndex("pname")));
 
-                        this.patient_query.setText(c1.getString(c1.getColumnIndex("healthsummary")));
-                        BaseConfig.LoadPatientImage(BaseConfig.GetValues("select PC as ret_values from Patreg where Patid='"+c1.getString(c1.getColumnIndex("pid"))+"'"), this.Patient_photo, 100);
-                        this.Age.setText(c1.getString(c1.getColumnIndex("age")));
-                        this.Gender.setText(c1.getString(c1.getColumnIndex("gender")));
-                        this.visiteddate.setText(c1.getString(c1.getColumnIndex("Actdt")));
-                        this.Patient_Id.setText(c1.getString(c1.getColumnIndex("pid")));
+                        patient_query.setText(c1.getString(c1.getColumnIndex("healthsummary")));
+                        BaseConfig.LoadPatientImage(BaseConfig.GetValues("select PC as ret_values from Patreg where Patid='"+c1.getString(c1.getColumnIndex("pid"))+"'"), Patient_photo, 100);
+                        Age.setText(c1.getString(c1.getColumnIndex("age")));
+                        Gender.setText(c1.getString(c1.getColumnIndex("gender")));
+                        visiteddate.setText(c1.getString(c1.getColumnIndex("Actdt")));
+                        Patient_Id.setText(c1.getString(c1.getColumnIndex("pid")));
                         break;
                     } while (c1.moveToNext());
                 }
@@ -330,20 +321,20 @@ public class OnlineConsultation_Details extends AppCompatActivity {
                             report_name = c.getString(c.getColumnIndex("FileName"));
                             report64 = c.getString(c.getColumnIndex("ReportGallery"));
 
-                            OnlineConsultationReport item = new OnlineConsultationReport(report_name, report64);
+                            CommonDataObjects.OnlineConsultationReport item = new CommonDataObjects.OnlineConsultationReport(report_name, report64);
 
-                        this.rowItems.add(item);
+                            rowItems.add(item);
 
                     } while (c.moveToNext());
 
                 }
             }
 
-            this.adapter = new OnlineConsultation_Detailed_Adapter(this, this.rowItems);
-            this.listView.setLayoutManager(new LinearLayoutManager(this));
-            this.listView.setAdapter(this.adapter);
+            adapter = new OnlineConsultation_Detailed_Adapter(OnlineConsultation_Details.this, rowItems);
+            listView.setLayoutManager(new LinearLayoutManager(OnlineConsultation_Details.this));
+            listView.setAdapter(adapter);
 
-            this.setRecylerViewListener();
+            setRecylerViewListener();
 
             c.close();
             db.close();
@@ -390,30 +381,30 @@ e.printStackTrace();
 
     private void getinitialize() {
 
-        this.Patient_Id = this.findViewById(id.pid_txt);
-        this.patient_name = this.findViewById(id.textView2);
-        this.Age = this.findViewById(id.textView4);
-        this.Gender = this.findViewById(id.textView6);
-        this.treatmentfor = this.findViewById(id.textView9);
-        this.patient_query = this.findViewById(id.textView15);
-        this.visiteddate = this.findViewById(id.textView7);
+        Patient_Id = findViewById(R.id.pid_txt);
+        patient_name = findViewById(R.id.textView2);
+        Age = findViewById(R.id.textView4);
+        Gender = findViewById(R.id.textView6);
+        treatmentfor = findViewById(R.id.textView9);
+        patient_query = findViewById(R.id.textView15);
+        visiteddate = findViewById(R.id.textView7);
 
-        this.Docreply = this.findViewById(id.editText1);
+        Docreply = findViewById(R.id.editText1);
 
 
-        this.Patient_photo = this.findViewById(id.icon);
+        Patient_photo = findViewById(R.id.icon);
 
-        this.reject = this.findViewById(id.Button01);
-        this.cancel = this.findViewById(id.Button03);
-        this.reply = this.findViewById(id.Button02);
+        reject = findViewById(R.id.Button01);
+        cancel = findViewById(R.id.Button03);
+        reply = findViewById(R.id.Button02);
 
 
         // initialize
-        this.rowItems = new ArrayList<>();
-        this.listView = this.findViewById(id.listView1);
-        this.profile_webvw = this.findViewById(id.webvw_prescription_profile);
-        this.profile_webvw.getSettings().setJavaScriptEnabled(true);
-        this.profile_webvw.setWebChromeClient(new WebChromeClient());
+        rowItems = new ArrayList<>();
+        listView = findViewById(R.id.listView1);
+        profile_webvw = findViewById(R.id.webvw_prescription_profile);
+        profile_webvw.getSettings().setJavaScriptEnabled(true);
+        profile_webvw.setWebChromeClient(new WebChromeClient());
 
 
         //***************************************************************************************
@@ -422,8 +413,8 @@ e.printStackTrace();
 
 
         // //////////////////////////////////////////////////////////////////
-        this.Docreply.setOnTouchListener((v, event) -> {
-            if (this.Docreply.length() > 350) {
+        Docreply.setOnTouchListener((v, event) -> {
+            if (Docreply.length() > 350) {
                 v.getParent().requestDisallowInterceptTouchEvent(true);
             }
             return false;
@@ -432,16 +423,16 @@ e.printStackTrace();
         // //////////////////////////////////////////////////////////////////
 
 
-        this.reply.setOnClickListener(v -> {
+        reply.setOnClickListener(v -> {
             // TODO Auto-generated method stub
             try {
 
-                if (this.checkValidation())
+                if (checkValidation())
 
-                    this.savelocal();
+                    savelocal();
                 else
 
-                   Toast.makeText(this, this.getString(string.check_missing_valid), Toast.LENGTH_LONG).show();
+                   Toast.makeText(OnlineConsultation_Details.this, getString(R.string.check_missing_valid), Toast.LENGTH_LONG).show();
               //  BaseConfig.SnackBar(this,  getString(R.string.check_missing_valid) , parentLayout,2);
 
             } catch (RuntimeException e) {
@@ -450,62 +441,62 @@ e.printStackTrace();
             }
         });
 
-        this.cancel.setOnClickListener(v -> {
+        cancel.setOnClickListener(v -> {
             // TODO Auto-generated method stub
-            finish();
-            Intent intentnew = new Intent(this.getApplicationContext(), OnlineConsultation.class);
-            this.startActivity(intentnew);
+            OnlineConsultation_Details.this.finish();
+            Intent intentnew = new Intent(getApplicationContext(), OnlineConsultation.class);
+            startActivity(intentnew);
 
         });
 
 
-        this.reject.setOnClickListener(v -> {
+        reject.setOnClickListener(v -> {
             // TODO Auto-generated method stub
             //SaveLocal(2);
-            this.showSimplePopUpExit(this.getString(string.reject_consultation));
+            showSimplePopUpExit(getString(R.string.reject_consultation));
         });
 
 
         ///////////////////////////////////////////////////////////////////////////////
 
 
-        Context context = this;
+        final Context context = this;
 
 
     }
 
     private void setRecylerViewListener() {
-        this.adapter.onClickItem((report, view) -> {
+        adapter.onClickItem((report,view) -> {
 
             String ReportName = report.getReportName();
 
 
             LayoutInflater layoutInflater = LayoutInflater.from(view.getContext());
 
-            View promptView = layoutInflater.inflate(layout.reportimageview_zoom_dialog2, null);
+            View promptView = layoutInflater.inflate(R.layout.reportimageview_zoom_dialog2, null);
 
-            Builder alertDialogBuilder = new Builder(view.getContext());
+            AlertDialog.Builder alertDialogBuilder = new AlertDialog.Builder(view.getContext());
 
             alertDialogBuilder.setView(promptView);
 
 
             Bitmap rotatedBitmap;
 
-            ImageView reportphoto = promptView.findViewById(id.imageZoom);
+            final ImageView reportphoto = promptView.findViewById(R.id.imageZoom);
 
-            String Query_Image="select ReportGallery,FileName from OnlineConsultancyDtls where ServerId='" + this.ServerId + "' and FileName='" + ReportName + "' and pid='" + this.PatientId + "';";
-            OnlineConsultation_Details.SelectedGetPatientReports_Image(Query_Image, reportphoto);
+            String Query_Image="select ReportGallery,FileName from OnlineConsultancyDtls where ServerId='" + ServerId + "' and FileName='" + ReportName + "' and pid='" + PatientId + "';";
+            SelectedGetPatientReports_Image(Query_Image, reportphoto);
 
-            TextView nameagegen1 = promptView.findViewById(id.nameagegen);
+            final TextView nameagegen1 = promptView.findViewById(R.id.nameagegen);
 
-            TextView patient_name = promptView.findViewById(id.amt);
-
-
-            nameagegen1.setText(this.getString(string.report_name) +": "+ ReportName);
-            reportphoto.setImageBitmap(OnlineConsultation_Details.reportimg);
+            final TextView patient_name = promptView.findViewById(R.id.amt);
 
 
-            alertDialogBuilder.setCancelable(false).setPositiveButton(this.getString(string.ok),
+            nameagegen1.setText(getString(R.string.report_name) +": "+ ReportName);
+            reportphoto.setImageBitmap(reportimg);
+
+
+            alertDialogBuilder.setCancelable(false).setPositiveButton(getString(R.string.ok),
                     (dialog, id1) -> {
 
 
@@ -522,7 +513,7 @@ e.printStackTrace();
     private final boolean checkValidation() {
         boolean ret = true;
 
-        if (!Validation1.hasText(this.Docreply))
+        if (!Validation1.hasText(Docreply))
             ret = false;
 
 
@@ -532,12 +523,12 @@ e.printStackTrace();
     private final void savelocal() {
 
         try {
-            String Insert_Query = "update OnlineConsultancy set DocReply='" + this.Docreply.getText() + "',IsUpdate='0',IsActive='False' where ServerId='" + this.ServerId + "' ";
+            final String Insert_Query = "update OnlineConsultancy set DocReply='" + Docreply.getText().toString() + "',IsUpdate='0',IsActive='False' where ServerId='" + ServerId + "' ";
 
             BaseConfig.SaveData(Insert_Query);
             //Log.e("Insert_Query", Insert_Query);
 
-            this.showSimplePopUpExit(this.getString(string.response_send));
+            showSimplePopUpExit(getString(R.string.response_send));
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
@@ -547,22 +538,22 @@ e.printStackTrace();
     private void showSimplePopUpExit(String msg) {
 
         new CustomKDMCDialog(this)
-                .setLayoutColor(color.green_500)
-                .setImage(drawable.ic_success_done)
-                .setTitle(getString(string.information))
+                .setLayoutColor(R.color.green_500)
+                .setImage(R.drawable.ic_success_done)
+                .setTitle(this.getString(R.string.information))
                 .setNegativeButtonVisible(View.GONE)
                 .setDescription(msg)
-                .setPossitiveButtonTitle(getString(string.ok))
+                .setPossitiveButtonTitle(this.getString(R.string.ok))
                 .setOnPossitiveListener(() -> {
-                    String Insert_Query = "update OnlineConsultancy set IsUpdate='1',IsActive='False' where ServerId='" + this.ServerId + "' ";
+                    final String Insert_Query = "update OnlineConsultancy set IsUpdate='1',IsActive='False' where ServerId='" + ServerId + "' ";
 
                     BaseConfig.SaveData(Insert_Query);
                     //Log.e("Insert_Query", Insert_Query);
 
 
-                    finish();
-                    Intent intent = new Intent(this.getApplicationContext(), OnlineConsultation.class);
-                    this.startActivity(intent);
+                    OnlineConsultation_Details.this.finish();
+                    Intent intent = new Intent(getApplicationContext(), OnlineConsultation.class);
+                    startActivity(intent);
                 });
 
 
@@ -572,7 +563,7 @@ e.printStackTrace();
     @Override
     public final void onBackPressed() {
 
-        this.LoadBack();
+        LoadBack();
 
     }
 
@@ -592,7 +583,7 @@ e.printStackTrace();
          * Instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
-            this.mContext = c;
+            mContext = c;
         }
 
         /**

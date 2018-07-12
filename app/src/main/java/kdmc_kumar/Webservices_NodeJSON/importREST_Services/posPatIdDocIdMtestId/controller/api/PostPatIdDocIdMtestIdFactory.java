@@ -10,6 +10,7 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
+import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -19,37 +20,37 @@ import kdmc_kumar.Webservices_NodeJSON.importREST_Services.posPatIdDocIdMtestId.
 
 public class PostPatIdDocIdMtestIdFactory extends ControllerFactory<PostPatIdDocIdMtestId> {
     public PostPatIdDocIdMtestIdFactory(MagnetMobileClient magnetClient) {
-        super(PostPatIdDocIdMtestId.class, PostPatIdDocIdMtestIdFactory.PostPatIdDocIdMtestIdSchemaFactory.getInstance().getSchema(), magnetClient);
+        super(PostPatIdDocIdMtestId.class, PostPatIdDocIdMtestIdSchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller PostPatIdDocIdMtestId
     public static class PostPatIdDocIdMtestIdSchemaFactory extends AbstractControllerSchemaFactory {
-        private static PostPatIdDocIdMtestIdFactory.PostPatIdDocIdMtestIdSchemaFactory __instance;
+        private static PostPatIdDocIdMtestIdSchemaFactory __instance = null;
 
         private PostPatIdDocIdMtestIdSchemaFactory() {
         }
 
-        static PostPatIdDocIdMtestIdFactory.PostPatIdDocIdMtestIdSchemaFactory getInstance() {
-            synchronized (PostPatIdDocIdMtestIdFactory.PostPatIdDocIdMtestIdSchemaFactory.class) {
-                if (null == PostPatIdDocIdMtestIdFactory.PostPatIdDocIdMtestIdSchemaFactory.__instance) {
-                    PostPatIdDocIdMtestIdFactory.PostPatIdDocIdMtestIdSchemaFactory.__instance = new PostPatIdDocIdMtestIdFactory.PostPatIdDocIdMtestIdSchemaFactory();
+        static PostPatIdDocIdMtestIdSchemaFactory getInstance() {
+            synchronized (PostPatIdDocIdMtestIdSchemaFactory.class) {
+                if (null == __instance) {
+                    __instance = new PostPatIdDocIdMtestIdSchemaFactory();
                 }
 
-                return PostPatIdDocIdMtestIdFactory.PostPatIdDocIdMtestIdSchemaFactory.__instance;
+                return __instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != this.schema) {
+                if (null != schema) {
                     return;
                 }
 
-                this.schema = new RequestSchema();
-                this.schema.setRootPath("");
+                schema = new RequestSchema();
+                schema.setRootPath("");
 
                 //controller schema for controller method posPatIdDocIdMtestId
-                RequestSchema.JMethod method1 = this.addMethod("postDoctorIdPatidMtestId",
+                JMethod method1 = addMethod("postDoctorIdPatidMtestId",
                         "importMastersSP/postDoctorIdPatidMtestId",
                         "POST",
                         PosPatIdDocIdMtestIdResult.class,

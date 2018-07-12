@@ -16,15 +16,12 @@
 
 package kdmc_kumar.Utilities_Others.seek.internal.drawable;
 
-import android.R.attr;
 import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
-import android.graphics.Paint.Style;
 import android.graphics.Path;
-import android.graphics.Path.Direction;
 import android.graphics.Rect;
 import android.graphics.RectF;
 import android.graphics.drawable.Animatable;
@@ -50,14 +47,14 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
     private static final long FRAME_DURATION = 1000 / 60;
     private static final int ANIMATION_DURATION = 250;
 
-    private float mCurrentScale;
-    private final Interpolator mInterpolator;
+    private float mCurrentScale = 0f;
+    private Interpolator mInterpolator;
     private long mStartTime;
-    private boolean mReverse;
-    private boolean mRunning;
-    private int mDuration = MarkerDrawable.ANIMATION_DURATION;
+    private boolean mReverse = false;
+    private boolean mRunning = false;
+    private int mDuration = ANIMATION_DURATION;
     //size of the actual thumb drawable to use as circle state size
-    private final float mClosedStateSize;
+    private float mClosedStateSize;
     //value to store que current scale when starting an animation and interpolate from it
     private float mAnimationInitialValue;
     //extra offset directed from the View to account
@@ -70,19 +67,19 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
     Path mPath = new Path();
     RectF mRect = new RectF();
     Matrix mMatrix = new Matrix();
-    private MarkerDrawable.MarkerAnimationListener mMarkerListener;
+    private MarkerAnimationListener mMarkerListener;
 
     public MarkerDrawable(@NonNull ColorStateList tintList, int closedSize) {
         super(tintList);
-        this.mInterpolator = new AccelerateDecelerateInterpolator();
-        this.mClosedStateSize = closedSize;
-        this.mStartColor = tintList.getColorForState(new int[]{attr.state_enabled, attr.state_pressed}, tintList.getDefaultColor());
-        this.mEndColor = tintList.getDefaultColor();
+        mInterpolator = new AccelerateDecelerateInterpolator();
+        mClosedStateSize = closedSize;
+        mStartColor = tintList.getColorForState(new int[]{android.R.attr.state_enabled, android.R.attr.state_pressed}, tintList.getDefaultColor());
+        mEndColor = tintList.getDefaultColor();
 
     }
 
     public void setExternalOffset(int offset) {
-        this.mExternalOffset = offset;
+        mExternalOffset = offset;
     }
 
     /**
@@ -92,92 +89,92 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
      * @param endColor   Color used for popup indicator
      */
     public void setColors(int startColor, int endColor) {
-        this.mStartColor = startColor;
-        this.mEndColor = endColor;
+        mStartColor = startColor;
+        mEndColor = endColor;
     }
 
     @Override
     void doDraw(Canvas canvas, Paint paint) {
-        if (!this.mPath.isEmpty()) {
-            paint.setStyle(Style.FILL);
-            int color = MarkerDrawable.blendColors(this.mStartColor, this.mEndColor, this.mCurrentScale);
+        if (!mPath.isEmpty()) {
+            paint.setStyle(Paint.Style.FILL);
+            int color = blendColors(mStartColor, mEndColor, mCurrentScale);
             paint.setColor(color);
-            canvas.drawPath(this.mPath, paint);
+            canvas.drawPath(mPath, paint);
         }
     }
 
     public Path getPath() {
-        return this.mPath;
+        return mPath;
     }
 
     @Override
     protected void onBoundsChange(Rect bounds) {
         super.onBoundsChange(bounds);
-        this.computePath(bounds);
+        computePath(bounds);
     }
 
     private void computePath(Rect bounds) {
-        float currentScale = this.mCurrentScale;
-        Path path = this.mPath;
-        RectF rect = this.mRect;
-        Matrix matrix = this.mMatrix;
+        final float currentScale = mCurrentScale;
+        final Path path = mPath;
+        final RectF rect = mRect;
+        final Matrix matrix = mMatrix;
 
         path.reset();
         int totalSize = Math.min(bounds.width(), bounds.height());
 
-        float initial = this.mClosedStateSize;
+        float initial = mClosedStateSize;
         float destination = totalSize;
         float currentSize = initial + (destination - initial) * currentScale;
 
         float halfSize = currentSize / 2f;
         float inverseScale = 1f - currentScale;
         float cornerSize = halfSize * inverseScale;
-        float[] corners = {halfSize, halfSize, halfSize, halfSize, halfSize, halfSize, cornerSize, cornerSize};
+        float[] corners = new float[]{halfSize, halfSize, halfSize, halfSize, halfSize, halfSize, cornerSize, cornerSize};
         rect.set(bounds.left, bounds.top, bounds.left + currentSize, bounds.top + currentSize);
-        path.addRoundRect(rect, corners, Direction.CCW);
+        path.addRoundRect(rect, corners, Path.Direction.CCW);
         matrix.reset();
         matrix.postRotate(-45, bounds.left + halfSize, bounds.top + halfSize);
         matrix.postTranslate((bounds.width() - currentSize) / 2, 0);
-        float hDiff = (bounds.bottom - currentSize - this.mExternalOffset) * inverseScale;
+        float hDiff = (bounds.bottom - currentSize - mExternalOffset) * inverseScale;
         matrix.postTranslate(0, hDiff);
         path.transform(matrix);
     }
 
     private void updateAnimation(float factor) {
-        float initial = this.mAnimationInitialValue;
-        float destination = this.mReverse ? 0f : 1f;
-        this.mCurrentScale = initial + (destination - initial) * factor;
-        this.computePath(this.getBounds());
-        this.invalidateSelf();
+        float initial = mAnimationInitialValue;
+        float destination = mReverse ? 0f : 1f;
+        mCurrentScale = initial + (destination - initial) * factor;
+        computePath(getBounds());
+        invalidateSelf();
     }
 
     public void animateToPressed() {
-        this.unscheduleSelf(this.mUpdater);
-        this.mReverse = false;
-        if (this.mCurrentScale < 1) {
-            this.mRunning = true;
-            this.mAnimationInitialValue = this.mCurrentScale;
-            float durationFactor = 1f - this.mCurrentScale;
-            this.mDuration = (int) (MarkerDrawable.ANIMATION_DURATION * durationFactor);
-            this.mStartTime = SystemClock.uptimeMillis();
-            this.scheduleSelf(this.mUpdater, this.mStartTime + MarkerDrawable.FRAME_DURATION);
+        unscheduleSelf(mUpdater);
+        mReverse = false;
+        if (mCurrentScale < 1) {
+            mRunning = true;
+            mAnimationInitialValue = mCurrentScale;
+            float durationFactor = 1f - mCurrentScale;
+            mDuration = (int) (ANIMATION_DURATION * durationFactor);
+            mStartTime = SystemClock.uptimeMillis();
+            scheduleSelf(mUpdater, mStartTime + FRAME_DURATION);
         } else {
-            this.notifyFinishedToListener();
+            notifyFinishedToListener();
         }
     }
 
     public void animateToNormal() {
-        this.mReverse = true;
-        this.unscheduleSelf(this.mUpdater);
-        if (this.mCurrentScale > 0) {
-            this.mRunning = true;
-            this.mAnimationInitialValue = this.mCurrentScale;
-            float durationFactor = 1f - this.mCurrentScale;
-            this.mDuration = MarkerDrawable.ANIMATION_DURATION - (int) (MarkerDrawable.ANIMATION_DURATION * durationFactor);
-            this.mStartTime = SystemClock.uptimeMillis();
-            this.scheduleSelf(this.mUpdater, this.mStartTime + MarkerDrawable.FRAME_DURATION);
+        mReverse = true;
+        unscheduleSelf(mUpdater);
+        if (mCurrentScale > 0) {
+            mRunning = true;
+            mAnimationInitialValue = mCurrentScale;
+            float durationFactor = 1f - mCurrentScale;
+            mDuration = ANIMATION_DURATION - (int) (ANIMATION_DURATION * durationFactor);
+            mStartTime = SystemClock.uptimeMillis();
+            scheduleSelf(mUpdater, mStartTime + FRAME_DURATION);
         } else {
-            this.notifyFinishedToListener();
+            notifyFinishedToListener();
         }
     }
 
@@ -187,30 +184,30 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
         public void run() {
 
             long currentTime = SystemClock.uptimeMillis();
-            long diff = currentTime - MarkerDrawable.this.mStartTime;
-            if (diff < MarkerDrawable.this.mDuration) {
-                float interpolation = MarkerDrawable.this.mInterpolator.getInterpolation((float) diff / (float) MarkerDrawable.this.mDuration);
-                MarkerDrawable.this.scheduleSelf(MarkerDrawable.this.mUpdater, currentTime + MarkerDrawable.FRAME_DURATION);
-                MarkerDrawable.this.updateAnimation(interpolation);
+            long diff = currentTime - mStartTime;
+            if (diff < mDuration) {
+                float interpolation = mInterpolator.getInterpolation((float) diff / (float) mDuration);
+                scheduleSelf(mUpdater, currentTime + FRAME_DURATION);
+                updateAnimation(interpolation);
             } else {
-                MarkerDrawable.this.unscheduleSelf(MarkerDrawable.this.mUpdater);
-                MarkerDrawable.this.mRunning = false;
-                MarkerDrawable.this.updateAnimation(1f);
-                MarkerDrawable.this.notifyFinishedToListener();
+                unscheduleSelf(mUpdater);
+                mRunning = false;
+                updateAnimation(1f);
+                notifyFinishedToListener();
             }
         }
     };
 
-    public void setMarkerListener(MarkerDrawable.MarkerAnimationListener listener) {
-        this.mMarkerListener = listener;
+    public void setMarkerListener(MarkerAnimationListener listener) {
+        mMarkerListener = listener;
     }
 
     private void notifyFinishedToListener() {
-        if (this.mMarkerListener != null) {
-            if (this.mReverse) {
-                this.mMarkerListener.onClosingComplete();
+        if (mMarkerListener != null) {
+            if (mReverse) {
+                mMarkerListener.onClosingComplete();
             } else {
-                this.mMarkerListener.onOpeningComplete();
+                mMarkerListener.onOpeningComplete();
             }
         }
     }
@@ -222,16 +219,16 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
 
     @Override
     public void stop() {
-        this.unscheduleSelf(this.mUpdater);
+        unscheduleSelf(mUpdater);
     }
 
     @Override
     public boolean isRunning() {
-        return this.mRunning;
+        return mRunning;
     }
 
     private static int blendColors(int color1, int color2, float factor) {
-        float inverseFactor = 1f - factor;
+        final float inverseFactor = 1f - factor;
         float a = (Color.alpha(color1) * factor) + (Color.alpha(color2) * inverseFactor);
         float r = (Color.red(color1) * factor) + (Color.red(color2) * inverseFactor);
         float g = (Color.green(color1) * factor) + (Color.green(color2) * inverseFactor);
@@ -245,8 +242,8 @@ public class MarkerDrawable extends StateDrawable implements Animatable {
      * This is the "poor's man" AnimatorListener for this Drawable
      */
     public interface MarkerAnimationListener {
-        void onClosingComplete();
+        public void onClosingComplete();
 
-        void onOpeningComplete();
+        public void onOpeningComplete();
     }
 }

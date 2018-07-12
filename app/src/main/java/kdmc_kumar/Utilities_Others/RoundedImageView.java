@@ -11,10 +11,8 @@ import android.graphics.drawable.LayerDrawable;
 import android.net.Uri;
 import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.ImageView;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.styleable;
 
 
 public class RoundedImageView extends android.support.v7.widget.AppCompatImageView {
@@ -22,29 +20,29 @@ public class RoundedImageView extends android.support.v7.widget.AppCompatImageVi
     private static final String TAG = "RoundedImageView";
     private static final int DEFAULT_RADIUS = 0;
     private static final int DEFAULT_BORDER_WIDTH = 0;
-    private static final ImageView.ScaleType[] SCALE_TYPES = {
-            ImageView.ScaleType.MATRIX,
-            ImageView.ScaleType.FIT_XY,
-            ImageView.ScaleType.FIT_START,
-            ImageView.ScaleType.FIT_CENTER,
-            ImageView.ScaleType.FIT_END,
-            ImageView.ScaleType.CENTER,
-            ImageView.ScaleType.CENTER_CROP,
-            ImageView.ScaleType.CENTER_INSIDE
+    private static final ScaleType[] SCALE_TYPES = {
+            ScaleType.MATRIX,
+            ScaleType.FIT_XY,
+            ScaleType.FIT_START,
+            ScaleType.FIT_CENTER,
+            ScaleType.FIT_END,
+            ScaleType.CENTER,
+            ScaleType.CENTER_CROP,
+            ScaleType.CENTER_INSIDE
     };
 
-    private int mCornerRadius = RoundedImageView.DEFAULT_RADIUS;
-    private int mBorderWidth = RoundedImageView.DEFAULT_BORDER_WIDTH;
+    private int mCornerRadius = DEFAULT_RADIUS;
+    private int mBorderWidth = DEFAULT_BORDER_WIDTH;
     private ColorStateList mBorderColor =
             ColorStateList.valueOf(RoundedDrawable.DEFAULT_BORDER_COLOR);
-    private boolean mOval;
-    private boolean mRoundBackground;
+    private boolean mOval = false;
+    private boolean mRoundBackground = false;
 
-    private int mResource;
-    private Drawable mDrawable;
-    private Drawable mBackgroundDrawable;
+    private int mResource = 0;
+    private Drawable mDrawable = null;
+    private Drawable mBackgroundDrawable = null;
 
-    private ImageView.ScaleType mScaleType;
+    private ScaleType mScaleType = null;
 
     public RoundedImageView(Context context) {
         super(context);
@@ -57,37 +55,37 @@ public class RoundedImageView extends android.support.v7.widget.AppCompatImageVi
     public RoundedImageView(Context context, AttributeSet attrs, int defStyle) {
         super(context, attrs, defStyle);
 
-        TypedArray a = context.obtainStyledAttributes(attrs, styleable.RoundedImageView, defStyle, 0);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.RoundedImageView, defStyle, 0);
 
-        int index = a.getInt(styleable.RoundedImageView_android_scaleType, -1);
+        int index = a.getInt(R.styleable.RoundedImageView_android_scaleType, -1);
         if (index >= 0) {
-            this.setScaleType(RoundedImageView.SCALE_TYPES[index]);
+            setScaleType(SCALE_TYPES[index]);
         } else {
             // default scaletype to FIT_CENTER
-            this.setScaleType(ImageView.ScaleType.FIT_CENTER);
+            setScaleType(ScaleType.FIT_CENTER);
         }
 
-        this.mCornerRadius = a.getDimensionPixelSize(styleable.RoundedImageView_corner_radius, -1);
-        this.mBorderWidth = 1;//a.getDimensionPixelSize(R.styleable.RoundedImageView_border_width, -1);
+        mCornerRadius = a.getDimensionPixelSize(R.styleable.RoundedImageView_corner_radius, -1);
+        mBorderWidth = 1;//a.getDimensionPixelSize(R.styleable.RoundedImageView_border_width, -1);
 
         // don't allow negative values for radius and border
-        if (this.mCornerRadius < 0) {
-            this.mCornerRadius = RoundedImageView.DEFAULT_RADIUS;
+        if (mCornerRadius < 0) {
+            mCornerRadius = DEFAULT_RADIUS;
         }
-        if (this.mBorderWidth < 0) {
-            this.mBorderWidth = RoundedImageView.DEFAULT_BORDER_WIDTH;
-        }
-
-        this.mBorderColor = a.getColorStateList(styleable.RoundedImageView_border_color);
-        if (this.mBorderColor == null) {
-            this.mBorderColor = ColorStateList.valueOf(RoundedDrawable.DEFAULT_BORDER_COLOR);
+        if (mBorderWidth < 0) {
+            mBorderWidth = DEFAULT_BORDER_WIDTH;
         }
 
-        this.mRoundBackground = a.getBoolean(styleable.RoundedImageView_round_background, false);
-        this.mOval = a.getBoolean(styleable.RoundedImageView_is_oval, false);
+        mBorderColor = a.getColorStateList(R.styleable.RoundedImageView_border_color);
+        if (mBorderColor == null) {
+            mBorderColor = ColorStateList.valueOf(RoundedDrawable.DEFAULT_BORDER_COLOR);
+        }
 
-        this.updateDrawableAttrs();
-        this.updateBackgroundDrawableAttrs();
+        mRoundBackground = a.getBoolean(R.styleable.RoundedImageView_round_background, false);
+        mOval = a.getBoolean(R.styleable.RoundedImageView_is_oval, false);
+
+        updateDrawableAttrs();
+        updateBackgroundDrawableAttrs();
 
         a.recycle();
     }
@@ -95,18 +93,18 @@ public class RoundedImageView extends android.support.v7.widget.AppCompatImageVi
     @Override
     protected final void drawableStateChanged() {
         super.drawableStateChanged();
-        this.invalidate();
+        invalidate();
     }
 
     /**
      * Return the current scale type in use by this ImageView.
      *
      * @attr ref android.R.styleable#ImageView_scaleType
-     * @see ImageView.ScaleType
+     * @see android.widget.ImageView.ScaleType
      */
     @Override
-    public final ImageView.ScaleType getScaleType() {
-        return this.mScaleType;
+    public final ScaleType getScaleType() {
+        return mScaleType;
     }
 
     /**
@@ -117,13 +115,13 @@ public class RoundedImageView extends android.support.v7.widget.AppCompatImageVi
      * @attr ref android.R.styleable#ImageView_scaleType
      */
     @Override
-    public final void setScaleType(ImageView.ScaleType scaleType) {
+    public final void setScaleType(ScaleType scaleType) {
         if (scaleType == null) {
             throw new NullPointerException();
         }
 
-        if (this.mScaleType != scaleType) {
-            this.mScaleType = scaleType;
+        if (mScaleType != scaleType) {
+            mScaleType = scaleType;
 
             switch (scaleType) {
                 case CENTER:
@@ -133,66 +131,66 @@ public class RoundedImageView extends android.support.v7.widget.AppCompatImageVi
                 case FIT_START:
                 case FIT_END:
                 case FIT_XY:
-                    super.setScaleType(ImageView.ScaleType.FIT_XY);
+                    super.setScaleType(ScaleType.FIT_XY);
                     break;
                 default:
                     super.setScaleType(scaleType);
                     break;
             }
 
-            this.updateDrawableAttrs();
-            this.updateBackgroundDrawableAttrs();
-            this.invalidate();
+            updateDrawableAttrs();
+            updateBackgroundDrawableAttrs();
+            invalidate();
         }
     }
 
     @Override
     public final void setImageDrawable(Drawable drawable) {
-        this.mResource = 0;
-        this.mDrawable = RoundedDrawable.fromDrawable(drawable);
-        this.updateDrawableAttrs();
-        super.setImageDrawable(this.mDrawable);
+        mResource = 0;
+        mDrawable = RoundedDrawable.fromDrawable(drawable);
+        updateDrawableAttrs();
+        super.setImageDrawable(mDrawable);
     }
 
     @Override
     public final void setImageBitmap(Bitmap bm) {
-        this.mResource = 0;
-        this.mDrawable = RoundedDrawable.fromBitmap(bm);
-        this.updateDrawableAttrs();
-        super.setImageDrawable(this.mDrawable);
+        mResource = 0;
+        mDrawable = RoundedDrawable.fromBitmap(bm);
+        updateDrawableAttrs();
+        super.setImageDrawable(mDrawable);
     }
 
     @Override
     public final void setImageResource(int resId) {
-        if (this.mResource != resId) {
-            this.mResource = resId;
-            this.mDrawable = this.resolveResource();
-            this.updateDrawableAttrs();
-            super.setImageDrawable(this.mDrawable);
+        if (mResource != resId) {
+            mResource = resId;
+            mDrawable = resolveResource();
+            updateDrawableAttrs();
+            super.setImageDrawable(mDrawable);
         }
     }
 
     @Override
     public final void setImageURI(Uri uri) {
         super.setImageURI(uri);
-        this.setImageDrawable(this.getDrawable());
+        setImageDrawable(getDrawable());
     }
 
     private Drawable resolveResource() {
-        Resources rsrc = this.getResources();
+        Resources rsrc = getResources();
         if (rsrc == null) {
             return null;
         }
 
         Drawable d = null;
 
-        if (this.mResource != 0) {
+        if (mResource != 0) {
             try {
-                d = rsrc.getDrawable(this.mResource);
+                d = rsrc.getDrawable(mResource);
             } catch (Exception e) {
-                Log.w(RoundedImageView.TAG, "Unable to find resource: " + this.mResource, e);
+                Log.w(TAG, "Unable to find resource: " + mResource, e);
                 // Don't try again.
-                this.mResource = 0;
+                mResource = 0;
             }
         }
         return RoundedDrawable.fromDrawable(d);
@@ -203,11 +201,11 @@ public class RoundedImageView extends android.support.v7.widget.AppCompatImageVi
 //  }
 
     private void updateDrawableAttrs() {
-        this.updateAttrs(this.mDrawable, false);
+        updateAttrs(mDrawable, false);
     }
 
     private void updateBackgroundDrawableAttrs() {
-        this.updateAttrs(this.mBackgroundDrawable, true);
+        updateAttrs(mBackgroundDrawable, true);
     }
 
     private void updateAttrs(Drawable drawable, boolean background) {
@@ -216,17 +214,17 @@ public class RoundedImageView extends android.support.v7.widget.AppCompatImageVi
         }
 
         if (drawable instanceof RoundedDrawable) {
-            ((RoundedDrawable) drawable).setScaleType(this.mScaleType)
-                    .setCornerRadius((float) (background && !this.mRoundBackground ? 0 : this.mCornerRadius))
-                    .setBorderWidth(background && !this.mRoundBackground ? 0 : this.mBorderWidth)
-                    .setBorderColors(this.mBorderColor)
-                    .setOval(this.mOval);
+            ((RoundedDrawable) drawable).setScaleType(mScaleType)
+                    .setCornerRadius((float) (background && !mRoundBackground ? 0 : mCornerRadius))
+                    .setBorderWidth(background && !mRoundBackground ? 0 : mBorderWidth)
+                    .setBorderColors(mBorderColor)
+                    .setOval(mOval);
         } else if (drawable instanceof LayerDrawable) {
             // loop through layers to and set drawable attrs
             LayerDrawable ld = ((LayerDrawable) drawable);
             int layers = ld.getNumberOfLayers();
             for (int i = 0; i < layers; i++) {
-                this.updateAttrs(ld.getDrawable(i), background);
+                updateAttrs(ld.getDrawable(i), background);
             }
         }
     }
@@ -234,88 +232,88 @@ public class RoundedImageView extends android.support.v7.widget.AppCompatImageVi
     @Override
     @Deprecated
     public final void setBackgroundDrawable(Drawable background) {
-        this.mBackgroundDrawable = RoundedDrawable.fromDrawable(background);
-        this.updateBackgroundDrawableAttrs();
-        super.setBackgroundDrawable(this.mBackgroundDrawable);
+        mBackgroundDrawable = RoundedDrawable.fromDrawable(background);
+        updateBackgroundDrawableAttrs();
+        super.setBackgroundDrawable(mBackgroundDrawable);
     }
 
     public final int getCornerRadius() {
-        return this.mCornerRadius;
+        return mCornerRadius;
     }
 
     public final void setCornerRadius(int radius) {
-        if (this.mCornerRadius == radius) {
+        if (mCornerRadius == radius) {
             return;
         }
 
-        this.mCornerRadius = radius;
-        this.updateDrawableAttrs();
-        this.updateBackgroundDrawableAttrs();
+        mCornerRadius = radius;
+        updateDrawableAttrs();
+        updateBackgroundDrawableAttrs();
     }
 
     public final int getBorderWidth() {
-        return this.mBorderWidth;
+        return mBorderWidth;
     }
 
     public final void setBorderWidth(int width) {
-        if (this.mBorderWidth == width) {
+        if (mBorderWidth == width) {
             return;
         }
 
-        this.mBorderWidth = width;
-        this.updateDrawableAttrs();
-        this.updateBackgroundDrawableAttrs();
-        this.invalidate();
+        mBorderWidth = width;
+        updateDrawableAttrs();
+        updateBackgroundDrawableAttrs();
+        invalidate();
     }
 
     public final int getBorderColor() {
-        return this.mBorderColor.getDefaultColor();
+        return mBorderColor.getDefaultColor();
     }
 
     public final void setBorderColor(int color) {
-        this.setBorderColors(ColorStateList.valueOf(color));
+        setBorderColors(ColorStateList.valueOf(color));
     }
 
     public final ColorStateList getBorderColors() {
-        return this.mBorderColor;
+        return mBorderColor;
     }
 
     private final void setBorderColors(ColorStateList colors) {
-        if (this.mBorderColor.equals(colors)) {
+        if (mBorderColor.equals(colors)) {
             return;
         }
 
-        this.mBorderColor =
+        mBorderColor =
                 (colors != null) ? colors : ColorStateList.valueOf(RoundedDrawable.DEFAULT_BORDER_COLOR);
-        this.updateDrawableAttrs();
-        this.updateBackgroundDrawableAttrs();
-        if (this.mBorderWidth > 0) {
-            this.invalidate();
+        updateDrawableAttrs();
+        updateBackgroundDrawableAttrs();
+        if (mBorderWidth > 0) {
+            invalidate();
         }
     }
 
     public final boolean isOval() {
-        return this.mOval;
+        return mOval;
     }
 
     public final void setOval(boolean oval) {
-        this.mOval = oval;
-        this.updateDrawableAttrs();
-        this.updateBackgroundDrawableAttrs();
-        this.invalidate();
+        mOval = oval;
+        updateDrawableAttrs();
+        updateBackgroundDrawableAttrs();
+        invalidate();
     }
 
     public final boolean isRoundBackground() {
-        return this.mRoundBackground;
+        return mRoundBackground;
     }
 
     public final void setRoundBackground(boolean roundBackground) {
-        if (this.mRoundBackground == roundBackground) {
+        if (mRoundBackground == roundBackground) {
             return;
         }
 
-        this.mRoundBackground = roundBackground;
-        this.updateBackgroundDrawableAttrs();
-        this.invalidate();
+        mRoundBackground = roundBackground;
+        updateBackgroundDrawableAttrs();
+        invalidate();
     }
 }

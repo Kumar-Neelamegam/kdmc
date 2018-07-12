@@ -37,7 +37,7 @@ import kdmc_kumar.Utilities_Others.seek.internal.drawable.MarkerDrawable;
  */
 @TargetApi(21)
 class SeekBarCompatDontCrash {
-    public static void setOutlineProvider(View marker, MarkerDrawable markerDrawable) {
+    public static void setOutlineProvider(View marker, final MarkerDrawable markerDrawable) {
         marker.setOutlineProvider(new ViewOutlineProvider() {
             @Override
             public void getOutline(View view, Outline outline) {

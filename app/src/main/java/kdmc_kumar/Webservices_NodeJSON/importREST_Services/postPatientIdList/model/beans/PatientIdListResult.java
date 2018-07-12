@@ -19,13 +19,13 @@ public class PatientIdListResult {
 
 
     @com.google.gson.annotations.SerializedName("Results")
-    private String results;
+    private String results = null;
 
     public PatientIdListResult() {
     }
 
     public final String getResults() {
-        return this.results;
+        return results;
     }
 
     public void setResults(String results) {
@@ -42,11 +42,11 @@ public class PatientIdListResult {
         }
 
         public final PatientIdListResult build() {
-            return this.toBuild;
+            return toBuild;
         }
 
-        public final PatientIdListResult.PatientIdListResultBuilder results(String value) {
-            this.toBuild.setResults(value);
+        public final PatientIdListResultBuilder results(String value) {
+            toBuild.setResults(value);
             return this;
         }
     }

@@ -2,15 +2,12 @@ package kdmc_kumar.Adapters_GetterSetter;
 
 import android.content.Context;
 import android.content.Intent;
-import android.content.res.Resources.NotFoundException;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,12 +22,6 @@ import java.net.URL;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.color;
-import displ.mobydocmarathi.com.R.drawable;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
-import kdmc_kumar.Adapters_GetterSetter.PdfReportAdapter.MyViewHolder1;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
 import kdmc_kumar.Utilities_Others.asyn.AsynkTaskCustom;
@@ -46,7 +37,7 @@ import kdmc_kumar.Webservices_NodeJSON.generatePDFNode.model.beans.PDFNodeJsResu
  */
 
 
-public class PdfReportAdapter extends Adapter<MyViewHolder1> {
+public class PdfReportAdapter extends RecyclerView.Adapter<PdfReportAdapter.MyViewHolder1> {
 
     //**********************************************************************************************
     private final ArrayList<PDFReportItems> rowItem;
@@ -56,27 +47,27 @@ public class PdfReportAdapter extends Adapter<MyViewHolder1> {
     public PdfReportAdapter(ArrayList<PDFReportItems> rowItem, String PatientId, Context ctxnew) {
 
         this.rowItem = rowItem;
-        this.BUNDLE_PATIENTID = PatientId;
-        ctx = ctxnew;
+        BUNDLE_PATIENTID = PatientId;
+        this.ctx = ctxnew;
 
     }
 
     //**********************************************************************************************
     @NonNull
     @Override
-    public final PdfReportAdapter.MyViewHolder1 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(layout.newpdfreportlistrow, parent, false);
+    public final MyViewHolder1 onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.newpdfreportlistrow, parent, false);
 
-        return new PdfReportAdapter.MyViewHolder1(view);
+        return new MyViewHolder1(view);
     }
 
     //**********************************************************************************************
     @Override
-    public final void onBindViewHolder(@NonNull PdfReportAdapter.MyViewHolder1 holder, int position) {
+    public final void onBindViewHolder(@NonNull MyViewHolder1 holder, int position) {
 
         try {
             PDFReportItems rowItemNew = null;
-            PDFReportItems rowItemNew1 = this.rowItem.get(position);
+            PDFReportItems rowItemNew1 = rowItem.get(position);
 
             holder.txtpatnameid.setText(String.format("%s-%s", rowItemNew1.getPATIENTNAME(), rowItemNew1.getPATIENTID()));
             holder.txtsymptoms.setText(rowItemNew1.getSYMPTOMS());
@@ -87,7 +78,7 @@ public class PdfReportAdapter extends Adapter<MyViewHolder1> {
 
             holder.textCount.setText(String.valueOf(position + 1));
 
-            holder.rootLayout.setOnClickListener(view -> new PdfReportAdapter.GeneratePDF_From_Node(ID, this.ctx).execute());
+            holder.rootLayout.setOnClickListener(view -> new GeneratePDF_From_Node(ID, ctx).execute());
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -98,11 +89,11 @@ public class PdfReportAdapter extends Adapter<MyViewHolder1> {
     //**********************************************************************************************
     @Override
     public final int getItemCount() {
-        return this.rowItem.size();
+        return rowItem.size();
     }
 
 
-    static class MyViewHolder1 extends ViewHolder {
+    static class MyViewHolder1 extends RecyclerView.ViewHolder {
 
         final LinearLayout rootLayout;
         final TextView txtpatnameid;
@@ -114,12 +105,12 @@ public class PdfReportAdapter extends Adapter<MyViewHolder1> {
         MyViewHolder1(View itemView) {
             super(itemView);
 
-            this.rootLayout = itemView.findViewById(id.list_root);
-            this.txtpatnameid = itemView.findViewById(id.patnameid);
-            this.txtsymptoms = itemView.findViewById(id.patsymptoms);
-            this.txtdiagnosis = itemView.findViewById(id.patdiagnosis);
-            this.txtvisitedon = itemView.findViewById(id.patvisiteddate);
-            this.textCount = itemView.findViewById(id.txtcount);
+            rootLayout = itemView.findViewById(R.id.list_root);
+            txtpatnameid = itemView.findViewById(R.id.patnameid);
+            txtsymptoms = itemView.findViewById(R.id.patsymptoms);
+            txtdiagnosis = itemView.findViewById(R.id.patdiagnosis);
+            txtvisitedon = itemView.findViewById(R.id.patvisiteddate);
+            textCount = itemView.findViewById(R.id.txtcount);
 
 
         }
@@ -129,23 +120,23 @@ public class PdfReportAdapter extends Adapter<MyViewHolder1> {
     static class GeneratePDF_From_Node extends AsyncTask<Void, Void, Void> {
 
 
-        int id;
+        int id = 0;
 
-        boolean statusvalue;
+        boolean statusvalue = false;
 
         final Context ctx1;
 
 
         GeneratePDF_From_Node(int ID, Context ctx) {
-            id = ID;
-            this.ctx1 = ctx;
+            this.id = ID;
+            ctx1 = ctx;
         }
 
         protected final Void doInBackground(Void... params) {
             //Your implementation
             try {
 
-                this.CheckNodeServer(this.ctx1);
+                CheckNodeServer(ctx1);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -158,15 +149,15 @@ public class PdfReportAdapter extends Adapter<MyViewHolder1> {
             // TODO: do something with the feed
 
 
-            if (BaseConfig.CheckNetwork(this.ctx1)) {
+            if (BaseConfig.CheckNetwork(ctx1)) {
 
-                if (this.statusvalue) {
+                if (statusvalue) {
 
                     //region BACKGROUND SERVICE TO CHECK PDF
                     /*
                       New Method to get pdf from server
                      */
-                    AsynkTaskCustom asynkTaskCustom = new AsynkTaskCustom(this.ctx1, "Please wait...Loading Pdf...");
+                    AsynkTaskCustom asynkTaskCustom = new AsynkTaskCustom(ctx1, "Please wait...Loading Pdf...");
 
                     asynkTaskCustom.execute(new onWriteCode<String>() {
                         @Override
@@ -177,7 +168,7 @@ public class PdfReportAdapter extends Adapter<MyViewHolder1> {
 
                             GeneratePDFNode generatePDFNode;
                             // Instantiate a controller
-                            MagnetMobileClient magnetClient = MagnetMobileClient.getInstance(PdfReportAdapter.GeneratePDF_From_Node.this.ctx1);
+                            MagnetMobileClient magnetClient = MagnetMobileClient.getInstance(ctx1);
                             GeneratePDFNodeFactory controllerFactory = new GeneratePDFNodeFactory(magnetClient);
                             generatePDFNode = controllerFactory.obtainInstance();
 
@@ -204,7 +195,7 @@ public class PdfReportAdapter extends Adapter<MyViewHolder1> {
                             String HOSPITALNAME = "";
 
                             SQLiteDatabase db = BaseConfig.GetDb();
-                            String Query = "select * from Bind_PDFInfo where Id='" + PdfReportAdapter.GeneratePDF_From_Node.this.id + '\'';
+                            String Query = "select * from Bind_PDFInfo where Id='" + id + '\'';
                             Cursor c = db.rawQuery(Query, null);
                             if (c != null) {
                                 if (c.moveToFirst()) {
@@ -270,15 +261,15 @@ public class PdfReportAdapter extends Adapter<MyViewHolder1> {
                         }
 
                         @Override
-                        public String onSuccess(String result) throws NotFoundException {
+                        public String onSuccess(String result) throws android.content.res.Resources.NotFoundException {
 
 
                             if (result.toString().equalsIgnoreCase("")) {
 
-                                new CustomKDMCDialog(PdfReportAdapter.GeneratePDF_From_Node.this.ctx1)
-                                        .setLayoutColor(color.orange_500).setNegativeButtonVisible(View.GONE)
-                                        .setImage(drawable.ic_warning_black_24dp)
-                                        .setTitle(PdfReportAdapter.GeneratePDF_From_Node.this.ctx1.getResources().getString(string.information))
+                                new CustomKDMCDialog(ctx1)
+                                        .setLayoutColor(R.color.orange_500).setNegativeButtonVisible(View.GONE)
+                                        .setImage(R.drawable.ic_warning_black_24dp)
+                                        .setTitle(ctx1.getResources().getString(R.string.information))
                                         .setDescription("Unable to connect with internet/server..try later..")
                                         .setPossitiveButtonTitle("OK");
 
@@ -290,7 +281,7 @@ public class PdfReportAdapter extends Adapter<MyViewHolder1> {
                                     String PDFLink = BaseConfig.AppNodeIP + result;
 
                                     Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(PDFLink));
-                                    PdfReportAdapter.GeneratePDF_From_Node.this.ctx1.startActivity(browserIntent);
+                                    ctx1.startActivity(browserIntent);
 
                                 } catch (Exception e) {
                                     e.printStackTrace();
@@ -307,11 +298,11 @@ public class PdfReportAdapter extends Adapter<MyViewHolder1> {
 
 
                 } else {
-                    this.NoNetworkConnectivity(this.ctx1);
+                    NoNetworkConnectivity(ctx1);
 
                 }
             } else {
-                this.NoNetworkConnectivity(this.ctx1);
+                NoNetworkConnectivity(ctx1);
 
             }
 
@@ -330,11 +321,11 @@ public class PdfReportAdapter extends Adapter<MyViewHolder1> {
                 int status = conn.getResponseCode();
 
                 if (status == 200) {
-                    this.statusvalue = true;
+                    statusvalue = true;
                 }
                 conn.disconnect();
 
-                return this.statusvalue;
+                return statusvalue;
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -346,10 +337,10 @@ public class PdfReportAdapter extends Adapter<MyViewHolder1> {
 
         private void NoNetworkConnectivity(Context ctx) {
 
-            new CustomKDMCDialog(this.ctx1)
-                    .setLayoutColor(color.green_500)
-                    .setImage(drawable.ic_success_done)
-                    .setTitle(this.ctx1.getResources().getString(string.information)).setNegativeButtonVisible(View.GONE)
+            new CustomKDMCDialog(ctx1)
+                    .setLayoutColor(R.color.green_500)
+                    .setImage(R.drawable.ic_success_done)
+                    .setTitle(ctx1.getResources().getString(R.string.information)).setNegativeButtonVisible(View.GONE)
                     .setDescription("Unable to connect with internet/server..try later..")
                     .setPossitiveButtonTitle("OK");
 

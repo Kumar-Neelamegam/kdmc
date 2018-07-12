@@ -19,8 +19,6 @@ package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils;
 import android.annotation.TargetApi;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.view.ViewGroup;
 
 public class ViewOverlayUtils {
@@ -39,8 +37,8 @@ public class ViewOverlayUtils {
 
     }
 
-    @TargetApi(VERSION_CODES.JELLY_BEAN_MR2)
-    static class JellyBeanMR2ViewUtils extends ViewOverlayUtils.BaseViewOverlayUtils {
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
+    static class JellyBeanMR2ViewUtils extends BaseViewOverlayUtils {
         @Override
         public void addOverlay(ViewGroup sceneRoot, Drawable drawable) {
             sceneRoot.getOverlay().add(drawable);
@@ -52,21 +50,21 @@ public class ViewOverlayUtils {
         }
     }
 
-    private static final ViewOverlayUtils.BaseViewOverlayUtils IMPL;
+    private static final BaseViewOverlayUtils IMPL;
 
     static {
-        if (VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR2) {
-            IMPL = new ViewOverlayUtils.JellyBeanMR2ViewUtils();
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
+            IMPL = new JellyBeanMR2ViewUtils();
         } else {
-            IMPL = new ViewOverlayUtils.BaseViewOverlayUtils();
+            IMPL = new BaseViewOverlayUtils();
         }
     }
 
     public static void addOverlay(ViewGroup sceneRoot, Drawable drawable) {
-        ViewOverlayUtils.IMPL.addOverlay(sceneRoot, drawable);
+        IMPL.addOverlay(sceneRoot, drawable);
     }
 
     public static void removeOverlay(ViewGroup sceneRoot, Drawable drawable) {
-        ViewOverlayUtils.IMPL.removeOverlay(sceneRoot, drawable);
+        IMPL.removeOverlay(sceneRoot, drawable);
     }
 }

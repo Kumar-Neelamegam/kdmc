@@ -1,6 +1,5 @@
 package kdmc_kumar.Webservices_NodeJSON.Investigation_TestList;
 
-import android.R.layout;
 import android.app.ExpandableListActivity;
 import android.content.Context;
 import android.content.Intent;
@@ -18,22 +17,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.drawable;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 public class Investigation_ExpandableTestList extends ExpandableListActivity //implements OnChildClickListener,ListView.OnScrollListener
 {
 
 
-    NewAdapter listAdapter;
-    ExpandableListView expListView;
+    NewAdapter listAdapter = null;
+    ExpandableListView expListView = null;
 
-    Bundle d;
+    Bundle d = null;
     String MYFAVTEST = "";
     private final ArrayList<String> groupItem = new ArrayList<>();
     private final ArrayList<Object> childItem = new ArrayList<>();
 
-    private final String[] mStrings;
+    private String[] mStrings = null;
 
     public Investigation_ExpandableTestList() {
     }
@@ -41,10 +39,10 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
     @Override
     public final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_ACTION_BAR);
+        requestWindowFeature(Window.FEATURE_ACTION_BAR);
 
 
-        ExpandableListView expandbleLis = this.getExpandableListView();
+        ExpandableListView expandbleLis = getExpandableListView();
         expandbleLis.setDividerHeight(2);
         expandbleLis.setGroupIndicator(null);
         expandbleLis.setClickable(true);
@@ -52,17 +50,17 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
         try {
             switch (BaseConfig.expandlstflag) {
                 case 1:
-                    this.setGroupData();
-                    this.setChildGroupData();
+                    setGroupData();
+                    setChildGroupData();
                     break;
                 case 2:
-                    this.setGroupDataMyFav();
-                    this.setChildGroupDataMyFav();
+                    setGroupDataMyFav();
+                    setChildGroupDataMyFav();
 
                     break;
                 case 3:
-                    this.setGroupDataAdvice();
-                    this.setChildGroupDataAdvice();
+                    setGroupDataAdvice();
+                    setChildGroupDataAdvice();
 
                     break;
             }
@@ -71,10 +69,10 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
         }
 
 
-        NewAdapter mNewAdapter = new NewAdapter(this.groupItem, this.childItem);
-        mNewAdapter.setInflater((LayoutInflater) this.getSystemService(Context.LAYOUT_INFLATER_SERVICE), this);
+        NewAdapter mNewAdapter = new NewAdapter(groupItem, childItem);
+        mNewAdapter.setInflater((LayoutInflater) getSystemService(Context.LAYOUT_INFLATER_SERVICE), this);
 
-        this.getExpandableListView().setAdapter(mNewAdapter);
+        getExpandableListView().setAdapter(mNewAdapter);
         expandbleLis.setOnChildClickListener(this);
         //expandbleLis.setFastScrollEnabled(true);
 
@@ -180,7 +178,7 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
 
                     String pname = c.getString(c.getColumnIndex("Testname"));
 
-                    this.groupItem.add(pname);
+                    groupItem.add(pname);
 
                 } while (c.moveToNext());
             }
@@ -195,10 +193,10 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
 
         ArrayList<String> child = new ArrayList<>();
 
-        for (int i = 0; i < this.groupItem.size(); i++) {
+        for (int i = 0; i < groupItem.size(); i++) {
 
             SQLiteDatabase db = BaseConfig.GetDb();//);
-            Cursor c = db.rawQuery("select SubTest from testname where Testname='" + this.groupItem.get(i) + "' and IsActive='1' order by SubTest", null);
+            Cursor c = db.rawQuery("select SubTest from testname where Testname='" + groupItem.get(i) + "' and IsActive='1' order by SubTest", null);
 
             child = new ArrayList<>();
             //List<String> list = new ArrayList<String>();
@@ -213,7 +211,7 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
 
                     } while (c.moveToNext());
 
-                    this.childItem.add(child);
+                    childItem.add(child);
                 }
             }
 
@@ -245,13 +243,13 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
                     // String TestName = c.getString(c.getColumnIndex("Testname"));
                     //String TemplateName = c.getString(c.getColumnIndex("TemplateName"));
 
-                    this.groupItem.add(c.getString(c.getColumnIndex("TemplateName")));
+                    groupItem.add(c.getString(c.getColumnIndex("TemplateName")));
 
                 } while (c.moveToNext());
             }
         }
 
-        new ArrayAdapter<>(this, layout.simple_list_item_1, list);
+        new ArrayAdapter<>(this, android.R.layout.simple_list_item_1, list);
 
         db.close();
         c.close();
@@ -263,10 +261,10 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
 
         ArrayList<String> child = new ArrayList<>();
 
-        for (int i = 0; i < this.groupItem.size(); i++) {
+        for (int i = 0; i < groupItem.size(); i++) {
 
             SQLiteDatabase db = BaseConfig.GetDb();//);
-            Cursor c = db.rawQuery("select (Testname||' / '||Subtest)as data from myfavTest where TemplateName='" + this.groupItem.get(i) + '\'', null);
+            Cursor c = db.rawQuery("select (Testname||' / '||Subtest)as data from myfavTest where TemplateName='" + groupItem.get(i) + '\'', null);
 
             child = new ArrayList<>();
             //List<String> list = new ArrayList<String>();
@@ -281,7 +279,7 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
 
                     } while (c.moveToNext());
 
-                    this.childItem.add(child);
+                    childItem.add(child);
                 }
             }
 
@@ -310,14 +308,14 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
 
                     String pname = c.getString(c.getColumnIndex("Mfuladv"));
 
-                    this.groupItem.add(pname);
+                    groupItem.add(pname);
 
                 } while (c.moveToNext());
             }
         }
 
         new ArrayAdapter<>(this,
-                layout.simple_list_item_1, list);
+                android.R.layout.simple_list_item_1, list);
 
         db.close();
         c.close();
@@ -329,10 +327,10 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
 
         ArrayList<String> child = new ArrayList<>();
 
-        for (int i = 0; i < this.groupItem.size(); i++) {
+        for (int i = 0; i < groupItem.size(); i++) {
 
             SQLiteDatabase db = BaseConfig.GetDb();//);
-            Cursor c = db.rawQuery("select fulladvice from fulladv where Mfuladv='" + this.groupItem.get(i) + "'order by fulladvice", null);
+            Cursor c = db.rawQuery("select fulladvice from fulladv where Mfuladv='" + groupItem.get(i) + "'order by fulladvice", null);
 
             child = new ArrayList<>();
             //List<String> list = new ArrayList<String>();
@@ -347,7 +345,7 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
 
                     } while (c.moveToNext());
 
-                    this.childItem.add(child);
+                    childItem.add(child);
                 }
             }
 
@@ -363,9 +361,9 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
 
     @Override
     public final boolean onCreateOptionsMenu(Menu menu) {
-        this.getMenuInflater();
+        getMenuInflater();
 
-        Investigation_ExpandableTestList.CreateMenu(menu);
+        CreateMenu(menu);
         return true;
     }
 
@@ -375,7 +373,7 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
         MenuItem item0 = menu.add(0, 0, 0, "Item 0");
         {
 
-            item0.setIcon(drawable.prev_icon);
+            item0.setIcon(R.drawable.prev_icon);
             item0.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
             item0.setTitle("Cancel");
 
@@ -383,7 +381,7 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
         MenuItem item1 = menu.add(0, 1, 1, "Item 1");
         {
 
-            item1.setIcon(drawable.icon_save_control);
+            item1.setIcon(R.drawable.icon_save_control);
             item1.setShowAsAction(MenuItem.SHOW_AS_ACTION_IF_ROOM | MenuItem.SHOW_AS_ACTION_WITH_TEXT);
             item1.setTitle("Save");
 
@@ -395,7 +393,7 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
     @Override
     public final boolean onOptionsItemSelected(MenuItem item) {
 
-        return this.MenuSelecciona(item);
+        return MenuSelecciona(item);
 
     }
 
@@ -405,8 +403,8 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
 
             case 0:
 
-                Investigation_ExpandableTestList.LoadDeleteTempTest();
-                finish();
+                LoadDeleteTempTest();
+                Investigation_ExpandableTestList.this.finish();
 
 
                 return true;
@@ -417,10 +415,10 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
                 b.putString("status", "done");
                 Intent intent = new Intent();
                 intent.putExtras(b);
-                this.setResult(Activity.RESULT_OK, intent);
-                this.finish();
-
+                setResult(RESULT_OK, intent);
                 finish();
+
+                Investigation_ExpandableTestList.this.finish();
                 return true;
 
         }
@@ -429,7 +427,7 @@ public class Investigation_ExpandableTestList extends ExpandableListActivity //i
 
     //#######################################################################################################
     private static final void LoadDeleteTempTest() {
-        String CREATE_TABLE_TempTest = "Delete from TempTest;";
+        final String CREATE_TABLE_TempTest = "Delete from TempTest;";
         BaseConfig.SaveData(CREATE_TABLE_TempTest);
     }
 

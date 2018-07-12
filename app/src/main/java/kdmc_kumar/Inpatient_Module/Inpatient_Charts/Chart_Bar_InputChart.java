@@ -22,8 +22,6 @@ import com.github.mikephil.charting.data.BarEntry;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 /**
@@ -33,11 +31,11 @@ import kdmc_kumar.Core_Modules.BaseConfig;
 public class Chart_Bar_InputChart extends AppCompatActivity {
 
     //**********************************************************************************************
-    private Bundle b;
-    private Button Close;
+    private Bundle b = null;
+    private Button Close = null;
     //**********************************************************************************************
-    private String Chart_Id;
-    private String Patient_Id;
+    private String Chart_Id = null;
+    private String Patient_Id = null;
 
     public Chart_Bar_InputChart() {
     }
@@ -46,11 +44,11 @@ public class Chart_Bar_InputChart extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.setContentView(layout.new_bar_chart_layout);
+        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
+        setContentView(R.layout.new_bar_chart_layout);
 
         try {
-            this.GetInitialize();
+            GetInitialize();
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
@@ -59,23 +57,23 @@ public class Chart_Bar_InputChart extends AppCompatActivity {
     }
 
     private void GetInitialize() {
-        this.Close = this.findViewById(id.cancel);
+        Close = findViewById(R.id.cancel);
 
-        TextView pat_id = this.findViewById(id.tv_patient_id);
-        TextView pat_name = this.findViewById(id.tv_patient_name);
-        TextView pat_age = this.findViewById(id.tv_patient_agegender);
+        final TextView pat_id = findViewById(R.id.tv_patient_id);
+        final TextView pat_name = findViewById(R.id.tv_patient_name);
+        final TextView pat_age = findViewById(R.id.tv_patient_agegender);
 
-        this.b = this.getIntent().getExtras();
+        b = getIntent().getExtras();
 
-        if (this.b != null) {
+        if (b != null) {
 
-            this.Chart_Id = this.b.getString("ID");
-            this.Patient_Id = this.b.getString(BaseConfig.BUNDLE_PATIENT_ID);
+            Chart_Id = b.getString("ID");
+            Patient_Id = b.getString(BaseConfig.BUNDLE_PATIENT_ID);
 
-            String Patient_Name = BaseConfig.GetValues("select name as ret_values from Patreg where Patid='" + this.Patient_Id + '\'');
-            String Patient_AgeGender = BaseConfig.GetValues("select age||'-'||gender as ret_values from Patreg where Patid='" + this.Patient_Id + '\'');
+            String Patient_Name = BaseConfig.GetValues("select name as ret_values from Patreg where Patid='" + Patient_Id + '\'');
+            String Patient_AgeGender = BaseConfig.GetValues("select age||'-'||gender as ret_values from Patreg where Patid='" + Patient_Id + '\'');
 
-            pat_id.setText(this.Patient_Id);
+            pat_id.setText(Patient_Id);
             pat_name.setText(Patient_Name);
             pat_age.setText(Patient_AgeGender);
 
@@ -83,19 +81,19 @@ public class Chart_Bar_InputChart extends AppCompatActivity {
         }
 
 
-        BarChart chart = this.findViewById(id.chart);
+        BarChart chart = findViewById(R.id.chart);
 
         chart.setDescription("");
 
-        TextView name = this.findViewById(id.chart_name);
+        final TextView name = findViewById(R.id.chart_name);
 
         name.setText("Inpatient - Input Chart");
 
 
-        this.Close.setOnClickListener(view -> finish());
+        Close.setOnClickListener(view -> Chart_Bar_InputChart.this.finish());
 
 
-        BarData data = new BarData(this.getXAxisValues(this.Chart_Id), this.getDataSet(this.Chart_Id));
+        BarData data = new BarData(getXAxisValues(Chart_Id), getDataSet(Chart_Id));
 
         if (data != null) {
             chart.setData(data);
@@ -119,7 +117,7 @@ public class Chart_Bar_InputChart extends AppCompatActivity {
         SQLiteDatabase db = BaseConfig.GetDb();//Chart_Bar_InputChart.this);
 
 
-        String Query = "select ip_oral,ip_fluids from Inpatient_MainChart where patid='" + this.Patient_Id.trim() + "' order by id desc";
+        String Query = "select ip_oral,ip_fluids from Inpatient_MainChart where patid='" + Patient_Id.trim() + "' order by id desc";
         Cursor c = db.rawQuery(Query, null);
         if (c != null) {
             if (c.moveToFirst()) {
@@ -161,7 +159,7 @@ public class Chart_Bar_InputChart extends AppCompatActivity {
 
 
         SQLiteDatabase db = BaseConfig.GetDb();//Chart_Bar_InputChart.this);
-        String Query = "select  Actdate from Inpatient_MainChart where patid='" + this.Patient_Id.trim() + "' order by id desc";
+        String Query = "select  Actdate from Inpatient_MainChart where patid='" + Patient_Id.trim() + "' order by id desc";
         Cursor c = db.rawQuery(Query, null);
         if (c != null) {
             if (c.moveToFirst()) {

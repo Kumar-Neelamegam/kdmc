@@ -10,6 +10,7 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
+import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -19,37 +20,37 @@ import kdmc_kumar.Webservices_NodeJSON.insertTable.model.beans.TableDataResult;
 
 public class PostTableDataFactory extends ControllerFactory<PostTableData> {
     public PostTableDataFactory(MagnetMobileClient magnetClient) {
-        super(PostTableData.class, PostTableDataFactory.PostTableDataSchemaFactory.getInstance().getSchema(), magnetClient);
+        super(PostTableData.class, PostTableDataSchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller PostTableData
     public static class PostTableDataSchemaFactory extends AbstractControllerSchemaFactory {
-        private static PostTableDataFactory.PostTableDataSchemaFactory __instance;
+        private static PostTableDataSchemaFactory __instance = null;
 
         private PostTableDataSchemaFactory() {
         }
 
-        static PostTableDataFactory.PostTableDataSchemaFactory getInstance() {
-            synchronized (PostTableDataFactory.PostTableDataSchemaFactory.class) {
-                if (null == PostTableDataFactory.PostTableDataSchemaFactory.__instance) {
-                    PostTableDataFactory.PostTableDataSchemaFactory.__instance = new PostTableDataFactory.PostTableDataSchemaFactory();
+        static PostTableDataSchemaFactory getInstance() {
+            synchronized (PostTableDataSchemaFactory.class) {
+                if (null == __instance) {
+                    __instance = new PostTableDataSchemaFactory();
                 }
 
-                return PostTableDataFactory.PostTableDataSchemaFactory.__instance;
+                return __instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != this.schema) {
+                if (null != schema) {
                     return;
                 }
 
-                this.schema = new RequestSchema();
-                this.schema.setRootPath("");
+                schema = new RequestSchema();
+                schema.setRootPath("");
 
                 //controller schema for controller method postTableData
-                RequestSchema.JMethod method1 = this.addMethod("postTableData",
+                JMethod method1 = addMethod("postTableData",
                         "data/ExportAllTables",
                         "POST",
                         TableDataResult.class,

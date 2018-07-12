@@ -20,7 +20,6 @@ import android.animation.Animator;
 import android.animation.ObjectAnimator;
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -28,19 +27,19 @@ import android.view.ViewGroup;
  * This transition captures the rotation property of targets before and after
  * the scene change and animates any changes.
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class Rotate extends Transition {
 
     private static final String PROPNAME_ROTATION = "android:rotate:rotation";
 
     @Override
     public void captureStartValues(TransitionValues transitionValues) {
-        transitionValues.values.put(Rotate.PROPNAME_ROTATION, transitionValues.view.getRotation());
+        transitionValues.values.put(PROPNAME_ROTATION, transitionValues.view.getRotation());
     }
 
     @Override
     public void captureEndValues(TransitionValues transitionValues) {
-        transitionValues.values.put(Rotate.PROPNAME_ROTATION, transitionValues.view.getRotation());
+        transitionValues.values.put(PROPNAME_ROTATION, transitionValues.view.getRotation());
     }
 
     @Override
@@ -49,9 +48,9 @@ public class Rotate extends Transition {
         if (startValues == null || endValues == null) {
             return null;
         }
-        View view = endValues.view;
-        float startRotation = (Float) startValues.values.get(Rotate.PROPNAME_ROTATION);
-        float endRotation = (Float) endValues.values.get(Rotate.PROPNAME_ROTATION);
+        final View view = endValues.view;
+        float startRotation = (Float) startValues.values.get(PROPNAME_ROTATION);
+        float endRotation = (Float) endValues.values.get(PROPNAME_ROTATION);
         if (startRotation != endRotation) {
             view.setRotation(startRotation);
             return ObjectAnimator.ofFloat(view, View.ROTATION,

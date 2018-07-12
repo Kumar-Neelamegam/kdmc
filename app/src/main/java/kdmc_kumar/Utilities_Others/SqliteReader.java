@@ -10,7 +10,7 @@ public class SqliteReader {
 
     String Query="";
 
-    private static SqliteReader sqliteReader;
+    private static SqliteReader sqliteReader=null;
 
     public SqliteReader setQuery(String Query)
     {
@@ -22,17 +22,18 @@ public class SqliteReader {
 
     public static SqliteReader getInstance()
     {
-        if(SqliteReader.sqliteReader ==null)
+        if(sqliteReader==null)
         {
-            SqliteReader.sqliteReader =new SqliteReader();
+            sqliteReader=new SqliteReader();
         }
 
-        return SqliteReader.sqliteReader;
+        return sqliteReader;
     }
 
-    public void onDataReceiver(SqliteReader.Data data) {
+    public void onDataReceiver(Data data) throws Exception
+    {
         SQLiteDatabase db = BaseConfig.GetDb();
-        Cursor c = db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(this.Query, null);
         if (c != null) {
             if (c.moveToFirst()) {
                 do {

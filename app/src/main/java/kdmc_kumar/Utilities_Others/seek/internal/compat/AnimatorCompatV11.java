@@ -17,10 +17,8 @@
 package kdmc_kumar.Utilities_Others.seek.internal.compat;
 
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 
 /**
  * Class to wrap a {@link ValueAnimator}
@@ -29,14 +27,15 @@ import android.os.Build.VERSION_CODES;
  * @hide
  * @see {@link import kdmc_kumar.seek.internal.compat.AnimatorCompat}
  */
-@TargetApi(VERSION_CODES.HONEYCOMB)
+@TargetApi(Build.VERSION_CODES.HONEYCOMB)
 public class AnimatorCompatV11 extends  AnimatorCompat {
 
     ValueAnimator animator;
 
-    public AnimatorCompatV11(float start, float end, AnimatorCompat.AnimationFrameUpdateListener listener) {
-        this.animator = ValueAnimator.ofFloat(start, end);
-        this.animator.addUpdateListener(new AnimatorUpdateListener() {
+    public AnimatorCompatV11(float start, float end, final AnimationFrameUpdateListener listener) {
+        super();
+        animator = ValueAnimator.ofFloat(start, end);
+        animator.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
             public void onAnimationUpdate(ValueAnimator animation) {
                 listener.onAnimationFrame((Float) animation.getAnimatedValue());
@@ -46,21 +45,21 @@ public class AnimatorCompatV11 extends  AnimatorCompat {
 
     @Override
     public void cancel() {
-        this.animator.cancel();
+        animator.cancel();
     }
 
     @Override
     public boolean isRunning() {
-        return this.animator.isRunning();
+        return animator.isRunning();
     }
 
     @Override
     public void setDuration(int duration) {
-        this.animator.setDuration(duration);
+        animator.setDuration(duration);
     }
 
     @Override
     public void start() {
-        this.animator.start();
+        animator.start();
     }
 }

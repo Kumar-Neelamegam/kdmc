@@ -15,7 +15,6 @@ import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
-import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
@@ -25,9 +24,6 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Adapters_GetterSetter.DateTimelineRowitemAdapter;
 import kdmc_kumar.Adapters_GetterSetter.Timeline_Objects;
 import kdmc_kumar.Core_Modules.BaseConfig;
@@ -46,24 +42,24 @@ public class Profile_ClinicalInformation extends Fragment {
      */
     //**********************************************************************************************
     //Declaration
-    @BindView(id.clinical_profile_parent_layout)
+    @BindView(R.id.clinical_profile_parent_layout)
     LinearLayout clinicalProfileParentLayout;
-    @BindView(id.clinical_profile_patientid)
+    @BindView(R.id.clinical_profile_patientid)
     TextView clinicalProfilePatientid;
-    @BindView(id.recycler)
+    @BindView(R.id.recycler)
     RecyclerView recycler;
-    @BindView(id.clinical_profile_img_nodata)
+    @BindView(R.id.clinical_profile_img_nodata)
     AppCompatImageView clinicalProfileImgNodata;
-    @BindView(id.clinical_profile_nodatatext)
+    @BindView(R.id.clinical_profile_nodatatext)
     TextView clinicalProfileNodatatext;
-    @BindView(id.clinical_profile_clinicalinfo)
+    @BindView(R.id.clinical_profile_clinicalinfo)
     WebView clinicalProfileClinicalinfo;
 
     DateTimelineRowitemAdapter adapter;
     ArrayList<Timeline_Objects> datetime_arrayList;
     private StringBuilder medicationtablerow = new StringBuilder();
     //**********************************************************************************************
-    private String BUNDLE_PATIENT_ID;
+    private String BUNDLE_PATIENT_ID = null;
 
     public Profile_ClinicalInformation() {
 
@@ -77,13 +73,13 @@ public class Profile_ClinicalInformation extends Fragment {
 
     public final View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(layout.new_clinicalnote_profile, container, false);
+        View rootView = inflater.inflate(R.layout.new_clinicalnote_profile, container, false);
 
         try {
 
-            this.GETINITILIZATION(rootView);
+            GETINITILIZATION(rootView);
 
-            this.CONTROLLISTENERS(rootView);
+            CONTROLLISTENERS(rootView);
 
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -100,7 +96,7 @@ public class Profile_ClinicalInformation extends Fragment {
 
     private void CONTROLLISTENERS(View rootView) {
 
-        this.adapter.setOnItemClickListener((view, position, items) -> this.LoadWebview(items.get(position).getId()));
+        adapter.setOnItemClickListener((view, position, items) -> LoadWebview(items.get(position).getId()));
 
 
     }
@@ -109,34 +105,34 @@ public class Profile_ClinicalInformation extends Fragment {
     private void GETINITILIZATION(View rootView) {
 
         ButterKnife.bind(this, rootView);
-        Bundle args = this.getArguments();
-        this.BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
+        Bundle args = getArguments();
+        BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
 
-        String Patient_Name = BaseConfig.GetValues("select name as ret_values from Patreg where Patid='" + this.BUNDLE_PATIENT_ID + '\'');
-        this.clinicalProfilePatientid.setText(String.format("%s - %s", Patient_Name, this.BUNDLE_PATIENT_ID));
-
-
-        this.recycler.setHasFixedSize(true);
-        this.recycler.setLayoutManager(new LinearLayoutManager(this.getActivity(), LinearLayoutManager.HORIZONTAL, false));
+        String Patient_Name = BaseConfig.GetValues("select name as ret_values from Patreg where Patid='" + BUNDLE_PATIENT_ID + '\'');
+        clinicalProfilePatientid.setText(String.format("%s - %s", Patient_Name, BUNDLE_PATIENT_ID));
 
 
-        ArrayList<Timeline_Objects> datetime_arrayList = this.LoadDateTimeLine();
+        recycler.setHasFixedSize(true);
+        recycler.setLayoutManager(new LinearLayoutManager(getActivity(), LinearLayoutManager.HORIZONTAL, false));
+
+
+        ArrayList<Timeline_Objects> datetime_arrayList = LoadDateTimeLine();
         if (datetime_arrayList.size() > 0) {
-            this.clinicalProfileImgNodata.setVisibility(View.GONE);
-            this.clinicalProfileNodatatext.setVisibility(View.GONE);
-            this.clinicalProfileClinicalinfo.setVisibility(View.VISIBLE);
-            this.recycler.setVisibility(View.VISIBLE);
+            clinicalProfileImgNodata.setVisibility(View.GONE);
+            clinicalProfileNodatatext.setVisibility(View.GONE);
+            clinicalProfileClinicalinfo.setVisibility(View.VISIBLE);
+            recycler.setVisibility(View.VISIBLE);
         } else {
-            this.clinicalProfileImgNodata.setVisibility(View.VISIBLE);
-            this.clinicalProfileNodatatext.setVisibility(View.VISIBLE);
-            this.clinicalProfileClinicalinfo.setVisibility(View.GONE);
-            this.recycler.setVisibility(View.GONE);
+            clinicalProfileImgNodata.setVisibility(View.VISIBLE);
+            clinicalProfileNodatatext.setVisibility(View.VISIBLE);
+            clinicalProfileClinicalinfo.setVisibility(View.GONE);
+            recycler.setVisibility(View.GONE);
         }
 
 
-        this.adapter = new DateTimelineRowitemAdapter(this.getActivity(), datetime_arrayList);
-        this.recycler.setAdapter(this.adapter);// set adapter on recyclerview
-        this.adapter.notifyDataSetChanged();// Notify the adapter
+        adapter = new DateTimelineRowitemAdapter(getActivity(), datetime_arrayList);
+        recycler.setAdapter(adapter);// set adapter on recyclerview
+        adapter.notifyDataSetChanged();// Notify the adapter
 
 
 
@@ -144,10 +140,10 @@ public class Profile_ClinicalInformation extends Fragment {
 
     private ArrayList<Timeline_Objects> LoadDateTimeLine() {
 
-        this.datetime_arrayList = new ArrayList<>();
+        datetime_arrayList = new ArrayList<>();
         SQLiteDatabase db = BaseConfig.GetDb();//);
 
-        Cursor c = db.rawQuery("select distinct Clinical_ID,id,Actdate as acdate from clinicalInformation where ptid='" + this.BUNDLE_PATIENT_ID + "' order by id desc;", null);
+        Cursor c = db.rawQuery("select distinct Clinical_ID,id,Actdate as acdate from clinicalInformation where ptid='" + BUNDLE_PATIENT_ID + "' order by id desc;", null);
 
         if (c.moveToFirst()) {
             do {
@@ -159,39 +155,39 @@ public class Profile_ClinicalInformation extends Fragment {
                 String CLINICAL_ID = c.getString(c.getColumnIndex("Clinical_ID"));
 
 
-                this.datetime_arrayList.add(new Timeline_Objects(ID, DATE, CLINICAL_ID));
+                datetime_arrayList.add(new Timeline_Objects(ID, DATE, CLINICAL_ID));
 
             } while (c.moveToNext());
         }
         c.close();
         db.close();
 
-        return this.datetime_arrayList;
+        return datetime_arrayList;
     }
 
     //**********************************************************************************************
 
     private final void LoadWebview(String id) {
 
-        this.clinicalProfileClinicalinfo.setLayerType(View.LAYER_TYPE_NONE, null);
-        this.clinicalProfileClinicalinfo.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        this.clinicalProfileClinicalinfo.getSettings().setRenderPriority(RenderPriority.HIGH);
-        this.clinicalProfileClinicalinfo.getSettings().setDefaultTextEncodingName("utf-8");
-        this.clinicalProfileClinicalinfo.setWebChromeClient(new Profile_ClinicalInformation.MyWebChromeClient());
-        this.clinicalProfileClinicalinfo.setBackgroundColor(0x00000000);
-        this.clinicalProfileClinicalinfo.setVerticalScrollBarEnabled(true);
-        this.clinicalProfileClinicalinfo.setHorizontalScrollBarEnabled(true);
-        this.clinicalProfileClinicalinfo.getSettings().setJavaScriptEnabled(true);
-        this.clinicalProfileClinicalinfo.getSettings().setAllowContentAccess(true);
-        this.clinicalProfileClinicalinfo.setOnLongClickListener(v -> true);
-        this.clinicalProfileClinicalinfo.setWebChromeClient(new WebChromeClient());
-        this.clinicalProfileClinicalinfo.setLongClickable(false);
+        clinicalProfileClinicalinfo.setLayerType(View.LAYER_TYPE_NONE, null);
+        clinicalProfileClinicalinfo.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        clinicalProfileClinicalinfo.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        clinicalProfileClinicalinfo.getSettings().setDefaultTextEncodingName("utf-8");
+        clinicalProfileClinicalinfo.setWebChromeClient(new MyWebChromeClient());
+        clinicalProfileClinicalinfo.setBackgroundColor(0x00000000);
+        clinicalProfileClinicalinfo.setVerticalScrollBarEnabled(true);
+        clinicalProfileClinicalinfo.setHorizontalScrollBarEnabled(true);
+        clinicalProfileClinicalinfo.getSettings().setJavaScriptEnabled(true);
+        clinicalProfileClinicalinfo.getSettings().setAllowContentAccess(true);
+        clinicalProfileClinicalinfo.setOnLongClickListener(v -> true);
+        clinicalProfileClinicalinfo.setWebChromeClient(new WebChromeClient());
+        clinicalProfileClinicalinfo.setLongClickable(false);
 
 
-        this.clinicalProfileClinicalinfo.addJavascriptInterface(new Profile_ClinicalInformation.WebAppInterface(this.getActivity()), "android");
+        clinicalProfileClinicalinfo.addJavascriptInterface(new WebAppInterface(getActivity()), "android");
         try {
 
-            this.clinicalProfileClinicalinfo.loadDataWithBaseURL("file:///android_asset/", this.LoadClinicalNoteDetails(id), "text/html", "utf-8", null);
+            clinicalProfileClinicalinfo.loadDataWithBaseURL("file:///android_asset/", LoadClinicalNoteDetails(id), "text/html", "utf-8", null);
 
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -215,7 +211,7 @@ public class Profile_ClinicalInformation extends Fragment {
 
         String Query = "select Antental_val,Antental_others,surgical_notes,Previous_MedicalHistory,Hereditary,AllergicTo,any_medication,Perhis_Smoking,Perhis_Alcohol," +
                 "Perhis_Tobacco,Perhis_Others,Medication_History,Family_Med_History,Perhis_BowelHabits,Perhis_Micturition,present_illness,past_illness,any_medication," +
-                "obstetric,gynaec from clinicalInformation where id='" + id.trim() + "' and ptid='" + this.BUNDLE_PATIENT_ID + "' ;";
+                "obstetric,gynaec from clinicalInformation where id='" + id.trim() + "' and ptid='" + BUNDLE_PATIENT_ID + "' ;";
 
         // Log.e("Query: ",Query);
        // Toast.makeText(getActivity(), "Selected Id: "+ id, Toast.LENGTH_SHORT).show();
@@ -224,7 +220,7 @@ public class Profile_ClinicalInformation extends Fragment {
         Cursor c = db.rawQuery(Query, null);
 
 
-        this.medicationtablerow = new StringBuilder();
+        medicationtablerow = new StringBuilder();
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -238,7 +234,7 @@ public class Profile_ClinicalInformation extends Fragment {
 
                             String[] valuenew2 = valuenew1[i].trim().split("_");
 
-                            this.medicationtablerow.append("  <tr>\n" + "    <td>").append(valuenew2[0].replace(",", "")).append("</td>\n").append("    <td>").append(valuenew2[1]).append("</td>\n").append("\t<td>").append(valuenew2[2]).append("</td>\n").append("  </tr>\n");
+                            medicationtablerow.append("  <tr>\n" + "    <td>").append(valuenew2[0].replace(",", "")).append("</td>\n").append("    <td>").append(valuenew2[1]).append("</td>\n").append("\t<td>").append(valuenew2[2]).append("</td>\n").append("  </tr>\n");
 
 
                         }
@@ -249,7 +245,7 @@ public class Profile_ClinicalInformation extends Fragment {
 
                             String[] valuenew3 = c.getString(c.getColumnIndex("Medication_History")).split("_");
 
-                            this.medicationtablerow.append("  <tr>\n" + "    <td>").append(valuenew3[0].replace(",", "")).append("</td>\n").append("    <td>").append(valuenew3[1]).append("</td>\n").append("\t<td>").append(valuenew3[2]).append("</td>\n").append("  </tr>\n");
+                            medicationtablerow.append("  <tr>\n" + "    <td>").append(valuenew3[0].replace(",", "")).append("</td>\n").append("    <td>").append(valuenew3[1]).append("</td>\n").append("\t<td>").append(valuenew3[2]).append("</td>\n").append("  </tr>\n");
                         }
 
                     }
@@ -258,27 +254,27 @@ public class Profile_ClinicalInformation extends Fragment {
                             //  "    <td>Disease Name</td>\n" +
                             "    <td>").append(c.getString(c.getColumnIndex("Family_Med_History"))).append("</td>\n").append("  </tr>\n");
 */
-                    PreviousMedicalHistory = (Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("Previous_MedicalHistory"))));
-                    HereditaryDiseases = (Profile_ClinicalInformation.checkNullEmpty(String.format("%-20s", c.getString(c.getColumnIndex("Hereditary")))));
-                    AllergicTo = (Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("AllergicTo"))));
-                    Smoking = (Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("Perhis_Smoking"))));
-                    Alcohol = (Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("Perhis_Alcohol"))));
-                    Tobacco = (Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("Perhis_Tobacco"))));
-                    Others = (Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("Perhis_Others"))));
-                    Medication = (Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("Medication_History"))));
-                    FamilyMedicalHistory = (Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("Family_Med_History"))));
-                    Bowel = (Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("Perhis_BowelHabits"))));
-                    Micturition = (Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("Perhis_Micturition"))));
-                    PresentIllness = Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("present_illness")));
-                    AnyMedication = Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("any_medication")));
-                    PastIllness = Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("past_illness")));
-                    SurgicalNotes = Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("surgical_notes")));
-                    TreatmentforMedicineNamePeriod = Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("any_medication")));
-                    Obstetric = Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("obstetric")));
-                    Gynaec = Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("gynaec")));
+                    PreviousMedicalHistory = (checkNullEmpty(c.getString(c.getColumnIndex("Previous_MedicalHistory"))));
+                    HereditaryDiseases = (checkNullEmpty(String.format("%-20s", c.getString(c.getColumnIndex("Hereditary")))));
+                    AllergicTo = (checkNullEmpty(c.getString(c.getColumnIndex("AllergicTo"))));
+                    Smoking = (checkNullEmpty(c.getString(c.getColumnIndex("Perhis_Smoking"))));
+                    Alcohol = (checkNullEmpty(c.getString(c.getColumnIndex("Perhis_Alcohol"))));
+                    Tobacco = (checkNullEmpty(c.getString(c.getColumnIndex("Perhis_Tobacco"))));
+                    Others = (checkNullEmpty(c.getString(c.getColumnIndex("Perhis_Others"))));
+                    Medication = (checkNullEmpty(c.getString(c.getColumnIndex("Medication_History"))));
+                    FamilyMedicalHistory = (checkNullEmpty(c.getString(c.getColumnIndex("Family_Med_History"))));
+                    Bowel = (checkNullEmpty(c.getString(c.getColumnIndex("Perhis_BowelHabits"))));
+                    Micturition = (checkNullEmpty(c.getString(c.getColumnIndex("Perhis_Micturition"))));
+                    PresentIllness = checkNullEmpty(c.getString(c.getColumnIndex("present_illness")));
+                    AnyMedication = checkNullEmpty(c.getString(c.getColumnIndex("any_medication")));
+                    PastIllness = checkNullEmpty(c.getString(c.getColumnIndex("past_illness")));
+                    SurgicalNotes = checkNullEmpty(c.getString(c.getColumnIndex("surgical_notes")));
+                    TreatmentforMedicineNamePeriod = checkNullEmpty(c.getString(c.getColumnIndex("any_medication")));
+                    Obstetric = checkNullEmpty(c.getString(c.getColumnIndex("obstetric")));
+                    Gynaec = checkNullEmpty(c.getString(c.getColumnIndex("gynaec")));
 
-                    Antental_Values = Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("Antental_val")));
-                    Antental_Others = Profile_ClinicalInformation.checkNullEmpty(c.getString(c.getColumnIndex("Antental_others")));
+                    Antental_Values = checkNullEmpty(c.getString(c.getColumnIndex("Antental_val")));
+                    Antental_Others = checkNullEmpty(c.getString(c.getColumnIndex("Antental_others")));
 
 
                 } while (c.moveToNext());
@@ -490,12 +486,12 @@ public class Profile_ClinicalInformation extends Fragment {
 
                 "<!-- card 1 ---------------------------------------------------------------------->\n" +
                 "<div class=\"card\">\n" +
-                "<h3><button>"+ this.getString(string.prev_med_history)+"</button></h3>\n" +
+                "<h3><button>"+getString(R.string.prev_med_history)+"</button></h3>\n" +
                 "\n" +
                 "<div class=\"table-responsive\">\n" +
                 "<table class=\"table\">\t\t \n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.str_history)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.str_history)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + PreviousMedicalHistory + "</td>\n" +
                 "</tr>\n" +
@@ -513,12 +509,12 @@ public class Profile_ClinicalInformation extends Fragment {
 
                 "<!-- card 2 ---------------------------------------------------------------------->\n" +
                 "<div class=\"card\">\n" +
-                "<h3><button>"+ this.getString(string.hereditary_diseases)+"</h3>\n" +
+                "<h3><button>"+getString(R.string.hereditary_diseases)+"</h3>\n" +
                 "\n" +
                 "<div class=\"table-responsive\">\n" +
                 "<table class=\"table\">\t\t \n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.diseases)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.diseases)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + HereditaryDiseases + "</td>\n" +
                 "</tr>\n" +
@@ -537,36 +533,36 @@ public class Profile_ClinicalInformation extends Fragment {
 
                 "<!-- card 3 ---------------------------------------------------------------------->\n" +
                 "<div class=\"card\">\n" +
-                "<h3><button>"+ this.getString(string.personal_history)+"</h3>\n" +
+                "<h3><button>"+getString(R.string.personal_history)+"</h3>\n" +
                 "\n" +
                 "<div class=\"table-responsive\">\n" +
                 "<table class=\"table\">\t\t \n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.smoking_habit)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.smoking_habit)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + Smoking + "</td>\n" +
                 "</tr>\n" +
                 "\n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.alcohol_habit)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.alcohol_habit)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + Alcohol + "</td>\n" +
                 "</tr>\n" +
                 "\n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.tobacco_habit)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.tobacco_habit)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + Tobacco + "</td>\n" +
                 "</tr>\n" +
                 "\n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.bowel_habits)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.bowel_habits)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + Bowel + "</td>\n" +
                 "</tr>\n" +
                 "\n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.micturition)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.micturition)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + Micturition + "</td>\n" +
                 "</tr>\n" +
@@ -585,13 +581,13 @@ public class Profile_ClinicalInformation extends Fragment {
 
                 "<!-- card 4 ---------------------------------------------------------------------->\n" +
                 "<div class=\"card\">\n" +
-                "<h3><button>"+ this.getString(string.family_medical_history)+"</h3>\n" +
+                "<h3><button>"+getString(R.string.family_medical_history)+"</h3>\n" +
                 "\n" +
                 "\n" +
                 "<div class=\"table-responsive\">\n" +
                 "<table class=\"table\">\t\t \n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.diseases)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.diseases)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + FamilyMedicalHistory + "</td>\n" +
                 "</tr>\n" +
@@ -611,21 +607,21 @@ public class Profile_ClinicalInformation extends Fragment {
 
                 "<!-- card 5 ---------------------------------------------------------------------->\n" +
                 "<div class=\"card\">\n" +
-                "<h3><button>"+ this.getString(string.medication_history)+"</h3>\n" +
+                "<h3><button>"+getString(R.string.medication_history)+"</h3>\n" +
                 "\n" +
                 "<div class=\"table-responsive\">\n" +
                 "<table class=\"table\">\t\t \n" +
                 "\n" +
                 "<tr>\n" +
-                "<th width=\"auto\">"+ this.getString(string.treatment_for)+"</th>\n" +
-                "<th width=\"auto\">"+ this.getString(string.medicine_name)+"</th>\n" +
-                "<th width=\"auto\">"+ this.getString(string.period)+"</th>\n" +
+                "<th width=\"auto\">"+getString(R.string.treatment_for)+"</th>\n" +
+                "<th width=\"auto\">"+getString(R.string.medicine_name)+"</th>\n" +
+                "<th width=\"auto\">"+getString(R.string.period)+"</th>\n" +
                 "</tr>\n" +
                 "\n" +
                 "\n" +
 
 
-                this.medicationtablerow
+                medicationtablerow
                 +
                 "\n" +
                 "\n" +
@@ -639,12 +635,12 @@ public class Profile_ClinicalInformation extends Fragment {
 
                 "<!-- card 6 ---------------------------------------------------------------------->\n" +
                 "<div class=\"card\">\n" +
-                "<h3><button>"+ this.getString(string.allergies)+"</h3>\n" +
+                "<h3><button>"+getString(R.string.allergies)+"</h3>\n" +
                 "\n" +
                 "<div class=\"table-responsive\">\n" +
                 "<table class=\"table\">\t\t \n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.allergies)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.allergies)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + AllergicTo + "</td>\n" +
                 "</tr>\n" +
@@ -664,18 +660,18 @@ public class Profile_ClinicalInformation extends Fragment {
 
                 "<!-- card 7 ---------------------------------------------------------------------->\n" +
                 "<div class=\"card\">\n" +
-                "<h3><button>"+ this.getString(string.anc)+"</h3>\n" +
+                "<h3><button>"+getString(R.string.anc)+"</h3>\n" +
                 "\n" +
                 "<div class=\"table-responsive\">\n" +
                 "<table class=\"table\">\t\t \n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.obstetric)+"<br/>"+ this.getString(string.previous_pregenancy)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.obstetric)+"<br/>"+getString(R.string.previous_pregenancy)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + Antental_Values + "</td>\n" +
                 "</tr>\n" +
                 "\n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.others)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.others)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + Antental_Others + "</td>\n" +
                 "</tr>\n" +
@@ -690,25 +686,25 @@ public class Profile_ClinicalInformation extends Fragment {
 
                 "<!-- card 8 ---------------------------------------------------------------------->\n" +
                 "<div class=\"card\">\n" +
-                "<h3><button>"+ this.getString(string.other_medical_history)+"</h3>\n" +
+                "<h3><button>"+getString(R.string.other_medical_history)+"</h3>\n" +
                 "\n" +
                 "<div class=\"table-responsive\">\n" +
                 "<table class=\"table\">\t\t \n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.present_illness)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.present_illness)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + PresentIllness + "</td>\n" +
                 "</tr>\n" +
                 "\n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.past_illness)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.past_illness)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + PastIllness + "</td>\n" +
                 "</tr>\n" +
                 "\n" +
                 "\n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.any_medication)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.any_medication)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + AnyMedication + "</td>\n" +
                 "</tr>\n" +
@@ -716,21 +712,21 @@ public class Profile_ClinicalInformation extends Fragment {
                 "\n" +
                 "\n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.previous_surgery_details)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.previous_surgery_details)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + Obstetric + "</td>\n" +
                 "</tr>\n" +
                 "\n" +
                 "\n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.gynaec)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.gynaec)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + Gynaec + "</td>\n" +
                 "</tr>\n" +
                 "\n" +
                 "\n" +
                 "<tr>\n" +
-                "<td width=\"50%\">"+ this.getString(string.other_surgical_remarks)+"</td>\n" +
+                "<td width=\"50%\">"+getString(R.string.other_surgical_remarks)+"</td>\n" +
                 "<td>:</td>\n" +
                 "<td>" + SurgicalNotes + "</td>\n" +
                 "</tr>\n" +
@@ -775,7 +771,7 @@ public class Profile_ClinicalInformation extends Fragment {
          * Instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
-            this.mContext = c;
+            mContext = c;
         }
 
         /**

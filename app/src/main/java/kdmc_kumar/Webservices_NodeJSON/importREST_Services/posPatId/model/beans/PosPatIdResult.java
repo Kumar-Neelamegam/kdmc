@@ -19,13 +19,13 @@ public class PosPatIdResult {
 
 
     @com.google.gson.annotations.SerializedName("Results")
-    private String results;
+    private String results = null;
 
     public PosPatIdResult() {
     }
 
     public final String getResults() {
-        return this.results;
+        return results;
     }
 
     public void setResults(String results) {
@@ -42,11 +42,11 @@ public class PosPatIdResult {
         }
 
         public final PosPatIdResult build() {
-            return this.toBuild;
+            return toBuild;
         }
 
-        public final PosPatIdResult.PosPatIdResultBuilder results(String value) {
-            this.toBuild.setResults(value);
+        public final PosPatIdResultBuilder results(String value) {
+            toBuild.setResults(value);
             return this;
         }
     }

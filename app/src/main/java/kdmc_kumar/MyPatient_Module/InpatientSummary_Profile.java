@@ -11,7 +11,6 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.LayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -25,9 +24,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.OperationItem;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.PrescriptionItem;
 import kdmc_kumar.Adapters_GetterSetter.PatientSummaryRecyclerAdapter;
 import kdmc_kumar.Adapters_GetterSetter.PrescriptionRecylerAdapter;
 import kdmc_kumar.Core_Modules.BaseConfig;
@@ -38,16 +36,16 @@ import kdmc_kumar.Core_Modules.BaseConfig;
 
 public class InpatientSummary_Profile extends Fragment {
 
-    private ArrayList<CommonDataObjects.OperationItem> operationItems;
+    private ArrayList<OperationItem> operationItems = null;
 
-    private PatientSummaryRecyclerAdapter patientSummaryRecyclerAdapter;
+    private PatientSummaryRecyclerAdapter patientSummaryRecyclerAdapter = null;
 
-    private PrescriptionRecylerAdapter prescriptionRecylerAdapter;
+    private PrescriptionRecylerAdapter prescriptionRecylerAdapter = null;
 
-    private ArrayList<CommonDataObjects.PrescriptionItem> prescriptionItems;
-    private RecyclerView recyler_view_prescription;
+    private ArrayList<PrescriptionItem> prescriptionItems = null;
+    private RecyclerView recyler_view_prescription = null;
 
-    private String BUNDLE_PATIENT_ID;
+    private String BUNDLE_PATIENT_ID = null;
 
     public InpatientSummary_Profile() {
     }
@@ -56,28 +54,28 @@ public class InpatientSummary_Profile extends Fragment {
     @Nullable
     @Override
     public final View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = LayoutInflater.from(container.getContext()).inflate(layout.newinpatientsummary_profile, container, false);
+        View view = LayoutInflater.from(container.getContext()).inflate(R.layout.newinpatientsummary_profile, container, false);
 
-        Bundle args = this.getArguments();
-        this.BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
+        Bundle args = getArguments();
+        BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
 
-        String Patient_Name = BaseConfig.GetValues("select name as ret_values from Patreg where Patid='" + this.BUNDLE_PATIENT_ID + '\'');
+        String Patient_Name = BaseConfig.GetValues("select name as ret_values from Patreg where Patid='" + BUNDLE_PATIENT_ID + '\'');
 
-        TextView patienname_id = view.findViewById(id.patienname_id);
-        patienname_id.setText(Patient_Name + " - " + this.BUNDLE_PATIENT_ID);
+        TextView patienname_id = view.findViewById(R.id.patienname_id);
+        patienname_id.setText(Patient_Name + " - " + BUNDLE_PATIENT_ID);
 
 
-        RecyclerView recyler_view = view.findViewById(id.recyler_view);
+        RecyclerView recyler_view = view.findViewById(R.id.recyler_view);
 
-        this.recyler_view_prescription = view.findViewById(id.recyler_view_prescription);
+        recyler_view_prescription = view.findViewById(R.id.recyler_view_prescription);
 
-        LayoutManager mLayoutManager = new LinearLayoutManager(this.getActivity());
+        RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
         recyler_view.setLayoutManager(mLayoutManager);
         recyler_view.setItemAnimator(new DefaultItemAnimator());
 
 
         // TODO: 4/6/2017 Set Recyler View Data
-        this.setReclerViewDetails(recyler_view);
+        setReclerViewDetails(recyler_view);
 
         return view;
     }
@@ -85,7 +83,7 @@ public class InpatientSummary_Profile extends Fragment {
 
     private final void setReclerViewDetails(RecyclerView reclerViewDetails) {
 
-        this.operationItems = new ArrayList<>();
+        operationItems = new ArrayList<>();
         ArrayList wherelikedata = new ArrayList();
 
         try {
@@ -93,7 +91,7 @@ public class InpatientSummary_Profile extends Fragment {
             SQLiteDatabase db = BaseConfig.GetDb();
 
             int i = 0;
-            Cursor c = db.rawQuery("select * from mast_Operation where patid='" + this.BUNDLE_PATIENT_ID + "' group by OperationNo", null);
+            Cursor c = db.rawQuery("select * from mast_Operation where patid='" + BUNDLE_PATIENT_ID + "' group by OperationNo", null);
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -127,7 +125,7 @@ public class InpatientSummary_Profile extends Fragment {
                         }
 
 
-                        this.operationItems.add(new CommonDataObjects.OperationItem(String.valueOf(i), c.getString(c.getColumnIndex("OperationName")), c.getString(c.getColumnIndex("ScheduleDate")), c.getString(c.getColumnIndex("Fromtime")), c.getString(c.getColumnIndex("Totime")), c.getString(c.getColumnIndex("DoctorName"))));
+                        operationItems.add(new OperationItem(String.valueOf(i), c.getString(c.getColumnIndex("OperationName")), c.getString(c.getColumnIndex("ScheduleDate")), c.getString(c.getColumnIndex("Fromtime")), c.getString(c.getColumnIndex("Totime")), c.getString(c.getColumnIndex("DoctorName"))));
 
                         wherelikedata.add(c.getString(c.getColumnIndex("ScheduleDate")));
 
@@ -136,13 +134,13 @@ public class InpatientSummary_Profile extends Fragment {
                 }
             }
             c.close();
-            this.patientSummaryRecyclerAdapter = new PatientSummaryRecyclerAdapter(this.operationItems, this.BUNDLE_PATIENT_ID);
-            LayoutManager mLayoutManager = new LinearLayoutManager(this.getActivity());
+            patientSummaryRecyclerAdapter = new PatientSummaryRecyclerAdapter(operationItems, BUNDLE_PATIENT_ID);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
             reclerViewDetails.setLayoutManager(mLayoutManager);
             reclerViewDetails.setItemAnimator(new DefaultItemAnimator());
-            reclerViewDetails.setAdapter(this.patientSummaryRecyclerAdapter);
+            reclerViewDetails.setAdapter(patientSummaryRecyclerAdapter);
 
-            this.setReclerViewDetails_Dignosis(this.recyler_view_prescription, wherelikedata);
+            setReclerViewDetails_Dignosis(recyler_view_prescription, wherelikedata);
 
         } catch (SQLException e) {
             e.printStackTrace();
@@ -153,7 +151,7 @@ public class InpatientSummary_Profile extends Fragment {
 
 
     private final void setReclerViewDetails_Dignosis(RecyclerView reclerViewDetails, ArrayList datevalues) {
-        this.prescriptionItems = new ArrayList<>();
+        prescriptionItems = new ArrayList<>();
 
 
         try {
@@ -165,7 +163,7 @@ public class InpatientSummary_Profile extends Fragment {
 
                 int i = 0;
                 db.isOpen();
-                Cursor c = db.rawQuery("select remarks,refdocname,Medid,medicinename,treatmentfor,diagnosis,nextvisit,Actdate from Mprescribed where Ptid='" + this.BUNDLE_PATIENT_ID + "' and (substr(Actdate,0,12)='" + datevalues.get(ij) + "' or substr(Actdate,0,12)='" + datevalues.get(ij) + "') order by Medid desc ;", null);
+                Cursor c = db.rawQuery("select remarks,refdocname,Medid,medicinename,treatmentfor,diagnosis,nextvisit,Actdate from Mprescribed where Ptid='" + BUNDLE_PATIENT_ID + "' and (substr(Actdate,0,12)='" + datevalues.get(ij).toString() + "' or substr(Actdate,0,12)='" + datevalues.get(ij).toString() + "') order by Medid desc ;", null);
 
                 if (c != null) {
                     if (c.moveToFirst()) {
@@ -184,7 +182,7 @@ public class InpatientSummary_Profile extends Fragment {
                             String symStr = c.getString(c.getColumnIndex("treatmentfor"));
 
                             //PrescriptionItem(String sno,String medicine_Name, String interval, String frequency, String duration, String doctorname)
-                            this.prescriptionItems.add(new CommonDataObjects.PrescriptionItem(String.valueOf(i), Tabledata[0], Tabledata[1], Tabledata[2], Tabledata[3], refdocname));
+                            prescriptionItems.add(new PrescriptionItem(String.valueOf(i), Tabledata[0], Tabledata[1], Tabledata[2], Tabledata[3], refdocname));
 
                         } while (c.moveToNext());
                     }
@@ -193,11 +191,11 @@ public class InpatientSummary_Profile extends Fragment {
                 c.close();
             }
 
-            this.prescriptionRecylerAdapter = new PrescriptionRecylerAdapter(this.prescriptionItems);
-            LayoutManager mLayoutManager = new LinearLayoutManager(this.getActivity());
+            prescriptionRecylerAdapter = new PrescriptionRecylerAdapter(prescriptionItems);
+            RecyclerView.LayoutManager mLayoutManager = new LinearLayoutManager(getActivity());
             reclerViewDetails.setLayoutManager(mLayoutManager);
             reclerViewDetails.setItemAnimator(new DefaultItemAnimator());
-            reclerViewDetails.setAdapter(this.prescriptionRecylerAdapter);
+            reclerViewDetails.setAdapter(prescriptionRecylerAdapter);
 
         } catch (SQLException e) {
             e.printStackTrace();

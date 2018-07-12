@@ -10,6 +10,7 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
+import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -19,37 +20,37 @@ import kdmc_kumar.Webservices_NodeJSON.importREST_Services.postIsUpdateMax.model
 
 public class PostIsUpdateMaxFactory extends ControllerFactory<PostIsUpdateMax> {
     public PostIsUpdateMaxFactory(MagnetMobileClient magnetClient) {
-        super(PostIsUpdateMax.class, PostIsUpdateMaxFactory.PostIsUpdateMaxSchemaFactory.getInstance().getSchema(), magnetClient);
+        super(PostIsUpdateMax.class, PostIsUpdateMaxSchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller PostIsUpdateMax
     public static class PostIsUpdateMaxSchemaFactory extends AbstractControllerSchemaFactory {
-        private static PostIsUpdateMaxFactory.PostIsUpdateMaxSchemaFactory __instance;
+        private static PostIsUpdateMaxSchemaFactory __instance = null;
 
         private PostIsUpdateMaxSchemaFactory() {
         }
 
-        static PostIsUpdateMaxFactory.PostIsUpdateMaxSchemaFactory getInstance() {
-            synchronized (PostIsUpdateMaxFactory.PostIsUpdateMaxSchemaFactory.class) {
-                if (null == PostIsUpdateMaxFactory.PostIsUpdateMaxSchemaFactory.__instance) {
-                    PostIsUpdateMaxFactory.PostIsUpdateMaxSchemaFactory.__instance = new PostIsUpdateMaxFactory.PostIsUpdateMaxSchemaFactory();
+        static PostIsUpdateMaxSchemaFactory getInstance() {
+            synchronized (PostIsUpdateMaxSchemaFactory.class) {
+                if (null == __instance) {
+                    __instance = new PostIsUpdateMaxSchemaFactory();
                 }
 
-                return PostIsUpdateMaxFactory.PostIsUpdateMaxSchemaFactory.__instance;
+                return __instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != this.schema) {
+                if (null != schema) {
                     return;
                 }
 
-                this.schema = new RequestSchema();
-                this.schema.setRootPath("");
+                schema = new RequestSchema();
+                schema.setRootPath("");
 
                 //controller schema for controller method postIsUpdateMax
-                RequestSchema.JMethod method1 = this.addMethod("postIsUpdateMax",
+                JMethod method1 = addMethod("postIsUpdateMax",
                         "importMastersSP/postIsUpdateMax",
                         "POST",
                         IsUpdateMaxResult.class,

@@ -75,7 +75,7 @@ class NotificationBadge(
             val textColor = a.getColor(R.styleable.NotificationBadge_android_textColor, DEFAULT_TEXT_COLOR.toInt())
             tv_badge_text.setTextColor(textColor)
 
-            val textSize = a.getDimension(R.styleable.NotificationBadge_android_textSize, dpToPx(DEFAULT_TEXT_SIZE))
+            val textSize = a.getDimension(R.styleable.NotificationBadge_android_textSize, dpToPx(DEFAULT_TEXT_SIZE));
             tv_badge_text.setTextSize(TypedValue.COMPLEX_UNIT_PX, textSize)
 
             animationEnabled = a.getBoolean(R.styleable.NotificationBadge_nbAnimationEnabled, DEFAULT_ANIMATION_ENABLED)

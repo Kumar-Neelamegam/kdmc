@@ -2132,6 +2132,7 @@
     <string name="sgpt">SGPT</string>
     <string name="shape_of_the_abdomen">Shape of the Abdomen :</string>
     <string name="shape_of_the_chest">Shape of the Chest</string>
+    <string name="show_today_patients">Show today patients</string>
     <string name="showallpatients">Show all patients</string>
     <string name="sign_out">Signout</string>
     <string name="signs">Signs</string>
@@ -3620,6 +3621,10 @@
     </style>
     <style name="CustomEditTextStyle" parent="android:Widget.EditText">
 
+    </style>
+    <style name="CustomStyledRadioButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/ash</item>
+        <item name="colorControlActivated">@color/white</item>
     </style>
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@anim/slide_in_right</item>

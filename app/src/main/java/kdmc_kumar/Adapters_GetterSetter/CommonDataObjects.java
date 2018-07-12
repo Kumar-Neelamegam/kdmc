@@ -18,24 +18,24 @@ public class CommonDataObjects {
         String Medicine;
         String Id;
         public Fav_MedicineList(String medicine, String id) {
-            this.Medicine = medicine;
-            this.Id = id;
+            Medicine = medicine;
+            Id = id;
         }
 
         public final String getMedicine() {
-            return this.Medicine;
+            return Medicine;
         }
 
         public final void setMedicine(String medicine) {
-            this.Medicine = medicine;
+            Medicine = medicine;
         }
 
         public final String getId() {
-            return this.Id;
+            return Id;
         }
 
         public final void setId(String id) {
-            this.Id = id;
+            Id = id;
         }
     }
 
@@ -51,33 +51,33 @@ public class CommonDataObjects {
 
         public Fav_TestList(String id, String testName, String subTestName) {
 
-            this.Id = id;
-            this.TestName = testName;
-            this.SubTestName = subTestName;
+            Id = id;
+            TestName = testName;
+            SubTestName = subTestName;
         }
 
         public final String getTestName() {
-            return this.TestName;
+            return TestName;
         }
 
         public final void setTestName(String testName) {
-            this.TestName = testName;
+            TestName = testName;
         }
 
         public final String getSubTestName() {
-            return this.SubTestName;
+            return SubTestName;
         }
 
         public final void setSubTestName(String subTestName) {
-            this.SubTestName = subTestName;
+            SubTestName = subTestName;
         }
 
         public final String getId() {
-            return this.Id;
+            return Id;
         }
 
         public final void setId(String id) {
-            this.Id = id;
+            Id = id;
         }
 
 
@@ -91,12 +91,13 @@ public class CommonDataObjects {
 
 
         public Item(String title, String description) {
+            super();
             this.title = title;
             this.description = description;
         }
 
         public final String getTitle() {
-            return this.title;
+            return title;
         }
 
         public final void setTitle(String title) {
@@ -104,7 +105,7 @@ public class CommonDataObjects {
         }
 
         public final String getDescription() {
-            return this.description;
+            return description;
         }
 
         public final void setDescription(String description) {
@@ -137,24 +138,24 @@ public class CommonDataObjects {
         String ReportName;
         String ReportPhoto;
         public OnlineConsultationReport(String reportName, String reportPhoto) {
-            this.ReportName = reportName;
-            this.ReportPhoto = reportPhoto;
+            ReportName = reportName;
+            ReportPhoto = reportPhoto;
         }
 
         public final String getReportName() {
-            return this.ReportName;
+            return ReportName;
         }
 
         public final void setReportName(String reportName) {
-            this.ReportName = reportName;
+            ReportName = reportName;
         }
 
         public final String getReportPhoto() {
-            return this.ReportPhoto;
+            return ReportPhoto;
         }
 
         public final void setReportPhoto(String reportPhoto) {
-            this.ReportPhoto = reportPhoto;
+            ReportPhoto = reportPhoto;
         }
     }
     //**********************************************************************************************
@@ -169,36 +170,36 @@ public class CommonDataObjects {
         String Remark_Image;
 
         public DiagnosisItem(String s_No, String doctor, String OPerationNotes, String position, String operationProcedure, String postOPerativeDiagnosis, String postOpertiveinstruction, String closure, String preOperativeDiagnosis, String remark_Image) {
-            this.S_No = s_No;
-            this.Doctor = doctor;
+            S_No = s_No;
+            Doctor = doctor;
             this.OPerationNotes = OPerationNotes;
-            this.Position = position;
-            this.OperationProcedure = operationProcedure;
-            this.PostOPerativeDiagnosis = postOPerativeDiagnosis;
-            this.PostOpertiveinstruction = postOpertiveinstruction;
-            this.Closure = closure;
-            this.PreOperativeDiagnosis = preOperativeDiagnosis;
-            this.Remark_Image = remark_Image;
+            Position = position;
+            OperationProcedure = operationProcedure;
+            PostOPerativeDiagnosis = postOPerativeDiagnosis;
+            PostOpertiveinstruction = postOpertiveinstruction;
+            Closure = closure;
+            PreOperativeDiagnosis = preOperativeDiagnosis;
+            Remark_Image = remark_Image;
         }
 
         public final String getS_No() {
-            return this.S_No;
+            return S_No;
         }
 
         public final void setS_No(String s_No) {
-            this.S_No = s_No;
+            S_No = s_No;
         }
 
         public final String getDoctor() {
-            return this.Doctor;
+            return Doctor;
         }
 
         public final void setDoctor(String doctor) {
-            this.Doctor = doctor;
+            Doctor = doctor;
         }
 
         public final String getOPerationNotes() {
-            return this.OPerationNotes;
+            return OPerationNotes;
         }
 
         public final void setOPerationNotes(String OPerationNotes) {
@@ -206,59 +207,59 @@ public class CommonDataObjects {
         }
 
         public final String getPosition() {
-            return this.Position;
+            return Position;
         }
 
         public final void setPosition(String position) {
-            this.Position = position;
+            Position = position;
         }
 
         public final String getOperationProcedure() {
-            return this.OperationProcedure;
+            return OperationProcedure;
         }
 
         public final void setOperationProcedure(String operationProcedure) {
-            this.OperationProcedure = operationProcedure;
+            OperationProcedure = operationProcedure;
         }
 
         public final String getPostOPerativeDiagnosis() {
-            return this.PostOPerativeDiagnosis;
+            return PostOPerativeDiagnosis;
         }
 
         public final void setPostOPerativeDiagnosis(String postOPerativeDiagnosis) {
-            this.PostOPerativeDiagnosis = postOPerativeDiagnosis;
+            PostOPerativeDiagnosis = postOPerativeDiagnosis;
         }
 
         public final String getPostOpertiveinstruction() {
-            return this.PostOpertiveinstruction;
+            return PostOpertiveinstruction;
         }
 
         public final void setPostOpertiveinstruction(String postOpertiveinstruction) {
-            this.PostOpertiveinstruction = postOpertiveinstruction;
+            PostOpertiveinstruction = postOpertiveinstruction;
         }
 
         public final String getClosure() {
-            return this.Closure;
+            return Closure;
         }
 
         public final void setClosure(String closure) {
-            this.Closure = closure;
+            Closure = closure;
         }
 
         public final String getPreOperativeDiagnosis() {
-            return this.PreOperativeDiagnosis;
+            return PreOperativeDiagnosis;
         }
 
         public final void setPreOperativeDiagnosis(String preOperativeDiagnosis) {
-            this.PreOperativeDiagnosis = preOperativeDiagnosis;
+            PreOperativeDiagnosis = preOperativeDiagnosis;
         }
 
         public final String getRemark_Image() {
-            return this.Remark_Image;
+            return Remark_Image;
         }
 
         public final void setRemark_Image(String remark_Image) {
-            this.Remark_Image = remark_Image;
+            Remark_Image = remark_Image;
         }
     }
 
@@ -272,43 +273,43 @@ public class CommonDataObjects {
         String InjectionId ="";
 
         public InjectionGetSet() {
-            InjectionId = this.InjectionId;
-            InjectionName = this.InjectionName;
-            Dosage = this.Dosage;
-            Quantity = this.Quantity;
+            this.InjectionId = InjectionId;
+            this.InjectionName = InjectionName;
+            this.Dosage = Dosage;
+            this.Quantity = Quantity;
 
         }
 
         public final String getInjectionId() {
-            return this.InjectionId;
+            return InjectionId;
         }
 
         public final void setInjectionId(String injectionId) {
-            this.InjectionId = injectionId;
+            InjectionId = injectionId;
         }
 
         public final String getInjectionName() {
-            return this.InjectionName;
+            return InjectionName;
         }
 
         public final void setInjectionName(String injectionName) {
-            this.InjectionName = injectionName;
+            InjectionName = injectionName;
         }
 
         public final String getDosage() {
-            return this.Dosage;
+            return Dosage;
         }
 
         public final void setDosage(String dosage) {
-            this.Dosage = dosage;
+            Dosage = dosage;
         }
 
         public final String getQuantity() {
-            return this.Quantity;
+            return Quantity;
         }
 
         public final void setQuantity(String quantity) {
-            this.Quantity = quantity;
+            Quantity = quantity;
         }
     }
 
@@ -336,79 +337,79 @@ public class CommonDataObjects {
         }
 
         public MedicineGetSet(String medicine_Type, String medicine_Name, String morning_Value, String afternoon_Value, String evening_Value, String night_Value, String intake_Value, String days_Value) {
-            this.Medicine_Type = medicine_Type;
-            this.Medicine_Name = medicine_Name;
-            this.Morning_Value = morning_Value;
-            this.Evening_Value = evening_Value;
-            this.Afternoon_Value = afternoon_Value;
-            this.Night_Value = night_Value;
-            this.Intake_Value = intake_Value;
-            this.Days_Value = days_Value;
+            Medicine_Type = medicine_Type;
+            Medicine_Name = medicine_Name;
+            Morning_Value = morning_Value;
+            Evening_Value = evening_Value;
+            Afternoon_Value = afternoon_Value;
+            Night_Value = night_Value;
+            Intake_Value = intake_Value;
+            Days_Value = days_Value;
         }
 
 
         public final String getMedicine_Type() {
-            return this.Medicine_Type;
+            return Medicine_Type;
         }
 
         public final void setMedicine_Type(String medicine_Type) {
-            this.Medicine_Type = medicine_Type;
+            Medicine_Type = medicine_Type;
         }
 
         public final String getAfternoon_Value() {
-            return this.Afternoon_Value;
+            return Afternoon_Value;
         }
 
         public final void setAfternoon_Value(String afternoon_Value) {
-            this.Afternoon_Value = afternoon_Value;
+            Afternoon_Value = afternoon_Value;
         }
 
         public final String getMedicine_Name() {
-            return this.Medicine_Name;
+            return Medicine_Name;
         }
 
         public final void setMedicine_Name(String medicine_Name) {
-            this.Medicine_Name = medicine_Name;
+            Medicine_Name = medicine_Name;
         }
 
         public final String getMorning_Value() {
-            return this.Morning_Value;
+            return Morning_Value;
         }
 
         public final void setMorning_Value(String morning_Value) {
-            this.Morning_Value = morning_Value;
+            Morning_Value = morning_Value;
         }
 
         public final String getEvening_Value() {
-            return this.Evening_Value;
+            return Evening_Value;
         }
 
         public final void setEvening_Value(String evening_Value) {
-            this.Evening_Value = evening_Value;
+            Evening_Value = evening_Value;
         }
 
         public final String getNight_Value() {
-            return this.Night_Value;
+            return Night_Value;
         }
 
         public final void setNight_Value(String night_Value) {
-            this.Night_Value = night_Value;
+            Night_Value = night_Value;
         }
 
         public final String getIntake_Value() {
-            return this.Intake_Value;
+            return Intake_Value;
         }
 
         public final void setIntake_Value(String intake_Value) {
-            this.Intake_Value = intake_Value;
+            Intake_Value = intake_Value;
         }
 
         public final String getDays_Value() {
-            return this.Days_Value;
+            return Days_Value;
         }
 
         public final void setDays_Value(String days_Value) {
-            this.Days_Value = days_Value;
+            Days_Value = days_Value;
         }
 
 
@@ -421,7 +422,7 @@ public class CommonDataObjects {
      */
 
     public static class MyPatientGetSet {
-        public boolean IsOnlinePatient;
+        public boolean IsOnlinePatient = false;
         public String IsLabReport = "0";
         private String Patient_Name;
         private String Patient_Id;
@@ -431,69 +432,69 @@ public class CommonDataObjects {
         private String Patient_Prefix;
 //00003075
         public MyPatientGetSet(String patient_prefix, String patient_Name, String patient_Id, String patient_Age, String patient_Gender, String Patient_Image) {
-            this.Patient_Prefix = patient_prefix;
-            this.Patient_Name = patient_Name;
-            this.Patient_Id = patient_Id;
-            this.Patient_Age = patient_Age;
-            this.Patient_Gender = patient_Gender;
+            Patient_Prefix = patient_prefix;
+            Patient_Name = patient_Name;
+            Patient_Id = patient_Id;
+            Patient_Age = patient_Age;
+            Patient_Gender = patient_Gender;
             this.Patient_Image = Patient_Image;
 
         }
 
         public final String getPatient_Prefix() {
-            return this.Patient_Prefix;
+            return Patient_Prefix;
         }
 
         public final void setPatient_Prefix(String patient_Prefix) {
-            this.Patient_Prefix = patient_Prefix;
+            Patient_Prefix = patient_Prefix;
         }
 
         public final String getPatient_Image() {
-            return this.Patient_Image;
+            return Patient_Image;
         }
 
         public final void setPatient_Image(String patient_Image) {
-            this.Patient_Image = patient_Image;
+            Patient_Image = patient_Image;
         }
 
         public final boolean isOnlinePatient() {
-            return this.IsOnlinePatient;
+            return IsOnlinePatient;
         }
 
         public final void setOnlinePatient(boolean onlinePatient) {
-            this.IsOnlinePatient = onlinePatient;
+            IsOnlinePatient = onlinePatient;
         }
 
         public final String getPatient_Name() {
-            return this.Patient_Name;
+            return Patient_Name;
         }
 
         public final void setPatient_Name(String patient_Name) {
-            this.Patient_Name = patient_Name;
+            Patient_Name = patient_Name;
         }
 
         public final String getPatient_Id() {
-            return this.Patient_Id;
+            return Patient_Id;
         }
 
         public final void setPatient_Id(String patient_Id) {
-            this.Patient_Id = patient_Id;
+            Patient_Id = patient_Id;
         }
 
         public final String getPatient_Age() {
-            return this.Patient_Age;
+            return Patient_Age;
         }
 
         public final void setPatient_Age(String patient_Age) {
-            this.Patient_Age = patient_Age;
+            Patient_Age = patient_Age;
         }
 
         public final String getPatient_Gender() {
-            return this.Patient_Gender;
+            return Patient_Gender;
         }
 
         public final void setPatient_Gender(String patient_Gender) {
-            this.Patient_Gender = patient_Gender;
+            Patient_Gender = patient_Gender;
         }
     }
 
@@ -516,78 +517,78 @@ public class CommonDataObjects {
         String MedId;
 
         public OnlineConsultation_DataObjects(String id, String patient_Name, String patient_Id, String patient_Age, String patient_Gender, String patient_Photo, String consultationId, String Medid) {
-            this.Id = id;
-            this.Patient_Name = patient_Name;
-            this.Patient_Id = patient_Id;
-            this.Patient_Age = patient_Age;
-            this.Patient_Gender = patient_Gender;
-            this.Patient_Photo = patient_Photo;
-            this.ConsultationId = consultationId;
-            this.MedId = Medid;
+            Id = id;
+            Patient_Name = patient_Name;
+            Patient_Id = patient_Id;
+            Patient_Age = patient_Age;
+            Patient_Gender = patient_Gender;
+            Patient_Photo = patient_Photo;
+            ConsultationId = consultationId;
+            MedId = Medid;
         }
 
         public final String getMedId() {
-            return this.MedId;
+            return MedId;
         }
 
         public final void setMedId(String medId) {
-            this.MedId = medId;
+            MedId = medId;
         }
 
         public final String getId() {
-            return this.Id;
+            return Id;
         }
 
         public final void setId(String id) {
-            this.Id = id;
+            Id = id;
         }
 
         public final String getPatient_Name() {
-            return this.Patient_Name;
+            return Patient_Name;
         }
 
         public final void setPatient_Name(String patient_Name) {
-            this.Patient_Name = patient_Name;
+            Patient_Name = patient_Name;
         }
 
         public final String getPatient_Id() {
-            return this.Patient_Id;
+            return Patient_Id;
         }
 
         public final void setPatient_Id(String patient_Id) {
-            this.Patient_Id = patient_Id;
+            Patient_Id = patient_Id;
         }
 
         public final String getPatient_Age() {
-            return this.Patient_Age;
+            return Patient_Age;
         }
 
         public final void setPatient_Age(String patient_Age) {
-            this.Patient_Age = patient_Age;
+            Patient_Age = patient_Age;
         }
 
         public final String getPatient_Gender() {
-            return this.Patient_Gender;
+            return Patient_Gender;
         }
 
         public final void setPatient_Gender(String patient_Gender) {
-            this.Patient_Gender = patient_Gender;
+            Patient_Gender = patient_Gender;
         }
 
         public final String getPatient_Photo() {
-            return this.Patient_Photo;
+            return Patient_Photo;
         }
 
         public final void setPatient_Photo(String patient_Photo) {
-            this.Patient_Photo = patient_Photo;
+            Patient_Photo = patient_Photo;
         }
 
         public final String getConsultationId() {
-            return this.ConsultationId;
+            return ConsultationId;
         }
 
         public final void setConsultationId(String consultationId) {
-            this.ConsultationId = consultationId;
+            ConsultationId = consultationId;
         }
     }
 
@@ -607,60 +608,60 @@ public class CommonDataObjects {
         String Reference_doc = "";
 
         public OperationItem(String serialNo, String operation_name, String operation_date, String from_time, String to_Time, String reference_doc) {
-            this.SerialNo = serialNo;
-            this.Operation_name = operation_name;
-            this.Operation_date = operation_date;
-            this.From_time = from_time;
-            this.To_Time = to_Time;
-            this.Reference_doc = reference_doc;
+            SerialNo = serialNo;
+            Operation_name = operation_name;
+            Operation_date = operation_date;
+            From_time = from_time;
+            To_Time = to_Time;
+            Reference_doc = reference_doc;
         }
 
         public final String getSerialNo() {
-            return this.SerialNo;
+            return SerialNo;
         }
 
         public final void setSerialNo(String serialNo) {
-            this.SerialNo = serialNo;
+            SerialNo = serialNo;
         }
 
         public final String getOperation_name() {
-            return this.Operation_name;
+            return Operation_name;
         }
 
         public final void setOperation_name(String operation_name) {
-            this.Operation_name = operation_name;
+            Operation_name = operation_name;
         }
 
         public final String getOperation_date() {
-            return this.Operation_date;
+            return Operation_date;
         }
 
         public final void setOperation_date(String operation_date) {
-            this.Operation_date = operation_date;
+            Operation_date = operation_date;
         }
 
         public final String getFrom_time() {
-            return this.From_time;
+            return From_time;
         }
 
         public final void setFrom_time(String from_time) {
-            this.From_time = from_time;
+            From_time = from_time;
         }
 
         public final String getTo_Time() {
-            return this.To_Time;
+            return To_Time;
         }
 
         public final void setTo_Time(String to_Time) {
-            this.To_Time = to_Time;
+            To_Time = to_Time;
         }
 
         public final String getReference_doc() {
-            return this.Reference_doc;
+            return Reference_doc;
         }
 
         public final void setReference_doc(String reference_doc) {
-            this.Reference_doc = reference_doc;
+            Reference_doc = reference_doc;
         }
     }
 
@@ -675,60 +676,60 @@ public class CommonDataObjects {
         String Medicine_Name, Interval, Frequency, Duration, Doctorname, Sno;
 
         public PrescriptionItem(String sno, String medicine_Name, String interval, String frequency, String duration, String doctorname) {
-            Sno = sno;
-            this.Medicine_Name = medicine_Name;
-            this.Interval = interval;
-            this.Frequency = frequency;
-            this.Duration = duration;
-            this.Doctorname = doctorname;
+            this.Sno = sno;
+            Medicine_Name = medicine_Name;
+            Interval = interval;
+            Frequency = frequency;
+            Duration = duration;
+            Doctorname = doctorname;
         }
 
         public final String getSno() {
-            return this.Sno;
+            return Sno;
         }
 
         public final void setSno(String sno) {
-            this.Sno = sno;
+            Sno = sno;
         }
 
         public final String getMedicine_Name() {
-            return this.Medicine_Name;
+            return Medicine_Name;
         }
 
         public final void setMedicine_Name(String medicine_Name) {
-            this.Medicine_Name = medicine_Name;
+            Medicine_Name = medicine_Name;
         }
 
         public final String getInterval() {
-            return this.Interval;
+            return Interval;
         }
 
         public final void setInterval(String interval) {
-            this.Interval = interval;
+            Interval = interval;
         }
 
         public final String getFrequency() {
-            return this.Frequency;
+            return Frequency;
         }
 
         public final void setFrequency(String frequency) {
-            this.Frequency = frequency;
+            Frequency = frequency;
         }
 
         public final String getDuration() {
-            return this.Duration;
+            return Duration;
         }
 
         public final void setDuration(String duration) {
-            this.Duration = duration;
+            Duration = duration;
         }
 
         public final String getDoctorname() {
-            return this.Doctorname;
+            return Doctorname;
         }
 
         public final void setDoctorname(String doctorname) {
-            this.Doctorname = doctorname;
+            Doctorname = doctorname;
         }
     }
 
@@ -747,51 +748,51 @@ public class CommonDataObjects {
         String Report_Summary = "";
 
         public TestItem(String report_Name, String report_Type, String report_Date, String report_Image, String report_Summary) {
-            this.Report_Name = report_Name;
-            this.Report_Type = report_Type;
-            this.Report_Date = report_Date;
-            this.Report_Image = report_Image;
-            this.Report_Summary = report_Summary;
+            Report_Name = report_Name;
+            Report_Type = report_Type;
+            Report_Date = report_Date;
+            Report_Image = report_Image;
+            Report_Summary = report_Summary;
         }
 
         public final String getReport_Summary() {
-            return this.Report_Summary;
+            return Report_Summary;
         }
 
         public final void setReport_Summary(String report_Summary) {
-            this.Report_Summary = report_Summary;
+            Report_Summary = report_Summary;
         }
 
         public final String getReport_Name() {
-            return this.Report_Name;
+            return Report_Name;
         }
 
         public final void setReport_Name(String report_Name) {
-            this.Report_Name = report_Name;
+            Report_Name = report_Name;
         }
 
         public final String getReport_Type() {
-            return this.Report_Type;
+            return Report_Type;
         }
 
         public final void setReport_Type(String report_Type) {
-            this.Report_Type = report_Type;
+            Report_Type = report_Type;
         }
 
         public final String getReport_Date() {
-            return this.Report_Date;
+            return Report_Date;
         }
 
         public final void setReport_Date(String report_Date) {
-            this.Report_Date = report_Date;
+            Report_Date = report_Date;
         }
 
         public final String getReport_Image() {
-            return this.Report_Image;
+            return Report_Image;
         }
 
         public final void setReport_Image(String report_Image) {
-            this.Report_Image = report_Image;
+            Report_Image = report_Image;
         }
     }
 
@@ -812,7 +813,7 @@ public class CommonDataObjects {
         }
 
         public final String getVaccinename() {
-            return this.vaccinename;
+            return vaccinename;
         }
 
         public final void setVaccinename(String vaccinename) {
@@ -820,7 +821,7 @@ public class CommonDataObjects {
         }
 
         public final String getSchedule() {
-            return this.schedule;
+            return schedule;
         }
 
         public final void setSchedule(String schedule) {
@@ -828,7 +829,7 @@ public class CommonDataObjects {
         }
 
         public final String getGivendt() {
-            return this.givendt;
+            return givendt;
         }
 
         public final void setGivendt(String givendt) {
@@ -836,7 +837,7 @@ public class CommonDataObjects {
         }
 
         public final String getWeight() {
-            return this.weight;
+            return weight;
         }
 
         public final void setWeight(String weight) {
@@ -860,39 +861,39 @@ public class CommonDataObjects {
         }
 
         public final String getSystem() {
-            return this.System;
+            return System;
         }
 
         public final void setSystem(String system) {
-            this.System = system;
+            System = system;
         }
 
         public final String getBrandName() {
-            return this.BrandName;
+            return BrandName;
         }
 
         public final void setBrandName(String brandName) {
-            this.BrandName = brandName;
+            BrandName = brandName;
         }
 
         public final String getPharmaCompany() {
-            return this.PharmaCompany;
+            return PharmaCompany;
         }
 
         public final void setPharmaCompany(String pharmaCompany) {
-            this.PharmaCompany = pharmaCompany;
+            PharmaCompany = pharmaCompany;
         }
 
         public final String getDosage() {
-            return this.Dosage;
+            return Dosage;
         }
 
         public final void setDosage(String dosage) {
-            this.Dosage = dosage;
+            Dosage = dosage;
         }
 
         public final String getServerid() {
-            return this.serverid;
+            return serverid;
         }
 
         public final void setServerid(String serverid) {
@@ -905,7 +906,7 @@ public class CommonDataObjects {
 
     public static class RowItem {
 
-        public boolean IsOnlinePatient;
+        public boolean IsOnlinePatient = false;
         String File_Path;
         public String UniqueId = "";
         private Bitmap imageId;
@@ -921,15 +922,15 @@ public class CommonDataObjects {
         }
 
         public final String getFile_Path() {
-            return this.File_Path;
+            return File_Path;
         }
 
         public final void setFile_Path(String file_Path) {
-            this.File_Path = file_Path;
+            File_Path = file_Path;
         }
 
         public final Bitmap getImageId() {
-            return this.imageId;
+            return imageId;
         }
 
         public final void setImageId(Bitmap imageId) {
@@ -938,7 +939,7 @@ public class CommonDataObjects {
         }
 
         public final String getDesc() {
-            return this.desc;
+            return desc;
         }
 
         public final void setDesc(String desc) {
@@ -946,7 +947,7 @@ public class CommonDataObjects {
         }
 
         public final String getTitle() {
-            return this.title;
+            return title;
         }
 
         public final void setTitle(String title) {
@@ -955,7 +956,7 @@ public class CommonDataObjects {
 
         @Override
         public final String toString() {
-            return this.title + '\n' + this.desc;
+            return title + '\n' + desc;
         }
     }
     //**********************************************************************************************
@@ -979,7 +980,7 @@ public class CommonDataObjects {
 
 
         public final String getTitle() {
-            return this.title;
+            return title;
         }
 
         public final void setTitle(String title) {
@@ -988,7 +989,7 @@ public class CommonDataObjects {
 
 
         public final String getDesc() {
-            return this.desc;
+            return desc;
         }
 
         public final void setDesc(String desc) {
@@ -997,7 +998,7 @@ public class CommonDataObjects {
 
 
         public final String getgvn() {
-            return this.gvn;
+            return gvn;
         }
 
         public final void setgvn(String gvn) {
@@ -1006,7 +1007,7 @@ public class CommonDataObjects {
 
 
         public final String getweight() {
-            return this.weight;
+            return weight;
         }
 
         public final void setweight(String weight) {
@@ -1015,7 +1016,7 @@ public class CommonDataObjects {
 
         @Override
         public final String toString() {
-            return this.title + ',' + this.desc + ',' + this.gvn + ',' + this.weight;
+            return title + ',' + desc + ',' + gvn + ',' + weight;
         }
     }
 
@@ -1029,24 +1030,24 @@ public class CommonDataObjects {
     public static class NotificationGetSet {
         String _patientName;
         String _patientId;
-        String _mTestId;
-        ArrayList<CommonDataObjects.NotificationListGetSet> notificationListGetSets;
+        String _mTestId = null;
+        ArrayList<NotificationListGetSet> notificationListGetSets;
 
-        public NotificationGetSet(String _patientName, String _patientId, String _mTestId, ArrayList<CommonDataObjects.NotificationListGetSet> notificationListGetSets) {
+        public NotificationGetSet(String _patientName, String _patientId, String _mTestId, ArrayList<NotificationListGetSet> notificationListGetSets) {
             this._patientName = _patientName;
             this._patientId = _patientId;
             this._mTestId = _mTestId;
             this.notificationListGetSets = notificationListGetSets;
         }
 
-        public NotificationGetSet(String _patientName, String _patientId, ArrayList<CommonDataObjects.NotificationListGetSet> notificationListGetSets) {
+        public NotificationGetSet(String _patientName, String _patientId, ArrayList<NotificationListGetSet> notificationListGetSets) {
             this._patientName = _patientName;
             this._patientId = _patientId;
             this.notificationListGetSets = notificationListGetSets;
         }
 
         public final String get_mTestId() {
-            return this._mTestId;
+            return _mTestId;
         }
 
         public final void set_mTestId(String _mTestId) {
@@ -1054,7 +1055,7 @@ public class CommonDataObjects {
         }
 
         public final String get_patientName() {
-            return this._patientName;
+            return _patientName;
         }
 
         public final void set_patientName(String _patientName) {
@@ -1062,18 +1063,18 @@ public class CommonDataObjects {
         }
 
         public final String get_patientId() {
-            return this._patientId;
+            return _patientId;
         }
 
         public final void set_patientId(String _patientId) {
             this._patientId = _patientId;
         }
 
-        public final ArrayList<CommonDataObjects.NotificationListGetSet> getNotificationListGetSets() {
-            return this.notificationListGetSets;
+        public final ArrayList<NotificationListGetSet> getNotificationListGetSets() {
+            return notificationListGetSets;
         }
 
-        public final void setNotificationListGetSets(ArrayList<CommonDataObjects.NotificationListGetSet> notificationListGetSets) {
+        public final void setNotificationListGetSets(ArrayList<NotificationListGetSet> notificationListGetSets) {
             this.notificationListGetSets = notificationListGetSets;
         }
     }
@@ -1096,7 +1097,7 @@ public class CommonDataObjects {
         }
 
         public final String get_testName() {
-            return this._testName;
+            return _testName;
         }
 
         public final void set_testName(String _testName) {
@@ -1104,7 +1105,7 @@ public class CommonDataObjects {
         }
 
         public final String get_testValue() {
-            return this._testValue;
+            return _testValue;
         }
 
         public final void set_testValue(String _testValue) {
@@ -1112,7 +1113,7 @@ public class CommonDataObjects {
         }
 
         public final String get_testRemark() {
-            return this._testRemark;
+            return _testRemark;
         }
 
         public final void set_testRemark(String _testRemark) {
@@ -1129,33 +1130,33 @@ public class CommonDataObjects {
         String Period="";
 
         public Clinical_MHData(String treatmentFor, String medicine_Name, String period) {
-            TreatmentFor = treatmentFor;
-            Medicine_Name = medicine_Name;
-            Period = period;
+            this.TreatmentFor = treatmentFor;
+            this.Medicine_Name = medicine_Name;
+            this.Period = period;
         }
 
         public String getTreatmentFor() {
-            return this.TreatmentFor;
+            return TreatmentFor;
         }
 
         public void setTreatmentFor(String treatmentFor) {
-            this.TreatmentFor = treatmentFor;
+            TreatmentFor = treatmentFor;
         }
 
         public String getMedicine_Name() {
-            return this.Medicine_Name;
+            return Medicine_Name;
         }
 
         public void setMedicine_Name(String medicine_Name) {
-            this.Medicine_Name = medicine_Name;
+            Medicine_Name = medicine_Name;
         }
 
         public String getPeriod() {
-            return this.Period;
+            return Period;
         }
 
         public void setPeriod(String period) {
-            this.Period = period;
+            Period = period;
         }
     }
 
@@ -1165,24 +1166,24 @@ public class CommonDataObjects {
         String Data2="";
 
         public TwoData(String data1, String data2) {
-            this.Data1 = data1;
-            this.Data2 = data2;
+            Data1 = data1;
+            Data2 = data2;
         }
 
         public String getData1() {
-            return this.Data1;
+            return Data1;
         }
 
         public void setData1(String data1) {
-            this.Data1 = data1;
+            Data1 = data1;
         }
 
         public String getData2() {
-            return this.Data2;
+            return Data2;
         }
 
         public void setData2(String data2) {
-            this.Data2 = data2;
+            Data2 = data2;
         }
     }
 
@@ -1198,7 +1199,7 @@ public class CommonDataObjects {
         }
 
         public String getName() {
-            return this.name;
+            return name;
         }
 
         public void setName(String name) {
@@ -1206,7 +1207,7 @@ public class CommonDataObjects {
         }
 
         public String getSno() {
-            return this.sno;
+            return sno;
         }
 
         public void setSno(String sno) {
@@ -1230,7 +1231,7 @@ public class CommonDataObjects {
         }
 
         public String getDate() {
-            return this.date;
+            return date;
         }
 
         public void setDate(String date) {
@@ -1238,7 +1239,7 @@ public class CommonDataObjects {
         }
 
         public String getClinical_notes() {
-            return this.clinical_notes;
+            return clinical_notes;
         }
 
         public void setClinical_notes(String clinical_notes) {
@@ -1246,7 +1247,7 @@ public class CommonDataObjects {
         }
 
         public String getTreatment_diet() {
-            return this.treatment_diet;
+            return treatment_diet;
         }
 
         public void setTreatment_diet(String treatment_diet) {
@@ -1254,7 +1255,7 @@ public class CommonDataObjects {
         }
 
         public String getTime() {
-            return this.time;
+            return time;
         }
 
         public void setTime(String time) {
@@ -1264,29 +1265,29 @@ public class CommonDataObjects {
 
 
     public static class Addgetset {
-        private String diet_name;
-        private String food_name;
-        private String calc;
-        private String id;
+        private String diet_name = null;
+        private String food_name = null;
+        private String calc = null;
+        private String id = null;
 
         public Addgetset() {
         }
 
         public Addgetset(String title, String genre, String year) {
-            diet_name = title;
-            food_name = genre;
-            calc = year;
+            this.diet_name = title;
+            this.food_name = genre;
+            this.calc = year;
         }
 
         public Addgetset(String id, String title, String genre, String year) {
             this.id = id;
-            diet_name = title;
-            food_name = genre;
-            calc = year;
+            this.diet_name = title;
+            this.food_name = genre;
+            this.calc = year;
         }
 
         public final String getId() {
-            return this.id;
+            return id;
         }
 
         public final void setId(String id) {
@@ -1294,7 +1295,7 @@ public class CommonDataObjects {
         }
 
         public final String getDiet_name() {
-            return this.diet_name;
+            return diet_name;
         }
 
         public final void setDiet_name(String diet_name) {
@@ -1302,7 +1303,7 @@ public class CommonDataObjects {
         }
 
         public final String getFood_name() {
-            return this.food_name;
+            return food_name;
         }
 
         public final void setFood_name(String food_name) {
@@ -1310,7 +1311,7 @@ public class CommonDataObjects {
         }
 
         public final String getCalc() {
-            return this.calc;
+            return calc;
         }
 
         public final void setCalc(String calc) {

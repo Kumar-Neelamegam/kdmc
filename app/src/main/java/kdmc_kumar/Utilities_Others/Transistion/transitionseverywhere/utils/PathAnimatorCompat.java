@@ -20,18 +20,17 @@ import android.graphics.Path;
 import android.graphics.PathMeasure;
 import android.graphics.PointF;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 
 /**
  * Created by Andrey Kulikov on 17.08.15.
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class PathAnimatorCompat extends BasePointFAnimator {
 
     private PathMeasure mPathMeasure;
     private float mPathLength;
 
-    private final float[] mTempArray = new float[2];
+    private float[] mTempArray = new float[2];
 
     private PathAnimatorCompat(Object target, PointFProperty pointFProperty) {
         super(target, pointFProperty);
@@ -55,8 +54,8 @@ public class PathAnimatorCompat extends BasePointFAnimator {
         if (fraction > 1) {
             fraction = 1;
         }
-        this.mPathMeasure.getPosTan(fraction * this.mPathLength, this.mTempArray, null);
-        holder.set(this.mTempArray[0], this.mTempArray[1]);
+        mPathMeasure.getPosTan(fraction * mPathLength, mTempArray, null);
+        holder.set(mTempArray[0], mTempArray[1]);
     }
 
 }

@@ -20,17 +20,17 @@ public class Export_DatasRequest {
 
 
     @com.google.gson.annotations.SerializedName("JsonValue")
-    private String jsonValue;
+    private String jsonValue = null;
 
 
     @com.google.gson.annotations.SerializedName("MethodName")
-    private String methodName;
+    private String methodName = null;
 
     public Export_DatasRequest() {
     }
 
     public final String getJsonValue() {
-        return this.jsonValue;
+        return jsonValue;
     }
 
     public final void setJsonValue(String jsonValue) {
@@ -38,7 +38,7 @@ public class Export_DatasRequest {
     }
 
     public final String getMethodName() {
-        return this.methodName;
+        return methodName;
     }
 
     public final void setMethodName(String methodName) {
@@ -55,16 +55,16 @@ public class Export_DatasRequest {
         }
 
         public final Export_DatasRequest build() {
-            return this.toBuild;
+            return toBuild;
         }
 
-        public final Export_DatasRequest.Export_DatasRequestBuilder jsonValue(String value) {
-            this.toBuild.setJsonValue(value);
+        public final Export_DatasRequestBuilder jsonValue(String value) {
+            toBuild.setJsonValue(value);
             return this;
         }
 
-        public final Export_DatasRequest.Export_DatasRequestBuilder methodName(String value) {
-            this.toBuild.setMethodName(value);
+        public final Export_DatasRequestBuilder methodName(String value) {
+            toBuild.setMethodName(value);
             return this;
         }
     }

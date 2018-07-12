@@ -19,13 +19,13 @@ public class AppMasterResult {
 
 
     @com.google.gson.annotations.SerializedName("Results")
-    private String results;
+    private String results = null;
 
     public AppMasterResult() {
     }
 
     public final String getResults() {
-        return this.results;
+        return results;
     }
 
     public void setResults(String results) {
@@ -42,11 +42,11 @@ public class AppMasterResult {
         }
 
         public final AppMasterResult build() {
-            return this.toBuild;
+            return toBuild;
         }
 
-        public final AppMasterResult.AppMasterResultBuilder results(String value) {
-            this.toBuild.setResults(value);
+        public final AppMasterResultBuilder results(String value) {
+            toBuild.setResults(value);
             return this;
         }
     }

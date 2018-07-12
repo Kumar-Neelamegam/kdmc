@@ -5,9 +5,8 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.view.View;
-import android.view.ViewGroup;
+import android.view.ViewGroup.LayoutParams;
 import android.view.animation.Animation;
-import android.view.animation.Animation.AnimationListener;
 import android.view.animation.Transformation;
 
 public class ViewAnimation {
@@ -15,9 +14,9 @@ public class ViewAnimation {
     public ViewAnimation() {
     }
 
-    public static void expand(View v, ViewAnimation.AnimListener animListener) {
-        Animation a = ViewAnimation.expandAction(v);
-        a.setAnimationListener(new AnimationListener() {
+    public static void expand(final View v, final AnimListener animListener) {
+        Animation a = expandAction(v);
+        a.setAnimationListener(new Animation.AnimationListener() {
             @Override
             public void onAnimationStart(Animation animation) {
             }
@@ -35,15 +34,15 @@ public class ViewAnimation {
         v.startAnimation(a);
     }
 
-    public static void expand(View v) {
-       Animation a = ViewAnimation.expandAction(v);
+    public static void expand(final View v) {
+       Animation a = expandAction(v);
        v.startAnimation(a);
     }
 
-    private static Animation expandAction(View v) {
+    private static Animation expandAction(final View v) {
 
-        v.measure(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.WRAP_CONTENT);
-        int targtetHeight = v.getMeasuredHeight();
+        v.measure(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT);
+        final int targtetHeight = v.getMeasuredHeight();
 
         v.getLayoutParams().height = 0;
         v.setVisibility(View.VISIBLE);
@@ -51,7 +50,7 @@ public class ViewAnimation {
             @Override
             protected void applyTransformation(float interpolatedTime, Transformation t) {
                 v.getLayoutParams().height = interpolatedTime == 1.0F
-                        ? ViewGroup.LayoutParams.WRAP_CONTENT
+                        ? LayoutParams.WRAP_CONTENT
                         : (int) ((float) targtetHeight * interpolatedTime);
                 v.requestLayout();
             }
@@ -67,8 +66,8 @@ public class ViewAnimation {
         return a;
     }
 
-    public static void collapse(View v) {
-        int initialHeight = v.getMeasuredHeight();
+    public static void collapse(final View v) {
+        final int initialHeight = v.getMeasuredHeight();
 
         Animation a = new Animation() {
             @Override
@@ -91,7 +90,7 @@ public class ViewAnimation {
         v.startAnimation(a);
     }
 
-    public static void flyInDown(View v, ViewAnimation.AnimListener animListener) {
+    public static void flyInDown(final View v, final AnimListener animListener) {
         v.setVisibility(View.VISIBLE);
         v.setAlpha(0.0f);
         v.setTranslationY((float) 0);
@@ -111,7 +110,7 @@ public class ViewAnimation {
                 .start();
     }
 
-    public static void flyOutDown(View v, ViewAnimation.AnimListener animListener) {
+    public static void flyOutDown(final View v, final AnimListener animListener) {
         v.setVisibility(View.VISIBLE);
         v.setAlpha(1.0f);
         v.setTranslationY((float) 0);
@@ -130,11 +129,11 @@ public class ViewAnimation {
                 .start();
     }
 
-    public static void fadeIn(View v) {
-        fadeIn(v, null);
+    public static void fadeIn(final View v) {
+        ViewAnimation.fadeIn(v, null);
     }
 
-    private static void fadeIn(View v, ViewAnimation.AnimListener animListener) {
+    private static void fadeIn(final View v, final AnimListener animListener) {
         v.setVisibility(View.GONE);
         v.setAlpha(0.0f);
         // Prepare the View for the animation
@@ -151,11 +150,11 @@ public class ViewAnimation {
                 .alpha(1.0f);
     }
 
-    public static void fadeOut(View v) {
-        fadeOut(v, null);
+    public static void fadeOut(final View v) {
+        ViewAnimation.fadeOut(v, null);
     }
 
-    private static void fadeOut(View v, ViewAnimation.AnimListener animListener) {
+    private static void fadeOut(final View v, final AnimListener animListener) {
         v.setAlpha(1.0f);
         // Prepare the View for the animation
         v.animate()
@@ -170,7 +169,7 @@ public class ViewAnimation {
                 .alpha(0.0f);
     }
 
-    public static void showIn(View v) {
+    public static void showIn(final View v) {
         v.setVisibility(View.VISIBLE);
         v.setAlpha(0.0f);
         v.setTranslationY((float) v.getHeight());
@@ -183,13 +182,13 @@ public class ViewAnimation {
                 .start();
     }
 
-    public static void initShowOut(View v) {
+    public static void initShowOut(final View v) {
         v.setVisibility(View.GONE);
         v.setTranslationY((float) v.getHeight());
         v.setAlpha(0.0f);
     }
 
-    public static void showOut(View v) {
+    public static void showOut(final View v) {
         v.setVisibility(View.VISIBLE);
         v.setAlpha(1.0f);
         v.setTranslationY((float) 0);
@@ -206,7 +205,7 @@ public class ViewAnimation {
                 .start();
     }
 
-    public static boolean rotateFab(View v, boolean rotate) {
+    public static boolean rotateFab(final View v, boolean rotate) {
         v.animate().setDuration(200L)
                 .setListener(new AnimatorListenerAdapter() {
                 })
@@ -230,11 +229,11 @@ public class ViewAnimation {
     }
 
 
-    public static void showScale(View v) {
-        showScale(v, null);
+    public static void showScale(final View v) {
+        ViewAnimation.showScale(v, null);
     }
 
-    private static void showScale(View v, ViewAnimation.AnimListener animListener) {
+    private static void showScale(final View v, final AnimListener animListener) {
         v.animate()
                 .scaleY(1.0F)
                 .scaleX(1.0F)
@@ -249,11 +248,11 @@ public class ViewAnimation {
                 .start();
     }
 
-    public static void hideScale(View v) {
-        fadeOut(v, null);
+    public static void hideScale(final View v) {
+        ViewAnimation.fadeOut(v, null);
     }
 
-    public static void hideScale(View v, ViewAnimation.AnimListener animListener) {
+    public static void hideScale(final View v, final AnimListener animListener) {
         v.animate()
                 .scaleY((float) 0)
                 .scaleX((float) 0)

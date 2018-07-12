@@ -2,10 +2,7 @@ package kdmc_kumar.Adapters_GetterSetter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,11 +12,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.DiagnosisItem;
-import kdmc_kumar.Adapters_GetterSetter.DiagnosisSummaryAdapter.MyViewHolder;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 
@@ -27,26 +19,26 @@ import kdmc_kumar.Core_Modules.BaseConfig;
  * Created by Ponnusamy M on 4/6/2017.
  */
 
-public class DiagnosisSummaryAdapter extends Adapter<MyViewHolder> {
+public class DiagnosisSummaryAdapter extends RecyclerView.Adapter<DiagnosisSummaryAdapter.MyViewHolder> {
 
-    private final ArrayList<DiagnosisItem> diagnosisItems;
+    private final ArrayList<CommonDataObjects.DiagnosisItem> diagnosisItems;
 
-    public DiagnosisSummaryAdapter(ArrayList<DiagnosisItem> diagnosisItems) {
+    public DiagnosisSummaryAdapter(ArrayList<CommonDataObjects.DiagnosisItem> diagnosisItems) {
         this.diagnosisItems = diagnosisItems;
     }
 
     @NonNull
     @Override
-    public final DiagnosisSummaryAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(layout.new_diagnosis_listrow, parent, false);
+    public final MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.new_diagnosis_listrow, parent, false);
 
-        return new DiagnosisSummaryAdapter.MyViewHolder(view);
+        return new MyViewHolder(view);
     }
 
     @Override
-    public final void onBindViewHolder(@NonNull DiagnosisSummaryAdapter.MyViewHolder holder, int position) {
+    public final void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
 
-        DiagnosisItem item = this.diagnosisItems.get(position);
+        final CommonDataObjects.DiagnosisItem item = diagnosisItems.get(position);
 
 
         holder.sno.setText(item.getS_No());
@@ -63,20 +55,20 @@ public class DiagnosisSummaryAdapter extends Adapter<MyViewHolder> {
 
         holder.remarks.setOnClickListener(v -> {
 
-            View view = LayoutInflater.from(holder.remarks.getContext()).inflate(layout.pop_view_image, null, false);
+            View view = LayoutInflater.from(holder.remarks.getContext()).inflate(R.layout.pop_view_image, null, false);
 
-            ImageView imageView = view.findViewById(id.imageview);
-            TextView doctorname = view.findViewById(id.doctorname);
+            ImageView imageView = view.findViewById(R.id.imageview);
+            TextView doctorname = view.findViewById(R.id.doctorname);
 
-            doctorname.setText(String.format("%s %s", view.getContext().getString(string.report), item.getDoctor()));
+            doctorname.setText(String.format("%s %s", view.getContext().getString(R.string.report), item.getDoctor()));
 
             BaseConfig.Glide_LoadImageView(imageView, item.getRemark_Image());
 
 
-            Builder builder = new Builder(imageView.getContext());
+            AlertDialog.Builder builder = new AlertDialog.Builder(imageView.getContext());
 
             builder.setView(view);
-            builder.setCancelable(false).setPositiveButton(view.getContext().getString(string.ok), (dialog, which) -> {
+            builder.setCancelable(false).setPositiveButton(view.getContext().getString(R.string.ok), (dialog, which) -> {
 
             });
 
@@ -88,10 +80,10 @@ public class DiagnosisSummaryAdapter extends Adapter<MyViewHolder> {
 
     @Override
     public final int getItemCount() {
-        return this.diagnosisItems.size();
+        return diagnosisItems.size();
     }
 
-    static class MyViewHolder extends ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView sno;
         final TextView doctor;
         final TextView operaitonotes;
@@ -106,17 +98,17 @@ public class DiagnosisSummaryAdapter extends Adapter<MyViewHolder> {
 
         MyViewHolder(View itemView) {
             super(itemView);
-            this.sno = itemView.findViewById(id.text_1);
-            this.doctor = itemView.findViewById(id.text_2);
-            this.operaitonotes = itemView.findViewById(id.text_3);
-            this.position = itemView.findViewById(id.text_4);
-            this.operationprocedure = itemView.findViewById(id.text_5);
-            this.postoperativediagnosis = itemView.findViewById(id.text_6);
-            this.postoperativeinstruction = itemView.findViewById(id.text_7);
-            this.closure = itemView.findViewById(id.text_8);
-            this.preoperativediagnosis = itemView.findViewById(id.text_9);
+            sno = itemView.findViewById(R.id.text_1);
+            doctor = itemView.findViewById(R.id.text_2);
+            operaitonotes = itemView.findViewById(R.id.text_3);
+            position = itemView.findViewById(R.id.text_4);
+            operationprocedure = itemView.findViewById(R.id.text_5);
+            postoperativediagnosis = itemView.findViewById(R.id.text_6);
+            postoperativeinstruction = itemView.findViewById(R.id.text_7);
+            closure = itemView.findViewById(R.id.text_8);
+            preoperativediagnosis = itemView.findViewById(R.id.text_9);
 
-            this.remarks = itemView.findViewById(id.text_10);
+            remarks = itemView.findViewById(R.id.text_10);
 
         }
     }

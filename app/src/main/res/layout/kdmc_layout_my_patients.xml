@@ -108,9 +108,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_margin="10dp"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:background="@color/colorPrimary"
-                android:padding="5dp"
                 android:theme="@style/ThemeOverlay.AppCompat.Light">
 
                 <android.support.v7.widget.CardView
@@ -180,38 +180,48 @@
 
 
             <!-- Recycler list -->
-            <LinearLayout android:layout_width="match_parent"
+
+            <RadioGroup
+                android:id="@+id/radiogroup_patients_options"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
                 android:orientation="horizontal"
-                >
+                android:padding="5dp">
 
-                <TextView
-                    android:id="@+id/textvw_patient_count"
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:id="@+id/radio_today_patients"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
                     android:layout_weight="1"
-                    android:layout_marginRight="10dp"
-                    android:background="@color/ourcolour"
-                    android:padding="5dp"
-                    android:text="@string/hypon"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="#fff" />
+                    android:checked="true"
+                    android:text="@string/show_today_patients"
+                    android:textColor="@color/white"
+                    android:theme="@style/CustomStyledRadioButton" />
 
-                <CheckBox
-                    android:id="@+id/checkbox_view_all_patients"
+                <android.support.v7.widget.AppCompatRadioButton
+                    android:id="@+id/radio_show_all_patients"
                     android:layout_width="match_parent"
-                    android:layout_weight="1"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:padding="5dp"
+                    android:layout_weight="1"
                     android:text="@string/showallpatients"
-                    android:textAppearance="?android:attr/textAppearanceMedium"
-                    android:textColor="#fff" />
+                    android:textColor="@color/white"
+                    android:theme="@style/CustomStyledRadioButton" />
 
-            </LinearLayout>
+            </RadioGroup>
 
+            <TextView
+                android:id="@+id/textvw_patient_count"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/ourcolour"
+                android:padding="5dp"
+                android:text="@string/hypon"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textColor="#fff" />
 
 
             <View
@@ -229,19 +239,18 @@
                 android:visibility="gone"
                 app:srcCompat="@drawable/no_data" />
 
-          <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
+            <com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView
                 android:id="@+id/mypatient_fastscrollview"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_weight="1"
-              android:layoutAnimation="@anim/layout_animation_from_bottom"
+                android:layoutAnimation="@anim/layout_animation_from_bottom"
                 android:nestedScrollingEnabled="false"
                 android:scrollbarStyle="insideInset"
                 app:fastScrollPopupBgColor="@color/colorAccent"
                 app:fastScrollPopupTextColor="@android:color/primary_text_dark"
                 app:fastScrollThumbColor="@color/yellow_900"
                 app:fastScrollTrackColor="@color/green_A700" />
-
 
 
         </LinearLayout>

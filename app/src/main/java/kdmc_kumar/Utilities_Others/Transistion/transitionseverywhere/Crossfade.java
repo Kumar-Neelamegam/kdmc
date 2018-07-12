@@ -21,16 +21,12 @@ import android.animation.AnimatorListenerAdapter;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
 import android.animation.ValueAnimator;
-import android.animation.ValueAnimator.AnimatorUpdateListener;
 import android.annotation.TargetApi;
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.Config;
 import android.graphics.Canvas;
 import android.graphics.Rect;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.util.Log;
 import android.view.SurfaceView;
 import android.view.TextureView;
@@ -49,7 +45,7 @@ import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.ViewG
  * <p>Note: This transition is not compatible with {@link TextureView}
  * or {@link SurfaceView}.</p>
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class Crossfade extends Transition {
     // TODO: Add a hook that lets a Transition call user code to query whether it should run on
     // a given target view. This would save bitmap comparisons in this transition, for example.
@@ -62,8 +58,8 @@ public class Crossfade extends Transition {
 
     private static RectEvaluator sRectEvaluator;
 
-    private int mFadeBehavior = Crossfade.FADE_BEHAVIOR_REVEAL;
-    private int mResizeBehavior = Crossfade.RESIZE_BEHAVIOR_SCALE;
+    private int mFadeBehavior = FADE_BEHAVIOR_REVEAL;
+    private int mResizeBehavior = RESIZE_BEHAVIOR_SCALE;
 
     /**
      * Flag specifying that the fading animation should cross-fade
@@ -128,8 +124,8 @@ public class Crossfade extends Transition {
      *                     transition is run.
      */
     public Crossfade setFadeBehavior(int fadeBehavior) {
-        if (fadeBehavior >= Crossfade.FADE_BEHAVIOR_CROSSFADE && fadeBehavior <= Crossfade.FADE_BEHAVIOR_OUT_IN) {
-            this.mFadeBehavior = fadeBehavior;
+        if (fadeBehavior >= FADE_BEHAVIOR_CROSSFADE && fadeBehavior <= FADE_BEHAVIOR_OUT_IN) {
+            mFadeBehavior = fadeBehavior;
         }
         return this;
     }
@@ -141,7 +137,7 @@ public class Crossfade extends Transition {
      * @see #setFadeBehavior(int)
      */
     public int getFadeBehavior() {
-        return this.mFadeBehavior;
+        return mFadeBehavior;
     }
 
     /**
@@ -153,8 +149,8 @@ public class Crossfade extends Transition {
      *                       transition is run.
      */
     public Crossfade setResizeBehavior(int resizeBehavior) {
-        if (resizeBehavior >= Crossfade.RESIZE_BEHAVIOR_NONE && resizeBehavior <= Crossfade.RESIZE_BEHAVIOR_SCALE) {
-            this.mResizeBehavior = resizeBehavior;
+        if (resizeBehavior >= RESIZE_BEHAVIOR_NONE && resizeBehavior <= RESIZE_BEHAVIOR_SCALE) {
+            mResizeBehavior = resizeBehavior;
         }
         return this;
     }
@@ -166,48 +162,48 @@ public class Crossfade extends Transition {
      * @see #setResizeBehavior(int)
      */
     public int getResizeBehavior() {
-        return this.mResizeBehavior;
+        return mResizeBehavior;
     }
 
     @Override
     public Animator createAnimator(ViewGroup sceneRoot, TransitionValues startValues,
                                    TransitionValues endValues) {
         if (startValues == null || endValues == null ||
-                VERSION.SDK_INT < VERSION_CODES.ICE_CREAM_SANDWICH) {
+                Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             return null;
         }
-        if (Crossfade.sRectEvaluator == null) {
-            Crossfade.sRectEvaluator = new RectEvaluator();
+        if (sRectEvaluator == null) {
+            sRectEvaluator = new RectEvaluator();
         }
-        boolean useParentOverlay = this.mFadeBehavior != Crossfade.FADE_BEHAVIOR_REVEAL;
-        View view = endValues.view;
+        final boolean useParentOverlay = mFadeBehavior != FADE_BEHAVIOR_REVEAL;
+        final View view = endValues.view;
         Map<String, Object> startVals = startValues.values;
         Map<String, Object> endVals = endValues.values;
-        Rect startBounds = (Rect) startVals.get(Crossfade.PROPNAME_BOUNDS);
-        Rect endBounds = (Rect) endVals.get(Crossfade.PROPNAME_BOUNDS);
-        Bitmap startBitmap = (Bitmap) startVals.get(Crossfade.PROPNAME_BITMAP);
-        Bitmap endBitmap = (Bitmap) endVals.get(Crossfade.PROPNAME_BITMAP);
-        BitmapDrawable startDrawable = (BitmapDrawable) startVals.get(Crossfade.PROPNAME_DRAWABLE);
-        BitmapDrawable endDrawable = (BitmapDrawable) endVals.get(Crossfade.PROPNAME_DRAWABLE);
+        Rect startBounds = (Rect) startVals.get(PROPNAME_BOUNDS);
+        Rect endBounds = (Rect) endVals.get(PROPNAME_BOUNDS);
+        Bitmap startBitmap = (Bitmap) startVals.get(PROPNAME_BITMAP);
+        Bitmap endBitmap = (Bitmap) endVals.get(PROPNAME_BITMAP);
+        final BitmapDrawable startDrawable = (BitmapDrawable) startVals.get(PROPNAME_DRAWABLE);
+        final BitmapDrawable endDrawable = (BitmapDrawable) endVals.get(PROPNAME_DRAWABLE);
         if (Transition.DBG) {
-            Log.d(Crossfade.LOG_TAG, "StartBitmap.sameAs(endBitmap) = " + startBitmap.sameAs(endBitmap) +
+            Log.d(LOG_TAG, "StartBitmap.sameAs(endBitmap) = " + startBitmap.sameAs(endBitmap) +
                     " for start, end: " + startBitmap + ", " + endBitmap);
         }
         if (startDrawable != null && endDrawable != null && !startBitmap.sameAs(endBitmap)) {
             ViewGroupOverlayUtils.addCrossfadeOverlay(useParentOverlay, view,
-                    this.mFadeBehavior, startDrawable, endDrawable);
+                    mFadeBehavior, startDrawable, endDrawable);
             // The transition works by placing the end drawable under the start drawable and
             // gradually fading out the start drawable. So it's not really a cross-fade, but rather
             // a reveal of the end scene over time. Also, animate the bounds of both drawables
             // to mimic the change in the size of the view itself between scenes.
             ObjectAnimator anim;
-            if (this.mFadeBehavior == Crossfade.FADE_BEHAVIOR_OUT_IN) {
+            if (mFadeBehavior == FADE_BEHAVIOR_OUT_IN) {
                 // Fade out completely halfway through the transition
                 anim = ObjectAnimator.ofInt(startDrawable, "alpha", 255, 0, 0);
             } else {
                 anim = ObjectAnimator.ofInt(startDrawable, "alpha", 0);
             }
-            anim.addUpdateListener(new AnimatorUpdateListener() {
+            anim.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
                 @Override
                 public void onAnimationUpdate(ValueAnimator animation) {
                     // TODO: some way to auto-invalidate views based on drawable changes? callbacks?
@@ -215,21 +211,21 @@ public class Crossfade extends Transition {
                 }
             });
             ObjectAnimator anim1 = null;
-            if (this.mFadeBehavior == Crossfade.FADE_BEHAVIOR_OUT_IN) {
+            if (mFadeBehavior == FADE_BEHAVIOR_OUT_IN) {
                 // start fading in halfway through the transition
                 anim1 = ObjectAnimator.ofFloat(view, View.ALPHA, 0, 0, 1);
-            } else if (this.mFadeBehavior == Crossfade.FADE_BEHAVIOR_CROSSFADE) {
+            } else if (mFadeBehavior == FADE_BEHAVIOR_CROSSFADE) {
                 anim1 = ObjectAnimator.ofFloat(view, View.ALPHA, 0, 1);
             }
             if (Transition.DBG) {
-                Log.d(Crossfade.LOG_TAG, "Crossfade: created anim " + anim + " for start, end values " +
+                Log.d(LOG_TAG, "Crossfade: created anim " + anim + " for start, end values " +
                         startValues + ", " + endValues);
             }
             anim.addListener(new AnimatorListenerAdapter() {
                 @Override
                 public void onAnimationEnd(Animator animation) {
                     ViewGroupOverlayUtils.removeCrossfadeOverlay(useParentOverlay, view,
-                            Crossfade.this.mFadeBehavior, startDrawable, endDrawable);
+                            mFadeBehavior, startDrawable, endDrawable);
                 }
             });
             AnimatorSet set = new AnimatorSet();
@@ -237,19 +233,19 @@ public class Crossfade extends Transition {
             if (anim1 != null) {
                 set.playTogether(anim1);
             }
-            if (this.mResizeBehavior == Crossfade.RESIZE_BEHAVIOR_SCALE && !startBounds.equals(endBounds)) {
+            if (mResizeBehavior == RESIZE_BEHAVIOR_SCALE && !startBounds.equals(endBounds)) {
                 if (Transition.DBG) {
-                    Log.d(Crossfade.LOG_TAG, "animating from startBounds to endBounds: " +
+                    Log.d(LOG_TAG, "animating from startBounds to endBounds: " +
                             startBounds + ", " + endBounds);
                 }
                 Animator anim2 = ObjectAnimator.ofObject(startDrawable, "bounds",
-                        Crossfade.sRectEvaluator, startBounds, endBounds);
+                        sRectEvaluator, startBounds, endBounds);
                 set.playTogether(anim2);
-                if (this.mResizeBehavior == Crossfade.RESIZE_BEHAVIOR_SCALE) {
+                if (mResizeBehavior == RESIZE_BEHAVIOR_SCALE) {
                     // TODO: How to handle resizing with a CROSSFADE (vs. REVEAL) effect
                     // when we are animating the view directly?
                     Animator anim3 = ObjectAnimator.ofObject(endDrawable, "bounds",
-                            Crossfade.sRectEvaluator, startBounds, endBounds);
+                            sRectEvaluator, startBounds, endBounds);
                     set.playTogether(anim3);
                 }
             }
@@ -260,41 +256,41 @@ public class Crossfade extends Transition {
     }
 
     private void captureValues(TransitionValues transitionValues) {
-        if (VERSION.SDK_INT < VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             return;
         }
         View view = transitionValues.view;
         Rect bounds = new Rect(0, 0, view.getWidth(), view.getHeight());
-        if (this.mFadeBehavior != Crossfade.FADE_BEHAVIOR_REVEAL) {
+        if (mFadeBehavior != FADE_BEHAVIOR_REVEAL) {
             bounds.offset(view.getLeft(), view.getTop());
         }
-        transitionValues.values.put(Crossfade.PROPNAME_BOUNDS, bounds);
+        transitionValues.values.put(PROPNAME_BOUNDS, bounds);
 
         if (Transition.DBG) {
-            Log.d(Crossfade.LOG_TAG, "Captured bounds " + transitionValues.values.get(Crossfade.PROPNAME_BOUNDS));
+            Log.d(LOG_TAG, "Captured bounds " + transitionValues.values.get(PROPNAME_BOUNDS));
         }
         Bitmap bitmap = Bitmap.createBitmap(view.getWidth(), view.getHeight(),
-                Config.ARGB_8888);
+                Bitmap.Config.ARGB_8888);
         if (view instanceof TextureView) {
             bitmap = ((TextureView) view).getBitmap();
         } else {
             Canvas c = new Canvas(bitmap);
             view.draw(c);
         }
-        transitionValues.values.put(Crossfade.PROPNAME_BITMAP, bitmap);
+        transitionValues.values.put(PROPNAME_BITMAP, bitmap);
         BitmapDrawable drawable = new BitmapDrawable(view.getResources(), bitmap);
         // TODO: lrtb will be wrong if the view has transXY set
         drawable.setBounds(bounds);
-        transitionValues.values.put(Crossfade.PROPNAME_DRAWABLE, drawable);
+        transitionValues.values.put(PROPNAME_DRAWABLE, drawable);
     }
 
     @Override
     public void captureStartValues(TransitionValues transitionValues) {
-        this.captureValues(transitionValues);
+        captureValues(transitionValues);
     }
 
     @Override
     public void captureEndValues(TransitionValues transitionValues) {
-        this.captureValues(transitionValues);
+        captureValues(transitionValues);
     }
 }

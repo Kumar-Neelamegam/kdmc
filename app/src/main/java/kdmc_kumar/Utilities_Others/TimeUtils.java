@@ -36,7 +36,7 @@ public class TimeUtils {
      * @return
      */
     public static String getTime(long timeInMillis) {
-        return TimeUtils.getTime(timeInMillis, TimeUtils.DEFAULT_DATE_FORMAT);
+        return getTime(timeInMillis, DEFAULT_DATE_FORMAT);
     }
 
     /**
@@ -54,7 +54,7 @@ public class TimeUtils {
      * @return
      */
     public static String getCurrentTimeInString() {
-        return TimeUtils.getTime(TimeUtils.getCurrentTimeInLong());
+        return getTime(getCurrentTimeInLong());
     }
 
     /**
@@ -63,6 +63,6 @@ public class TimeUtils {
      * @return
      */
     public static String getCurrentTimeInString(SimpleDateFormat dateFormat) {
-        return TimeUtils.getTime(TimeUtils.getCurrentTimeInLong(), dateFormat);
+        return getTime(getCurrentTimeInLong(), dateFormat);
     }
 }

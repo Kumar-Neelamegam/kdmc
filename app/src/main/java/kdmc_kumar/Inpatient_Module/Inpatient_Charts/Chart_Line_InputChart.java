@@ -17,8 +17,6 @@ import com.github.mikephil.charting.data.LineDataSet;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 /**
@@ -27,7 +25,7 @@ import kdmc_kumar.Core_Modules.BaseConfig;
 
 public class Chart_Line_InputChart extends AppCompatActivity {
 
-    private LineChart lineChart;
+    private LineChart lineChart = null;
 
 
     /**
@@ -37,13 +35,13 @@ public class Chart_Line_InputChart extends AppCompatActivity {
 
 
     //**********************************************************************************************
-    private Bundle b;
-    private Button Close;
+    private Bundle b = null;
+    private Button Close = null;
     //**********************************************************************************************
-    private String Chart_Id;
-    private String Patient_Id;
-    String Patient_Name;
-    String Patient_AgeGender;
+    private String Chart_Id = null;
+    private String Patient_Id = null;
+    String Patient_Name = null;
+    String Patient_AgeGender = null;
 
     public Chart_Line_InputChart() {
     }
@@ -52,10 +50,10 @@ public class Chart_Line_InputChart extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(layout.new_line_chart_layout);
+        setContentView(R.layout.new_line_chart_layout);
 
         try {
-            this.GetInitialize();
+            GetInitialize();
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
@@ -66,43 +64,43 @@ public class Chart_Line_InputChart extends AppCompatActivity {
     private void GetInitialize() {
 
 
-        this.lineChart = this.findViewById(id.chart);
-        this.lineChart.setDescription("");
-        TextView name = this.findViewById(id.chart_name);
+        lineChart = findViewById(R.id.chart);
+        lineChart.setDescription("");
+        final TextView name = findViewById(R.id.chart_name);
         name.setText("Inpatient - Input Chart");
 
-        this.Close = this.findViewById(id.cancel);
+        Close = findViewById(R.id.cancel);
 
-        TextView pat_id = this.findViewById(id.tv_patient_id);
-        TextView pat_name = this.findViewById(id.tv_patient_name);
-        TextView pat_age = this.findViewById(id.tv_patient_agegender);
+        final TextView pat_id = findViewById(R.id.tv_patient_id);
+        final TextView pat_name = findViewById(R.id.tv_patient_name);
+        final TextView pat_age = findViewById(R.id.tv_patient_agegender);
 
 
-        this.b = this.getIntent().getExtras();
+        b = getIntent().getExtras();
 
-        if (this.b != null) {
+        if (b != null) {
 
-            this.Chart_Id = this.b.getString("ID");
-            this.Patient_Id = this.b.getString(BaseConfig.BUNDLE_PATIENT_ID);
+            Chart_Id = b.getString("ID");
+            Patient_Id = b.getString(BaseConfig.BUNDLE_PATIENT_ID);
 
-            String Patient_Name = BaseConfig.GetValues("select name as ret_values from Patreg where Patid='" + this.Patient_Id + '\'');
-            String Patient_AgeGender = BaseConfig.GetValues("select age||'-'||gender as ret_values from Patreg where Patid='" + this.Patient_Id + '\'');
+            String Patient_Name = BaseConfig.GetValues("select name as ret_values from Patreg where Patid='" + Patient_Id + '\'');
+            String Patient_AgeGender = BaseConfig.GetValues("select age||'-'||gender as ret_values from Patreg where Patid='" + Patient_Id + '\'');
 
-            pat_id.setText(this.Patient_Id);
+            pat_id.setText(Patient_Id);
             pat_name.setText(Patient_Name);
             pat_age.setText(Patient_AgeGender);
 
         }
 
-        this.Close.setOnClickListener(view -> finish());
+        Close.setOnClickListener(view -> Chart_Line_InputChart.this.finish());
 
 
-        LineData data = new LineData(this.getXAxisValues(this.Chart_Id), this.getDataSet(this.Chart_Id));
+        LineData data = new LineData(getXAxisValues(Chart_Id), getDataSet(Chart_Id));
 
         if (data != null) {
-            this.lineChart.setData(data);
-            this.lineChart.animateXY(2000, 2000);
-            this.lineChart.invalidate();
+            lineChart.setData(data);
+            lineChart.animateXY(2000, 2000);
+            lineChart.invalidate();
 
         }
 
@@ -126,7 +124,7 @@ public class Chart_Line_InputChart extends AppCompatActivity {
 
         SQLiteDatabase db = BaseConfig.GetDb();//Chart_Line_InputChart.this);
 
-        String Query = "select ip_oral,ip_fluids from Inpatient_MainChart where patid='" + this.Patient_Id.trim() + "' order by id desc";
+        String Query = "select ip_oral,ip_fluids from Inpatient_MainChart where patid='" + Patient_Id.trim() + "' order by id desc";
         Cursor c = db.rawQuery(Query, null);
         if (c != null) {
             if (c.moveToFirst()) {
@@ -184,7 +182,7 @@ public class Chart_Line_InputChart extends AppCompatActivity {
 
 
         SQLiteDatabase db = BaseConfig.GetDb();//Chart_Line_InputChart.this);
-        String Query = "select  Actdate from Inpatient_MainChart where patid='" + this.Patient_Id.trim() + "' order by id desc";
+        String Query = "select  Actdate from Inpatient_MainChart where patid='" + Patient_Id.trim() + "' order by id desc";
         Cursor c = db.rawQuery(Query, null);
         if (c != null) {
             if (c.moveToFirst()) {

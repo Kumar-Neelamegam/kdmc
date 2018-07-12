@@ -11,13 +11,13 @@ import android.telephony.SmsMessage;
  */
 public class SmsReceiver extends BroadcastReceiver {
 
-    private static SmsListener mListener;
+    private static SmsListener mListener = null;
 
     public SmsReceiver() {
     }
 
     public static void bindListener(SmsListener listener) {
-        SmsReceiver.mListener = listener;
+        mListener = listener;
     }
 
     @Override
@@ -35,7 +35,7 @@ public class SmsReceiver extends BroadcastReceiver {
             String messageBody = smsMessage.getMessageBody();
 
             //Pass on the text to our listener.
-            SmsReceiver.mListener.messageReceived(messageBody);
+            mListener.messageReceived(messageBody);
         }
 
     }

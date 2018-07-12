@@ -20,21 +20,21 @@ public class GetPatientMappingRequest {
 
 
     @com.google.gson.annotations.SerializedName("HID")
-    private String hID;
+    private String hID = null;
 
 
     @com.google.gson.annotations.SerializedName("IsUpdateMax")
-    private String isUpdateMax;
+    private String isUpdateMax = null;
 
     public GetPatientMappingRequest() {
     }
 
     public final String getHID() {
-        return this.gethID();
+        return gethID();
     }
 
     public final String getIsUpdateMax() {
-        return this.isUpdateMax;
+        return isUpdateMax;
     }
 
     public final void setIsUpdateMax(String isUpdateMax) {
@@ -46,7 +46,7 @@ public class GetPatientMappingRequest {
     }
 
     public String gethID() {
-        return this.hID;
+        return hID;
     }
 
     /**
@@ -59,16 +59,16 @@ public class GetPatientMappingRequest {
         }
 
         public final GetPatientMappingRequest build() {
-            return this.toBuild;
+            return toBuild;
         }
 
-        public final GetPatientMappingRequest.GetPatientMappingRequestBuilder hID(String value) {
-            this.toBuild.sethID(value);
+        public final GetPatientMappingRequestBuilder hID(String value) {
+            toBuild.sethID(value);
             return this;
         }
 
-        public final GetPatientMappingRequest.GetPatientMappingRequestBuilder isUpdateMax(String value) {
-            this.toBuild.setIsUpdateMax(value);
+        public final GetPatientMappingRequestBuilder isUpdateMax(String value) {
+            toBuild.setIsUpdateMax(value);
             return this;
         }
     }

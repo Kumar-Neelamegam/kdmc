@@ -36,10 +36,11 @@ import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.AutoCompleteTextView;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.RadioButton;
+import android.widget.RadioGroup;
 import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -110,8 +111,8 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
     ArrayList<HashMap<String, String>> titles_list;
     Handler handler;
     BaseConfig bcnfg = new BaseConfig();
-    @BindView(R.id.checkbox_view_all_patients)
-    CheckBox ShowAllPatients;
+    //  @BindView(R.id.checkbox_view_all_patients)
+    //  CheckBox ShowAllPatients;
     //**********************************************************************************************
     Dialog builderDialog;
     private SimpleDateFormat dateformt;
@@ -124,6 +125,16 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
     private Runnable timerRunnable;
 
     private LinkedList<MyPatientGetSet> rowItems;
+
+
+    @BindView(R.id.radiogroup_patients_options)
+    RadioGroup patientshow_options;
+
+    @BindView(R.id.radio_today_patients)
+    RadioButton radio_today_patients;
+
+    @BindView(R.id.radio_show_all_patients)
+    RadioButton radio_showall_patients;
 
     private static final boolean LoadReportsBooleanStatus(String Query) {
         try {
@@ -171,7 +182,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
             AUTOREFRESHPATIENTLIST();
 
-            new LoadPatientInfo(2, 0).execute();
+            new LoadPatientInfo(2, 0).execute();//if id==1 load all patient, id==2 load all today patients
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -181,33 +192,27 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
     private void CONTROLLISTNERS() {
 
-        ShowAllPatients.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+
+        radio_showall_patients.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-
-                // String Query = "select count(*)as ret_values  from Patreg order by patientname, id ";
-                //int PresentCount = Integer.valueOf(BaseConfig.GetValues(Query));
-
-                if (isChecked) {
-
-                    //  if (PresentCount > rowItems.size())
-                    {
-                        new LoadPatientInfo(1, 1).execute();
-                    }
-
-                } else {
-
-                    new LoadPatientInfo(2, 0).execute();
-
+                if(isChecked)
+                {
+                    new LoadPatientInfo(1, 1).execute();
                 }
-
-                if (etSearch.getText().length() > 0) {
-                    etSearch.setText("");
-                }
-
-
             }
         });
+
+        radio_today_patients.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked)
+                {
+                    new LoadPatientInfo(2, 0).execute();
+                }
+            }
+        });
+
 
 
         mypatientBack.setOnClickListener(new OnClickListener() {
@@ -371,7 +376,8 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
                 try {
 
-                    new LoadPatientInfo(1, 1).execute();
+                    // new LoadPatientInfo(1, 1).execute();
+                    radio_showall_patients.performClick();
 
                     Toast.makeText(MyPatient.this, "Please wait refreshing patient list...", Toast.LENGTH_LONG).show();
 
@@ -525,7 +531,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                 //int PresentCount = Integer.valueOf(BaseConfig.GetValues(Query));
 
                 // if (PresentCount > rowItems.size()) {
-                if (ShowAllPatients.isChecked()) {
+                if (radio_showall_patients.isChecked()) {
                     new LoadPatientInfo(1, 1).execute();//ALL PATIENTS
                 } else {
                     new LoadPatientInfo(2, 0).execute();//ONL TODAY PATIENT
@@ -749,9 +755,9 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
             String Query1 = "select IsResultAvailable as ret_values from Medicaltest where Ptid='" + PATID + "' and (substr(Actdate,0,11)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "'  or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "')";
             String IsResultAvailable = BaseConfig.GetValues(Query1);
 
-             if (IsResultAvailable.equalsIgnoreCase("1")) {
+            if (IsResultAvailable!=null && IsResultAvailable.equalsIgnoreCase("1")) {
                 return "1";
-            } else if (IsResultAvailable.equalsIgnoreCase("2")) {
+            } else if (IsResultAvailable!=null && IsResultAvailable.equalsIgnoreCase("2")) {
                 return "2";
             } else {
                 return "0";

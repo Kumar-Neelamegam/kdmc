@@ -20,8 +20,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.graphics.PointF;
 import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
@@ -37,7 +35,7 @@ import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.Point
  * <p/>
  * Created by Andrey Kulikov on 13/03/16.
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class TranslationTransition extends Transition {
 
     private static final String TRANSLATION_X = "TranslationTransition:translationX";
@@ -46,7 +44,7 @@ public class TranslationTransition extends Transition {
     private static final PointFProperty<View> TRANSLATION_PROPERTY;
 
     static {
-        if (VERSION.SDK_INT >= VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             TRANSLATION_PROPERTY = new PointFProperty<View>() {
 
                 @Override
@@ -74,32 +72,32 @@ public class TranslationTransition extends Transition {
 
     private void captureValues(TransitionValues transitionValues) {
         if (transitionValues.view != null) {
-            transitionValues.values.put(TranslationTransition.TRANSLATION_X, transitionValues.view.getTranslationX());
-            transitionValues.values.put(TranslationTransition.TRANSLATION_Y, transitionValues.view.getTranslationY());
+            transitionValues.values.put(TRANSLATION_X, transitionValues.view.getTranslationX());
+            transitionValues.values.put(TRANSLATION_Y, transitionValues.view.getTranslationY());
         }
     }
 
     @Override
     public void captureStartValues(TransitionValues transitionValues) {
-        this.captureValues(transitionValues);
+        captureValues(transitionValues);
     }
 
     @Override
     public void captureEndValues(TransitionValues transitionValues) {
-        this.captureValues(transitionValues);
+        captureValues(transitionValues);
     }
 
     @Override
     public Animator createAnimator(ViewGroup sceneRoot, TransitionValues startValues,
                                    TransitionValues endValues) {
-        if (startValues != null && endValues != null && TranslationTransition.TRANSLATION_PROPERTY != null) {
-            float startX = (float) startValues.values.get(TranslationTransition.TRANSLATION_X);
-            float startY = (float) startValues.values.get(TranslationTransition.TRANSLATION_Y);
-            float endX = (float) endValues.values.get(TranslationTransition.TRANSLATION_X);
-            float endY = (float) endValues.values.get(TranslationTransition.TRANSLATION_Y);
+        if (startValues != null && endValues != null && TRANSLATION_PROPERTY != null) {
+            float startX = (float) startValues.values.get(TRANSLATION_X);
+            float startY = (float) startValues.values.get(TRANSLATION_Y);
+            float endX = (float) endValues.values.get(TRANSLATION_X);
+            float endY = (float) endValues.values.get(TRANSLATION_Y);
             endValues.view.setTranslationX(startX);
             endValues.view.setTranslationY(startY);
-            return AnimatorUtils.ofPointF(endValues.view, TranslationTransition.TRANSLATION_PROPERTY, this.getPathMotion(), startX, startY, endX, endY);
+            return AnimatorUtils.ofPointF(endValues.view, TRANSLATION_PROPERTY, getPathMotion(), startX, startY, endX, endY);
         } else {
             return null;
         }

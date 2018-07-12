@@ -19,12 +19,10 @@ import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.view.Gravity;
 import android.view.View;
 import android.view.ViewGroup;
 
-import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.Slide.GravityFlag;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.ViewUtils;
 
 /**
@@ -35,7 +33,7 @@ import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.ViewU
  * it will transition later when closer to the side and sooner when farther from the edge.
  * This is the default TransitionPropagation used with {@link android.transition.Slide}.
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class SidePropagation extends VisibilityPropagation {
     private static final String TAG = "SlidePropagation";
 
@@ -53,8 +51,8 @@ public class SidePropagation extends VisibilityPropagation {
      *             {@link Gravity#LEFT}, {@link Gravity#TOP}, {@link Gravity#RIGHT},
      *             {@link Gravity#BOTTOM}, {@link Gravity#START}, or {@link Gravity#END}.
      */
-    public void setSide(@GravityFlag int side) {
-        this.mSide = side;
+    public void setSide(@Slide.GravityFlag int side) {
+        mSide = side;
     }
 
     /**
@@ -73,7 +71,7 @@ public class SidePropagation extends VisibilityPropagation {
         if (propagationSpeed == 0) {
             throw new IllegalArgumentException("propagationSpeed may not be 0");
         }
-        this.mPropagationSpeed = propagationSpeed;
+        mPropagationSpeed = propagationSpeed;
     }
 
     @Override
@@ -85,15 +83,15 @@ public class SidePropagation extends VisibilityPropagation {
         int directionMultiplier = 1;
         Rect epicenter = transition.getEpicenter();
         TransitionValues positionValues;
-        if (endValues == null || this.getViewVisibility(startValues) == View.VISIBLE) {
+        if (endValues == null || getViewVisibility(startValues) == View.VISIBLE) {
             positionValues = startValues;
             directionMultiplier = -1;
         } else {
             positionValues = endValues;
         }
 
-        int viewCenterX = this.getViewX(positionValues);
-        int viewCenterY = this.getViewY(positionValues);
+        int viewCenterX = getViewX(positionValues);
+        int viewCenterY = getViewY(positionValues);
 
         int[] loc = new int[2];
         sceneRoot.getLocationOnScreen(loc);
@@ -112,9 +110,9 @@ public class SidePropagation extends VisibilityPropagation {
             epicenterY = (top + bottom) / 2;
         }
 
-        float distance = this.distance(sceneRoot, viewCenterX, viewCenterY, epicenterX, epicenterY,
+        float distance = distance(sceneRoot, viewCenterX, viewCenterY, epicenterX, epicenterY,
                 left, top, right, bottom);
-        float maxDistance = this.getMaxDistance(sceneRoot);
+        float maxDistance = getMaxDistance(sceneRoot);
         float distanceFraction = distance/maxDistance;
 
         long duration = transition.getDuration();
@@ -122,21 +120,21 @@ public class SidePropagation extends VisibilityPropagation {
             duration = 300;
         }
 
-        return Math.round(duration * directionMultiplier / this.mPropagationSpeed * distanceFraction);
+        return Math.round(duration * directionMultiplier / mPropagationSpeed * distanceFraction);
     }
 
     @SuppressLint("RtlHardcoded")
     private int distance(View sceneRoot, int viewX, int viewY, int epicenterX, int epicenterY,
                          int left, int top, int right, int bottom) {
-        int side;
-        if (this.mSide == Gravity.START) {
-            boolean isRtl = ViewUtils.isRtl(sceneRoot);
+        final int side;
+        if (mSide == Gravity.START) {
+            final boolean isRtl = ViewUtils.isRtl(sceneRoot);
             side = isRtl ? Gravity.RIGHT : Gravity.LEFT;
-        } else if (this.mSide == Gravity.END) {
-            boolean isRtl = ViewUtils.isRtl(sceneRoot);
+        } else if (mSide == Gravity.END) {
+            final boolean isRtl = ViewUtils.isRtl(sceneRoot);
             side = isRtl ? Gravity.LEFT : Gravity.RIGHT;
         } else {
-            side = this.mSide;
+            side = mSide;
         }
         int distance = 0;
         switch (side) {
@@ -158,7 +156,7 @@ public class SidePropagation extends VisibilityPropagation {
 
     @SuppressLint("RtlHardcoded")
     private int getMaxDistance(ViewGroup sceneRoot) {
-        switch (this.mSide) {
+        switch (mSide) {
             case Gravity.LEFT:
             case Gravity.RIGHT:
             case Gravity.START:

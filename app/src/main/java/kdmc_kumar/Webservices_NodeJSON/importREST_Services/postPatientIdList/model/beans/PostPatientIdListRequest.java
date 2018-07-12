@@ -20,17 +20,17 @@ public class PostPatientIdListRequest {
 
 
     @com.google.gson.annotations.SerializedName("MethodName")
-    private String methodName;
+    private String methodName = null;
 
 
     @com.google.gson.annotations.SerializedName("PatientList")
-    private String patientList;
+    private String patientList = null;
 
     public PostPatientIdListRequest() {
     }
 
     public final String getMethodName() {
-        return this.methodName;
+        return methodName;
     }
 
     public final void setMethodName(String methodName) {
@@ -38,7 +38,7 @@ public class PostPatientIdListRequest {
     }
 
     public final String getPatientList() {
-        return this.patientList;
+        return patientList;
     }
 
     public final void setPatientList(String patientList) {
@@ -55,16 +55,16 @@ public class PostPatientIdListRequest {
         }
 
         public final PostPatientIdListRequest build() {
-            return this.toBuild;
+            return toBuild;
         }
 
-        public final PostPatientIdListRequest.PostPatientIdListRequestBuilder methodName(String value) {
-            this.toBuild.setMethodName(value);
+        public final PostPatientIdListRequestBuilder methodName(String value) {
+            toBuild.setMethodName(value);
             return this;
         }
 
-        public final PostPatientIdListRequest.PostPatientIdListRequestBuilder patientList(String value) {
-            this.toBuild.setPatientList(value);
+        public final PostPatientIdListRequestBuilder patientList(String value) {
+            toBuild.setPatientList(value);
             return this;
         }
     }

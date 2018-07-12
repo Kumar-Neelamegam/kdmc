@@ -18,19 +18,18 @@ package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils;
 import android.animation.LayoutTransition;
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.os.Build.VERSION;
+import android.os.Build.VERSION_CODES;
 import android.view.ViewGroup;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
 
-@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
 public class ViewGroupUtils {
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
+    @TargetApi(VERSION_CODES.JELLY_BEAN)
     static class BaseViewGroupUtils {
 
         private static final int LAYOUT_TRANSITION_CHANGING = 4;
@@ -39,43 +38,43 @@ public class ViewGroupUtils {
         private static LayoutTransition sEmptyLayoutTransition;
         private static Method sMethodLayoutTransitionCancel;
 
-        public void suppressLayout(ViewGroup group, boolean suppress) {
-            if (BaseViewGroupUtils.sEmptyLayoutTransition == null) {
-                BaseViewGroupUtils.sEmptyLayoutTransition = new LayoutTransition() {
+        public void suppressLayout(final ViewGroup group, boolean suppress) {
+            if (sEmptyLayoutTransition == null) {
+                sEmptyLayoutTransition = new LayoutTransition() {
                     @Override
                     public boolean isChangingLayout() {
                         return true;
                     }
                 };
-                BaseViewGroupUtils.sEmptyLayoutTransition.setAnimator(LayoutTransition.APPEARING, null);
-                BaseViewGroupUtils.sEmptyLayoutTransition.setAnimator(LayoutTransition.CHANGE_APPEARING, null);
-                BaseViewGroupUtils.sEmptyLayoutTransition.setAnimator(LayoutTransition.CHANGE_DISAPPEARING, null);
-                BaseViewGroupUtils.sEmptyLayoutTransition.setAnimator(LayoutTransition.DISAPPEARING, null);
-                BaseViewGroupUtils.sEmptyLayoutTransition.setAnimator(BaseViewGroupUtils.LAYOUT_TRANSITION_CHANGING, null);
+                sEmptyLayoutTransition.setAnimator(LayoutTransition.APPEARING, null);
+                sEmptyLayoutTransition.setAnimator(LayoutTransition.CHANGE_APPEARING, null);
+                sEmptyLayoutTransition.setAnimator(LayoutTransition.CHANGE_DISAPPEARING, null);
+                sEmptyLayoutTransition.setAnimator(LayoutTransition.DISAPPEARING, null);
+                sEmptyLayoutTransition.setAnimator(LAYOUT_TRANSITION_CHANGING, null);
             }
             if (suppress) {
-                this.cancelLayoutTransition(group);
+                cancelLayoutTransition(group);
                 LayoutTransition layoutTransition = group.getLayoutTransition();
-                if (layoutTransition != null && layoutTransition != BaseViewGroupUtils.sEmptyLayoutTransition) {
-                    group.setTag(id.group_layouttransition_backup, group.getLayoutTransition());
+                if (layoutTransition != null && layoutTransition != sEmptyLayoutTransition) {
+                    group.setTag(R.id.group_layouttransition_backup, group.getLayoutTransition());
                 }
-                group.setLayoutTransition(BaseViewGroupUtils.sEmptyLayoutTransition);
+                group.setLayoutTransition(sEmptyLayoutTransition);
             } else {
                 group.setLayoutTransition(null);
-                if (BaseViewGroupUtils.sFieldLayoutSuppressed == null) {
-                    BaseViewGroupUtils.sFieldLayoutSuppressed = ReflectionUtils.getPrivateField(ViewGroup.class,
+                if (sFieldLayoutSuppressed == null) {
+                    sFieldLayoutSuppressed = ReflectionUtils.getPrivateField(ViewGroup.class,
                             "mLayoutSuppressed");
                 }
                 Boolean suppressed = (Boolean) ReflectionUtils.getFieldValue(group,
-                        Boolean.FALSE, BaseViewGroupUtils.sFieldLayoutSuppressed);
+                        Boolean.FALSE, sFieldLayoutSuppressed);
                 if (!Boolean.FALSE.equals(suppressed)) {
-                    ReflectionUtils.setFieldValue(group, BaseViewGroupUtils.sFieldLayoutSuppressed, false);
+                    ReflectionUtils.setFieldValue(group, sFieldLayoutSuppressed, false);
                     group.requestLayout();
                 }
-                LayoutTransition layoutTransition = (LayoutTransition)
-                        group.getTag(id.group_layouttransition_backup);
+                final LayoutTransition layoutTransition = (LayoutTransition)
+                        group.getTag(R.id.group_layouttransition_backup);
                 if (layoutTransition != null) {
-                    group.setTag(id.group_layouttransition_backup, null);
+                    group.setTag(R.id.group_layouttransition_backup, null);
                     group.setLayoutTransition(layoutTransition);
                 }
             }
@@ -83,12 +82,12 @@ public class ViewGroupUtils {
 
         public boolean cancelLayoutTransition(ViewGroup group) {
             if (group != null) {
-                LayoutTransition layoutTransition = group.getLayoutTransition();
+                final LayoutTransition layoutTransition = group.getLayoutTransition();
                 if (layoutTransition != null && layoutTransition.isRunning()) {
-                    if (BaseViewGroupUtils.sMethodLayoutTransitionCancel == null) {
-                        BaseViewGroupUtils.sMethodLayoutTransitionCancel = ReflectionUtils.getPrivateMethod(LayoutTransition.class, "cancel");
+                    if (sMethodLayoutTransitionCancel == null) {
+                        sMethodLayoutTransitionCancel = ReflectionUtils.getPrivateMethod(LayoutTransition.class, "cancel");
                     }
-                    ReflectionUtils.invoke(group.getLayoutTransition(), null, BaseViewGroupUtils.sMethodLayoutTransitionCancel);
+                    ReflectionUtils.invoke(group.getLayoutTransition(), null, sMethodLayoutTransitionCancel);
                     return true;
                 }
             }
@@ -96,33 +95,33 @@ public class ViewGroupUtils {
         }
     }
 
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR2)
-    static class JellyBeanMr2ViewGroupUtils extends ViewGroupUtils.BaseViewGroupUtils {
+    @TargetApi(VERSION_CODES.JELLY_BEAN_MR2)
+    static class JellyBeanMr2ViewGroupUtils extends BaseViewGroupUtils {
 
         private static Method sMethodSuppressLayout;
 
         @Override
         public void suppressLayout(ViewGroup group, boolean suppress) {
-            if (JellyBeanMr2ViewGroupUtils.sMethodSuppressLayout == null) {
-                JellyBeanMr2ViewGroupUtils.sMethodSuppressLayout = ReflectionUtils.getMethod(ViewGroup.class, "suppressLayout", boolean.class);
+            if (sMethodSuppressLayout == null) {
+                sMethodSuppressLayout = ReflectionUtils.getMethod(ViewGroup.class, "suppressLayout", boolean.class);
             }
-            ReflectionUtils.invoke(group, null, JellyBeanMr2ViewGroupUtils.sMethodSuppressLayout, suppress);
+            ReflectionUtils.invoke(group, null, sMethodSuppressLayout, suppress);
         }
     }
 
-    private static final ViewGroupUtils.BaseViewGroupUtils IMPL;
+    private static final BaseViewGroupUtils IMPL;
 
     static {
-        if (VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN_MR2) {
-            IMPL = new ViewGroupUtils.JellyBeanMr2ViewGroupUtils();
+        if (Build.VERSION.SDK_INT >= VERSION_CODES.JELLY_BEAN_MR2) {
+            IMPL = new JellyBeanMr2ViewGroupUtils();
         } else {
-            IMPL = new ViewGroupUtils.BaseViewGroupUtils();
+            IMPL = new BaseViewGroupUtils();
         }
     }
 
     public static void suppressLayout(ViewGroup group, boolean suppress) {
         if (group != null) {
-            ViewGroupUtils.IMPL.suppressLayout(group, suppress);
+            IMPL.suppressLayout(group, suppress);
         }
     }
 
@@ -130,6 +129,6 @@ public class ViewGroupUtils {
      * @return is cancel performed
      */
     public static boolean cancelLayoutTransition(ViewGroup group) {
-        return ViewGroupUtils.IMPL.cancelLayoutTransition(group);
+        return IMPL.cancelLayoutTransition(group);
     }
 }

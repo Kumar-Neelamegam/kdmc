@@ -15,37 +15,36 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 
 class NewAdapter extends BaseExpandableListAdapter {
     public ArrayList<String> AllSubtestParents = new ArrayList<>();
-    private ArrayList<String> groupItem;
-    private ArrayList<String> tempChild;
+    private ArrayList<String> groupItem = null;
+    private ArrayList<String> tempChild = null;
     private ArrayList<Object> Childtem = new ArrayList<>();
-    private LayoutInflater minflater;
-    private Activity activity;
+    private LayoutInflater minflater = null;
+    private Activity activity = null;
     // Hashmap for keeping track of our checkbox check states
-    private HashMap<Integer, boolean[]> mChildCheckStates;
-    private Context context;
+    private HashMap<Integer, boolean[]> mChildCheckStates = null;
+    private Context context = null;
 
     public NewAdapter(Context context) {
+        super();
         this.context = context;
 
     }
 
     public NewAdapter(ArrayList<String> grList, ArrayList<Object> childItem) {
-        this.groupItem = grList;
-        Childtem = childItem;
+        groupItem = grList;
+        this.Childtem = childItem;
         // Initialize our hashmap containing our check states here
-        this.mChildCheckStates = new HashMap<>();
+        mChildCheckStates = new HashMap<>();
     }
 
     public final void setInflater(LayoutInflater mInflater, Activity act) {
-        minflater = mInflater;
-        this.activity = act;
+        this.minflater = mInflater;
+        activity = act;
     }
 
     @Nullable
@@ -61,12 +60,12 @@ class NewAdapter extends BaseExpandableListAdapter {
 
     //CheckBox chkbx;
     @Override
-    public final View getChildView(int i, int i1,
+    public final View getChildView(final int i, final int i1,
                                    boolean b, View view, ViewGroup viewGroup) {
 
         View convertView1 = view;
-        this.tempChild = new ArrayList<>();
-        this.tempChild = (ArrayList<String>) this.Childtem.get(i);
+        tempChild = new ArrayList<>();
+        tempChild = (ArrayList<String>) Childtem.get(i);
 
 
 	/*	if (convertView == null)
@@ -81,29 +80,29 @@ class NewAdapter extends BaseExpandableListAdapter {
 		text.setText(tempChild.get(childPosition));
 */
 
-        NewAdapter.ViewHolder holder;
+        final ViewHolder holder;
 
         if (convertView1 == null) {
 
-            convertView1 = this.minflater.inflate(layout.childrow, viewGroup, false);
-            holder = new NewAdapter.ViewHolder();
-            holder.checkbox = convertView1.findViewById(id.checkBox111);
+            convertView1 = minflater.inflate(R.layout.childrow, viewGroup, false);
+            holder = new ViewHolder();
+            holder.checkbox = convertView1.findViewById(R.id.checkBox111);
             convertView1.setTag(holder);
         } else {
-            holder = (NewAdapter.ViewHolder) convertView1.getTag();
+            holder = (ViewHolder) convertView1.getTag();
         }
 
 
         holder.checkbox.setOnCheckedChangeListener(null);
 
-        if (this.mChildCheckStates.containsKey(Integer.valueOf(i))) {
+        if (mChildCheckStates.containsKey(Integer.valueOf(i))) {
 
             /*
              * if the hashmap mChildCheckStates<Integer, Boolean[]> contains
              * the value of the parent view (group) of this child (aka, the key),
              * then retrive the boolean array getChecked[]
             */
-            boolean getChecked[] = this.mChildCheckStates.get(Integer.valueOf(i));
+            boolean getChecked[] = mChildCheckStates.get(Integer.valueOf(i));
 
             // set the check state of this position's checkbox based on the
             // boolean value of getChecked[position]
@@ -118,10 +117,10 @@ class NewAdapter extends BaseExpandableListAdapter {
             *  and set it's size to the total number of children associated with
             *  the parent group
             */
-            boolean getChecked[] = new boolean[this.getChildrenCount(i)];
+            boolean getChecked[] = new boolean[getChildrenCount(i)];
 
             // add getChecked[] to the mChildCheckStates hashmap using mGroupPosition as the key
-            this.mChildCheckStates.put(Integer.valueOf(i), getChecked);
+            mChildCheckStates.put(Integer.valueOf(i), getChecked);
 
             // set the check state of this position's checkbox based on the
             // boolean value of getChecked[position]
@@ -135,11 +134,11 @@ class NewAdapter extends BaseExpandableListAdapter {
             if (isChecked) {
 
 
-                this.tempChild = (ArrayList<String>) this.Childtem.get(i);
-                boolean getChecked[] = this.mChildCheckStates.get(Integer.valueOf(i));
+                tempChild = (ArrayList<String>) Childtem.get(i);
+                boolean getChecked[] = mChildCheckStates.get(Integer.valueOf(i));
                 getChecked[i1] = isChecked;
-                this.mChildCheckStates.put(Integer.valueOf(i), getChecked);
-                String chkitem = this.tempChild.get(i1);
+                mChildCheckStates.put(Integer.valueOf(i), getChecked);
+                String chkitem = tempChild.get(i1);
 
                 //Log.e("Checked Item: ", chkitem);
 
@@ -152,7 +151,7 @@ class NewAdapter extends BaseExpandableListAdapter {
                     BaseConfig.SaveData(Insert_TABLE_TempTest);
 
                 } else {
-                    String Insert_TABLE_TempTest = "INSERT INTO TempTest (Test,SubTest) values('" + this.groupItem.get(i) + "','" + chkitem + "');";
+                    String Insert_TABLE_TempTest = "INSERT INTO TempTest (Test,SubTest) values('" + groupItem.get(i) + "','" + chkitem + "');";
                     BaseConfig.SaveData(Insert_TABLE_TempTest);
                 }
 
@@ -196,12 +195,12 @@ class NewAdapter extends BaseExpandableListAdapter {
 
             } else {
 
-                this.tempChild = (ArrayList<String>) this.Childtem.get(i);
-                boolean getChecked[] = this.mChildCheckStates.get(Integer.valueOf(i));
+                tempChild = (ArrayList<String>) Childtem.get(i);
+                boolean getChecked[] = mChildCheckStates.get(Integer.valueOf(i));
                 getChecked[i1] = isChecked;
-                this.mChildCheckStates.put(Integer.valueOf(i), getChecked);
+                mChildCheckStates.put(Integer.valueOf(i), getChecked);
 
-                String chkitem = this.tempChild.get(i1);
+                String chkitem = tempChild.get(i1);
 
                 if (chkitem.contains(" / ")) {
                     String str_TestName = chkitem.split(" / ")[0];
@@ -211,7 +210,7 @@ class NewAdapter extends BaseExpandableListAdapter {
                     BaseConfig.SaveData(Delete_TABLE_TempTest);
 
                 } else {
-                    String Delete_TABLE_TempTest = "Delete from TempTest where Test='" + this.groupItem.get(i) + "' and SubTest='" + chkitem + "';";
+                    String Delete_TABLE_TempTest = "Delete from TempTest where Test='" + groupItem.get(i) + "' and SubTest='" + chkitem + "';";
                     BaseConfig.SaveData(Delete_TABLE_TempTest);
                 }
 
@@ -252,7 +251,7 @@ class NewAdapter extends BaseExpandableListAdapter {
         });
 
 
-        holder.checkbox.setText(this.tempChild.get(i1));
+        holder.checkbox.setText(tempChild.get(i1));
 
 
         return convertView1;
@@ -260,7 +259,7 @@ class NewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public final int getChildrenCount(int i) {
-        return ((ArrayList<String>) this.Childtem.get(i)).size();
+        return ((ArrayList<String>) Childtem.get(i)).size();
     }
 
     @Nullable
@@ -271,7 +270,7 @@ class NewAdapter extends BaseExpandableListAdapter {
 
     @Override
     public final int getGroupCount() {
-        return this.groupItem.size();
+        return groupItem.size();
     }
 
     @Override
@@ -284,11 +283,11 @@ class NewAdapter extends BaseExpandableListAdapter {
                                    View view, ViewGroup viewGroup) {
         View convertView1 = view;
         if (convertView1 == null) {
-            convertView1 = this.minflater.inflate(layout.grouprow, null);
+            convertView1 = minflater.inflate(R.layout.grouprow, null);
 
 
         }
-        ((CheckedTextView) convertView1).setText(this.groupItem.get(i));
+        ((CheckedTextView) convertView1).setText(groupItem.get(i));
         ((CheckedTextView) convertView1).setChecked(b);
         return convertView1;
     }
@@ -304,8 +303,8 @@ class NewAdapter extends BaseExpandableListAdapter {
     }
 
     static class ViewHolder {
-        TextView text;
-        CheckBox checkbox;
+        TextView text = null;
+        CheckBox checkbox = null;
 
         ViewHolder() {
         }

@@ -21,21 +21,21 @@ public class PostPatidMtestidRequest {
 
 
     @com.google.gson.annotations.SerializedName("MethodName")
-    private String methodName;
+    private String methodName = null;
 
 
     @com.google.gson.annotations.SerializedName("MtestId")
-    private String mtestId;
+    private String mtestId = null;
 
 
     @com.google.gson.annotations.SerializedName("PatId")
-    private String patId;
+    private String patId = null;
 
     public PostPatidMtestidRequest() {
     }
 
     public final String getMethodName() {
-        return this.methodName;
+        return methodName;
     }
 
     public final void setMethodName(String methodName) {
@@ -43,7 +43,7 @@ public class PostPatidMtestidRequest {
     }
 
     public final String getMtestId() {
-        return this.mtestId;
+        return mtestId;
     }
 
     public final void setMtestId(String mtestId) {
@@ -51,7 +51,7 @@ public class PostPatidMtestidRequest {
     }
 
     public final String getPatId() {
-        return this.patId;
+        return patId;
     }
 
     public final void setPatId(String patId) {
@@ -68,21 +68,21 @@ public class PostPatidMtestidRequest {
         }
 
         public final PostPatidMtestidRequest build() {
-            return this.toBuild;
+            return toBuild;
         }
 
-        public final PostPatidMtestidRequest.PostPatidMtestidRequestBuilder methodName(String value) {
-            this.toBuild.setMethodName(value);
+        public final PostPatidMtestidRequestBuilder methodName(String value) {
+            toBuild.setMethodName(value);
             return this;
         }
 
-        public final PostPatidMtestidRequest.PostPatidMtestidRequestBuilder mtestId(String value) {
-            this.toBuild.setMtestId(value);
+        public final PostPatidMtestidRequestBuilder mtestId(String value) {
+            toBuild.setMtestId(value);
             return this;
         }
 
-        public final PostPatidMtestidRequest.PostPatidMtestidRequestBuilder patId(String value) {
-            this.toBuild.setPatId(value);
+        public final PostPatidMtestidRequestBuilder patId(String value) {
+            toBuild.setPatId(value);
             return this;
         }
     }

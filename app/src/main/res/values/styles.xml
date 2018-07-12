@@ -33,6 +33,11 @@
 
 
 
+    <style name="CustomStyledRadioButton" parent="Theme.AppCompat.Light">
+        <item name="colorControlNormal">@color/ash</item>
+        <item name="colorControlActivated">@color/white</item>
+    </style>
+
 
     <style name="Widget.DiscreteSeekBar" parent="android:Widget">
         <item name="dsb_indicatorTextAppearance">@style/Widget.DiscreteIndicatorTextAppearance</item>

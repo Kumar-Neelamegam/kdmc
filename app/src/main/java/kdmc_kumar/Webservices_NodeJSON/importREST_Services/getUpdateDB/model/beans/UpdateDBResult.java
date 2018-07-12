@@ -19,13 +19,13 @@ public class UpdateDBResult {
 
 
     @com.google.gson.annotations.SerializedName("Results")
-    private String results;
+    private String results = null;
 
     public UpdateDBResult() {
     }
 
     public final String getResults() {
-        return this.results;
+        return results;
     }
 
     public void setResults(String results) {
@@ -42,11 +42,11 @@ public class UpdateDBResult {
         }
 
         public final UpdateDBResult build() {
-            return this.toBuild;
+            return toBuild;
         }
 
-        public final UpdateDBResult.UpdateDBResultBuilder results(String value) {
-            this.toBuild.setResults(value);
+        public final UpdateDBResultBuilder results(String value) {
+            toBuild.setResults(value);
             return this;
         }
     }

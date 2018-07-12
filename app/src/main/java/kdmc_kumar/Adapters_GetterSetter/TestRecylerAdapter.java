@@ -3,8 +3,6 @@ package kdmc_kumar.Adapters_GetterSetter;
 import android.app.Dialog;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,11 +14,6 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.style;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.TestItem;
-import kdmc_kumar.Adapters_GetterSetter.TestRecylerAdapter.MyViewHolder;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 
@@ -28,25 +21,25 @@ import kdmc_kumar.Core_Modules.BaseConfig;
  * Created by Ponnusamy M on 4/8/2017.
  */
 
-public class TestRecylerAdapter extends Adapter<MyViewHolder> {
+public class TestRecylerAdapter extends RecyclerView.Adapter<TestRecylerAdapter.MyViewHolder> {
 
-    private final ArrayList<TestItem> testItems;
+    private final ArrayList<CommonDataObjects.TestItem> testItems;
 
-    public TestRecylerAdapter(ArrayList<TestItem> testItems) {
+    public TestRecylerAdapter(ArrayList<CommonDataObjects.TestItem> testItems) {
         this.testItems = testItems;
     }
 
     @NonNull
     @Override
-    public final TestRecylerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(layout.new_testreport_listitem, parent, false);
-        return new TestRecylerAdapter.MyViewHolder(view);
+    public final MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.new_testreport_listitem, parent, false);
+        return new MyViewHolder(view);
     }
 
     @Override
-    public final void onBindViewHolder(@NonNull TestRecylerAdapter.MyViewHolder holder, int position) {
+    public final void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
 
-        TestItem item = this.testItems.get(position);
+        final CommonDataObjects.TestItem item = testItems.get(position);
         holder.repname.setText(item.getReport_Name());
         holder.reptype.setText(item.getReport_Type());
         holder.repdate.setText(item.getReport_Date().split("T")[0]);
@@ -56,13 +49,13 @@ public class TestRecylerAdapter extends Adapter<MyViewHolder> {
 
         holder.imageView.setOnClickListener(view -> {
 
-            View promptView = LayoutInflater.from(holder.imageView.getContext()).inflate(layout.imageview_zoom_dialog_report, null);
-            ImageView Photo_imgvw = promptView.findViewById(id.imvw_patientphoto);
-            TextView Report_Name = promptView.findViewById(id.tv_report_name);
-            TextView Report_Type = promptView.findViewById(id.tv_report_type);
-            TextView Report_Date = promptView.findViewById(id.tv_report_date);
-            TextView Report_Summary = promptView.findViewById(id.tv_report_summary);
-            Button Close = promptView.findViewById(id.cancel);
+            View promptView = LayoutInflater.from(holder.imageView.getContext()).inflate(R.layout.imageview_zoom_dialog_report, null);
+            final ImageView Photo_imgvw = promptView.findViewById(R.id.imvw_patientphoto);
+            final TextView Report_Name = promptView.findViewById(R.id.tv_report_name);
+            final TextView Report_Type = promptView.findViewById(R.id.tv_report_type);
+            final TextView Report_Date = promptView.findViewById(R.id.tv_report_date);
+            final TextView Report_Summary = promptView.findViewById(R.id.tv_report_summary);
+            final Button Close = promptView.findViewById(R.id.cancel);
 
             Report_Name.setText(item.getReport_Name());
             Report_Type.setText(item.getReport_Type());
@@ -76,10 +69,10 @@ public class TestRecylerAdapter extends Adapter<MyViewHolder> {
             BaseConfig.Glide_LoadImageView( Photo_imgvw, item.getReport_Image() );
 
 
-            Dialog dialog = new Dialog(holder.imageView.getContext());
+            final Dialog dialog = new Dialog(holder.imageView.getContext());
             dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             dialog.setContentView(promptView);
-            dialog.getWindow().getAttributes().windowAnimations = style.DialogAnimation;
+            dialog.getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
             dialog.show();
 
             Close.setOnClickListener(view1 -> dialog.dismiss());
@@ -92,10 +85,10 @@ public class TestRecylerAdapter extends Adapter<MyViewHolder> {
 
     @Override
     public final int getItemCount() {
-        return this.testItems.size();
+        return testItems.size();
     }
 
-    static class MyViewHolder extends ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
 
         final ImageView imageView;
         final TextView repname;
@@ -105,11 +98,11 @@ public class TestRecylerAdapter extends Adapter<MyViewHolder> {
 
         MyViewHolder(View itemView) {
             super(itemView);
-            this.repname = itemView.findViewById(id.reportname);
-            this.reptype = itemView.findViewById(id.report_type);
-            this.repdate = itemView.findViewById(id.report_date);
-            this.reportsummary = itemView.findViewById(id.report_summary);
-            this.imageView = itemView.findViewById(id.imageview);
+            repname = itemView.findViewById(R.id.reportname);
+            reptype = itemView.findViewById(R.id.report_type);
+            repdate = itemView.findViewById(R.id.report_date);
+            reportsummary = itemView.findViewById(R.id.report_summary);
+            imageView = itemView.findViewById(R.id.imageview);
 
         }
     }

@@ -2,8 +2,6 @@ package kdmc_kumar.Adapters_GetterSetter;
 
 import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,36 +10,32 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.PrescriptionItem;
-import kdmc_kumar.Adapters_GetterSetter.PrescriptionRecylerAdapter.MyViewHolder;
 
 
 /**
  * Created by Ponnusamy M on 4/7/2017.
  */
 
-public class PrescriptionRecylerAdapter extends Adapter<MyViewHolder> {
+public class PrescriptionRecylerAdapter extends RecyclerView.Adapter<PrescriptionRecylerAdapter.MyViewHolder> {
 
-    private final ArrayList<PrescriptionItem> prescriptionItems;
+    private final ArrayList<CommonDataObjects.PrescriptionItem> prescriptionItems;
 
-    public PrescriptionRecylerAdapter(ArrayList<PrescriptionItem> prescriptionItems) {
+    public PrescriptionRecylerAdapter(ArrayList<CommonDataObjects.PrescriptionItem> prescriptionItems) {
         this.prescriptionItems = prescriptionItems;
     }
 
     @NonNull
     @Override
-    public final PrescriptionRecylerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View view = LayoutInflater.from(parent.getContext()).inflate(layout.new_prescription_recyler_item, parent, false);
+    public final MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.new_prescription_recyler_item, parent, false);
 
-        return new PrescriptionRecylerAdapter.MyViewHolder(view);
+        return new MyViewHolder(view);
     }
 
     @Override
-    public final void onBindViewHolder(@NonNull PrescriptionRecylerAdapter.MyViewHolder holder, int position) {
+    public final void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
 
-        PrescriptionItem item = this.prescriptionItems.get(position);
+        CommonDataObjects.PrescriptionItem item = prescriptionItems.get(position);
 
         holder.sno.setText(item.getSno());
         holder.medicinename.setText(item.getMedicine_Name());
@@ -53,10 +47,10 @@ public class PrescriptionRecylerAdapter extends Adapter<MyViewHolder> {
 
     @Override
     public final int getItemCount() {
-        return this.prescriptionItems.size();
+        return prescriptionItems.size();
     }
 
-    static class MyViewHolder extends ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
         final TextView sno;
         final TextView medicinename;
         final TextView interval;
@@ -66,12 +60,12 @@ public class PrescriptionRecylerAdapter extends Adapter<MyViewHolder> {
 
         MyViewHolder(View itemView) {
             super(itemView);
-            this.sno = itemView.findViewById(id.text1);
-            this.medicinename = itemView.findViewById(id.text2);
-            this.interval = itemView.findViewById(id.text3);
-            this.frequency = itemView.findViewById(id.text4);
-            this.Duration = itemView.findViewById(id.text5);
-            this.doctorname = itemView.findViewById(id.text6);
+            sno = itemView.findViewById(R.id.text1);
+            medicinename = itemView.findViewById(R.id.text2);
+            interval = itemView.findViewById(R.id.text3);
+            frequency = itemView.findViewById(R.id.text4);
+            Duration = itemView.findViewById(R.id.text5);
+            doctorname = itemView.findViewById(R.id.text6);
         }
     }
 }

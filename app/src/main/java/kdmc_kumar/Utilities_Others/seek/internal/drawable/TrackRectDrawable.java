@@ -35,7 +35,7 @@ public class TrackRectDrawable extends StateDrawable {
 
     @Override
     void doDraw(Canvas canvas, Paint paint) {
-        canvas.drawRect(this.getBounds(), paint);
+        canvas.drawRect(getBounds(), paint);
     }
 
 }

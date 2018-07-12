@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Map.Entry;
 
 /**
  * Created by bpncool on 2/23/2016.
@@ -33,54 +32,54 @@ public class SectionedExpandableLayoutHelper implements SectionStateChangeListen
         //setting the recycler view
         GridLayoutManager gridLayoutManager = new GridLayoutManager(context, gridSpanCount);
         recyclerView.setLayoutManager(gridLayoutManager);
-        this.mSectionedExpandableGridAdapter = new SectionedExpandableGridAdapter(context, this.mDataArrayList,
+        mSectionedExpandableGridAdapter = new SectionedExpandableGridAdapter(context, mDataArrayList,
                 gridLayoutManager, itemClickListener, this);
-        recyclerView.setAdapter(this.mSectionedExpandableGridAdapter);
+        recyclerView.setAdapter(mSectionedExpandableGridAdapter);
 
-        this.mRecyclerView = recyclerView;
+        mRecyclerView = recyclerView;
     }
 
     public final void notifyDataSetChanged() {
         //TODO : handle this condition such that these functions won't be called if the recycler view is on scroll
-        this.generateDataList();
-        this.mSectionedExpandableGridAdapter.notifyDataSetChanged();
+        generateDataList();
+        mSectionedExpandableGridAdapter.notifyDataSetChanged();
     }
 
     public final void addSection(String section, ArrayList<Item> items) {
         Section newSection;
-        this.mSectionMap.put(section, (newSection = new Section(section)));
-        this.mSectionDataMap.put(newSection, items);
+        mSectionMap.put(section, (newSection = new Section(section)));
+        mSectionDataMap.put(newSection, items);
     }
 
     public final void addItem(String section, Item item) {
-        this.mSectionDataMap.get(this.mSectionMap.get(section)).add(item);
+        mSectionDataMap.get(mSectionMap.get(section)).add(item);
     }
 
     public final void removeItem(String section, Item item) {
-        this.mSectionDataMap.get(this.mSectionMap.get(section)).remove(item);
+        mSectionDataMap.get(mSectionMap.get(section)).remove(item);
     }
 
     public final void removeSection(String section) {
-        this.mSectionDataMap.remove(this.mSectionMap.get(section));
-        this.mSectionMap.remove(section);
+        mSectionDataMap.remove(mSectionMap.get(section));
+        mSectionMap.remove(section);
     }
 
     private void generateDataList() {
-        this.mDataArrayList.clear();
-        for (Iterator<Entry<Section, ArrayList<Item>>> iterator = this.mSectionDataMap.entrySet().iterator(); iterator.hasNext(); ) {
-            Entry<Section, ArrayList<Item>> entry = iterator.next();
+        mDataArrayList.clear();
+        for (Iterator<Map.Entry<Section, ArrayList<Item>>> iterator = mSectionDataMap.entrySet().iterator(); iterator.hasNext(); ) {
+            Map.Entry<Section, ArrayList<Item>> entry = iterator.next();
             Section key;
-            this.mDataArrayList.add((key = entry.getKey()));
+            mDataArrayList.add((key = entry.getKey()));
             if (key.isExpanded)
-                this.mDataArrayList.addAll(entry.getValue());
+                mDataArrayList.addAll(entry.getValue());
         }
     }
 
     @Override
     public final void onSectionStateChanged(Section section, boolean isOpen) {
-        if (!this.mRecyclerView.isComputingLayout()) {
+        if (!mRecyclerView.isComputingLayout()) {
             section.isExpanded = isOpen;
-            this.notifyDataSetChanged();
+            notifyDataSetChanged();
         }
     }
 }

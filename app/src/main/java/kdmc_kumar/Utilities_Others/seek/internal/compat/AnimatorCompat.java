@@ -17,8 +17,6 @@
 package kdmc_kumar.Utilities_Others.seek.internal.compat;
 
 import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 
 /**
  * Currently, there's no {@link android.animation.ValueAnimator} compatibility version
@@ -38,7 +36,7 @@ import android.os.Build.VERSION_CODES;
  */
 public abstract class AnimatorCompat {
     public interface AnimationFrameUpdateListener {
-        void onAnimationFrame(float currentValue);
+        public void onAnimationFrame(float currentValue);
     }
 
     AnimatorCompat() {
@@ -53,22 +51,22 @@ public abstract class AnimatorCompat {
 
     public abstract void start();
 
-    public static final AnimatorCompat create(float start, float end, AnimatorCompat.AnimationFrameUpdateListener listener) {
-        if (VERSION.SDK_INT >= VERSION_CODES.HONEYCOMB) {
+    public static final AnimatorCompat create(float start, float end, AnimationFrameUpdateListener listener) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
             return new AnimatorCompatV11(start, end, listener);
         } else {
-            return new AnimatorCompat.AnimatorCompatBase(start, end, listener);
+            return new AnimatorCompatBase(start, end, listener);
         }
     }
 
     private static class AnimatorCompatBase extends AnimatorCompat {
 
-        private final AnimatorCompat.AnimationFrameUpdateListener mListener;
+        private final AnimationFrameUpdateListener mListener;
         private final float mEndValue;
 
-        public AnimatorCompatBase(float start, float end, AnimatorCompat.AnimationFrameUpdateListener listener) {
-            this.mListener = listener;
-            this.mEndValue = end;
+        public AnimatorCompatBase(float start, float end, AnimationFrameUpdateListener listener) {
+            mListener = listener;
+            mEndValue = end;
         }
 
         @Override
@@ -88,7 +86,7 @@ public abstract class AnimatorCompat {
 
         @Override
         public void start() {
-            this.mListener.onAnimationFrame(this.mEndValue);
+            mListener.onAnimationFrame(mEndValue);
         }
     }
 }

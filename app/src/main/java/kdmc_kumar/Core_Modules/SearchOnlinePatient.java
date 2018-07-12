@@ -20,7 +20,6 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.widget.Button;
 import android.widget.EditText;
@@ -46,13 +45,7 @@ import java.util.Locale;
 import java.util.concurrent.ExecutionException;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.color;
-import displ.mobydocmarathi.com.R.drawable;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.MyPatientGetSet;
 import kdmc_kumar.Adapters_GetterSetter.SearchMyPatienRecylerAdapter;
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
 import kdmc_kumar.Webservices_NodeJSON.importREST_Services.postDoctorId.controller.api.PostDoctorId;
@@ -62,25 +55,25 @@ import kdmc_kumar.Webservices_NodeJSON.importREST_Services.postDoctorId.model.be
 
 public class SearchOnlinePatient extends AppCompatActivity {
 
-    private static String Patient_List;
-    private CoordinatorLayout parentLayout;
-    private Toolbar toolbar;
-    private ImageView home;
-    private ImageView search;
-    private TextView txvwTitle;
-    ImageView home1;
-    private RelativeLayout RelativeLayout1;
-    private TextView TextView04;
-    private TextView txtCount;
-    private RecyclerView list;
-    private GridLayoutManager lLayout;
+    private static String Patient_List = null;
+    private CoordinatorLayout parentLayout = null;
+    private Toolbar toolbar = null;
+    private ImageView home = null;
+    private ImageView search = null;
+    private TextView txvwTitle = null;
+    ImageView home1 = null;
+    private RelativeLayout RelativeLayout1 = null;
+    private TextView TextView04 = null;
+    private TextView txtCount = null;
+    private RecyclerView list = null;
+    private GridLayoutManager lLayout = null;
 
-    private Button GetDetails;
-    private LinkedList<MyPatientGetSet> rowItems;
+    private Button GetDetails = null;
+    private LinkedList<CommonDataObjects.MyPatientGetSet> rowItems = null;
 
     private final ArrayList<String> CurrentPatientList = new ArrayList<>();
 
-    private SearchMyPatienRecylerAdapter recylerAdapter;
+    private SearchMyPatienRecylerAdapter recylerAdapter = null;
 
     public SearchOnlinePatient() {
     }
@@ -119,14 +112,14 @@ public class SearchOnlinePatient extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(layout.activity_searchonline_patient);
+        setContentView(R.layout.activity_searchonline_patient);
 
 
         try {
 
-            this.GetInit();
-            this.Contrll();
-            this.LoadSearchDialog();
+            GetInit();
+            Contrll();
+            LoadSearchDialog();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -137,28 +130,28 @@ public class SearchOnlinePatient extends AppCompatActivity {
 
     private void GetInit() {
 
-        this.parentLayout = this.findViewById(id.parent_layout);
-        this.toolbar = this.findViewById(id.toolbar);
-        this.home = this.findViewById(id.home);
-        this.search = this.findViewById(id.search_ico);
+        parentLayout = findViewById(R.id.parent_layout);
+        toolbar = findViewById(R.id.toolbar);
+        home = findViewById(R.id.home);
+        search = findViewById(R.id.search_ico);
 
-        this.txvwTitle = this.findViewById(id.txvw_title);
-        this.RelativeLayout1 = this.findViewById(id.RelativeLayout1);
-        this.TextView04 = this.findViewById(id.TextView04);
+        txvwTitle = findViewById(R.id.txvw_title);
+        RelativeLayout1 = findViewById(R.id.RelativeLayout1);
+        TextView04 = findViewById(R.id.TextView04);
 
-        this.txtCount = this.findViewById(id.txt_count);
+        txtCount = findViewById(R.id.txt_count);
 
 
-        this.list = this.findViewById(id.list);
-        this.lLayout = new GridLayoutManager(this, 2);
-        this.list.setHasFixedSize(true);
-        this.list.setLayoutManager(this.lLayout);
-        this.list.setNestedScrollingEnabled(false);
-        this.list.setLayoutManager(new GridLayoutManager(this, 2));
+        list = findViewById(R.id.list);
+        lLayout = new GridLayoutManager(SearchOnlinePatient.this, 2);
+        list.setHasFixedSize(true);
+        list.setLayoutManager(lLayout);
+        list.setNestedScrollingEnabled(false);
+        list.setLayoutManager(new GridLayoutManager(SearchOnlinePatient.this, 2));
 
-        this.rowItems = new LinkedList<>();
+        rowItems = new LinkedList<>();
 
-        this.GetDetails = this.findViewById(id.getpatient);
+        GetDetails = findViewById(R.id.getpatient);
 
 
     }
@@ -168,11 +161,11 @@ public class SearchOnlinePatient extends AppCompatActivity {
     private final void LoadSearchDialog() {
         try {
 
-            Dialog alertdialog = new Dialog(this);
+            final Dialog alertdialog = new Dialog(SearchOnlinePatient.this);
 
-            LayoutInflater inflater = this.getLayoutInflater();
+            LayoutInflater inflater = getLayoutInflater();
 
-            View view = inflater.inflate(layout.popup_search_patient, null);
+            View view = inflater.inflate(R.layout.popup_search_patient, null);
 
 
             RadioButton Male_Rbtn, Female_Rbtn;
@@ -182,15 +175,15 @@ public class SearchOnlinePatient extends AppCompatActivity {
             EditText patientname;
             EditText patientid, patientpin, patientmobile;
 
-            Male_Rbtn = view.findViewById(id.rbtn_male);
-            Female_Rbtn = view.findViewById(id.rbtn_female);
-            AgeLimit = view.findViewById(id.age_limit);
-            cancel = view.findViewById(id.cancel);
-            get = view.findViewById(id.get);
-            patientname = view.findViewById(id.search_name);
-            patientid = view.findViewById(id.search_patid);
-            patientpin = view.findViewById(id.patient_pin);
-            patientmobile = view.findViewById(id.mobile_number);
+            Male_Rbtn = view.findViewById(R.id.rbtn_male);
+            Female_Rbtn = view.findViewById(R.id.rbtn_female);
+            AgeLimit = view.findViewById(R.id.age_limit);
+            cancel = view.findViewById(R.id.cancel);
+            get = view.findViewById(R.id.get);
+            patientname = view.findViewById(R.id.search_name);
+            patientid = view.findViewById(R.id.search_patid);
+            patientpin = view.findViewById(R.id.patient_pin);
+            patientmobile = view.findViewById(R.id.mobile_number);
 
 
             Male_Rbtn.setOnCheckedChangeListener((buttonView, isChecked) -> {
@@ -217,7 +210,7 @@ public class SearchOnlinePatient extends AppCompatActivity {
                         patientid.getText().toString().equalsIgnoreCase("PID/") && AgeLimit.getSelectedItemPosition() > 0
                         && patientmobile.getText().length() == 0 && patientpin.getText().length() == 0) {
                     //         Toast.makeText(SearchOnlinePatient.this, R.string.entervalue, Toast.LENGTH_LONG).show();
-                    BaseConfig.SnackBar(this, this.getResources().getString(string.entervalue), this.parentLayout, 1);
+                    BaseConfig.SnackBar(SearchOnlinePatient.this, getResources().getString(R.string.entervalue), parentLayout, 1);
 
 
                     return;
@@ -226,16 +219,16 @@ public class SearchOnlinePatient extends AppCompatActivity {
 
                 if (patientname.getText().length() == 0) {
                     //Toast.makeText(SearchOnlinePatient.this, "Enter patient name..", Toast.LENGTH_LONG).show();
-                    BaseConfig.SnackBar(this, "Enter patient name..", this.parentLayout, 1);
+                    BaseConfig.SnackBar(SearchOnlinePatient.this, "Enter patient name..", parentLayout, 1);
 
                     return;
                 }
 
 
-                if (this.checkPatientIsExist(patientid.getText().toString())) {
+                if (checkPatientIsExist(patientid.getText().toString())) {
 
                     //Toast.makeText(SearchOnlinePatient.this, , Toast.LENGTH_SHORT).show();
-                    BaseConfig.SnackBar(this, String.valueOf(string.already_patient_available), this.parentLayout, 2);
+                    BaseConfig.SnackBar(SearchOnlinePatient.this, String.valueOf(R.string.already_patient_available), parentLayout, 2);
 
                 } else {
 
@@ -277,10 +270,10 @@ public class SearchOnlinePatient extends AppCompatActivity {
 
             alertdialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
             alertdialog.setContentView(view);
-            DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+            DisplayMetrics metrics = getResources().getDisplayMetrics();
             int width = metrics.widthPixels;
             int height = metrics.heightPixels;
-            alertdialog.getWindow().setLayout((6 * width) / 7, LayoutParams.WRAP_CONTENT);
+            alertdialog.getWindow().setLayout((6 * width) / 7, ViewGroup.LayoutParams.WRAP_CONTENT);
             alertdialog.show();
 
         } catch (Exception e) {
@@ -294,9 +287,9 @@ public class SearchOnlinePatient extends AppCompatActivity {
 
     private final void Contrll() {
 
-        this.search.setOnClickListener(v -> this.LoadSearchDialog());
+        search.setOnClickListener(v -> LoadSearchDialog());
 
-        this.home.setOnClickListener(v -> this.LoadBack());
+        home.setOnClickListener(v -> LoadBack());
 
 
     }
@@ -305,8 +298,8 @@ public class SearchOnlinePatient extends AppCompatActivity {
 
         SQLiteDatabase db = BaseConfig.GetDb();//);
         Cursor c = db.rawQuery("select * from  Patreg where Patid='" + patientid + '\'', null);
-        this.rowItems.clear();
-        this.CurrentPatientList.clear();
+        rowItems.clear();
+        CurrentPatientList.clear();
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -323,7 +316,7 @@ public class SearchOnlinePatient extends AppCompatActivity {
     private final void LoadBack() {
 
 
-        BaseConfig.HideKeyboard(this);
+        BaseConfig.HideKeyboard(SearchOnlinePatient.this);
 
         BaseConfig.globalStartIntent(this, MyPatient.class, null);
 
@@ -332,19 +325,19 @@ public class SearchOnlinePatient extends AppCompatActivity {
     @Override
     public final void onBackPressed() {
 
-        this.LoadBack();
+        LoadBack();
     }
 
     private final void LoadSearchedPatients(String resultsRequestSOAP) {
 
         try {
 
-            this.recylerAdapter = new SearchMyPatienRecylerAdapter(this.rowItems, this.GetDetails, resultsRequestSOAP, this);
-            this.list.setItemAnimator(new DefaultItemAnimator());
-            this.list.setAdapter(this.recylerAdapter);
+            recylerAdapter = new SearchMyPatienRecylerAdapter(rowItems, GetDetails, resultsRequestSOAP, SearchOnlinePatient.this);
+            list.setItemAnimator(new DefaultItemAnimator());
+            list.setAdapter(recylerAdapter);
 
-            String ListCount = String.valueOf(this.rowItems.size());
-            this.txtCount.setText(this.getString(string.no_of_pat) + ListCount);
+            String ListCount = String.valueOf(rowItems.size());
+            txtCount.setText(getString(R.string.no_of_pat) + ListCount);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -355,7 +348,7 @@ public class SearchOnlinePatient extends AppCompatActivity {
 
 
     private String getDoctorIdRESTCALL(String doctorID, String methodName) throws com.magnet.android.mms.exception.SchemaException, InterruptedException, ExecutionException {
-        MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(this);
+        MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(SearchOnlinePatient.this);
         PostDoctorIdFactory postDoctorIdFactory = new PostDoctorIdFactory(magnetMobileClient);
         PostDoctorId postDoctorId = postDoctorIdFactory.obtainInstance();
 
@@ -391,7 +384,7 @@ public class SearchOnlinePatient extends AppCompatActivity {
                 "\"PATIENTMOBILE\":\""+patientmobile+"\"}]\n";
 
         String MethodName = "Import_PatientMapping_Insert";
-        String resultsRequestSOAP = this.getDoctorIdRESTCALL(data, MethodName);
+        String resultsRequestSOAP = getDoctorIdRESTCALL(data, MethodName);
 
 
 
@@ -399,7 +392,7 @@ public class SearchOnlinePatient extends AppCompatActivity {
 
         try {
 
-            SearchOnlinePatient.Patient_List = resultsRequestSOAP.toString();
+            Patient_List = resultsRequestSOAP.toString();
 
             if (!resultsRequestSOAP.toString().equalsIgnoreCase("[]")) {
 
@@ -434,7 +427,7 @@ public class SearchOnlinePatient extends AppCompatActivity {
                     String PatientPhoto = "";
                     try {
 
-                        Bitmap theBitmap = BaseConfig.Glide_GetBitmap(this, objJson.getString("PC"));
+                        Bitmap theBitmap = BaseConfig.Glide_GetBitmap(SearchOnlinePatient.this, objJson.getString("PC"));
                         PatientPhoto = BaseConfig.saveURLImagetoSDcard(theBitmap, Patid_data.replace("/", "-"));
 
 
@@ -442,12 +435,12 @@ public class SearchOnlinePatient extends AppCompatActivity {
                         e.printStackTrace();
                     }
 
-                        MyPatientGetSet item = new MyPatientGetSet(Prefix, Patientname,
+                        CommonDataObjects.MyPatientGetSet item = new CommonDataObjects.MyPatientGetSet(Prefix, Patientname,
                                 Patid_data,
                                 age_data,
                                 gender_data,
                                 PatientPhoto);
-                    this.rowItems.addFirst(item);
+                        rowItems.addFirst(item);
 
                 }
 
@@ -467,8 +460,8 @@ public class SearchOnlinePatient extends AppCompatActivity {
     }
 
     final boolean IsOnlinePatient(String patId) {
-        for (int i = 0; i <= this.CurrentPatientList.size() - 1; i++) {
-            if (this.CurrentPatientList.get(i).equalsIgnoreCase(patId)) {
+        for (int i = 0; i <= CurrentPatientList.size() - 1; i++) {
+            if (CurrentPatientList.get(i).equalsIgnoreCase(patId)) {
                 return true;
             }
         }
@@ -481,8 +474,8 @@ public class SearchOnlinePatient extends AppCompatActivity {
 
             SQLiteDatabase db = BaseConfig.GetDb();//);
             Cursor c = db.rawQuery("select * from current_patient_list where docid = '" + BaseConfig.doctorId + "' and status  = 'true'", null);
-            this.rowItems.clear();
-            this.CurrentPatientList.clear();
+            rowItems.clear();
+            CurrentPatientList.clear();
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -515,7 +508,7 @@ public class SearchOnlinePatient extends AppCompatActivity {
 
                         if (IsCorrectDate && closed.equalsIgnoreCase("0")) {
 
-                            this.CurrentPatientList.add(c.getString(c.getColumnIndex("patid")));
+                            CurrentPatientList.add(c.getString(c.getColumnIndex("patid")));
 
                         }
 
@@ -531,7 +524,7 @@ public class SearchOnlinePatient extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return this.CurrentPatientList;
+        return CurrentPatientList;
     }
 
     @Override
@@ -542,8 +535,8 @@ public class SearchOnlinePatient extends AppCompatActivity {
 
     class PatientMapping extends AsyncTask<String, String, String> {
 
-        boolean result;
-        ProgressDialog progressDialog;
+        boolean result = false;
+        ProgressDialog progressDialog = null;
 
         PatientMapping() {
         }
@@ -551,9 +544,9 @@ public class SearchOnlinePatient extends AppCompatActivity {
         @Override
         protected final void onPreExecute() {
             super.onPreExecute();
-            this.progressDialog = ProgressDialog.show(SearchOnlinePatient.this, "Searching Patient Online", "Please Wait.....");
-            this.progressDialog.setCanceledOnTouchOutside(false);
-            this.progressDialog.setOnCancelListener(dialog -> this.result = false);
+            progressDialog = ProgressDialog.show(SearchOnlinePatient.this, "Searching Patient Online", "Please Wait.....");
+            progressDialog.setCanceledOnTouchOutside(false);
+            progressDialog.setOnCancelListener(dialog -> result = false);
         }
 
 
@@ -561,26 +554,26 @@ public class SearchOnlinePatient extends AppCompatActivity {
         protected final void onPostExecute(String result) {
             super.onPostExecute(result);
 
-            this.progressDialog.dismiss();
+            progressDialog.dismiss();
 
             //  Toast.makeText(SearchOnlinePatient.this, "Result" + result, Toast.LENGTH_LONG).show();
 
             if (this.result) {
 
                 new CustomKDMCDialog(SearchOnlinePatient.this)
-                        .setLayoutColor(color.green_500)
-                        .setImage(drawable.ic_success_done)
+                        .setLayoutColor(R.color.green_500)
+                        .setImage(R.drawable.ic_success_done)
                         .setTitle("Success")
                         .setNegativeButtonVisible(View.GONE)
                         .setDescription("Patient details received successfully.")
-                        .setPossitiveButtonTitle(getString(string.ok))
+                        .setPossitiveButtonTitle(SearchOnlinePatient.this.getString(R.string.ok))
                         .setOnPossitiveListener(() -> {
 
                             try {
                                 // CheckPatientsOnline();
 
                                 //Load patients list
-                                SearchOnlinePatient.this.LoadSearchedPatients(SearchOnlinePatient.Patient_List);
+                                LoadSearchedPatients(Patient_List);
 
 
                             } catch (Exception e) {
@@ -596,18 +589,18 @@ public class SearchOnlinePatient extends AppCompatActivity {
             } else {
                 //is not valid Patient
                 new CustomKDMCDialog(SearchOnlinePatient.this)
-                        .setLayoutColor(color.red_500)
-                        .setImage(drawable.ic_close_black_24dp)
+                        .setLayoutColor(R.color.red_500)
+                        .setImage(R.drawable.ic_close_black_24dp)
                         .setTitle("Error")
                         .setDescription("Patient details not found..\nPlease Try again....")
-                        .setPossitiveButtonTitle(getString(string.ok))
+                        .setPossitiveButtonTitle(SearchOnlinePatient.this.getString(R.string.ok))
                         .setOnPossitiveListener(() -> {
 
                             try {
                                 // CheckPatientsOnline();
 
                                 //Load patients list
-                                SearchOnlinePatient.this.LoadSearchedPatients(SearchOnlinePatient.Patient_List);
+                                LoadSearchedPatients(Patient_List);
 
 
                             } catch (Exception e) {
@@ -625,7 +618,7 @@ public class SearchOnlinePatient extends AppCompatActivity {
         protected final String doInBackground(String... params) {
 
             try {
-                this.result = SearchOnlinePatient.this.InsertPatientMapping(params[0], params[1], params[2], params[3], params[4], params[5], params[6]);
+                result = InsertPatientMapping(params[0], params[1], params[2], params[3], params[4], params[5], params[6]);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             } catch (ExecutionException e) {

@@ -3,8 +3,6 @@ package kdmc_kumar.Adapters_GetterSetter;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,41 +11,37 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.Fav_TestList;
-import kdmc_kumar.Adapters_GetterSetter.FavTestRecylerAdapter.MyViewHolder;
 
 
 /**
  * Created by Ponnusamy M on 4/3/2017.
  */
 
-public class FavTestRecylerAdapter extends Adapter<MyViewHolder> {
+public class FavTestRecylerAdapter extends RecyclerView.Adapter<FavTestRecylerAdapter.MyViewHolder> {
 
-    private final ArrayList<Fav_TestList> favtestItems;
+    private final ArrayList<CommonDataObjects.Fav_TestList> favtestItems;
     //**********************************************************************************************
 
-    public FavTestRecylerAdapter(ArrayList<Fav_TestList> drugItems) {
+    public FavTestRecylerAdapter(ArrayList<CommonDataObjects.Fav_TestList> drugItems) {
 
-        favtestItems = drugItems;
+        this.favtestItems = drugItems;
     }
     //**********************************************************************************************
 
     @NonNull
     @Override
-    public final FavTestRecylerAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public final MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(layout.activity_pretest_adap, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.activity_pretest_adap, parent, false);
 
-        return new FavTestRecylerAdapter.MyViewHolder(view);
+        return new MyViewHolder(view);
     }
     //**********************************************************************************************
 
     @Override
-    public final void onBindViewHolder(@NonNull FavTestRecylerAdapter.MyViewHolder holder, int position) {
+    public final void onBindViewHolder(@NonNull final MyViewHolder holder, int position) {
 
-        Fav_TestList rowItem = this.favtestItems.get(position);
+        final CommonDataObjects.Fav_TestList rowItem = favtestItems.get(position);
 
         holder.Testname.setText(rowItem.getTestName());
         holder.Subtestname.setText(rowItem.getSubTestName());
@@ -62,12 +56,12 @@ public class FavTestRecylerAdapter extends Adapter<MyViewHolder> {
 
     @Override
     public final int getItemCount() {
-        return this.favtestItems.size();
+        return favtestItems.size();
     }
 
     //**********************************************************************************************
 
-    static class MyViewHolder extends ViewHolder {
+    static class MyViewHolder extends RecyclerView.ViewHolder {
 
         final TextView Testname;
         final TextView Subtestname;
@@ -76,10 +70,10 @@ public class FavTestRecylerAdapter extends Adapter<MyViewHolder> {
         MyViewHolder(View itemView) {
             super(itemView);
 
-            this.Testname = itemView.findViewById(id.testname_tv);
-            this.Subtestname = itemView.findViewById(id.subtestname_tv);
+            Testname = itemView.findViewById(R.id.testname_tv);
+            Subtestname = itemView.findViewById(R.id.subtestname_tv);
 
-            this.ParentView = itemView.findViewById(id.card_view);
+            ParentView = itemView.findViewById(R.id.card_view);
 
 
         }

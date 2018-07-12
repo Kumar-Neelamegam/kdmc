@@ -18,25 +18,23 @@ import java.util.ArrayList;
 import java.util.HashMap;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.RowItem;
 import kdmc_kumar.Adapters_GetterSetter.ReportGalleryAdapter;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 public class Patient_Reports extends Fragment {
 
-    public static Bitmap reportimg;
-    ArrayList<HashMap<String, String>> titles_list;
-    ArrayAdapter<CommonDataObjects.RowItem> adapter;
-    private RecyclerView listView;
-    private ArrayList<CommonDataObjects.RowItem> rowItems;
-    Bitmap reportBitmapView;
+    public static Bitmap reportimg = null;
+    ArrayList<HashMap<String, String>> titles_list = null;
+    ArrayAdapter<RowItem> adapter = null;
+    private RecyclerView listView = null;
+    private ArrayList<RowItem> rowItems = null;
+    Bitmap reportBitmapView = null;
 
-    private ReportGalleryAdapter reportGalleryAdapter;
-    private String BUNDLE_PATIENT_ID;
-    private ImageView no_data;
-    private GridLayoutManager lLayout;
+    private ReportGalleryAdapter reportGalleryAdapter = null;
+    private String BUNDLE_PATIENT_ID = null;
+    private ImageView no_data = null;
+    private GridLayoutManager lLayout = null;
 
     public Patient_Reports() {
     }
@@ -46,16 +44,16 @@ public class Patient_Reports extends Fragment {
     public final View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                    Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(layout.fragment_mypatient_reportgalleryfragment, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_mypatient_reportgalleryfragment, container, false);
 
-        Bundle args = this.getArguments();
-        this.BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
+        Bundle args = getArguments();
+        BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
 
         // initialize
-        this.rowItems = new ArrayList<>();
-        this.listView = rootView.findViewById(id.listView1);
+        rowItems = new ArrayList<>();
+        listView = rootView.findViewById(R.id.listView1);
 
-        this.no_data = rootView.findViewById(id.img_nodata);
+        no_data = rootView.findViewById(R.id.img_nodata);
 
 
         //listView.setHasFixedSize(true);
@@ -63,16 +61,16 @@ public class Patient_Reports extends Fragment {
         //listView.setLayoutManager(mLayoutManager);
 
 
-        this.lLayout = new GridLayoutManager(this.getActivity(), 2);
-        this.listView.setHasFixedSize(true);
-        this.listView.setLayoutManager(this.lLayout);
-        this.listView.setNestedScrollingEnabled(false);
+        lLayout = new GridLayoutManager(getActivity(), 2);
+        listView.setHasFixedSize(true);
+        listView.setLayoutManager(lLayout);
+        listView.setNestedScrollingEnabled(false);
 
-        assert this.listView != null;
+        assert listView != null;
 
 
         try {
-            this.SelectedGetPatientReports("select * from ReportGallery where Patid='" + this.BUNDLE_PATIENT_ID + "';");
+            SelectedGetPatientReports("select * from ReportGallery where Patid='" + BUNDLE_PATIENT_ID + "';");
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
@@ -99,28 +97,28 @@ public class Patient_Reports extends Fragment {
                     //report64 = c.getString(c.getColumnIndex("ReportPhoto"));
                     Report_Path = c.getString(c.getColumnIndex("FileName")) + c.getString(c.getColumnIndex("FileExtension"));
 
-                    CommonDataObjects.RowItem item = new CommonDataObjects.RowItem(null, report_name, "", Report_Path);
-                    this.rowItems.add(item);
+                    RowItem item = new RowItem(null, report_name, "", Report_Path);
+                    rowItems.add(item);
 
                 } while (c.moveToNext());
 
             }
         }
-        this.listView.setHasFixedSize(true);
-        assert this.listView != null;
+        listView.setHasFixedSize(true);
+        assert listView != null;
 
-        this.reportGalleryAdapter = new ReportGalleryAdapter(this.rowItems, this.BUNDLE_PATIENT_ID);
+        reportGalleryAdapter = new ReportGalleryAdapter(rowItems, BUNDLE_PATIENT_ID);
 
-        this.listView.setAdapter(this.reportGalleryAdapter);
+        listView.setAdapter(reportGalleryAdapter);
 
         c.close();
         db.close();
 
-        if (this.no_data != null) {
-            if (this.rowItems.size() > 0) {
-                this.no_data.setVisibility(View.GONE);
-            } else if (this.rowItems.size() == 0) {
-                this.no_data.setVisibility(View.VISIBLE);
+        if (no_data != null) {
+            if (rowItems.size() > 0) {
+                no_data.setVisibility(View.GONE);
+            } else if (rowItems.size() == 0) {
+                no_data.setVisibility(View.VISIBLE);
             }
         }
 

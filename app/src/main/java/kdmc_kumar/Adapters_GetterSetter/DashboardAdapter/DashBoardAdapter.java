@@ -6,16 +6,11 @@ import android.content.Intent;
 import android.content.res.ColorStateList;
 import android.graphics.Color;
 import android.graphics.Rect;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.ActivityOptionsCompat;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,10 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.color;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.DashBoardAdapter.MyView;
 import kdmc_kumar.CaseNotes_Modules.CaseNotes;
 import kdmc_kumar.Core_Modules.ClinicalInformation;
 import kdmc_kumar.Core_Modules.CloudData;
@@ -43,8 +34,6 @@ import kdmc_kumar.Utilities_Others.CustomIntent;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.Explode;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.Fade;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.Transition;
-import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.Transition.EpicenterCallback;
-import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.Transition.TransitionListenerAdapter;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.TransitionManager;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.TransitionSet;
 
@@ -53,7 +42,7 @@ import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.TransitionS
  * KDMCMobyDoctor
  */
 
-public class DashBoardAdapter extends Adapter<MyView> {
+public class DashBoardAdapter extends RecyclerView.Adapter<DashBoardAdapter.MyView> {
 
 
     public static final String VIEW_NAME_HEADER_TITLE = "0";
@@ -72,17 +61,17 @@ public class DashBoardAdapter extends Adapter<MyView> {
     };*/
 
     private static final int[] fabbgstr = {
-            color.colorPrimary,
-            color.ic_ClinicalInformation,
-            color.ic_Investigation,
-            color.ic_Prescription,
-            color.ic_Referrals,
-            color.ic_Mypatient,
-            color.ic_DrugDirectory,
-            color.ic_OnlineConsultation,
-            color.ic_Inpatient,
-            color.ic_Masters,
-            color.ic_Cloud,
+            R.color.colorPrimary,
+            R.color.ic_ClinicalInformation,
+            R.color.ic_Investigation,
+            R.color.ic_Prescription,
+            R.color.ic_Referrals,
+            R.color.ic_Mypatient,
+            R.color.ic_DrugDirectory,
+            R.color.ic_OnlineConsultation,
+            R.color.ic_Inpatient,
+            R.color.ic_Masters,
+            R.color.ic_Cloud,
     };
 
     private final String[] web;
@@ -93,32 +82,32 @@ public class DashBoardAdapter extends Adapter<MyView> {
     public DashBoardAdapter(Context mContext, String[] web, int[] imageid) {
         this.mContext = mContext;
         this.web = web;
-        this.Imageid = imageid;
+        Imageid = imageid;
     }
 
     @NonNull
     @Override
-    public final DashBoardAdapter.MyView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public final MyView onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
         LayoutInflater inflater = (LayoutInflater) parent.getContext().getSystemService(Context.LAYOUT_INFLATER_SERVICE);
-        View view = inflater.inflate(layout.task_items, parent, false);
-        return new DashBoardAdapter.MyView(view);
+        View view = inflater.inflate(R.layout.task_items, parent, false);
+        return new MyView(view);
     }
 
     @Override
-    public final void onBindViewHolder(@NonNull DashBoardAdapter.MyView holder, int position) {
+    public final void onBindViewHolder(@NonNull MyView holder, int position) {
 
-        holder.textView.setText(this.web[position]);
+        holder.textView.setText(web[position]);
 
-        holder.fab.setImageDrawable(this.mContext.getResources().getDrawable(this.Imageid[position]));
+        holder.fab.setImageDrawable(mContext.getResources().getDrawable(Imageid[position]));
 
-        holder.fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(this.mContext.getResources().getString(DashBoardAdapter.fabbgstr[0]))));
+        holder.fab.setBackgroundTintList(ColorStateList.valueOf(Color.parseColor(mContext.getResources().getString(fabbgstr[0]))));
 
-        holder.fab.setOnClickListener(v -> this.letsExplodeIt(holder.reippedlayout,holder,position,holder.textView));
+        holder.fab.setOnClickListener(v ->   letsExplodeIt(holder.reippedlayout,holder,position,holder.textView));
 
-        holder.textView.setOnClickListener(v -> this.letsExplodeIt(holder.reippedlayout,holder,position,holder.textView));
+        holder.textView.setOnClickListener(v -> letsExplodeIt(holder.reippedlayout,holder,position,holder.textView));
 
-        holder.reippedlayout.setOnClickListener(v -> this.letsExplodeIt(holder.reippedlayout,holder,position,holder.textView));
+        holder.reippedlayout.setOnClickListener(v -> letsExplodeIt(holder.reippedlayout,holder,position,holder.textView));
 
     }
 
@@ -126,7 +115,7 @@ public class DashBoardAdapter extends Adapter<MyView> {
 
     @Override
     public final int getItemCount() {
-        return this.Imageid.length;
+        return Imageid.length;
     }
 
     public void onClickItem(Context context, int position, TextView textView) {
@@ -190,9 +179,9 @@ public class DashBoardAdapter extends Adapter<MyView> {
         }
 
 
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context, textView, VIEW_NAME_HEADER_TITLE);
-            ContextCompat.startActivity(context, intent, activityOptions.toBundle());
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ActivityOptionsCompat activityOptions = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity) context, textView, DashBoardAdapter.VIEW_NAME_HEADER_TITLE);
+            ActivityCompat.startActivity(context, intent, activityOptions.toBundle());
 
         } else {
             context.startActivity(intent);
@@ -206,25 +195,25 @@ public class DashBoardAdapter extends Adapter<MyView> {
 
 
 
-    private void letsExplodeIt(View clickedView ,DashBoardAdapter.MyView holder,int position, TextView txtvw) {
+    private void letsExplodeIt(View clickedView ,MyView holder,int position, TextView txtvw) {
         // save rect of view in screen coordinated
-        Rect viewRect = new Rect();
+        final Rect viewRect = new Rect();
         clickedView.getGlobalVisibleRect(viewRect);
 
         TransitionSet set = new TransitionSet()
-                .addTransition(new Explode().setEpicenterCallback(new EpicenterCallback() {
+                .addTransition(new Explode().setEpicenterCallback(new Transition.EpicenterCallback() {
                     @Override
                     public Rect onGetEpicenter(Transition transition) {
                         return viewRect;
                     }
                 }).excludeTarget(clickedView, true))
                 .addTransition(new Fade().addTarget(clickedView))
-                .addListener(new TransitionListenerAdapter() {
+                .addListener(new Transition.TransitionListenerAdapter() {
                     @Override
                     public void onTransitionEnd(Transition transition) {
 
                         //   ((Activity)clickedView.getContext()).onBackPressed();
-                        DashBoardAdapter.this.onClickItem(clickedView.getContext(), position, txtvw);
+                        onClickItem(clickedView.getContext(), position, txtvw);
                         transition.removeListener(this);
                     }
                 });
@@ -236,7 +225,7 @@ public class DashBoardAdapter extends Adapter<MyView> {
     }
 
 
-    public static class MyView extends ViewHolder {
+    public static class MyView extends RecyclerView.ViewHolder {
         final TextView textView;
         //public ImageView imageView;
         final android.support.design.widget.FloatingActionButton fab;
@@ -247,10 +236,10 @@ public class DashBoardAdapter extends Adapter<MyView> {
         MyView(View itemView) {
             super(itemView);
 
-            this.textView = itemView.findViewById(id.tv_species);
-            this.fab = itemView.findViewById(id.img_thumbnail);
+            textView = itemView.findViewById(R.id.tv_species);
+            fab = itemView.findViewById(R.id.img_thumbnail);
 
-            this.reippedlayout = itemView.findViewById(id.grid_items);
+            reippedlayout = itemView.findViewById(R.id.grid_items);
         }
     }
 }

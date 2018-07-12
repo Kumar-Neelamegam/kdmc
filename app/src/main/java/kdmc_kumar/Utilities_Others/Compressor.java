@@ -1,9 +1,7 @@
 package kdmc_kumar.Utilities_Others;
 
 import android.graphics.Bitmap;
-import android.graphics.Bitmap.CompressFormat;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
 import android.graphics.Matrix;
 import android.media.ExifInterface;
 import android.util.Base64;
@@ -20,15 +18,15 @@ import java.io.IOException;
 
 class Compressor {
 
-    private static int height, width, inSampleSize;
-    private static String encodedfile;
+    private static int height = 0, width = 0, inSampleSize = 0;
+    private static String encodedfile = null;
 
     Compressor() {
     }
 
     public static File compressImageFile(File imageFile, int reqHeight, int reqWidth,
                                          String filePath, int quality,
-                                         CompressFormat compressFormat, int orientation) throws IOException {
+                                         Bitmap.CompressFormat compressFormat, int orientation) throws IOException, java.io.FileNotFoundException {
         FileOutputStream fileOutputStream = null;
         File file = new File(filePath).getParentFile();
         if (!file.exists()) {
@@ -36,7 +34,7 @@ class Compressor {
         }
         try {
             fileOutputStream = new FileOutputStream(filePath);
-            Compressor.decodeBitmapAndCompress(imageFile, reqHeight, reqWidth, orientation)
+            decodeBitmapAndCompress(imageFile, reqHeight, reqWidth, orientation)
                     .compress(compressFormat, quality, fileOutputStream);
         } finally {
             if (fileOutputStream != null) {
@@ -50,12 +48,12 @@ class Compressor {
     public static Bitmap decodeBitmapAndCompress(File imageFile, int reqHeight, int reqWidth, int reqOrientation)
             throws IOException {
 
-        Options options = new Options();
+        BitmapFactory.Options options = new BitmapFactory.Options();
         options.inJustDecodeBounds = true;
 
         BitmapFactory.decodeFile(imageFile.getAbsolutePath(), options);
         //Calculating Sample Size
-        options.inSampleSize = Compressor.calculateSampleSize(options, reqHeight, reqWidth);
+        options.inSampleSize = calculateSampleSize(options, reqHeight, reqWidth);
 
         options.inJustDecodeBounds = false;
 
@@ -85,23 +83,23 @@ class Compressor {
     }
 
 
-    private static int calculateSampleSize(Options options, int reqHeight, int reqWidth) {
+    private static int calculateSampleSize(BitmapFactory.Options options, int reqHeight, int reqWidth) {
 
-        Compressor.height = options.outHeight;
-        Compressor.width = options.outWidth;
-        Compressor.inSampleSize = 1;
+        height = options.outHeight;
+        width = options.outWidth;
+        inSampleSize = 1;
 
-        int halfHeight = Compressor.height / 2;
-        int halfWidth = Compressor.width / 2;
+        int halfHeight = height / 2;
+        int halfWidth = width / 2;
 
-        if (Compressor.height > reqHeight || Compressor.width > reqWidth) {
+        if (height > reqHeight || width > reqWidth) {
             // Calculate the largest inSampleSize value that is a power of 2 and keeps both
             // height and width larger than the requested height and width.
-            while ((halfHeight / Compressor.inSampleSize) >= reqHeight && (halfWidth / Compressor.inSampleSize) >= reqWidth) {
-                Compressor.inSampleSize *= 2;
+            while ((halfHeight / inSampleSize) >= reqHeight && (halfWidth / inSampleSize) >= reqWidth) {
+                inSampleSize *= 2;
             }
         }
-        return Compressor.inSampleSize;
+        return inSampleSize;
     }
 
     public static String getBase64forCompressedImage(File compressFile) {
@@ -111,11 +109,11 @@ class Compressor {
         try {
             fileInputStreamReader = new FileInputStream(compressFile);
             fileInputStreamReader.read(bytes);
-            Compressor.encodedfile = Base64.encodeToString(bytes, Base64.DEFAULT);
+            encodedfile = Base64.encodeToString(bytes, Base64.DEFAULT);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        return Compressor.encodedfile;
+        return encodedfile;
     }
 
 

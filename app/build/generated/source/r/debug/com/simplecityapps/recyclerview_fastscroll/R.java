@@ -30,7 +30,7 @@ public final class R {
     public static final class id {
         public static final int adjacent = 0x7f0a0094;
         public static final int center = 0x7f0a0166;
-        public static final int item_touch_helper_previous_elevation = 0x7f0a03a6;
+        public static final int item_touch_helper_previous_elevation = 0x7f0a03a5;
     }
     public static final class styleable {
         public static final int[] FastScrollRecyclerView = { 0x7f0400dc, 0x7f0400dd, 0x7f0400e1, 0x7f0400e2, 0x7f0400e3, 0x7f0400e4, 0x7f0400e5, 0x7f0400e6, 0x7f0400e7 };

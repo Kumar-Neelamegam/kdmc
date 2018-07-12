@@ -11,6 +11,7 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
+import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -20,37 +21,37 @@ import kdmc_kumar.Webservices_NodeJSON.importREST_Services.updateDB.model.beans.
 
 public class DBUpdateFactory extends ControllerFactory<DBUpdate> {
     public DBUpdateFactory(MagnetMobileClient magnetClient) {
-        super(DBUpdate.class, DBUpdateFactory.DBUpdateSchemaFactory.getInstance().getSchema(), magnetClient);
+        super(DBUpdate.class, DBUpdateSchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller DBUpdate
     public static class DBUpdateSchemaFactory extends AbstractControllerSchemaFactory {
-        private static DBUpdateFactory.DBUpdateSchemaFactory __instance;
+        private static DBUpdateSchemaFactory __instance = null;
 
         private DBUpdateSchemaFactory() {
         }
 
-        static DBUpdateFactory.DBUpdateSchemaFactory getInstance() {
-            synchronized (DBUpdateFactory.DBUpdateSchemaFactory.class) {
-                if (null == DBUpdateFactory.DBUpdateSchemaFactory.__instance) {
-                    DBUpdateFactory.DBUpdateSchemaFactory.__instance = new DBUpdateFactory.DBUpdateSchemaFactory();
+        static DBUpdateSchemaFactory getInstance() {
+            synchronized (DBUpdateSchemaFactory.class) {
+                if (null == __instance) {
+                    __instance = new DBUpdateSchemaFactory();
                 }
 
-                return DBUpdateFactory.DBUpdateSchemaFactory.__instance;
+                return __instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != this.schema) {
+                if (null != schema) {
                     return;
                 }
 
-                this.schema = new RequestSchema();
-                this.schema.setRootPath("");
+                schema = new RequestSchema();
+                schema.setRootPath("");
 
                 //controller schema for controller method getDBUpdate
-                RequestSchema.JMethod method1 = this.addMethod("getDBUpdate",
+                JMethod method1 = addMethod("getDBUpdate",
                         "data/tblDBupdate",
                         "POST",
                         DBUpdateResult.class,

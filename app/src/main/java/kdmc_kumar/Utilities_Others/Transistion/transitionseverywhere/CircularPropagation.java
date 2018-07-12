@@ -18,7 +18,6 @@ package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere;
 import android.annotation.TargetApi;
 import android.graphics.Rect;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.view.View;
 import android.view.ViewGroup;
 
@@ -32,7 +31,7 @@ import android.view.ViewGroup;
  * the epicenter. This is the default TransitionPropagation used with
  * {@link android.transition.Explode}.
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class CircularPropagation extends VisibilityPropagation {
     private static final String TAG = "CircularPropagation";
 
@@ -54,7 +53,7 @@ public class CircularPropagation extends VisibilityPropagation {
         if (propagationSpeed == 0) {
             throw new IllegalArgumentException("propagationSpeed may not be 0");
         }
-        this.mPropagationSpeed = propagationSpeed;
+        mPropagationSpeed = propagationSpeed;
     }
 
     @Override
@@ -65,15 +64,15 @@ public class CircularPropagation extends VisibilityPropagation {
         }
         int directionMultiplier = 1;
         TransitionValues positionValues;
-        if (endValues == null || this.getViewVisibility(startValues) == View.VISIBLE) {
+        if (endValues == null || getViewVisibility(startValues) == View.VISIBLE) {
             positionValues = startValues;
             directionMultiplier = -1;
         } else {
             positionValues = endValues;
         }
 
-        int viewCenterX = this.getViewX(positionValues);
-        int viewCenterY = this.getViewY(positionValues);
+        int viewCenterX = getViewX(positionValues);
+        int viewCenterY = getViewY(positionValues);
 
         Rect epicenter = transition.getEpicenter();
         int epicenterX;
@@ -89,8 +88,8 @@ public class CircularPropagation extends VisibilityPropagation {
             epicenterY = Math.round(loc[1] + (sceneRoot.getHeight() / 2)
                     + sceneRoot.getTranslationY());
         }
-        double distance = CircularPropagation.distance(viewCenterX, viewCenterY, epicenterX, epicenterY);
-        double maxDistance = CircularPropagation.distance(0, 0, sceneRoot.getWidth(), sceneRoot.getHeight());
+        double distance = distance(viewCenterX, viewCenterY, epicenterX, epicenterY);
+        double maxDistance = distance(0, 0, sceneRoot.getWidth(), sceneRoot.getHeight());
         double distanceFraction = distance/maxDistance;
 
         long duration = transition.getDuration();
@@ -98,7 +97,7 @@ public class CircularPropagation extends VisibilityPropagation {
             duration = 300;
         }
 
-        return Math.round(duration * directionMultiplier / this.mPropagationSpeed * distanceFraction);
+        return Math.round(duration * directionMultiplier / mPropagationSpeed * distanceFraction);
     }
 
     private static double distance(float x1, float y1, float x2, float y2) {

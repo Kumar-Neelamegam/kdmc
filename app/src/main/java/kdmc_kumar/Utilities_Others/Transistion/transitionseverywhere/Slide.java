@@ -22,7 +22,6 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.support.annotation.IntDef;
 import android.util.AttributeSet;
 import android.view.Gravity;
@@ -35,7 +34,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.styleable;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.ViewUtils;
 
 /**
@@ -47,13 +45,13 @@ import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.ViewU
  * limited as described in {@link Visibility#onDisappear(ViewGroup,
  * TransitionValues, int, TransitionValues, int)}.
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class Slide extends Visibility {
 
     protected static final TimeInterpolator sDecelerate = new DecelerateInterpolator();
     protected static final TimeInterpolator sAccelerate = new AccelerateInterpolator();
-    protected Slide.CalculateSlide mSlideCalculator = Slide.sCalculateBottom;
-    private @Slide.GravityFlag int mSlideEdge = Gravity.BOTTOM;
+    protected CalculateSlide mSlideCalculator = sCalculateBottom;
+    private @GravityFlag int mSlideEdge = Gravity.BOTTOM;
 
     @Retention(RetentionPolicy.SOURCE)
     @IntDef({Gravity.LEFT, Gravity.TOP, Gravity.RIGHT, Gravity.BOTTOM, Gravity.START, Gravity.END})
@@ -68,7 +66,7 @@ public class Slide extends Visibility {
         float getGoneY(ViewGroup sceneRoot, View view);
     }
 
-    protected abstract static class CalculateSlideHorizontal implements Slide.CalculateSlide {
+    protected static abstract class CalculateSlideHorizontal implements CalculateSlide {
 
         @Override
         public float getGoneY(ViewGroup sceneRoot, View view) {
@@ -76,7 +74,7 @@ public class Slide extends Visibility {
         }
     }
 
-    protected abstract static class CalculateSlideVertical implements Slide.CalculateSlide {
+    protected static abstract class CalculateSlideVertical implements CalculateSlide {
 
         @Override
         public float getGoneX(ViewGroup sceneRoot, View view) {
@@ -84,18 +82,18 @@ public class Slide extends Visibility {
         }
     }
 
-    private static final Slide.CalculateSlide sCalculateLeft = new Slide.CalculateSlideHorizontal() {
+    private static final CalculateSlide sCalculateLeft = new CalculateSlideHorizontal() {
         @Override
         public float getGoneX(ViewGroup sceneRoot, View view) {
             return view.getTranslationX() - sceneRoot.getWidth();
         }
     };
 
-    private static final Slide.CalculateSlide sCalculateStart = new Slide.CalculateSlideHorizontal() {
+    private static final CalculateSlide sCalculateStart = new CalculateSlideHorizontal() {
         @Override
         public float getGoneX(ViewGroup sceneRoot, View view) {
-            boolean isRtl = ViewUtils.isRtl(sceneRoot);
-            float x;
+            final boolean isRtl = ViewUtils.isRtl(sceneRoot);
+            final float x;
             if (isRtl) {
                 x = view.getTranslationX() + sceneRoot.getWidth();
             } else {
@@ -105,25 +103,25 @@ public class Slide extends Visibility {
         }
     };
 
-    private static final Slide.CalculateSlide sCalculateTop = new Slide.CalculateSlideVertical() {
+    private static final CalculateSlide sCalculateTop = new CalculateSlideVertical() {
         @Override
         public float getGoneY(ViewGroup sceneRoot, View view) {
             return view.getTranslationY() - sceneRoot.getHeight();
         }
     };
 
-    private static final Slide.CalculateSlide sCalculateRight = new Slide.CalculateSlideHorizontal() {
+    private static final CalculateSlide sCalculateRight = new CalculateSlideHorizontal() {
         @Override
         public float getGoneX(ViewGroup sceneRoot, View view) {
             return view.getTranslationX() + sceneRoot.getWidth();
         }
     };
 
-    private static final Slide.CalculateSlide sCalculateEnd = new Slide.CalculateSlideHorizontal() {
+    private static final CalculateSlide sCalculateEnd = new CalculateSlideHorizontal() {
         @Override
         public float getGoneX(ViewGroup sceneRoot, View view) {
-            boolean isRtl = ViewUtils.isRtl(sceneRoot);
-            float x;
+            final boolean isRtl = ViewUtils.isRtl(sceneRoot);
+            final float x;
             if (isRtl) {
                 x = view.getTranslationX() - sceneRoot.getWidth();
             } else {
@@ -133,7 +131,7 @@ public class Slide extends Visibility {
         }
     };
 
-    private static final Slide.CalculateSlide sCalculateBottom = new Slide.CalculateSlideVertical() {
+    private static final CalculateSlide sCalculateBottom = new CalculateSlideVertical() {
         @Override
         public float getGoneY(ViewGroup sceneRoot, View view) {
             return view.getTranslationY() + sceneRoot.getHeight();
@@ -145,22 +143,22 @@ public class Slide extends Visibility {
      * slide edge direction.
      */
     public Slide() {
-        this.setSlideEdge(Gravity.BOTTOM);
+        setSlideEdge(Gravity.BOTTOM);
     }
 
     /**
      * Constructor using the provided slide edge direction.
      */
-    public Slide(@Slide.GravityFlag int slideEdge) {
-        this.setSlideEdge(slideEdge);
+    public Slide(@GravityFlag int slideEdge) {
+        setSlideEdge(slideEdge);
     }
 
     public Slide(Context context, AttributeSet attrs) {
         super(context, attrs);
-        TypedArray a = context.obtainStyledAttributes(attrs, styleable.Slide);
-        int edge = a.getInt(styleable.Slide_slideEdge, Gravity.BOTTOM);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Slide);
+        int edge = a.getInt(R.styleable.Slide_slideEdge, Gravity.BOTTOM);
         a.recycle();
-        this.setSlideEdge(edge);
+        setSlideEdge(edge);
     }
 
     /**
@@ -172,33 +170,33 @@ public class Slide extends Visibility {
      * @attr ref android.R.styleable#Slide_slideEdge
      */
     @SuppressLint("RtlHardcoded")
-    public void setSlideEdge(@Slide.GravityFlag int slideEdge) {
+    public void setSlideEdge(@GravityFlag int slideEdge) {
         switch (slideEdge) {
             case Gravity.LEFT:
-                this.mSlideCalculator = Slide.sCalculateLeft;
+                mSlideCalculator = sCalculateLeft;
                 break;
             case Gravity.TOP:
-                this.mSlideCalculator = Slide.sCalculateTop;
+                mSlideCalculator = sCalculateTop;
                 break;
             case Gravity.RIGHT:
-                this.mSlideCalculator = Slide.sCalculateRight;
+                mSlideCalculator = sCalculateRight;
                 break;
             case Gravity.BOTTOM:
-                this.mSlideCalculator = Slide.sCalculateBottom;
+                mSlideCalculator = sCalculateBottom;
                 break;
             case Gravity.START:
-                this.mSlideCalculator = Slide.sCalculateStart;
+                mSlideCalculator = sCalculateStart;
                 break;
             case Gravity.END:
-                this.mSlideCalculator = Slide.sCalculateEnd;
+                mSlideCalculator = sCalculateEnd;
                 break;
             default:
                 throw new IllegalArgumentException("Invalid slide direction");
         }
-        this.mSlideEdge = slideEdge;
+        mSlideEdge = slideEdge;
         SidePropagation propagation = new SidePropagation();
         propagation.setSide(slideEdge);
-        this.setPropagation(propagation);
+        setPropagation(propagation);
     }
 
     /**
@@ -210,9 +208,9 @@ public class Slide extends Visibility {
      *         {@link Gravity#START}, {@link Gravity#END}.
      * @attr ref android.R.styleable#Slide_slideEdge
      */
-    @Slide.GravityFlag
+    @GravityFlag
     public int getSlideEdge() {
-        return this.mSlideEdge;
+        return mSlideEdge;
     }
 
     @Override
@@ -221,14 +219,14 @@ public class Slide extends Visibility {
         if (endValues == null) {
             return null;
         }
-        int[] position = (int[]) endValues.values.get(Visibility.PROPNAME_SCREEN_LOCATION);
+        int[] position = (int[]) endValues.values.get(PROPNAME_SCREEN_LOCATION);
         float endX = view.getTranslationX();
         float endY = view.getTranslationY();
-        float startX = this.mSlideCalculator.getGoneX(sceneRoot, view);
-        float startY = this.mSlideCalculator.getGoneY(sceneRoot, view);
+        float startX = mSlideCalculator.getGoneX(sceneRoot, view);
+        float startY = mSlideCalculator.getGoneY(sceneRoot, view);
         return TranslationAnimationCreator
                 .createAnimation(view, endValues, position[0], position[1],
-                        startX, startY, endX, endY, Slide.sDecelerate, this);
+                        startX, startY, endX, endY, sDecelerate, this);
     }
 
     @Override
@@ -237,13 +235,13 @@ public class Slide extends Visibility {
         if (startValues == null) {
             return null;
         }
-        int[] position = (int[]) startValues.values.get(Visibility.PROPNAME_SCREEN_LOCATION);
+        int[] position = (int[]) startValues.values.get(PROPNAME_SCREEN_LOCATION);
         float startX = view.getTranslationX();
         float startY = view.getTranslationY();
-        float endX = this.mSlideCalculator.getGoneX(sceneRoot, view);
-        float endY = this.mSlideCalculator.getGoneY(sceneRoot, view);
+        float endX = mSlideCalculator.getGoneX(sceneRoot, view);
+        float endY = mSlideCalculator.getGoneY(sceneRoot, view);
         return TranslationAnimationCreator
                 .createAnimation(view, startValues, position[0], position[1],
-                        startX, startY, endX, endY, Slide.sAccelerate, this);
+                        startX, startY, endX, endY, sAccelerate, this);
     }
 }

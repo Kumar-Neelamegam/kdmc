@@ -10,6 +10,7 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
+import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -19,37 +20,37 @@ import kdmc_kumar.Webservices_NodeJSON.importREST_Services.postImmunizationInfo.
 
 public class PostImmunizationInfoFactory extends ControllerFactory<PostImmunizationInfo> {
     public PostImmunizationInfoFactory(MagnetMobileClient magnetClient) {
-        super(PostImmunizationInfo.class, PostImmunizationInfoFactory.PostImmunizationInfoSchemaFactory.getInstance().getSchema(), magnetClient);
+        super(PostImmunizationInfo.class, PostImmunizationInfoSchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller PostImmunizationInfo
     public static class PostImmunizationInfoSchemaFactory extends AbstractControllerSchemaFactory {
-        private static PostImmunizationInfoFactory.PostImmunizationInfoSchemaFactory __instance;
+        private static PostImmunizationInfoSchemaFactory __instance = null;
 
         private PostImmunizationInfoSchemaFactory() {
         }
 
-        static PostImmunizationInfoFactory.PostImmunizationInfoSchemaFactory getInstance() {
-            synchronized (PostImmunizationInfoFactory.PostImmunizationInfoSchemaFactory.class) {
-                if (null == PostImmunizationInfoFactory.PostImmunizationInfoSchemaFactory.__instance) {
-                    PostImmunizationInfoFactory.PostImmunizationInfoSchemaFactory.__instance = new PostImmunizationInfoFactory.PostImmunizationInfoSchemaFactory();
+        static PostImmunizationInfoSchemaFactory getInstance() {
+            synchronized (PostImmunizationInfoSchemaFactory.class) {
+                if (null == __instance) {
+                    __instance = new PostImmunizationInfoSchemaFactory();
                 }
 
-                return PostImmunizationInfoFactory.PostImmunizationInfoSchemaFactory.__instance;
+                return __instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != this.schema) {
+                if (null != schema) {
                     return;
                 }
 
-                this.schema = new RequestSchema();
-                this.schema.setRootPath("");
+                schema = new RequestSchema();
+                schema.setRootPath("");
 
                 //controller schema for controller method posImmunizationInfo
-                RequestSchema.JMethod method1 = this.addMethod("posImmunizationInfo",
+                JMethod method1 = addMethod("posImmunizationInfo",
                         "importMastersSP/Sel_Vaccinationtemp_webupdate",
                         "POST",
                         PosImmunizationInfoResult.class,

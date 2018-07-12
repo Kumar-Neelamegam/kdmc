@@ -6,84 +6,84 @@ package kdmc_kumar.ReportFileUpload;
 
 class FileGetSet {
 
-    private String ImageName;
-    private String ImagePath;
-    private String ImageData;
-    private String Id;
-    private String UploadFileDetail;
-    private String ReportType;
+    private String ImageName = null;
+    private String ImagePath = null;
+    private String ImageData = null;
+    private String Id = null;
+    private String UploadFileDetail = null;
+    private String ReportType = null;
 
     public FileGetSet(String imageName, String imagePath, String imageData, String id, String uploadFileDetail, String reportType) {
-        this.ImageName = imageName;
-        this.ImagePath = imagePath;
-        this.ImageData = imageData;
-        this.Id = id;
-        this.UploadFileDetail = uploadFileDetail;
-        this.ReportType = reportType;
+        ImageName = imageName;
+        ImagePath = imagePath;
+        ImageData = imageData;
+        Id = id;
+        UploadFileDetail = uploadFileDetail;
+        ReportType = reportType;
     }
 
     public FileGetSet(String imageName, String imagePath, String imageData, String id, String uploadFileDetail) {
-        this.ImageName = imageName;
-        this.ImagePath = imagePath;
-        this.ImageData = imageData;
-        this.Id = id;
-        this.UploadFileDetail = uploadFileDetail;
+        ImageName = imageName;
+        ImagePath = imagePath;
+        ImageData = imageData;
+        Id = id;
+        UploadFileDetail = uploadFileDetail;
     }
 
     public FileGetSet() {
     }
 
     public FileGetSet(String imageName, String imagePath, String imageData) {
-        this.ImageName = imageName;
-        this.ImagePath = imagePath;
-        this.ImageData = imageData;
+        ImageName = imageName;
+        ImagePath = imagePath;
+        ImageData = imageData;
     }
 
     public final String getReportType() {
-        return this.ReportType;
+        return ReportType;
     }
 
     public final void setReportType(String reportType) {
-        this.ReportType = reportType;
+        ReportType = reportType;
     }
 
     public final String getId() {
-        return this.Id;
+        return Id;
     }
 
     public final void setId(String id) {
-        this.Id = id;
+        Id = id;
     }
 
     public final String getUploadFileDetail() {
-        return this.UploadFileDetail;
+        return UploadFileDetail;
     }
 
     public final void setUploadFileDetail(String uploadFileDetail) {
-        this.UploadFileDetail = uploadFileDetail;
+        UploadFileDetail = uploadFileDetail;
     }
 
     public final String getImageName() {
-        return this.ImageName;
+        return ImageName;
     }
 
     public final void setImageName(String imageName) {
-        this.ImageName = imageName;
+        ImageName = imageName;
     }
 
     public final String getImagePath() {
-        return this.ImagePath;
+        return ImagePath;
     }
 
     public final void setImagePath(String imagePath) {
-        this.ImagePath = imagePath;
+        ImagePath = imagePath;
     }
 
     public final String getImageData() {
-        return this.ImageData;
+        return ImageData;
     }
 
     public final void setImageData(String imageData) {
-        this.ImageData = imageData;
+        ImageData = imageData;
     }
 }

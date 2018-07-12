@@ -10,7 +10,6 @@ package kdmc_kumar.Utilities_Others;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.widget.ListAdapter;
 import android.widget.ListView;
 
@@ -40,7 +39,7 @@ public class Helper {
             totalHeight += listItem.getMeasuredHeight();
         }
         //setting listview item in adapter
-        LayoutParams params = myListView.getLayoutParams();
+        ViewGroup.LayoutParams params = myListView.getLayoutParams();
         params.height = totalHeight + (myListView.getDividerHeight() * (myListAdapter.getCount() - 1) + 100);
         myListView.setLayoutParams(params);
         // print height of adapter on log

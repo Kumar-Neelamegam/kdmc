@@ -49,46 +49,46 @@ public class ThumbDrawable extends StateDrawable implements Animatable {
 
     public ThumbDrawable(@NonNull ColorStateList tintStateList, int size) {
         super(tintStateList);
-        this.mSize = size;
+        mSize = size;
     }
 
     @Override
     public int getIntrinsicWidth() {
-        return this.mSize;
+        return mSize;
     }
 
     @Override
     public int getIntrinsicHeight() {
-        return this.mSize;
+        return mSize;
     }
 
     @Override
     public void doDraw(Canvas canvas, Paint paint) {
-        if (!this.mOpen) {
-            Rect bounds = this.getBounds();
-            float radius = (this.mSize / 2);
+        if (!mOpen) {
+            Rect bounds = getBounds();
+            float radius = (mSize / 2);
             canvas.drawCircle(bounds.centerX(), bounds.centerY(), radius, paint);
         }
     }
 
     public void animateToPressed() {
-        this.scheduleSelf(this.opener, SystemClock.uptimeMillis() + 100);
-        this.mRunning = true;
+        scheduleSelf(opener, SystemClock.uptimeMillis() + 100);
+        mRunning = true;
     }
 
     public void animateToNormal() {
-        this.mOpen = false;
-        this.mRunning = false;
-        this.unscheduleSelf(this.opener);
-        this.invalidateSelf();
+        mOpen = false;
+        mRunning = false;
+        unscheduleSelf(opener);
+        invalidateSelf();
     }
 
-    private final Runnable opener = new Runnable() {
+    private Runnable opener = new Runnable() {
         @Override
         public void run() {
-            ThumbDrawable.this.mOpen = true;
-            ThumbDrawable.this.invalidateSelf();
-            ThumbDrawable.this.mRunning = false;
+            mOpen = true;
+            invalidateSelf();
+            mRunning = false;
         }
     };
 
@@ -99,11 +99,11 @@ public class ThumbDrawable extends StateDrawable implements Animatable {
 
     @Override
     public void stop() {
-        this.animateToNormal();
+        animateToNormal();
     }
 
     @Override
     public boolean isRunning() {
-        return this.mRunning;
+        return mRunning;
     }
 }

@@ -21,7 +21,6 @@ import android.graphics.Path;
 import android.util.AttributeSet;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.styleable;
 
 /**
  * A PathMotion that generates a curved path along an arc on an imaginary circle containing
@@ -51,29 +50,29 @@ public class ArcMotion extends PathMotion {
     private static final float DEFAULT_MIN_ANGLE_DEGREES = 0;
     private static final float DEFAULT_MAX_ANGLE_DEGREES = 70;
     private static final float DEFAULT_MAX_TANGENT = (float)
-            Math.tan(Math.toRadians(ArcMotion.DEFAULT_MAX_ANGLE_DEGREES /2));
+            Math.tan(Math.toRadians(DEFAULT_MAX_ANGLE_DEGREES/2));
 
-    private float mMinimumHorizontalAngle;
-    private float mMinimumVerticalAngle;
-    private float mMaximumAngle = ArcMotion.DEFAULT_MAX_ANGLE_DEGREES;
-    private float mMinimumHorizontalTangent;
-    private float mMinimumVerticalTangent;
-    private float mMaximumTangent = ArcMotion.DEFAULT_MAX_TANGENT;
+    private float mMinimumHorizontalAngle = 0;
+    private float mMinimumVerticalAngle = 0;
+    private float mMaximumAngle = DEFAULT_MAX_ANGLE_DEGREES;
+    private float mMinimumHorizontalTangent = 0;
+    private float mMinimumVerticalTangent = 0;
+    private float mMaximumTangent = DEFAULT_MAX_TANGENT;
 
     public ArcMotion() {}
 
     public ArcMotion(Context context, AttributeSet attrs) {
         super(context, attrs);
-        TypedArray a = context.obtainStyledAttributes(attrs, styleable.ArcMotion);
-        float minimumVerticalAngle = a.getFloat(styleable.ArcMotion_minimumVerticalAngle,
-                ArcMotion.DEFAULT_MIN_ANGLE_DEGREES);
-        this.setMinimumVerticalAngle(minimumVerticalAngle);
-        float minimumHorizontalAngle = a.getFloat(styleable.ArcMotion_minimumHorizontalAngle,
-                ArcMotion.DEFAULT_MIN_ANGLE_DEGREES);
-        this.setMinimumHorizontalAngle(minimumHorizontalAngle);
-        float maximumAngle = a.getFloat(styleable.ArcMotion_maximumAngle,
-                ArcMotion.DEFAULT_MAX_ANGLE_DEGREES);
-        this.setMaximumAngle(maximumAngle);
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.ArcMotion);
+        float minimumVerticalAngle = a.getFloat(R.styleable.ArcMotion_minimumVerticalAngle,
+                DEFAULT_MIN_ANGLE_DEGREES);
+        setMinimumVerticalAngle(minimumVerticalAngle);
+        float minimumHorizontalAngle = a.getFloat(R.styleable.ArcMotion_minimumHorizontalAngle,
+                DEFAULT_MIN_ANGLE_DEGREES);
+        setMinimumHorizontalAngle(minimumHorizontalAngle);
+        float maximumAngle = a.getFloat(R.styleable.ArcMotion_maximumAngle,
+                DEFAULT_MAX_ANGLE_DEGREES);
+        setMaximumAngle(maximumAngle);
         a.recycle();
     }
 
@@ -90,8 +89,8 @@ public class ArcMotion extends PathMotion {
      * @attr ref android.R.styleable#ArcMotion_minimumHorizontalAngle
      */
     public void setMinimumHorizontalAngle(float angleInDegrees) {
-        this.mMinimumHorizontalAngle = angleInDegrees;
-        this.mMinimumHorizontalTangent = ArcMotion.toTangent(angleInDegrees);
+        mMinimumHorizontalAngle = angleInDegrees;
+        mMinimumHorizontalTangent = toTangent(angleInDegrees);
     }
 
     /**
@@ -106,7 +105,7 @@ public class ArcMotion extends PathMotion {
      * @attr ref android.R.styleable#ArcMotion_minimumHorizontalAngle
      */
     public float getMinimumHorizontalAngle() {
-        return this.mMinimumHorizontalAngle;
+        return mMinimumHorizontalAngle;
     }
 
     /**
@@ -122,8 +121,8 @@ public class ArcMotion extends PathMotion {
      * @attr ref android.R.styleable#ArcMotion_minimumVerticalAngle
      */
     public void setMinimumVerticalAngle(float angleInDegrees) {
-        this.mMinimumVerticalAngle = angleInDegrees;
-        this.mMinimumVerticalTangent = ArcMotion.toTangent(angleInDegrees);
+        mMinimumVerticalAngle = angleInDegrees;
+        mMinimumVerticalTangent = toTangent(angleInDegrees);
     }
 
     /**
@@ -139,7 +138,7 @@ public class ArcMotion extends PathMotion {
      * @attr ref android.R.styleable#ArcMotion_minimumVerticalAngle
      */
     public float getMinimumVerticalAngle() {
-        return this.mMinimumVerticalAngle;
+        return mMinimumVerticalAngle;
     }
 
     /**
@@ -153,8 +152,8 @@ public class ArcMotion extends PathMotion {
      * @attr ref android.R.styleable#ArcMotion_maximumAngle
      */
     public void setMaximumAngle(float angleInDegrees) {
-        this.mMaximumAngle = angleInDegrees;
-        this.mMaximumTangent = ArcMotion.toTangent(angleInDegrees);
+        mMaximumAngle = angleInDegrees;
+        mMaximumTangent = toTangent(angleInDegrees);
     }
 
     /**
@@ -168,7 +167,7 @@ public class ArcMotion extends PathMotion {
      * @attr ref android.R.styleable#ArcMotion_maximumAngle
      */
     public float getMaximumAngle() {
-        return this.mMaximumAngle;
+        return mMaximumAngle;
     }
 
     private static float toTangent(float arcInDegrees) {
@@ -203,9 +202,9 @@ public class ArcMotion extends PathMotion {
         float ey;
         if (startY == endY) {
             ex = (startX + endX) / 2;
-            ey = startY + this.mMinimumHorizontalTangent * Math.abs(endX - startX) / 2;
+            ey = startY + mMinimumHorizontalTangent * Math.abs(endX - startX) / 2;
         } else if (startX == endX) {
-            ex = startX + this.mMinimumVerticalTangent * Math.abs(endY - startY) / 2;
+            ex = startX + mMinimumVerticalTangent * Math.abs(endY - startY) / 2;
             ey = (startY + endY) / 2;
         } else {
             float deltaX = endX - startX;
@@ -238,8 +237,8 @@ public class ArcMotion extends PathMotion {
                     ex = endX;
                 }
 
-                minimumArcDist2 = midDist2 * this.mMinimumVerticalTangent
-                        * this.mMinimumVerticalTangent;
+                minimumArcDist2 = midDist2 * mMinimumVerticalTangent
+                        * mMinimumVerticalTangent;
             } else {
                 // Same as above, but flip X & Y
                 float eDistX = h2 / (2 * deltaX);
@@ -251,14 +250,14 @@ public class ArcMotion extends PathMotion {
                     ey = startY;
                 }
 
-                minimumArcDist2 = midDist2 * this.mMinimumHorizontalTangent
-                        * this.mMinimumHorizontalTangent;
+                minimumArcDist2 = midDist2 * mMinimumHorizontalTangent
+                        * mMinimumHorizontalTangent;
             }
             float arcDistX = dx - ex;
             float arcDistY = dy - ey;
             float arcDist2 = arcDistX * arcDistX + arcDistY * arcDistY;
 
-            float maximumArcDist2 = midDist2 * this.mMaximumTangent * this.mMaximumTangent;
+            float maximumArcDist2 = midDist2 * mMaximumTangent * mMaximumTangent;
 
             float newArcDistance2 = 0;
             if (arcDist2 < minimumArcDist2) {

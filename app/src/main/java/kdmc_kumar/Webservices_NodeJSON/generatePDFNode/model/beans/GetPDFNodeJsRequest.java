@@ -33,13 +33,13 @@ public class GetPDFNodeJsRequest {
 
 
     @com.google.gson.annotations.SerializedName("JsonValue")
-    private JsonValue jsonValue;
+    private JsonValue jsonValue = null;
 
     public GetPDFNodeJsRequest() {
     }
 
     public final JsonValue getJsonValue() {
-        return this.jsonValue;
+        return jsonValue;
     }
 
     public final void setJsonValue(JsonValue jsonValue) {
@@ -56,11 +56,11 @@ public class GetPDFNodeJsRequest {
         }
 
         public final GetPDFNodeJsRequest build() {
-            return this.toBuild;
+            return toBuild;
         }
 
-        public final GetPDFNodeJsRequest.GetPDFNodeJsRequestBuilder jsonValue(JsonValue value) {
-            this.toBuild.setJsonValue(value);
+        public final GetPDFNodeJsRequestBuilder jsonValue(JsonValue value) {
+            toBuild.setJsonValue(value);
             return this;
         }
     }

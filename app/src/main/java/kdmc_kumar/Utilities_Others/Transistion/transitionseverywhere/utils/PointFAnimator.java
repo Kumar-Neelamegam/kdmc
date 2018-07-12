@@ -18,12 +18,11 @@ package kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils;
 import android.annotation.TargetApi;
 import android.graphics.PointF;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 
 /**
  * Created by Andrey Kulikov on 17.08.15.
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class PointFAnimator extends BasePointFAnimator {
 
     private float mStartTop, mStartLeft, mEndTop, mEndLeft;
@@ -46,8 +45,8 @@ public class PointFAnimator extends BasePointFAnimator {
     }
 
     protected void applyAnimatedFraction(PointF holder, float fraction) {
-        holder.x = PointFAnimator.interpolate(fraction, this.mStartLeft, this.mEndLeft);
-        holder.y = PointFAnimator.interpolate(fraction, this.mStartTop, this.mEndTop);
+        holder.x = interpolate(fraction, mStartLeft, mEndLeft);
+        holder.y = interpolate(fraction, mStartTop, mEndTop);
     }
 
     protected static float interpolate(float fraction, float startValue, float endValue) {

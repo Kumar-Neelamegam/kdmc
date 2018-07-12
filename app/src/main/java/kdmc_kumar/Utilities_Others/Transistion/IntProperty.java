@@ -25,7 +25,6 @@ package kdmc_kumar.Utilities_Others.Transistion;
 import android.annotation.SuppressLint;
 import android.annotation.TargetApi;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.util.Property;
 
 /**
@@ -35,7 +34,7 @@ import android.util.Property;
  *
  * Created by Andrey Kulikov on 18.08.15.
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public abstract class IntProperty<T> extends Property<T, Integer> {
 
     public IntProperty(String name) {
@@ -44,10 +43,10 @@ public abstract class IntProperty<T> extends Property<T, Integer> {
 
     public abstract void setValue(T object, int value);
 
-    @Override
     @SuppressLint("NewApi")
-    public final void set(T object, Integer value) {
-        this.setValue(object, value);
+    @Override
+    final public void set(T object, Integer value) {
+        setValue(object, value);
     }
 
 }

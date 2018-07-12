@@ -24,20 +24,20 @@ class ItemAnimation {
 
     public static void animate(View view, int position, int type) {
         switch (type) {
-            case ItemAnimation.BOTTOM_UP:
-                ItemAnimation.animateBottomUp(view, position);
+            case BOTTOM_UP:
+                animateBottomUp(view, position);
                 break;
 
-            case ItemAnimation.FADE_IN:
-                ItemAnimation.animateFadeIn(view, position);
+            case FADE_IN:
+                animateFadeIn(view, position);
                 break;
 
-            case ItemAnimation.LEFT_RIGHT:
-                ItemAnimation.animateLeftRight(view, position);
+            case LEFT_RIGHT:
+                animateLeftRight(view, position);
                 break;
 
-            case ItemAnimation.RIGHT_LEFT:
-                ItemAnimation.animateRightLeft(view, position);
+            case RIGHT_LEFT:
+                animateRightLeft(view, position);
                 break;
         }
     }
@@ -51,8 +51,8 @@ class ItemAnimation {
         AnimatorSet animatorSet = new AnimatorSet();
         ObjectAnimator animatorTranslateY = ObjectAnimator.ofFloat(view, "translationY", (float) (not_first_item ? 800 : 500), (float) 0);
         ObjectAnimator animatorAlpha = ObjectAnimator.ofFloat(view, "alpha", 1.0f);
-        animatorTranslateY.setStartDelay(not_first_item ? 0L : ((long) position1 * ItemAnimation.DURATION_IN_BOTTOM_UP));
-        animatorTranslateY.setDuration((long) (not_first_item ? 3 : 1) * ItemAnimation.DURATION_IN_BOTTOM_UP);
+        animatorTranslateY.setStartDelay(not_first_item ? 0L : ((long) position1 * DURATION_IN_BOTTOM_UP));
+        animatorTranslateY.setDuration((long) (not_first_item ? 3 : 1) * DURATION_IN_BOTTOM_UP);
         animatorSet.playTogether(animatorTranslateY, animatorAlpha);
         animatorSet.start();
     }
@@ -65,8 +65,8 @@ class ItemAnimation {
         AnimatorSet animatorSet = new AnimatorSet();
         ObjectAnimator animatorAlpha = ObjectAnimator.ofFloat(view, "alpha", 0.0f, 0.5f, 1.0f);
         ObjectAnimator.ofFloat(view, "alpha", 0.0f).start();
-        animatorAlpha.setStartDelay(not_first_item ? ItemAnimation.DURATION_IN_FADE_ID / 2L : ((long) position1 * ItemAnimation.DURATION_IN_FADE_ID / 3L));
-        animatorAlpha.setDuration(ItemAnimation.DURATION_IN_FADE_ID);
+        animatorAlpha.setStartDelay(not_first_item ? DURATION_IN_FADE_ID / 2L : ((long) position1 * DURATION_IN_FADE_ID / 3L));
+        animatorAlpha.setDuration(DURATION_IN_FADE_ID);
         animatorSet.play(animatorAlpha);
         animatorSet.start();
     }
@@ -81,8 +81,8 @@ class ItemAnimation {
         ObjectAnimator animatorTranslateY = ObjectAnimator.ofFloat(view, "translationX", -400.0f, (float) 0);
         ObjectAnimator animatorAlpha = ObjectAnimator.ofFloat(view, "alpha", 1.0f);
         ObjectAnimator.ofFloat(view, "alpha", 0.0f).start();
-        animatorTranslateY.setStartDelay(not_first_item ? ItemAnimation.DURATION_IN_LEFT_RIGHT : ((long) position1 * ItemAnimation.DURATION_IN_LEFT_RIGHT));
-        animatorTranslateY.setDuration((long) (not_first_item ? 2 : 1) * ItemAnimation.DURATION_IN_LEFT_RIGHT);
+        animatorTranslateY.setStartDelay(not_first_item ? DURATION_IN_LEFT_RIGHT : ((long) position1 * DURATION_IN_LEFT_RIGHT));
+        animatorTranslateY.setDuration((long) (not_first_item ? 2 : 1) * DURATION_IN_LEFT_RIGHT);
         animatorSet.playTogether(animatorTranslateY, animatorAlpha);
         animatorSet.start();
     }
@@ -97,8 +97,8 @@ class ItemAnimation {
         ObjectAnimator animatorTranslateY = ObjectAnimator.ofFloat(view, "translationX", view.getX() + 400.0F, (float) 0);
         ObjectAnimator animatorAlpha = ObjectAnimator.ofFloat(view, "alpha", 1.0f);
         ObjectAnimator.ofFloat(view, "alpha", 0.0f).start();
-        animatorTranslateY.setStartDelay(not_first_item ? ItemAnimation.DURATION_IN_RIGHT_LEFT : ((long) position1 * ItemAnimation.DURATION_IN_RIGHT_LEFT));
-        animatorTranslateY.setDuration((long) (not_first_item ? 2 : 1) * ItemAnimation.DURATION_IN_RIGHT_LEFT);
+        animatorTranslateY.setStartDelay(not_first_item ? DURATION_IN_RIGHT_LEFT : ((long) position1 * DURATION_IN_RIGHT_LEFT));
+        animatorTranslateY.setDuration((long) (not_first_item ? 2 : 1) * DURATION_IN_RIGHT_LEFT);
         animatorSet.playTogether(animatorTranslateY, animatorAlpha);
         animatorSet.start();
     }

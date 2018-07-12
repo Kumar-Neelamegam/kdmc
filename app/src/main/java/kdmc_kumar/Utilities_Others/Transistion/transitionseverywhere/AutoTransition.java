@@ -35,17 +35,17 @@ public class AutoTransition extends TransitionSet {
      * targets, and finally fades in appearing targets.
      */
     public AutoTransition() {
-        this.init();
+        init();
     }
 
     public AutoTransition(Context context, AttributeSet attrs) {
         super(context, attrs);
-        this.init();
+        init();
     }
 
     private void init() {
-        this.setOrdering(TransitionSet.ORDERING_SEQUENTIAL);
-        this.addTransition(new Fade(Fade.OUT)).
+        setOrdering(ORDERING_SEQUENTIAL);
+        addTransition(new Fade(Fade.OUT)).
                 addTransition(new ChangeBounds()).
                 addTransition(new Fade(Fade.IN));
     }

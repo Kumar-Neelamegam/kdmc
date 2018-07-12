@@ -10,6 +10,7 @@ import com.magnet.android.mms.MagnetMobileClient;
 import com.magnet.android.mms.controller.AbstractControllerSchemaFactory;
 import com.magnet.android.mms.controller.ControllerFactory;
 import com.magnet.android.mms.controller.RequestSchema;
+import com.magnet.android.mms.controller.RequestSchema.JMethod;
 
 import java.util.Collections;
 
@@ -19,37 +20,37 @@ import kdmc_kumar.Webservices_NodeJSON.importREST_Services.postPatidMtestid.mode
 
 public class PostPatidMtestidFactory extends ControllerFactory<PostPatidMtestid> {
     public PostPatidMtestidFactory(MagnetMobileClient magnetClient) {
-        super(PostPatidMtestid.class, PostPatidMtestidFactory.PostPatidMtestidSchemaFactory.getInstance().getSchema(), magnetClient);
+        super(PostPatidMtestid.class, PostPatidMtestidSchemaFactory.getInstance().getSchema(), magnetClient);
     }
 
     // Schema factory for controller PostPatidMtestid
     public static class PostPatidMtestidSchemaFactory extends AbstractControllerSchemaFactory {
-        private static PostPatidMtestidFactory.PostPatidMtestidSchemaFactory __instance;
+        private static PostPatidMtestidSchemaFactory __instance = null;
 
         private PostPatidMtestidSchemaFactory() {
         }
 
-        static PostPatidMtestidFactory.PostPatidMtestidSchemaFactory getInstance() {
-            synchronized (PostPatidMtestidFactory.PostPatidMtestidSchemaFactory.class) {
-                if (null == PostPatidMtestidFactory.PostPatidMtestidSchemaFactory.__instance) {
-                    PostPatidMtestidFactory.PostPatidMtestidSchemaFactory.__instance = new PostPatidMtestidFactory.PostPatidMtestidSchemaFactory();
+        static PostPatidMtestidSchemaFactory getInstance() {
+            synchronized (PostPatidMtestidSchemaFactory.class) {
+                if (null == __instance) {
+                    __instance = new PostPatidMtestidSchemaFactory();
                 }
 
-                return PostPatidMtestidFactory.PostPatidMtestidSchemaFactory.__instance;
+                return __instance;
             }
         }
 
         protected final void initSchemaMaps() {
             synchronized (this) {
-                if (null != this.schema) {
+                if (null != schema) {
                     return;
                 }
 
-                this.schema = new RequestSchema();
-                this.schema.setRootPath("");
+                schema = new RequestSchema();
+                schema.setRootPath("");
 
                 //controller schema for controller method postPatidMtestid
-                RequestSchema.JMethod method1 = this.addMethod("postPatidMtestid",
+                JMethod method1 = addMethod("postPatidMtestid",
                         "importMastersSP/postPatidMtestid",
                         "POST",
                         PatidMtestidResult.class,

@@ -19,8 +19,8 @@ import android.os.AsyncTask;
 public class CaseNotesBgThread extends AsyncTask<String, String, String> {
     private final String Patient_Id;
     private final Context context;
-    private ProgressDialog pDialog;
-    private final CaseNotes caseNotes;
+    private ProgressDialog pDialog = null;
+    private CaseNotes caseNotes = null;
     /**
      * progress dialog to show user that the backup is processing.
      */
@@ -28,16 +28,16 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
 
     public CaseNotesBgThread(Context context, String PatientId) {
         this.context = context;
-        this.dialog = new ProgressDialog(context);
-        Patient_Id = PatientId;
+        dialog = new ProgressDialog(context);
+        this.Patient_Id = PatientId;
 
     }
 
     @Override
     protected final void onPreExecute() {
-        this.pDialog = new ProgressDialog(this.context);
-        this.pDialog.setMessage("Loading casenote details...");
-        this.pDialog.show();
+        pDialog = new ProgressDialog(context);
+        pDialog.setMessage("Loading casenote details...");
+        pDialog.show();
     }
 
     /* (non-Javadoc)
@@ -57,7 +57,7 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
     protected final void onPostExecute(String result) {
         super.onPostExecute(result);
        // caseNotes.UpdateAllValues();
-        this.pDialog.dismiss();
+        pDialog.dismiss();
     }
 
 
@@ -107,7 +107,7 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
         public String xrayremrk = "";
 
 
-        Cursor c;
+        Cursor c = null;
 
         public DiagnosisData() {
         }
@@ -116,63 +116,63 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
         final void SetData() {
 
             //Log.e("Dataa", "SetData");
-            if (this.c == null) {
+            if (c == null) {
                 //Log.e("c==", "null");
             }
 
-            if (this.c != null) {
+            if (c != null) {
                 //Log.e("c!=", "null");
-                if (this.c.moveToFirst()) {
+                if (c.moveToFirst()) {
                     do {
                         //Log.e("c!=", "moved to first");
 
-                        String clinicName = this.c.getString(this.c.getColumnIndex("clinicname"));
+                        String clinicName = c.getString(c.getColumnIndex("clinicname"));
                         //Log.e("Clinic Name", clinicName);
 
-                        this.Actdate = this.c.getString(this.c.getColumnIndex("Actdate"));
-                        this.age = this.c.getString(this.c.getColumnIndex("age"));
+                        Actdate = c.getString(c.getColumnIndex("Actdate"));
+                        age = c.getString(c.getColumnIndex("age"));
                         // TODO: 3/9/2017 Adding Blood Presser value init
-                        this.BpS = this.c.getString(this.c.getColumnIndex("BpS"));
-                        this.bloodgroup = this.c.getString(this.c.getColumnIndex("bloodgroup"));
-                        this.bmi = this.c.getString(this.c.getColumnIndex("bmi"));
-                        this.BpD = this.c.getString(this.c.getColumnIndex("BpD"));
-                        this.clinicname = this.c.getString(this.c.getColumnIndex("clinicname"));
-                        this.DiagId = this.c.getString(this.c.getColumnIndex("DiagId"));
-                        this.Diagnosis = this.c.getString(this.c.getColumnIndex("Diagnosis"));
-                        this.Docid = this.c.getString(this.c.getColumnIndex("Docid"));
-                        this.docsign = this.c.getString(this.c.getColumnIndex("docsign"));
-                        this.Ecg = this.c.getString(this.c.getColumnIndex("Ecg"));
-                        this.ecgaxis = this.c.getString(this.c.getColumnIndex("ecgaxis"));
-                        this.ecgbundlebranch = this.c.getString(this.c.getColumnIndex("ecgbundlebranch"));
-                        this.Ecgfile = this.c.getString(this.c.getColumnIndex("Ecgfile"));
-                        this.ecgpulserate = this.c.getString(this.c.getColumnIndex("ecgpulserate"));
-                        this.ecgqrs = this.c.getString(this.c.getColumnIndex("ecgqrs"));
-                        this.ecgrate = this.c.getString(this.c.getColumnIndex("ecgrate"));
-                        this.ecgrhyrhm = this.c.getString(this.c.getColumnIndex("ecgrhyrhm"));
-                        this.ecgst = this.c.getString(this.c.getColumnIndex("ecgst"));
-                        this.ecgt = this.c.getString(this.c.getColumnIndex("ecgt"));
-                        this.ecgtreadmill = this.c.getString(this.c.getColumnIndex("ecgtreadmill"));
-                        this.FBS = this.c.getString(this.c.getColumnIndex("FBS"));
-                        this.gender = this.c.getString(this.c.getColumnIndex("gender"));
-                        this.height = this.c.getString(this.c.getColumnIndex("height"));
-                        this.imeino = this.c.getString(this.c.getColumnIndex("imeino"));
-                        this.IsActive = this.c.getString(this.c.getColumnIndex("IsActive"));
-                        this.Isupdate = this.c.getString(this.c.getColumnIndex("Isupdate"));
-                        this.mobnum = this.c.getString(this.c.getColumnIndex("mobnum"));
-                        this.PPS = this.c.getString(this.c.getColumnIndex("PPS"));
-                        this.pname = this.c.getString(this.c.getColumnIndex("pname"));
-                        this.Ptid = this.c.getString(this.c.getColumnIndex("Ptid"));
-                        this.PWeight = this.c.getString(this.c.getColumnIndex("PWeight"));
-                        this.RBS = this.c.getString(this.c.getColumnIndex("RBS"));
-                        this.refdocname = this.c.getString(this.c.getColumnIndex("refdocname"));
-                        this.Scan = this.c.getString(this.c.getColumnIndex("Scan"));
-                        this.Scanfile = this.c.getString(this.c.getColumnIndex("Scanfile"));
-                        this.temperature = this.c.getString(this.c.getColumnIndex("temperature"));
-                        this.Test = this.c.getString(this.c.getColumnIndex("Test"));
-                        this.testresult = this.c.getString(this.c.getColumnIndex("testresult"));
-                        this.treatmentfor = this.c.getString(this.c.getColumnIndex("treatmentfor"));
+                        BpS = c.getString(c.getColumnIndex("BpS"));
+                        bloodgroup = c.getString(c.getColumnIndex("bloodgroup"));
+                        bmi = c.getString(c.getColumnIndex("bmi"));
+                        BpD = c.getString(c.getColumnIndex("BpD"));
+                        clinicname = c.getString(c.getColumnIndex("clinicname"));
+                        DiagId = c.getString(c.getColumnIndex("DiagId"));
+                        Diagnosis = c.getString(c.getColumnIndex("Diagnosis"));
+                        Docid = c.getString(c.getColumnIndex("Docid"));
+                        docsign = c.getString(c.getColumnIndex("docsign"));
+                        Ecg = c.getString(c.getColumnIndex("Ecg"));
+                        ecgaxis = c.getString(c.getColumnIndex("ecgaxis"));
+                        ecgbundlebranch = c.getString(c.getColumnIndex("ecgbundlebranch"));
+                        Ecgfile = c.getString(c.getColumnIndex("Ecgfile"));
+                        ecgpulserate = c.getString(c.getColumnIndex("ecgpulserate"));
+                        ecgqrs = c.getString(c.getColumnIndex("ecgqrs"));
+                        ecgrate = c.getString(c.getColumnIndex("ecgrate"));
+                        ecgrhyrhm = c.getString(c.getColumnIndex("ecgrhyrhm"));
+                        ecgst = c.getString(c.getColumnIndex("ecgst"));
+                        ecgt = c.getString(c.getColumnIndex("ecgt"));
+                        ecgtreadmill = c.getString(c.getColumnIndex("ecgtreadmill"));
+                        FBS = c.getString(c.getColumnIndex("FBS"));
+                        gender = c.getString(c.getColumnIndex("gender"));
+                        height = c.getString(c.getColumnIndex("height"));
+                        imeino = c.getString(c.getColumnIndex("imeino"));
+                        IsActive = c.getString(c.getColumnIndex("IsActive"));
+                        Isupdate = c.getString(c.getColumnIndex("Isupdate"));
+                        mobnum = c.getString(c.getColumnIndex("mobnum"));
+                        PPS = c.getString(c.getColumnIndex("PPS"));
+                        pname = c.getString(c.getColumnIndex("pname"));
+                        Ptid = c.getString(c.getColumnIndex("Ptid"));
+                        PWeight = c.getString(c.getColumnIndex("PWeight"));
+                        RBS = c.getString(c.getColumnIndex("RBS"));
+                        refdocname = c.getString(c.getColumnIndex("refdocname"));
+                        Scan = c.getString(c.getColumnIndex("Scan"));
+                        Scanfile = c.getString(c.getColumnIndex("Scanfile"));
+                        temperature = c.getString(c.getColumnIndex("temperature"));
+                        Test = c.getString(c.getColumnIndex("Test"));
+                        testresult = c.getString(c.getColumnIndex("testresult"));
+                        treatmentfor = c.getString(c.getColumnIndex("treatmentfor"));
 
-                    } while (this.c.moveToNext());
+                    } while (c.moveToNext());
                 }
             }
 
@@ -201,7 +201,7 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
 
         String skin_infection = "", short_stat = "", pog = "", pallor = "", oedema = "", fundalheight = "", lie = "", fetalmovement = "", fetalheight = "", pv = "", anycompl = "";
 
-        Cursor c;
+        Cursor c = null;
 
         public GeneralExaminationData() {
         }
@@ -209,51 +209,51 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
         final void SetData() {
 
             //Log.e("GeneralExaminationData Dataa", "SetData");
-            if (this.c == null) {
+            if (c == null) {
                 //Log.e("GeneralExaminationData c==", "null");
             }
 
-            if (this.c != null) {
+            if (c != null) {
                 //Log.e("GeneralExaminationData c!=", "null");
-                if (this.c.moveToFirst()) {
+                if (c.moveToFirst()) {
 
                     do {
 
 
-                        this.Actdate = this.c.getString(this.c.getColumnIndex("Actdate"));
-                        this.Anaemic = this.c.getString(this.c.getColumnIndex("Anaemic"));
-                        this.Clubbing = this.c.getString(this.c.getColumnIndex("Clubbing"));
-                        this.DiagId = this.c.getString(this.c.getColumnIndex("DiagId"));
-                        this.docid = this.c.getString(this.c.getColumnIndex("docid"));
-                        this.Icterus = this.c.getString(this.c.getColumnIndex("Icterus"));
-                        this.IsActive = this.c.getString(this.c.getColumnIndex("IsActive"));
-                        this.Isupdate = this.c.getString(this.c.getColumnIndex("Isupdate"));
-                        this.Limbphantom = this.c.getString(this.c.getColumnIndex("Limbphantom"));
-                        this.pagegen = this.c.getString(this.c.getColumnIndex("pagegen"));
-                        this.Pedal_edema = this.c.getString(this.c.getColumnIndex("Pedal_edema"));
-                        this.pname = this.c.getString(this.c.getColumnIndex("pname"));
-                        this.ptid = this.c.getString(this.c.getColumnIndex("ptid"));
-                        this.Stenosis = this.c.getString(this.c.getColumnIndex("Stenosis"));
-                        this.Vericoveins = this.c.getString(this.c.getColumnIndex("Vericoveins"));
-                        this.built = this.c.getString(this.c.getColumnIndex("built"));
-                        this.extra_generalexam = this.c.getString(this.c.getColumnIndex("extra_generalexam"));
+                        Actdate = c.getString(c.getColumnIndex("Actdate"));
+                        Anaemic = c.getString(c.getColumnIndex("Anaemic"));
+                        Clubbing = c.getString(c.getColumnIndex("Clubbing"));
+                        DiagId = c.getString(c.getColumnIndex("DiagId"));
+                        docid = c.getString(c.getColumnIndex("docid"));
+                        Icterus = c.getString(c.getColumnIndex("Icterus"));
+                        IsActive = c.getString(c.getColumnIndex("IsActive"));
+                        Isupdate = c.getString(c.getColumnIndex("Isupdate"));
+                        Limbphantom = c.getString(c.getColumnIndex("Limbphantom"));
+                        pagegen = c.getString(c.getColumnIndex("pagegen"));
+                        Pedal_edema = c.getString(c.getColumnIndex("Pedal_edema"));
+                        pname = c.getString(c.getColumnIndex("pname"));
+                        ptid = c.getString(c.getColumnIndex("ptid"));
+                        Stenosis = c.getString(c.getColumnIndex("Stenosis"));
+                        Vericoveins = c.getString(c.getColumnIndex("Vericoveins"));
+                        built = c.getString(c.getColumnIndex("built"));
+                        extra_generalexam = c.getString(c.getColumnIndex("extra_generalexam"));
 
-                        this.skin_infection = this.c.getString(this.c.getColumnIndex("skin_infection"));
-                        this.short_stat = this.c.getString(this.c.getColumnIndex("short_stat"));
-                        this.pog = this.c.getString(this.c.getColumnIndex("pog"));
-                        this.pallor = this.c.getString(this.c.getColumnIndex("pallor"));
-                        this.oedema = this.c.getString(this.c.getColumnIndex("oedema"));
-                        this.fundalheight = this.c.getString(this.c.getColumnIndex("fundalheight"));
-                        this.lie = this.c.getString(this.c.getColumnIndex("lie"));
-                        this.fetalmovement = this.c.getString(this.c.getColumnIndex("fetalmovement"));
-                        this.fetalheight = this.c.getString(this.c.getColumnIndex("fetalheight"));
-                        this.pv = this.c.getString(this.c.getColumnIndex("pv"));
-                        this.anycompl = this.c.getString(this.c.getColumnIndex("anycompl"));
+                        skin_infection = c.getString(c.getColumnIndex("skin_infection"));
+                        short_stat = c.getString(c.getColumnIndex("short_stat"));
+                        pog = c.getString(c.getColumnIndex("pog"));
+                        pallor = c.getString(c.getColumnIndex("pallor"));
+                        oedema = c.getString(c.getColumnIndex("oedema"));
+                        fundalheight = c.getString(c.getColumnIndex("fundalheight"));
+                        lie = c.getString(c.getColumnIndex("lie"));
+                        fetalmovement = c.getString(c.getColumnIndex("fetalmovement"));
+                        fetalheight = c.getString(c.getColumnIndex("fetalheight"));
+                        pv = c.getString(c.getColumnIndex("pv"));
+                        anycompl = c.getString(c.getColumnIndex("anycompl"));
 
 
                     }
 
-                    while (this.c.moveToNext());
+                    while (c.moveToNext());
                 }
             }
 
@@ -276,7 +276,7 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
         public String Pericardial_Rub = "";
         public String Pulserate = "";
         public String heartrate = "";
-        Cursor c;
+        Cursor c = null;
 
         public CardioValues() {
         }
@@ -284,37 +284,37 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
         final void SetData() {
 
             //Log.e("CardioValues Dataa", "SetData");
-            if (this.c == null) {
+            if (c == null) {
                 //Log.e("CardioValues c==", "null");
             }
 
-            if (this.c != null) {
+            if (c != null) {
                 //Log.e("CardioValues c!=", "null");
-                if (this.c.moveToFirst()) {
+                if (c.moveToFirst()) {
 
                     do {
 
 
-                        this.Actdate = this.c.getString(this.c.getColumnIndex("Actdate"));
-                        this.Beat = this.c.getString(this.c.getColumnIndex("Beat"));
-                        this.Murmur = this.c.getString(this.c.getColumnIndex("Murmur"));
-                        this.DiagId = this.c.getString(this.c.getColumnIndex("DiagId"));
-                        this.docid = this.c.getString(this.c.getColumnIndex("docid"));
-                        this.Pericardial_Rub = this.c.getString(this.c.getColumnIndex("Pericardial_Rub"));
-                        this.IsActive = this.c.getString(this.c.getColumnIndex("IsActive"));
-                        this.Isupdate = this.c.getString(this.c.getColumnIndex("Isupdate"));
-                        this.Pulserate = this.c.getString(this.c
+                        Actdate = c.getString(c.getColumnIndex("Actdate"));
+                        Beat = c.getString(c.getColumnIndex("Beat"));
+                        Murmur = c.getString(c.getColumnIndex("Murmur"));
+                        DiagId = c.getString(c.getColumnIndex("DiagId"));
+                        docid = c.getString(c.getColumnIndex("docid"));
+                        Pericardial_Rub = c.getString(c.getColumnIndex("Pericardial_Rub"));
+                        IsActive = c.getString(c.getColumnIndex("IsActive"));
+                        Isupdate = c.getString(c.getColumnIndex("Isupdate"));
+                        Pulserate = c.getString(c
                                 .getColumnIndex("Pulserate"));
-                        this.pagegen = this.c.getString(this.c.getColumnIndex("pagegen"));
-                        this.heartrate = this.c.getString(this.c
+                        pagegen = c.getString(c.getColumnIndex("pagegen"));
+                        heartrate = c.getString(c
                                 .getColumnIndex("heartrate"));
-                        this.pname = this.c.getString(this.c.getColumnIndex("pname"));
-                        this.ptid = this.c.getString(this.c.getColumnIndex("ptid"));
+                        pname = c.getString(c.getColumnIndex("pname"));
+                        ptid = c.getString(c.getColumnIndex("ptid"));
 
 
                     }
 
-                    while (this.c.moveToNext());
+                    while (c.moveToNext());
                 }
             }
 
@@ -331,7 +331,7 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
         public String Note = "";
         public String shapeofchest = "";
         public String spo2 = "";
-        Cursor c;
+        Cursor c = null;
         String Bronchi = "";
         String Pulserate = "";
 
@@ -340,29 +340,29 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
 
         final void SetData() {
             //Log.e("RespiratoryValues Dataa", "SetData");
-            if (this.c == null) {
+            if (c == null) {
                 //Log.e("RespiratoryValues c==", "null");
             }
 
-            if (this.c != null) {
+            if (c != null) {
                 //Log.e("RespiratoryValues c!=", "null");
-                if (this.c.moveToFirst()) {
+                if (c.moveToFirst()) {
 
                     do {
-                        this.Breathsound = this.c.getString(this.c.getColumnIndex("Breathsound"));
-                        this.Trachea = this.c.getString(this.c.getColumnIndex("Trachea"));
-                        this.Kyphosis_Scoliosis = this.c.getString(this.c.getColumnIndex("Kyphosis_Scoliosis"));
-                        this.Crepitation = this.c.getString(this.c.getColumnIndex("Crepitation"));
-                        this.Bronchi = this.c.getString(this.c.getColumnIndex("Bronchi"));
-                        this.Pulserate = this.c.getString(this.c.getColumnIndex("Pulserate"));
-                        this.Note = this.c.getString(this.c.getColumnIndex("Note"));
-                        this.shapeofchest = this.c.getString(this.c.getColumnIndex("shapeofchest"));
-                        this.spo2 = this.c.getString(this.c.getColumnIndex("spo2"));
+                        Breathsound = c.getString(c.getColumnIndex("Breathsound"));
+                        Trachea = c.getString(c.getColumnIndex("Trachea"));
+                        Kyphosis_Scoliosis = c.getString(c.getColumnIndex("Kyphosis_Scoliosis"));
+                        Crepitation = c.getString(c.getColumnIndex("Crepitation"));
+                        Bronchi = c.getString(c.getColumnIndex("Bronchi"));
+                        Pulserate = c.getString(c.getColumnIndex("Pulserate"));
+                        Note = c.getString(c.getColumnIndex("Note"));
+                        shapeofchest = c.getString(c.getColumnIndex("shapeofchest"));
+                        spo2 = c.getString(c.getColumnIndex("spo2"));
 
 
                     }
 
-                    while (this.c.moveToNext());
+                    while (c.moveToNext());
                 }
             }
 
@@ -374,28 +374,28 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
         public String AdditionalInfo = "";
 
 
-        Cursor c;
+        Cursor c = null;
 
         public OtherSystemValues() {
         }
 
         final void SetData() {
             //Log.e("OtherSystemValues Dataa", "SetData");
-            if (this.c == null) {
+            if (c == null) {
                 //Log.e("OtherSystemValues c==", "null");
             }
 
-            if (this.c != null) {
+            if (c != null) {
                 //Log.e("OtherSystemValues c!=", "null");
-                if (this.c.moveToFirst()) {
+                if (c.moveToFirst()) {
 
                     do {
-                        this.Othersystem = this.c.getString(this.c.getColumnIndex("Othersystem"));
-                        this.AdditionalInfo = this.c.getString(this.c.getColumnIndex("AdditionalInfo"));
+                        Othersystem = c.getString(c.getColumnIndex("Othersystem"));
+                        AdditionalInfo = c.getString(c.getColumnIndex("AdditionalInfo"));
 
                     }
 
-                    while (this.c.moveToNext());
+                    while (c.moveToNext());
                 }
             }
 
@@ -437,61 +437,61 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
         public String FreeT4 = "";
         public String TSH = "";
 
-        Cursor c;
+        Cursor c = null;
 
         public ClinicalDataValues() {
         }
 
         final void SetData() {
             //Log.e("ClinicalDataValues Data", "SetData");
-            if (this.c == null) {
+            if (c == null) {
                 //Log.e("ClinicalDataValues c==", "null");
             }
 
-            if (this.c != null) {
+            if (c != null) {
                 //Log.e("ClinicalDataValues c!=", "null");
-                if (this.c.moveToFirst()) {
+                if (c.moveToFirst()) {
 
                     do {
 
-                        this.Heamoglobin = this.c.getString(this.c.getColumnIndex("Heamoglobin"));
-                        this.wbc = this.c.getString(this.c.getColumnIndex("wbc"));
-                        this.rbc = this.c.getString(this.c.getColumnIndex("rbc"));
-                        this.esr = this.c.getString(this.c.getColumnIndex("esr"));
-                        this.polymorphs = this.c.getString(this.c.getColumnIndex("polymorphs"));
-                        this.lymphocytes = this.c.getString(this.c.getColumnIndex("lymphocytes"));
-                        this.monocytes = this.c.getString(this.c.getColumnIndex("monocytes"));
-                        this.basophils = this.c.getString(this.c.getColumnIndex("basophils"));
-                        this.eosinophils = this.c.getString(this.c.getColumnIndex("eosinophils"));
-                        this.urea = this.c.getString(this.c.getColumnIndex("urea"));
-                        this.creatinine = this.c.getString(this.c.getColumnIndex("creatinine"));
-                        this.UricAcid = this.c.getString(this.c.getColumnIndex("UricAcid"));
+                        Heamoglobin = c.getString(c.getColumnIndex("Heamoglobin"));
+                        wbc = c.getString(c.getColumnIndex("wbc"));
+                        rbc = c.getString(c.getColumnIndex("rbc"));
+                        esr = c.getString(c.getColumnIndex("esr"));
+                        polymorphs = c.getString(c.getColumnIndex("polymorphs"));
+                        lymphocytes = c.getString(c.getColumnIndex("lymphocytes"));
+                        monocytes = c.getString(c.getColumnIndex("monocytes"));
+                        basophils = c.getString(c.getColumnIndex("basophils"));
+                        eosinophils = c.getString(c.getColumnIndex("eosinophils"));
+                        urea = c.getString(c.getColumnIndex("urea"));
+                        creatinine = c.getString(c.getColumnIndex("creatinine"));
+                        UricAcid = c.getString(c.getColumnIndex("UricAcid"));
 
-                        this.Sodium = this.c.getString(this.c.getColumnIndex("Sodium"));
-                        this.Potassium = this.c.getString(this.c.getColumnIndex("Potassium"));
-                        this.Chloride = this.c.getString(this.c.getColumnIndex("Chloride"));
-                        this.Bicarbonate = this.c.getString(this.c.getColumnIndex("Bicarbonate"));
-                        this.TotalCholesterol = this.c.getString(this.c.getColumnIndex("TotalCholesterol"));
-                        this.LDL = this.c.getString(this.c.getColumnIndex("LDL"));
-                        this.HDL = this.c.getString(this.c.getColumnIndex("HDL"));
-                        this.VLDL = this.c.getString(this.c.getColumnIndex("VLDL"));
-                        this.Triglycerides = this.c.getString(this.c.getColumnIndex("Triglycerides"));
-                        this.Serumbilirubin = this.c.getString(this.c.getColumnIndex("Serumbilirubin"));
-                        this.Direct = this.c.getString(this.c.getColumnIndex("Direct"));
-                        this.Indirect = this.c.getString(this.c.getColumnIndex("Indirect"));
-                        this.Totalprotein = this.c.getString(this.c.getColumnIndex("Totalprotein"));
-                        this.Albumin = this.c.getString(this.c.getColumnIndex("Albumin"));
-                        this.Globulin = this.c.getString(this.c.getColumnIndex("Globulin"));
-                        this.SGOT = this.c.getString(this.c.getColumnIndex("SGOT"));
-                        this.SGPT = this.c.getString(this.c.getColumnIndex("SGPT"));
-                        this.AlkalinePhosphatase = this.c.getString(this.c.getColumnIndex("AlkalinePhosphatase"));
-                        this.FreeT3 = this.c.getString(this.c.getColumnIndex("FreeT3"));
-                        this.FreeT4 = this.c.getString(this.c.getColumnIndex("FreeT4"));
-                        this.TSH = this.c.getString(this.c.getColumnIndex("TSH"));
+                        Sodium = c.getString(c.getColumnIndex("Sodium"));
+                        Potassium = c.getString(c.getColumnIndex("Potassium"));
+                        Chloride = c.getString(c.getColumnIndex("Chloride"));
+                        Bicarbonate = c.getString(c.getColumnIndex("Bicarbonate"));
+                        TotalCholesterol = c.getString(c.getColumnIndex("TotalCholesterol"));
+                        LDL = c.getString(c.getColumnIndex("LDL"));
+                        HDL = c.getString(c.getColumnIndex("HDL"));
+                        VLDL = c.getString(c.getColumnIndex("VLDL"));
+                        Triglycerides = c.getString(c.getColumnIndex("Triglycerides"));
+                        Serumbilirubin = c.getString(c.getColumnIndex("Serumbilirubin"));
+                        Direct = c.getString(c.getColumnIndex("Direct"));
+                        Indirect = c.getString(c.getColumnIndex("Indirect"));
+                        Totalprotein = c.getString(c.getColumnIndex("Totalprotein"));
+                        Albumin = c.getString(c.getColumnIndex("Albumin"));
+                        Globulin = c.getString(c.getColumnIndex("Globulin"));
+                        SGOT = c.getString(c.getColumnIndex("SGOT"));
+                        SGPT = c.getString(c.getColumnIndex("SGPT"));
+                        AlkalinePhosphatase = c.getString(c.getColumnIndex("AlkalinePhosphatase"));
+                        FreeT3 = c.getString(c.getColumnIndex("FreeT3"));
+                        FreeT4 = c.getString(c.getColumnIndex("FreeT4"));
+                        TSH = c.getString(c.getColumnIndex("TSH"));
 
                     }
 
-                    while (this.c.moveToNext());
+                    while (c.moveToNext());
                 }
             }
 
@@ -502,28 +502,28 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
         public String Endocrine = "";
 
 
-        Cursor c;
+        Cursor c = null;
 
         public EndocrineValues() {
         }
 
         final void SetData() {
             //Log.e("EndocrineValues Dataa", "SetData");
-            if (this.c == null) {
+            if (c == null) {
                 //Log.e("EndocrineValues c==", "null");
             }
 
-            if (this.c != null) {
+            if (c != null) {
                 //Log.e("EndocrineValues c!=", "null");
-                if (this.c.moveToFirst()) {
+                if (c.moveToFirst()) {
 
                     do {
-                        this.Endocrine = this.c.getString(this.c.getColumnIndex("Endocrine"));
+                        Endocrine = c.getString(c.getColumnIndex("Endocrine"));
 
 
                     }
 
-                    while (this.c.moveToNext());
+                    while (c.moveToNext());
                 }
             }
 
@@ -542,36 +542,36 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
         public String urethraldischarge = "";
         public String prostate = "";
 
-        Cursor c;
+        Cursor c = null;
 
         public RenalSystemValues() {
         }
 
         final void SetData() {
             //Log.e("EndocrineValues Dataa", "SetData");
-            if (this.c == null) {
+            if (c == null) {
                 //Log.e("EndocrineValues c==", "null");
             }
 
-            if (this.c != null) {
+            if (c != null) {
                 //Log.e("EndocrineValues c!=", "null");
-                if (this.c.moveToFirst()) {
+                if (c.moveToFirst()) {
 
                     do {
 
-                        this.dysuria = this.c.getString(this.c.getColumnIndex("dysuria"));
-                        this.pyuria = this.c.getString(this.c.getColumnIndex("pyuria"));
-                        this.haematuria = this.c.getString(this.c.getColumnIndex("haematuria"));
-                        this.oliguria = this.c.getString(this.c.getColumnIndex("oliguria"));
-                        this.polyuria = this.c.getString(this.c.getColumnIndex("polyuria"));
-                        this.anuria = this.c.getString(this.c.getColumnIndex("anuria"));
-                        this.nocturia = this.c.getString(this.c.getColumnIndex("nocturia"));
-                        this.urethraldischarge = this.c.getString(this.c.getColumnIndex("urethraldischarge"));
-                        this.prostate = this.c.getString(this.c.getColumnIndex("prostate"));
+                        dysuria = c.getString(c.getColumnIndex("dysuria"));
+                        pyuria = c.getString(c.getColumnIndex("pyuria"));
+                        haematuria = c.getString(c.getColumnIndex("haematuria"));
+                        oliguria = c.getString(c.getColumnIndex("oliguria"));
+                        polyuria = c.getString(c.getColumnIndex("polyuria"));
+                        anuria = c.getString(c.getColumnIndex("anuria"));
+                        nocturia = c.getString(c.getColumnIndex("nocturia"));
+                        urethraldischarge = c.getString(c.getColumnIndex("urethraldischarge"));
+                        prostate = c.getString(c.getColumnIndex("prostate"));
 
                     }
 
-                    while (this.c.moveToNext());
+                    while (c.moveToNext());
                 }
             }
 
@@ -601,46 +601,46 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
         public String ulremarks = "";
 
 
-        Cursor c;
+        Cursor c = null;
 
         public LocomotorSystemValues() {
         }
 
         final void SetData() {
             //Log.e("LocomotorSystemValues Dataa", "SetData");
-            if (this.c == null) {
+            if (c == null) {
                 //Log.e("LocomotorSystemValues c==", "null");
             }
 
-            if (this.c != null) {
+            if (c != null) {
                 //Log.e("LocomotorSystemValues c!=", "null");
-                if (this.c.moveToFirst()) {
+                if (c.moveToFirst()) {
 
                     do {
-                        this.symmetry = this.c.getString(this.c.getColumnIndex("symmetry"));
-                        this.smooth_movement = this.c.getString(this.c.getColumnIndex("smooth_movement"));
-                        this.arms_swing = this.c.getString(this.c.getColumnIndex("arms_swing"));
-                        this.pelvic_tilt = this.c.getString(this.c.getColumnIndex("pelvic_tilt"));
-                        this.stride_length = this.c.getString(this.c.getColumnIndex("stride_length"));
-                        this.cervical_lordosis = this.c.getString(this.c.getColumnIndex("cervical_lordosis"));
-                        this.lumbar_lordosis = this.c.getString(this.c.getColumnIndex("lumbar_lordosis"));
-                        this.kyphosis = this.c.getString(this.c.getColumnIndex("kyphosis"));
-                        this.scoliosis = this.c.getString(this.c.getColumnIndex("scoliosis"));
-                        this.llswelling = this.c.getString(this.c.getColumnIndex("llswelling"));
-                        this.lldeformity = this.c.getString(this.c.getColumnIndex("lldeformity"));
-                        this.lllimbshortening = this.c.getString(this.c.getColumnIndex("lllimbshortening"));
-                        this.llmuscle_wasting = this.c.getString(this.c.getColumnIndex("llmuscle_wasting"));
-                        this.llremarks = this.c.getString(this.c.getColumnIndex("llremarks"));
-                        this.ulswelling = this.c.getString(this.c.getColumnIndex("ulswelling"));
-                        this.uldeformity = this.c.getString(this.c.getColumnIndex("uldeformity"));
-                        this.ullimbshortening = this.c.getString(this.c.getColumnIndex("ullimbshortening"));
-                        this.ulmuscle_wasting = this.c.getString(this.c.getColumnIndex("ulmuscle_wasting"));
-                        this.ulremarks = this.c.getString(this.c.getColumnIndex("ulremarks"));
+                        symmetry = c.getString(c.getColumnIndex("symmetry"));
+                        smooth_movement = c.getString(c.getColumnIndex("smooth_movement"));
+                        arms_swing = c.getString(c.getColumnIndex("arms_swing"));
+                        pelvic_tilt = c.getString(c.getColumnIndex("pelvic_tilt"));
+                        stride_length = c.getString(c.getColumnIndex("stride_length"));
+                        cervical_lordosis = c.getString(c.getColumnIndex("cervical_lordosis"));
+                        lumbar_lordosis = c.getString(c.getColumnIndex("lumbar_lordosis"));
+                        kyphosis = c.getString(c.getColumnIndex("kyphosis"));
+                        scoliosis = c.getString(c.getColumnIndex("scoliosis"));
+                        llswelling = c.getString(c.getColumnIndex("llswelling"));
+                        lldeformity = c.getString(c.getColumnIndex("lldeformity"));
+                        lllimbshortening = c.getString(c.getColumnIndex("lllimbshortening"));
+                        llmuscle_wasting = c.getString(c.getColumnIndex("llmuscle_wasting"));
+                        llremarks = c.getString(c.getColumnIndex("llremarks"));
+                        ulswelling = c.getString(c.getColumnIndex("ulswelling"));
+                        uldeformity = c.getString(c.getColumnIndex("uldeformity"));
+                        ullimbshortening = c.getString(c.getColumnIndex("ullimbshortening"));
+                        ulmuscle_wasting = c.getString(c.getColumnIndex("ulmuscle_wasting"));
+                        ulremarks = c.getString(c.getColumnIndex("ulremarks"));
 
 
                     }
 
-                    while (this.c.moveToNext());
+                    while (c.moveToNext());
                 }
             }
 
@@ -651,8 +651,8 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
     public static class NeurologySystemValues {
 
 
-        Cursor c;
-        Cursor c1;
+        Cursor c = null;
+        Cursor c1 = null;
         public String Pupilsize = "";
         public String Speech = "";
         public String Carodit = "";
@@ -699,71 +699,71 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
 
         final void SetData() {
             //Log.e("EndocrineValues Dataa", "SetData");
-            if (this.c == null) {
+            if (c == null) {
                 //Log.e("EndocrineValues c==", "null");
             }
 
-            if (this.c != null) {
+            if (c != null) {
                 //Log.e("EndocrineValues c!=", "null");
-                if (this.c.moveToFirst()) {
+                if (c.moveToFirst()) {
 
                     do {
 
-                        this.Pupilsize = this.c.getString(this.c.getColumnIndex("Pupilsize"));
-                        this.Speech = this.c.getString(this.c.getColumnIndex("Speech"));
-                        this.Carodit = this.c.getString(this.c.getColumnIndex("Carodit"));
-                        this.Amnesia = this.c.getString(this.c.getColumnIndex("Amnesia"));
-                        this.Apraxia = this.c.getString(this.c.getColumnIndex("Apraxia"));
-                        this.Cognitive_Function = this.c.getString(this.c.getColumnIndex("Cognitive_Function"));
-                        this.Bulk = this.c.getString(this.c.getColumnIndex("Bulk"));
-                        this.Tone = this.c.getString(this.c.getColumnIndex("Tone"));
-                        this.Power_LUL = this.c.getString(this.c.getColumnIndex("Power_LUL"));
-                        this.Power_RUL = this.c.getString(this.c.getColumnIndex("Power_RUL"));
-                        this.Power_LLL = this.c.getString(this.c.getColumnIndex("Power_LLL"));
-                        this.Power_RLL = this.c.getString(this.c.getColumnIndex("Power_RLL"));
-                        this.Sensory = this.c.getString(this.c.getColumnIndex("Sensory"));
-                        this.Reflexes_Corneal = this.c.getString(this.c.getColumnIndex("Reflexes_Corneal"));
-                        this.Reflexes_Biceps = this.c.getString(this.c.getColumnIndex("Reflexes_Biceps"));
-                        this.Reflexes_Triceps = this.c.getString(this.c.getColumnIndex("Reflexes_Triceps"));
-                        this.Reflexes_Supinator = this.c.getString(this.c.getColumnIndex("Reflexes_Supinator"));
-                        this.Reflexes_Knee = this.c.getString(this.c.getColumnIndex("Reflexes_Knee"));
-                        this.Reflexes_Ankle = this.c.getString(this.c.getColumnIndex("Reflexes_Ankle"));
-                        this.Reflexes_Plantor = this.c.getString(this.c.getColumnIndex("Reflexes_Plantor"));
-                        this.congentail_abnormality = this.c.getString(this.c.getColumnIndex("congentail_abnormality"));
-                        this.mentalstatus = this.c.getString(this.c.getColumnIndex("mentalstatus"));
+                        Pupilsize = c.getString(c.getColumnIndex("Pupilsize"));
+                        Speech = c.getString(c.getColumnIndex("Speech"));
+                        Carodit = c.getString(c.getColumnIndex("Carodit"));
+                        Amnesia = c.getString(c.getColumnIndex("Amnesia"));
+                        Apraxia = c.getString(c.getColumnIndex("Apraxia"));
+                        Cognitive_Function = c.getString(c.getColumnIndex("Cognitive_Function"));
+                        Bulk = c.getString(c.getColumnIndex("Bulk"));
+                        Tone = c.getString(c.getColumnIndex("Tone"));
+                        Power_LUL = c.getString(c.getColumnIndex("Power_LUL"));
+                        Power_RUL = c.getString(c.getColumnIndex("Power_RUL"));
+                        Power_LLL = c.getString(c.getColumnIndex("Power_LLL"));
+                        Power_RLL = c.getString(c.getColumnIndex("Power_RLL"));
+                        Sensory = c.getString(c.getColumnIndex("Sensory"));
+                        Reflexes_Corneal = c.getString(c.getColumnIndex("Reflexes_Corneal"));
+                        Reflexes_Biceps = c.getString(c.getColumnIndex("Reflexes_Biceps"));
+                        Reflexes_Triceps = c.getString(c.getColumnIndex("Reflexes_Triceps"));
+                        Reflexes_Supinator = c.getString(c.getColumnIndex("Reflexes_Supinator"));
+                        Reflexes_Knee = c.getString(c.getColumnIndex("Reflexes_Knee"));
+                        Reflexes_Ankle = c.getString(c.getColumnIndex("Reflexes_Ankle"));
+                        Reflexes_Plantor = c.getString(c.getColumnIndex("Reflexes_Plantor"));
+                        congentail_abnormality = c.getString(c.getColumnIndex("congentail_abnormality"));
+                        mentalstatus = c.getString(c.getColumnIndex("mentalstatus"));
 
                     }
 
-                    while (this.c.moveToNext());
+                    while (c.moveToNext());
                 }
             }
 
 
             //Log.e("CNSValues Dataa", "SetData");
-            if (this.c1 == null) {
+            if (c1 == null) {
                 //Log.e("CNSValues c1==", "null");
             }
 
-            if (this.c1 != null) {
+            if (c1 != null) {
                 //Log.e("CNS Values c1!=", "null");
-                if (this.c1.moveToFirst()) {
+                if (c1.moveToFirst()) {
 
                     do {
 
-                        this.oriented = this.c1.getString(this.c1.getColumnIndex("oriented"));
-                        this.neckrigidity = this.c1.getString(this.c1.getColumnIndex("neckrigidity"));
-                        this.confused = this.c1.getString(this.c1.getColumnIndex("confused"));
-                        this.exaggerated = this.c1.getString(this.c1.getColumnIndex("exaggerated"));
-                        this.extensor = this.c1.getString(this.c1.getColumnIndex("extensor"));
-                        this.gsscore = this.c1.getString(this.c1.getColumnIndex("gsscore"));
-                        this.incomprehensible = this.c1.getString(this.c1.getColumnIndex("incomprehensible"));
-                        this.depressed = this.c1.getString(this.c1.getColumnIndex("depressed"));
-                        this.flexor = this.c1.getString(this.c1.getColumnIndex("flexor"));
-                        this.coma = this.c1.getString(this.c1.getColumnIndex("coma"));
+                        oriented = c1.getString(c1.getColumnIndex("oriented"));
+                        neckrigidity = c1.getString(c1.getColumnIndex("neckrigidity"));
+                        confused = c1.getString(c1.getColumnIndex("confused"));
+                        exaggerated = c1.getString(c1.getColumnIndex("exaggerated"));
+                        extensor = c1.getString(c1.getColumnIndex("extensor"));
+                        gsscore = c1.getString(c1.getColumnIndex("gsscore"));
+                        incomprehensible = c1.getString(c1.getColumnIndex("incomprehensible"));
+                        depressed = c1.getString(c1.getColumnIndex("depressed"));
+                        flexor = c1.getString(c1.getColumnIndex("flexor"));
+                        coma = c1.getString(c1.getColumnIndex("coma"));
 
                     }
 
-                    while (this.c1.moveToNext());
+                    while (c1.moveToNext());
                 }
             }
 
@@ -772,7 +772,7 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
 
 
     public static class GastroIntestinalSystem {
-        Cursor c;
+        Cursor c = null;
         public String Abdomen = "";
         public String Bowelsound = "";
         public String Spleen = "";
@@ -799,37 +799,37 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
 
 
             //Log.e("LocomotorSystemValues Dataa", "SetData");
-            if (this.c == null) {
+            if (c == null) {
                 //Log.e("LocomotorSystemValues c==", "null");
             }
 
-            if (this.c != null) {
+            if (c != null) {
                 //Log.e("LocomotorSystemValues c!=", "null");
-                if (this.c.moveToFirst()) {
+                if (c.moveToFirst()) {
 
                     do {
-                        this.Abdomen = this.c.getString(this.c.getColumnIndex("Abdomen"));
-                        this.Bowelsound = this.c.getString(this.c.getColumnIndex("Bowelsound"));
-                        this.Spleen = this.c.getString(this.c.getColumnIndex("Spleen"));
-                        this.Liver = this.c.getString(this.c.getColumnIndex("Liver"));
-                        this.PalpableMasses = this.c.getString(this.c.getColumnIndex("PalpableMasses"));
-                        this.Hernial = this.c.getString(this.c.getColumnIndex("Hernial"));
-                        this.shapeofabdomen = this.c.getString(this.c.getColumnIndex("shapeofabdomen"));
-                        this.Visible_Pulsations = this.c.getString(this.c.getColumnIndex("Visible_Pulsations"));
-                        this.Visual_Peristalsis = this.c.getString(this.c.getColumnIndex("Visual_Peristalsis"));
-                        this.Abdominal_Palpation = this.c.getString(this.c.getColumnIndex("Abdominal_Palpation"));
-                        this.Splenomegaly = this.c.getString(this.c.getColumnIndex("Splenomegaly"));
-                        this.Hepatomegaly = this.c.getString(this.c.getColumnIndex("Hepatomegaly"));
-                        this.organomegely = this.c.getString(this.c.getColumnIndex("organomegely"));
-                        this.freefuild = this.c.getString(this.c.getColumnIndex("freefuild"));
-                        this.distension = this.c.getString(this.c.getColumnIndex("distension"));
-                        this.tenderness = this.c.getString(this.c.getColumnIndex("tenderness"));
-                        this.scrotum = this.c.getString(this.c.getColumnIndex("scrotum"));
+                        Abdomen = c.getString(c.getColumnIndex("Abdomen"));
+                        Bowelsound = c.getString(c.getColumnIndex("Bowelsound"));
+                        Spleen = c.getString(c.getColumnIndex("Spleen"));
+                        Liver = c.getString(c.getColumnIndex("Liver"));
+                        PalpableMasses = c.getString(c.getColumnIndex("PalpableMasses"));
+                        Hernial = c.getString(c.getColumnIndex("Hernial"));
+                        shapeofabdomen = c.getString(c.getColumnIndex("shapeofabdomen"));
+                        Visible_Pulsations = c.getString(c.getColumnIndex("Visible_Pulsations"));
+                        Visual_Peristalsis = c.getString(c.getColumnIndex("Visual_Peristalsis"));
+                        Abdominal_Palpation = c.getString(c.getColumnIndex("Abdominal_Palpation"));
+                        Splenomegaly = c.getString(c.getColumnIndex("Splenomegaly"));
+                        Hepatomegaly = c.getString(c.getColumnIndex("Hepatomegaly"));
+                        organomegely = c.getString(c.getColumnIndex("organomegely"));
+                        freefuild = c.getString(c.getColumnIndex("freefuild"));
+                        distension = c.getString(c.getColumnIndex("distension"));
+                        tenderness = c.getString(c.getColumnIndex("tenderness"));
+                        scrotum = c.getString(c.getColumnIndex("scrotum"));
 
 
                     }
 
-                    while (this.c.moveToNext());
+                    while (c.moveToNext());
                 }
             }
 
@@ -845,7 +845,7 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
         public String ppc_details = "";
         public String cob_details = "";
 
-        Cursor c;
+        Cursor c = null;
 
         public PNCValues() {
         }
@@ -854,23 +854,23 @@ public class CaseNotesBgThread extends AsyncTask<String, String, String> {
 
 
             //Log.e("PNCValues Dataa", "SetData");
-            if (this.c == null) {
+            if (c == null) {
                 //Log.e("PNCValues c==", "null");
             }
 
-            if (this.c != null) {
+            if (c != null) {
                 //Log.e("PNCValues c!=", "null");
-                if (this.c.moveToFirst()) {
+                if (c.moveToFirst()) {
 
                     do {
 
-                        this.pnc_details = this.c.getString(this.c.getColumnIndex("pnc_details"));
-                        this.ppc_details = this.c.getString(this.c.getColumnIndex("ppc_details"));
-                        this.cob_details = this.c.getString(this.c.getColumnIndex("cob_details"));
+                        pnc_details = c.getString(c.getColumnIndex("pnc_details"));
+                        ppc_details = c.getString(c.getColumnIndex("ppc_details"));
+                        cob_details = c.getString(c.getColumnIndex("cob_details"));
 
                     }
 
-                    while (this.c.moveToNext());
+                    while (c.moveToNext());
                 }
             }
 

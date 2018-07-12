@@ -9,7 +9,6 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AlertDialog;
-import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.widget.Toolbar;
 import android.util.Base64;
 import android.view.LayoutInflater;
@@ -18,15 +17,11 @@ import android.view.ViewGroup;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
-import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.Toast;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Core_Modules.BaseConfig;
 
 /**
@@ -46,20 +41,20 @@ public class Profile_Patient extends Fragment {
      *
      * @param savedInstanceState
      */
-    ImageView ic_previous;
+    ImageView ic_previous = null;
    // private CircleImageView patient_photo = null;
 
-    private WebView profile_webvw;
-    Toolbar toolbar;
+    private WebView profile_webvw = null;
+    Toolbar toolbar = null;
 
-    private String BUNDLE_PATIENT_ID;
+    private String BUNDLE_PATIENT_ID = null;
 
     //#######################################################################################################
     /*Oncreate Methods*/
     //#######################################################################################################
-    private String str_PatientName;
-    private String str_patientId;
-    private String str_Agegender;
+    private String str_PatientName = null;
+    private String str_patientId = null;
+    private String str_Agegender = null;
 
     public Profile_Patient() {
     }
@@ -67,14 +62,14 @@ public class Profile_Patient extends Fragment {
     public final View onCreateView(@NonNull LayoutInflater inflater, ViewGroup container,
                                    Bundle savedInstanceState) {
 
-        View rootView = inflater.inflate(layout.new_patient_profile, container, false);
+        View rootView = inflater.inflate(R.layout.new_patient_profile, container, false);
 
         try {
 
-            Bundle args = this.getArguments();
-            this.BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
+            Bundle args = getArguments();
+            BUNDLE_PATIENT_ID = args.getString(BaseConfig.BUNDLE_PATIENT_ID);
 
-            this.GetInitialize(rootView);
+            GetInitialize(rootView);
 
          //   Controllisteners(rootView);
 
@@ -89,21 +84,21 @@ public class Profile_Patient extends Fragment {
     private final void GetInitialize(View rootView) {
 
 
-        this.profile_webvw = rootView.findViewById(id.webvw_profile);
+        profile_webvw = rootView.findViewById(R.id.webvw_profile);
 
-        this.profile_webvw.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        this.profile_webvw.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        this.profile_webvw.getSettings().setRenderPriority(RenderPriority.HIGH);
+        profile_webvw.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        profile_webvw.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        profile_webvw.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
 
-        this.profile_webvw.setOnLongClickListener(v -> true);
+        profile_webvw.setOnLongClickListener(v -> true);
 
-        this.profile_webvw.setLongClickable(false);
+        profile_webvw.setLongClickable(false);
 
 
        // patient_photo = rootView.findViewById(R.id.imgvw_patient_photo);
 
         try {
-            this.LoadWebview();
+            LoadWebview();
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
@@ -120,34 +115,34 @@ public class Profile_Patient extends Fragment {
 
     //#######################################################################################################
     private final void LoadWebview() {
-        this.profile_webvw.getSettings().setJavaScriptEnabled(true);
-        this.profile_webvw.setLayerType(View.LAYER_TYPE_NONE, null);
-        this.profile_webvw.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        this.profile_webvw.getSettings().setRenderPriority(RenderPriority.HIGH);
-        this.profile_webvw.getSettings().setDefaultTextEncodingName("utf-8");
+        profile_webvw.getSettings().setJavaScriptEnabled(true);
+        profile_webvw.setLayerType(View.LAYER_TYPE_NONE, null);
+        profile_webvw.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        profile_webvw.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        profile_webvw.getSettings().setDefaultTextEncodingName("utf-8");
 
-        this.profile_webvw.setWebChromeClient(new Profile_Patient.MyWebChromeClient());
+        profile_webvw.setWebChromeClient(new MyWebChromeClient());
 
-        this.profile_webvw.setBackgroundColor(0x00000000);
-        this.profile_webvw.setVerticalScrollBarEnabled(true);
-        this.profile_webvw.setHorizontalScrollBarEnabled(true);
+        profile_webvw.setBackgroundColor(0x00000000);
+        profile_webvw.setVerticalScrollBarEnabled(true);
+        profile_webvw.setHorizontalScrollBarEnabled(true);
 
         // Toast.makeText(this, "Please wait doctor profile loading..", Toast.LENGTH_SHORT).show();
 
         //MyDynamicToast.informationMessage(getActivity(), getString(R.string.pleasewait_patient_loading));
 
-        this.profile_webvw.getSettings().setJavaScriptEnabled(true);
+        profile_webvw.getSettings().setJavaScriptEnabled(true);
 
-        this.profile_webvw.getSettings().setAllowContentAccess(true);
+        profile_webvw.getSettings().setAllowContentAccess(true);
 
 
         //Add Android Method to Java Script Class
 
 
-        this.profile_webvw.addJavascriptInterface(new Profile_Patient.WebAppInterface(this.getActivity()), "android");
+        profile_webvw.addJavascriptInterface(new WebAppInterface(getActivity()), "android");
         try {
 
-            this.profile_webvw.loadDataWithBaseURL("file:///android_asset/", this.LoadPatientProfile(), "text/html", "utf-8", null);
+            profile_webvw.loadDataWithBaseURL("file:///android_asset/", LoadPatientProfile(), "text/html", "utf-8", null);
 
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -173,66 +168,66 @@ public class Profile_Patient extends Fragment {
 
         SQLiteDatabase db = BaseConfig.GetDb();//getActivity());
 
-        Cursor c = db.rawQuery("select * from Patreg where Patid='" + this.BUNDLE_PATIENT_ID + "';", null);
+        Cursor c = db.rawQuery("select * from Patreg where Patid='" + BUNDLE_PATIENT_ID + "';", null);
 
         if (c != null) {
             if (c.moveToFirst()) {
                 do {
 
-                    PatientName = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("name")));
-                    PatientId = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("Patid")));
-                    contactNoStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("crtknum")));
-                    RelationshipStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("relationship")));
+                    PatientName = checkNullEmpty(c.getString(c.getColumnIndex("name")));
+                    PatientId = checkNullEmpty(c.getString(c.getColumnIndex("Patid")));
+                    contactNoStr = checkNullEmpty(c.getString(c.getColumnIndex("crtknum")));
+                    RelationshipStr = checkNullEmpty(c.getString(c.getColumnIndex("relationship")));
 
-                    CityStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("city")));
-                    AgeStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("age")));
-                    GenderStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("gender")));
+                    CityStr = checkNullEmpty(c.getString(c.getColumnIndex("city")));
+                    AgeStr = checkNullEmpty(c.getString(c.getColumnIndex("age")));
+                    GenderStr = checkNullEmpty(c.getString(c.getColumnIndex("gender")));
 
-                    this.str_PatientName = PatientName;
-                    this.str_patientId = PatientId;
-                    this.str_Agegender = AgeStr + " - " + GenderStr;
+                    str_PatientName = PatientName;
+                    str_patientId = PatientId;
+                    str_Agegender = AgeStr + " - " + GenderStr;
 
-                    DateOfBirth = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("DOB"))).split(" ")[0];
+                    DateOfBirth = checkNullEmpty(c.getString(c.getColumnIndex("DOB"))).split(" ")[0];
 
                     if (DateOfBirth.contains("1900")) {
                         DateOfBirth = "-";
                     }
 
-                    CountryStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("Country")));
-                    StateStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("State")));
-                    DistrictStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("District")));
-                    Address1Str = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("Address")));
-                    Address2Str = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("Address1")));
-                    PincodeStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("pincode")));
-                    MobileNo1Str = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("phone")));
-                    MobileNo2Str = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("altphone")));
-                    EmailStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("email")));
-                    careTakerDetailsStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("caretaker")));
-                    contactNoStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("crtknum")));
-                    RelationshipStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("relationship")));
-                    BloodGroupStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("bloodgroup")));
-                    policyNameStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("policyname")));
-                    NameOfCompany = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("insurancecompany")));
-                    AmountInsured = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("amountinsured")));
-                    ValidityStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("validity")));
-                    AuthorisedHospitalsStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("inshosp")));
-                    FeeExemptionStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("IsFeeExemp")));
-                    FeeExemptionCategoryStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("FeeExempCateg")));
+                    CountryStr = checkNullEmpty(c.getString(c.getColumnIndex("Country")));
+                    StateStr = checkNullEmpty(c.getString(c.getColumnIndex("State")));
+                    DistrictStr = checkNullEmpty(c.getString(c.getColumnIndex("District")));
+                    Address1Str = checkNullEmpty(c.getString(c.getColumnIndex("Address")));
+                    Address2Str = checkNullEmpty(c.getString(c.getColumnIndex("Address1")));
+                    PincodeStr = checkNullEmpty(c.getString(c.getColumnIndex("pincode")));
+                    MobileNo1Str = checkNullEmpty(c.getString(c.getColumnIndex("phone")));
+                    MobileNo2Str = checkNullEmpty(c.getString(c.getColumnIndex("altphone")));
+                    EmailStr = checkNullEmpty(c.getString(c.getColumnIndex("email")));
+                    careTakerDetailsStr = checkNullEmpty(c.getString(c.getColumnIndex("caretaker")));
+                    contactNoStr = checkNullEmpty(c.getString(c.getColumnIndex("crtknum")));
+                    RelationshipStr = checkNullEmpty(c.getString(c.getColumnIndex("relationship")));
+                    BloodGroupStr = checkNullEmpty(c.getString(c.getColumnIndex("bloodgroup")));
+                    policyNameStr = checkNullEmpty(c.getString(c.getColumnIndex("policyname")));
+                    NameOfCompany = checkNullEmpty(c.getString(c.getColumnIndex("insurancecompany")));
+                    AmountInsured = checkNullEmpty(c.getString(c.getColumnIndex("amountinsured")));
+                    ValidityStr = checkNullEmpty(c.getString(c.getColumnIndex("validity")));
+                    AuthorisedHospitalsStr = checkNullEmpty(c.getString(c.getColumnIndex("inshosp")));
+                    FeeExemptionStr = checkNullEmpty(c.getString(c.getColumnIndex("IsFeeExemp")));
+                    FeeExemptionCategoryStr = checkNullEmpty(c.getString(c.getColumnIndex("FeeExempCateg")));
 
                     if (FeeExemptionCategoryStr.equalsIgnoreCase("0")) {
                         FeeExemptionCategoryStr = "-";
                     }
 
-                    BplCardNoStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("bplCardNo")));
-                    AadharCardNoStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("AadharCardNo")));
-                    FeeExemptionReasonStr = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("FeeExemptionRemarks")));
-                    caste = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("caste")));
-                    Income = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("income")));
-                    referredBy = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("doc_refer_name")));
-                    Occupation = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("occupation")));
-                    FatherName = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("FatherName")));
-                    ProfileImage = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("PC")));
-                    Spouse = Profile_Patient.checkNullEmpty(c.getString(c.getColumnIndex("spouse")));
+                    BplCardNoStr = checkNullEmpty(c.getString(c.getColumnIndex("bplCardNo")));
+                    AadharCardNoStr = checkNullEmpty(c.getString(c.getColumnIndex("AadharCardNo")));
+                    FeeExemptionReasonStr = checkNullEmpty(c.getString(c.getColumnIndex("FeeExemptionRemarks")));
+                    caste = checkNullEmpty(c.getString(c.getColumnIndex("caste")));
+                    Income = checkNullEmpty(c.getString(c.getColumnIndex("income")));
+                    referredBy = checkNullEmpty(c.getString(c.getColumnIndex("doc_refer_name")));
+                    Occupation = checkNullEmpty(c.getString(c.getColumnIndex("occupation")));
+                    FatherName = checkNullEmpty(c.getString(c.getColumnIndex("FatherName")));
+                    ProfileImage = checkNullEmpty(c.getString(c.getColumnIndex("PC")));
+                    Spouse = checkNullEmpty(c.getString(c.getColumnIndex("spouse")));
 
                     //Convert64ToImage(ProfileImage, patient_photo);
                     //Toast.makeText(getActivity(), "URL: "+ ProfileImage , Toast.LENGTH_SHORT).show();
@@ -280,17 +275,17 @@ public class Profile_Patient extends Fragment {
                 "\n" +
                 "        <div class=\"w3-card-4\" style=\"width:100%;\">\n" +
                 "            <header class=\"w3-container w3-blue\">\n" +
-                "                <h4><i class=\"fa fa-user-circle-o\"></i> "+ this.getString(string.txt_patients_details)+"</h4>\n" +
+                "                <h4><i class=\"fa fa-user-circle-o\"></i> "+getString(R.string.txt_patients_details)+"</h4>\n" +
                 "            </header>\n" +
                 "\n" +
                 "            <div class=\"w3-container\">\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-user-md fa-la\" style=\"color:#3d5987;\"></i> <b>"+ this.getString(string.txt_patient_id)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-user-md fa-la\" style=\"color:#3d5987;\"></i> <b>"+ getString(R.string.txt_patient_id)+"</b></h6>\n" +
                 "                        <p>"+PatientId+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-user-md\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_name)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-user-md\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_name)+"</b></h6>\n" +
                 "                        <p>"+PatientName+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
@@ -298,40 +293,40 @@ public class Profile_Patient extends Fragment {
                 "\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-mars-stroke\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_father_name)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-mars-stroke\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_father_name)+"</b></h6>\n" +
                 "                        <p>"+FatherName+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-birthday-cake\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_spouse) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-birthday-cake\" style=\"color: #3d5987;\"></i> <b>"+ getString(R.string.txt_spouse) +"</b></h6>\n" +
                 "                        <p>"+Spouse+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE; \">\n" +
-                "                        <h6><i class=\"fa fa-calendar\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_date_of_birth) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-calendar\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_date_of_birth) +"</b></h6>\n" +
                 "                        <p>"+DateOfBirth+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE; \">\n" +
-                "                        <h6><i class=\"fa fa-graduation-cap\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_age)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-graduation-cap\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_age)+"</b></h6>\n" +
                 "                        <p>"+AgeStr+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-mars-stroke\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_gender)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-mars-stroke\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_gender)+"</b></h6>\n" +
                 "                        <p>"+GenderStr+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff\">\n" +
-                "                        <h6><i class=\"fa fa-registered\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_blood_group)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-registered\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_blood_group)+"</b></h6>\n" +
                 "                        <p>"+BloodGroupStr+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #FDFEFE; \">\n" +
-                "                        <h6><i class=\"fa fa-address-card-o\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_caste)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-address-card-o\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_caste)+"</b></h6>\n" +
                 "                        <p>"+caste+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
@@ -345,17 +340,17 @@ public class Profile_Patient extends Fragment {
                 "\n" +
                 "        <div class=\"w3-card-4\" style=\"width:100%;\">\n" +
                 "            <header class=\"w3-container w3-blue\">\n" +
-                "                <h4><i class=\"fa fa-address-book\"></i> "+ this.getString(string.txt_patients_address)+"</h4>\n" +
+                "                <h4><i class=\"fa fa-address-book\"></i> "+ getString(R.string.txt_patients_address)+"</h4>\n" +
                 "            </header>\n" +
                 "\n" +
                 "            <div class=\"w3-container\">\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-address-card\" style=\"color:#3d5987;\"></i> <b>"+ this.getString(string.txt_address1)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-address-card\" style=\"color:#3d5987;\"></i> <b>"+ getString(R.string.txt_address1)+"</b></h6>\n" +
                 "                        <p>"+Address1Str+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-address-card\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_address2)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-address-card\" style=\"color: #3d5987;\"></i> <b>"+ getString(R.string.txt_address2)+"</b></h6>\n" +
                 "                        <p>"+Address2Str+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
@@ -363,22 +358,22 @@ public class Profile_Patient extends Fragment {
                 "\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-globe\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_state)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-globe\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_state)+"</b></h6>\n" +
                 "                        <p>"+StateStr+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-globe\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_city)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-globe\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_city)+"</b></h6>\n" +
                 "                        <p>"+CityStr+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-globe\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_country)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-globe\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_country)+"</b></h6>\n" +
                 "                        <p>"+CountryStr+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-map-pin\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_pincode)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-map-pin\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_pincode)+"</b></h6>\n" +
                 "                        <p>"+PincodeStr+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
@@ -386,18 +381,18 @@ public class Profile_Patient extends Fragment {
                 "\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-phone\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_mobile_no1)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-phone\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_mobile_no1)+"</b></h6>\n" +
                 "                        <p>"+MobileNo1Str+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-phone\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_mobile_no2)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-phone\" style=\"color: #3d5987;\"></i> <b>"+ getString(R.string.txt_mobile_no2)+"</b></h6>\n" +
                 "                        <p>"+MobileNo2Str+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
                 "                </div>\n" +
                 "                <div class=\"row\">\n" +
                 "                  <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-envelope\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.docemail) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-envelope\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.docemail) +"</b></h6>\n" +
                 "                        <p>"+EmailStr+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
@@ -411,17 +406,17 @@ public class Profile_Patient extends Fragment {
                 "\n" +
                 "        <div class=\"w3-card-4\" style=\"width:100%;\">\n" +
                 "            <header class=\"w3-container w3-blue\">\n" +
-                "                <h4><i class=\"fa fa-user-circle-o\"></i> "+ this.getString(string.txt_care_taker_details) +"</h4>\n" +
+                "                <h4><i class=\"fa fa-user-circle-o\"></i> "+getString(R.string.txt_care_taker_details) +"</h4>\n" +
                 "            </header>\n" +
                 "\n" +
                 "            <div class=\"w3-container\">\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-user\" style=\"color:#3d5987;\"></i> <b>"+ this.getString(string.txt_care_take_dependentname) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-user\" style=\"color:#3d5987;\"></i> <b>"+ getString(R.string.txt_care_take_dependentname) +"</b></h6>\n" +
                 "                        <p>"+careTakerDetailsStr+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-phone\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_contact_number)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-phone\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_contact_number)+"</b></h6>\n" +
                 "                        <p>"+contactNoStr+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
@@ -429,7 +424,7 @@ public class Profile_Patient extends Fragment {
                 "\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-user\" style=\"color:#3d5987;\"></i> <b>"+ this.getString(string.txt_relationship)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-user\" style=\"color:#3d5987;\"></i> <b>"+ getString(R.string.txt_relationship)+"</b></h6>\n" +
                 "                        <p>"+RelationshipStr+"</p>\n" +
                 "\n" +
                 "                    </div>\n" +
@@ -443,17 +438,17 @@ public class Profile_Patient extends Fragment {
                 "\t\t\n" +
                 "\t\t <div class=\"w3-card-4\" style=\"width:100%;\">\n" +
                 "            <header class=\"w3-container w3-blue\">\n" +
-                "                <h4><i class=\"fa fa-user-circle-o\"></i> "+ this.getString(string.txt_insurance_details) +"</h4>\n" +
+                "                <h4><i class=\"fa fa-user-circle-o\"></i> "+ getString(R.string.txt_insurance_details) +"</h4>\n" +
                 "            </header>\n" +
                 "\n" +
                 "            <div class=\"w3-container\">\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-user\" style=\"color:#3d5987;\"></i> <b>"+ this.getString(string.txt_policy_name)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-user\" style=\"color:#3d5987;\"></i> <b>"+getString(R.string.txt_policy_name)+"</b></h6>\n" +
                 "                        <p>"+policyNameStr+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-user\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_nameoftheinsurancecompany) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-user\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_nameoftheinsurancecompany) +"</b></h6>\n" +
                 "                        <p>"+NameOfCompany+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
@@ -462,11 +457,11 @@ public class Profile_Patient extends Fragment {
                 "\t\t\t\t\n" +
                 "\t\t\t\t <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-money\" style=\"color:#3d5987;\"></i> <b>"+ this.getString(string.txt_amount_insured)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-money\" style=\"color:#3d5987;\"></i> <b>"+getString(R.string.txt_amount_insured)+"</b></h6>\n" +
                 "                        <p>"+AmountInsured+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-user\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_validity)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-user\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_validity)+"</b></h6>\n" +
                 "                        <p>"+ValidityStr+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
@@ -476,7 +471,7 @@ public class Profile_Patient extends Fragment {
                 "\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-user\" style=\"color:#3d5987;\"></i> <b>"+ this.getString(string.txt_authorised_hospitals)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-user\" style=\"color:#3d5987;\"></i> <b>"+ getString(R.string.txt_authorised_hospitals)+"</b></h6>\n" +
                 "                        <p>"+AuthorisedHospitalsStr+"</p>\n" +
                 "\n" +
                 "                    </div>\n" +
@@ -492,17 +487,17 @@ public class Profile_Patient extends Fragment {
                 "\t\t\n" +
                 "\t\t <div class=\"w3-card-4\" style=\"width:100%;\">\n" +
                 "            <header class=\"w3-container w3-blue\">\n" +
-                "                <h4><i class=\"fa fa-user-circle-o\"></i> "+ this.getString(string.txt_other_details)+"</h4>\n" +
+                "                <h4><i class=\"fa fa-user-circle-o\"></i> "+getString(R.string.txt_other_details)+"</h4>\n" +
                 "            </header>\n" +
                 "\n" +
                 "            <div class=\"w3-container\">\n" +
                 "                <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-user\" style=\"color:#3d5987;\"></i> <b>"+ this.getString(string.txt_fee_exemption)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-user\" style=\"color:#3d5987;\"></i> <b>"+getString(R.string.txt_fee_exemption)+"</b></h6>\n" +
                 "                        <p>"+FeeExemptionStr+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-user\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_fee_exemption_category) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-user\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_fee_exemption_category) +"</b></h6>\n" +
                 "                        <p>"+FeeExemptionCategoryStr+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
@@ -511,11 +506,11 @@ public class Profile_Patient extends Fragment {
                 "\t\t\t\t\n" +
                 "\t\t\t\t <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-id-card\" style=\"color:#3d5987;\"></i> <b>"+ this.getString(string.txt_bpl_card_no)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-id-card\" style=\"color:#3d5987;\"></i> <b>"+ getString(R.string.txt_bpl_card_no)+"</b></h6>\n" +
                 "                        <p>"+BplCardNoStr+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-id-card\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_aadhar_card_no)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-id-card\" style=\"color: #3d5987;\"></i> <b>"+ getString(R.string.txt_aadhar_card_no)+"</b></h6>\n" +
                 "                        <p>"+AadharCardNoStr+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
@@ -525,7 +520,7 @@ public class Profile_Patient extends Fragment {
                 "\t\t\t\t \n" +
                 "\t\t\t\t  <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color:#FDFEFE;\">\n" +
-                "                        <h6><i class=\"fa fa-money\" style=\"color:#3d5987;\"></i> <b>"+ this.getString(string.txt_income) +"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-money\" style=\"color:#3d5987;\"></i> <b>"+ getString(R.string.txt_income) +"</b></h6>\n" +
                 "                        <p>"+Income+"</p>\n" +
                 "                    </div>\n" +
 
@@ -535,11 +530,11 @@ public class Profile_Patient extends Fragment {
                 "\t\t\t\t\n" +
                 "\t\t\t\t <div class=\"row\">\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-hand-o-right\" style=\"color:#3d5987;\"></i> <b>"+ this.getString(string.txt_occupation)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-hand-o-right\" style=\"color:#3d5987;\"></i> <b>"+getString(R.string.txt_occupation)+"</b></h6>\n" +
                 "                        <p>"+Occupation+"</p>\n" +
                 "                    </div>\n" +
                 "                    <div class=\"column\" style=\"background-color: #edf3ff;\">\n" +
-                "                        <h6><i class=\"fa fa-user\" style=\"color: #3d5987;\"></i> <b>"+ this.getString(string.txt_referred_by)+"</b></h6>\n" +
+                "                        <h6><i class=\"fa fa-user\" style=\"color: #3d5987;\"></i> <b>"+getString(R.string.txt_referred_by)+"</b></h6>\n" +
                 "                        <p>"+referredBy+"</p>\n" +
                 "                    </div>\n" +
                 "\n" +
@@ -973,7 +968,7 @@ public class Profile_Patient extends Fragment {
          * Instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
-            this.mContext = c;
+            mContext = c;
         }
 
         /*
@@ -985,21 +980,21 @@ public class Profile_Patient extends Fragment {
          */
         @JavascriptInterface
         public final void showToast(String toast) {
-            Toast.makeText(this.mContext, toast, Toast.LENGTH_SHORT).show();
+            Toast.makeText(mContext, toast, Toast.LENGTH_SHORT).show();
 
-            this.showDialogAndroid();
+            showDialogAndroid();
         }
 
 
         @JavascriptInterface
         final void showDialogAndroid() {
-            Builder ob = new Builder(this.mContext);
+            AlertDialog.Builder ob = new AlertDialog.Builder(mContext);
 
             ob.setTitle("Title");
             ob.setMessage(" this is the Dialog Message");
-            ob.setNegativeButton("Cancel", (dialogInterface, i) -> Toast.makeText(this.mContext, "Negative button is clicked", Toast.LENGTH_SHORT).show());
+            ob.setNegativeButton("Cancel", (dialogInterface, i) -> Toast.makeText(mContext, "Negative button is clicked", Toast.LENGTH_SHORT).show());
 
-            ob.setPositiveButton("Ok", (dialogInterface, i) -> Toast.makeText(this.mContext, "Positive button is clicked", Toast.LENGTH_SHORT).show());
+            ob.setPositiveButton("Ok", (dialogInterface, i) -> Toast.makeText(mContext, "Positive button is clicked", Toast.LENGTH_SHORT).show());
 
 
             AlertDialog obs = ob.create();

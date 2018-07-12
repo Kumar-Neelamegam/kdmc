@@ -16,7 +16,6 @@
 
 package kdmc_kumar.Utilities_Others.seek.internal.drawable;
 
-import android.R.attr;
 import android.content.res.ColorStateList;
 import android.graphics.Canvas;
 import android.graphics.Color;
@@ -34,12 +33,12 @@ public class AlmostRippleDrawable extends   StateDrawable implements Animatable 
 
     private static final float INACTIVE_SCALE = 0f;
     private static final float ACTIVE_SCALE = 1f;
-    private float mCurrentScale = AlmostRippleDrawable.INACTIVE_SCALE;
-    private final Interpolator mInterpolator;
+    private float mCurrentScale = INACTIVE_SCALE;
+    private Interpolator mInterpolator;
     private long mStartTime;
-    private boolean mReverse;
-    private boolean mRunning;
-    private int mDuration = AlmostRippleDrawable.ANIMATION_DURATION;
+    private boolean mReverse = false;
+    private boolean mRunning = false;
+    private int mDuration = ANIMATION_DURATION;
     private float mAnimationInitialValue;
     //We don't use colors just with our drawable state because of animations
     private int mPressedColor;
@@ -50,20 +49,20 @@ public class AlmostRippleDrawable extends   StateDrawable implements Animatable 
 
     public AlmostRippleDrawable(@NonNull ColorStateList tintStateList) {
         super(tintStateList);
-        this.mInterpolator = new AccelerateDecelerateInterpolator();
-        this.setColor(tintStateList);
+        mInterpolator = new AccelerateDecelerateInterpolator();
+        setColor(tintStateList);
     }
 
     public void setColor(@NonNull ColorStateList tintStateList) {
         int defaultColor = tintStateList.getDefaultColor();
-        this.mFocusedColor = tintStateList.getColorForState(new int[]{attr.state_enabled, attr.state_focused}, defaultColor);
-        this.mPressedColor = tintStateList.getColorForState(new int[]{attr.state_enabled, attr.state_pressed}, defaultColor);
-        this.mDisabledColor = tintStateList.getColorForState(new int[]{-attr.state_enabled}, defaultColor);
+        mFocusedColor = tintStateList.getColorForState(new int[]{android.R.attr.state_enabled, android.R.attr.state_focused}, defaultColor);
+        mPressedColor = tintStateList.getColorForState(new int[]{android.R.attr.state_enabled, android.R.attr.state_pressed}, defaultColor);
+        mDisabledColor = tintStateList.getColorForState(new int[]{-android.R.attr.state_enabled}, defaultColor);
 
         //The ripple should be partially transparent
-        this.mFocusedColor = AlmostRippleDrawable.getModulatedAlphaColor(130, this.mFocusedColor);
-        this.mPressedColor = AlmostRippleDrawable.getModulatedAlphaColor(130, this.mPressedColor);
-        this.mDisabledColor = AlmostRippleDrawable.getModulatedAlphaColor(130, this.mDisabledColor);
+        mFocusedColor = getModulatedAlphaColor(130, mFocusedColor);
+        mPressedColor = getModulatedAlphaColor(130, mPressedColor);
+        mDisabledColor = getModulatedAlphaColor(130, mDisabledColor);
     }
 
     private static int getModulatedAlphaColor(int alphaValue, int originalColor) {
@@ -75,22 +74,22 @@ public class AlmostRippleDrawable extends   StateDrawable implements Animatable 
 
     @Override
     public void doDraw(Canvas canvas, Paint paint) {
-        Rect bounds = this.getBounds();
+        Rect bounds = getBounds();
         int size = Math.min(bounds.width(), bounds.height());
-        float scale = this.mCurrentScale;
-        int rippleColor = this.mRippleColor;
-        int bgColor = this.mRippleBgColor;
+        float scale = mCurrentScale;
+        int rippleColor = mRippleColor;
+        int bgColor = mRippleBgColor;
         float radius = (size / 2);
         float radiusAnimated = radius * scale;
-        if (scale > AlmostRippleDrawable.INACTIVE_SCALE) {
+        if (scale > INACTIVE_SCALE) {
             if (bgColor != 0) {
                 paint.setColor(bgColor);
-                paint.setAlpha(this.decreasedAlpha(Color.alpha(bgColor)));
+                paint.setAlpha(decreasedAlpha(Color.alpha(bgColor)));
                 canvas.drawCircle(bounds.centerX(), bounds.centerY(), radius, paint);
             }
             if (rippleColor != 0) {
                 paint.setColor(rippleColor);
-                paint.setAlpha(this.modulateAlpha(Color.alpha(rippleColor)));
+                paint.setAlpha(modulateAlpha(Color.alpha(rippleColor)));
                 canvas.drawCircle(bounds.centerX(), bounds.centerY(), radiusAnimated, paint);
             }
         }
@@ -103,10 +102,10 @@ public class AlmostRippleDrawable extends   StateDrawable implements Animatable 
 
     @Override
     public boolean setState(int[] stateSet) {
-        int[] oldState = this.getState();
+        int[] oldState = getState();
         boolean oldPressed = false;
         for (int i : oldState) {
-            if (i == attr.state_pressed) {
+            if (i == android.R.attr.state_pressed) {
                 oldPressed = true;
             }
         }
@@ -115,74 +114,74 @@ public class AlmostRippleDrawable extends   StateDrawable implements Animatable 
         boolean pressed = false;
         boolean disabled = true;
         for (int i : stateSet) {
-            if (i == attr.state_focused) {
+            if (i == android.R.attr.state_focused) {
                 focused = true;
-            } else if (i == attr.state_pressed) {
+            } else if (i == android.R.attr.state_pressed) {
                 pressed = true;
-            } else if (i == attr.state_enabled) {
+            } else if (i == android.R.attr.state_enabled) {
                 disabled = false;
             }
         }
 
         if (disabled) {
-            this.unscheduleSelf(this.mUpdater);
-            this.mRippleColor = this.mDisabledColor;
-            this.mRippleBgColor = 0;
-            this.mCurrentScale = AlmostRippleDrawable.ACTIVE_SCALE / 2;
-            this.invalidateSelf();
+            unscheduleSelf(mUpdater);
+            mRippleColor = mDisabledColor;
+            mRippleBgColor = 0;
+            mCurrentScale = ACTIVE_SCALE / 2;
+            invalidateSelf();
         } else {
             if (pressed) {
-                this.animateToPressed();
-                this.mRippleColor = this.mRippleBgColor = this.mPressedColor;
+                animateToPressed();
+                mRippleColor = mRippleBgColor = mPressedColor;
             } else if (oldPressed) {
-                this.mRippleColor = this.mRippleBgColor = this.mPressedColor;
-                this.animateToNormal();
+                mRippleColor = mRippleBgColor = mPressedColor;
+                animateToNormal();
             } else if (focused) {
-                this.mRippleColor = this.mFocusedColor;
-                this.mRippleBgColor = 0;
-                this.mCurrentScale = AlmostRippleDrawable.ACTIVE_SCALE;
-                this.invalidateSelf();
+                mRippleColor = mFocusedColor;
+                mRippleBgColor = 0;
+                mCurrentScale = ACTIVE_SCALE;
+                invalidateSelf();
             } else {
-                this.mRippleColor = 0;
-                this.mRippleBgColor = 0;
-                this.mCurrentScale = AlmostRippleDrawable.INACTIVE_SCALE;
-                this.invalidateSelf();
+                mRippleColor = 0;
+                mRippleBgColor = 0;
+                mCurrentScale = INACTIVE_SCALE;
+                invalidateSelf();
             }
         }
         return true;
     }
 
     public void animateToPressed() {
-        this.unscheduleSelf(this.mUpdater);
-        if (this.mCurrentScale < AlmostRippleDrawable.ACTIVE_SCALE) {
-            this.mReverse = false;
-            this.mRunning = true;
-            this.mAnimationInitialValue = this.mCurrentScale;
-            float durationFactor = 1f - ((this.mAnimationInitialValue - AlmostRippleDrawable.INACTIVE_SCALE) / (AlmostRippleDrawable.ACTIVE_SCALE - AlmostRippleDrawable.INACTIVE_SCALE));
-            this.mDuration = (int) (AlmostRippleDrawable.ANIMATION_DURATION * durationFactor);
-            this.mStartTime = SystemClock.uptimeMillis();
-            this.scheduleSelf(this.mUpdater, this.mStartTime + AlmostRippleDrawable.FRAME_DURATION);
+        unscheduleSelf(mUpdater);
+        if (mCurrentScale < ACTIVE_SCALE) {
+            mReverse = false;
+            mRunning = true;
+            mAnimationInitialValue = mCurrentScale;
+            float durationFactor = 1f - ((mAnimationInitialValue - INACTIVE_SCALE) / (ACTIVE_SCALE - INACTIVE_SCALE));
+            mDuration = (int) (ANIMATION_DURATION * durationFactor);
+            mStartTime = SystemClock.uptimeMillis();
+            scheduleSelf(mUpdater, mStartTime + FRAME_DURATION);
         }
     }
 
     public void animateToNormal() {
-        this.unscheduleSelf(this.mUpdater);
-        if (this.mCurrentScale > AlmostRippleDrawable.INACTIVE_SCALE) {
-            this.mReverse = true;
-            this.mRunning = true;
-            this.mAnimationInitialValue = this.mCurrentScale;
-            float durationFactor = 1f - ((this.mAnimationInitialValue - AlmostRippleDrawable.ACTIVE_SCALE) / (AlmostRippleDrawable.INACTIVE_SCALE - AlmostRippleDrawable.ACTIVE_SCALE));
-            this.mDuration = (int) (AlmostRippleDrawable.ANIMATION_DURATION * durationFactor);
-            this.mStartTime = SystemClock.uptimeMillis();
-            this.scheduleSelf(this.mUpdater, this.mStartTime + AlmostRippleDrawable.FRAME_DURATION);
+        unscheduleSelf(mUpdater);
+        if (mCurrentScale > INACTIVE_SCALE) {
+            mReverse = true;
+            mRunning = true;
+            mAnimationInitialValue = mCurrentScale;
+            float durationFactor = 1f - ((mAnimationInitialValue - ACTIVE_SCALE) / (INACTIVE_SCALE - ACTIVE_SCALE));
+            mDuration = (int) (ANIMATION_DURATION * durationFactor);
+            mStartTime = SystemClock.uptimeMillis();
+            scheduleSelf(mUpdater, mStartTime + FRAME_DURATION);
         }
     }
 
     private void updateAnimation(float factor) {
-        float initial = this.mAnimationInitialValue;
-        float destination = this.mReverse ? AlmostRippleDrawable.INACTIVE_SCALE : AlmostRippleDrawable.ACTIVE_SCALE;
-        this.mCurrentScale = initial + (destination - initial) * factor;
-        this.invalidateSelf();
+        float initial = mAnimationInitialValue;
+        float destination = mReverse ? INACTIVE_SCALE : ACTIVE_SCALE;
+        mCurrentScale = initial + (destination - initial) * factor;
+        invalidateSelf();
     }
 
     private final Runnable mUpdater = new Runnable() {
@@ -191,15 +190,15 @@ public class AlmostRippleDrawable extends   StateDrawable implements Animatable 
         public void run() {
 
             long currentTime = SystemClock.uptimeMillis();
-            long diff = currentTime - AlmostRippleDrawable.this.mStartTime;
-            if (diff < AlmostRippleDrawable.this.mDuration) {
-                float interpolation = AlmostRippleDrawable.this.mInterpolator.getInterpolation((float) diff / (float) AlmostRippleDrawable.this.mDuration);
-                AlmostRippleDrawable.this.scheduleSelf(AlmostRippleDrawable.this.mUpdater, currentTime + AlmostRippleDrawable.FRAME_DURATION);
-                AlmostRippleDrawable.this.updateAnimation(interpolation);
+            long diff = currentTime - mStartTime;
+            if (diff < mDuration) {
+                float interpolation = mInterpolator.getInterpolation((float) diff / (float) mDuration);
+                scheduleSelf(mUpdater, currentTime + FRAME_DURATION);
+                updateAnimation(interpolation);
             } else {
-                AlmostRippleDrawable.this.unscheduleSelf(AlmostRippleDrawable.this.mUpdater);
-                AlmostRippleDrawable.this.mRunning = false;
-                AlmostRippleDrawable.this.updateAnimation(1f);
+                unscheduleSelf(mUpdater);
+                mRunning = false;
+                updateAnimation(1f);
             }
         }
     };
@@ -216,6 +215,6 @@ public class AlmostRippleDrawable extends   StateDrawable implements Animatable 
 
     @Override
     public boolean isRunning() {
-        return this.mRunning;
+        return mRunning;
     }
 }

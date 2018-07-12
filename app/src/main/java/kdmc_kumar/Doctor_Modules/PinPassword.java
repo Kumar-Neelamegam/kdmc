@@ -8,22 +8,14 @@ import android.util.Base64;
 import android.util.Log;
 import android.view.Window;
 import android.view.WindowManager;
-import android.view.WindowManager.LayoutParams;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.andrognito.pinlockview.IndicatorDots;
-import com.andrognito.pinlockview.IndicatorDots.IndicatorType;
 import com.andrognito.pinlockview.PinLockListener;
 import com.andrognito.pinlockview.PinLockView;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.anim;
-import displ.mobydocmarathi.com.R.color;
-import displ.mobydocmarathi.com.R.drawable;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
@@ -32,11 +24,11 @@ import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
 public class PinPassword extends AppCompatActivity {
 
     private static final String TAG = "PinLockView";
-    private TextView profilename;
-    private ImageView prfileimage;
-    private ImageView switch_login;
-    private PinLockView mPinLockView;
-    private IndicatorDots mIndicatorDots;
+    private TextView profilename = null;
+    private ImageView prfileimage = null;
+    private ImageView switch_login = null;
+    private PinLockView mPinLockView = null;
+    private IndicatorDots mIndicatorDots = null;
 
     public PinPassword() {
     }
@@ -44,31 +36,31 @@ public class PinPassword extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.requestWindowFeature(Window.FEATURE_NO_TITLE);
-        this.getWindow().setFlags(LayoutParams.FLAG_FULLSCREEN,
-                LayoutParams.FLAG_FULLSCREEN);
-        this.setContentView(layout.activity_pin_password);
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        setContentView(R.layout.activity_pin_password);
 
 
-        this.switch_login = this.findViewById(id.switch_login);
-        this.switch_login.setOnClickListener(view -> {
+        switch_login = findViewById(R.id.switch_login);
+        switch_login.setOnClickListener(view -> {
 
-            finish();
+            PinPassword.this.finish();
             BaseConfig.Assistant_Task = "False";
-            Intent intent = new Intent(this, Login.class);
+            Intent intent = new Intent(PinPassword.this, Login.class);
             intent.putExtra("ALTERNATIVE", "TRUE");
-            this.startActivityForResult(intent, 500);
-            this.overridePendingTransition(anim.slide_in_right, anim.slide_out_left);
+            startActivityForResult(intent, 500);
+            overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
 
         });
 
-        this.mPinLockView = this.findViewById(id.pin_lock_view);
-        this.mIndicatorDots = this.findViewById(id.indicator_dots);
+        mPinLockView = findViewById(R.id.pin_lock_view);
+        mIndicatorDots = findViewById(R.id.indicator_dots);
 
-        this.mPinLockView.attachIndicatorDots(this.mIndicatorDots);
+        mPinLockView.attachIndicatorDots(mIndicatorDots);
 
-        String password = this.getIntent().getExtras().getString("PINNUMBER");
+        String password = getIntent().getExtras().getString("PINNUMBER");
 
         String DecryptPin = new String(Base64.decode(password, Base64.DEFAULT));
 
@@ -77,7 +69,7 @@ public class PinPassword extends AppCompatActivity {
         PinLockListener mPinLockListener = new PinLockListener() {
             @Override
             public void onComplete(String pin) {
-                Log.d(PinPassword.TAG, "Pin complete: " + pin);
+                Log.d(TAG, "Pin complete: " + pin);
 
 
                 // TODO: 7/20/2017 Pin 4 is Entered to check is valid or not
@@ -86,11 +78,11 @@ public class PinPassword extends AppCompatActivity {
                     //Sucess
 
 
-                    finish();
+                    PinPassword.this.finish();
                     BaseConfig.Assistant_Task = "False";
                     Intent intent = new Intent(PinPassword.this, Dashboard_NavigationMenu.class);
-                    PinPassword.this.startActivityForResult(intent, 500);
-                    PinPassword.this.overridePendingTransition(anim.slide_in_right, anim.slide_out_left);
+                    startActivityForResult(intent, 500);
+                    overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                         BaseConfig.StartWebservice_Import(PinPassword.this,2);
                         BaseConfig.StartWebservice_Export(PinPassword.this,2);
@@ -98,13 +90,13 @@ public class PinPassword extends AppCompatActivity {
                 } else {
 
                     new CustomKDMCDialog(PinPassword.this)
-                            .setLayoutColor(color.orange_500)
-                            .setImage(drawable.ic_warning_black_24dp)
-                            .setTitle(getString(string.warning))
+                            .setLayoutColor(R.color.orange_500)
+                            .setImage(R.drawable.ic_warning_black_24dp)
+                            .setTitle(PinPassword.this.getString(R.string.warning))
                             .setDescription("Pin Number is incorrect Please Try again..")
-                            .setPossitiveButtonTitle(getString(string.ok));
+                            .setPossitiveButtonTitle(PinPassword.this.getString(R.string.ok));
 
-                    PinPassword.this.mIndicatorDots.requestFocus();
+                    mIndicatorDots.requestFocus();
 
 
                 }
@@ -114,34 +106,34 @@ public class PinPassword extends AppCompatActivity {
 
             @Override
             public void onEmpty() {
-                Log.d(PinPassword.TAG, "Pin empty");
+                Log.d(TAG, "Pin empty");
             }
 
             @Override
             public void onPinChange(int pinLength, String intermediatePin) {
-                Log.d(PinPassword.TAG, "Pin changed, new length " + pinLength + " with intermediate pin " + intermediatePin);
+                Log.d(TAG, "Pin changed, new length " + pinLength + " with intermediate pin " + intermediatePin);
             }
         };
 
 
-        this.mPinLockView.setPinLockListener(mPinLockListener);
+        mPinLockView.setPinLockListener(mPinLockListener);
 
-        this.profilename = this.findViewById(id.profile_name);
-        this.prfileimage = this.findViewById(id.profile_image);
+        profilename = findViewById(R.id.profile_name);
+        prfileimage = findViewById(R.id.profile_image);
 
 
         //mPinLockView.setCustomKeySet(new int[]{2, 3, 1, 5, 9, 6, 7, 0, 8, 4});
         //mPinLockView.enableLayoutShuffling();
 
         //PinNumber length
-        this.mPinLockView.setPinLength(4);
+        mPinLockView.setPinLength(4);
 
         //Loading Details
-        this.LoadDoctorInfo(this.profilename, this.prfileimage);
+        LoadDoctorInfo(profilename, prfileimage);
 
-        this.mPinLockView.setTextColor(ContextCompat.getColor(this, color.white));
+        mPinLockView.setTextColor(ContextCompat.getColor(this, R.color.white));
 
-        this.mIndicatorDots.setIndicatorType(IndicatorType.FILL_WITH_ANIMATION);
+        mIndicatorDots.setIndicatorType(IndicatorDots.IndicatorType.FILL_WITH_ANIMATION);
     }
 
 
@@ -160,7 +152,7 @@ public class PinPassword extends AppCompatActivity {
 
             //Log.e("LoadDoctorInfo: ", Doctor_Name);
 
-            WelcomeTitle.setText(this.getString(string.welcome) + " - " + Doctor_Name);
+            WelcomeTitle.setText(getString(R.string.welcome) + " - " + Doctor_Name);
 
 
             try {

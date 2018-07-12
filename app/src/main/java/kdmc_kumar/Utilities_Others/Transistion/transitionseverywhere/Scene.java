@@ -23,7 +23,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
 
 /**
  * A scene represents the collection of values that various properties in the
@@ -36,7 +35,7 @@ public final class Scene {
 
     private Context mContext;
     private int mLayoutId = -1;
-    private final ViewGroup mSceneRoot;
+    private ViewGroup mSceneRoot;
     private View mLayout; // alternative to layoutId
     Runnable mEnterAction, mExitAction;
 
@@ -55,10 +54,10 @@ public final class Scene {
      * @return
      */
     public static Scene getSceneForLayout(ViewGroup sceneRoot, int layoutId, Context context) {
-        SparseArray<Scene> scenes = (SparseArray<Scene>) sceneRoot.getTag(id.scene_layoutid_cache);
+        SparseArray<Scene> scenes = (SparseArray<Scene>) sceneRoot.getTag(R.id.scene_layoutid_cache);
         if (scenes == null) {
             scenes = new SparseArray<Scene>();
-            sceneRoot.setTag(id.scene_layoutid_cache, scenes);
+            sceneRoot.setTag(R.id.scene_layoutid_cache, scenes);
         }
         Scene scene = scenes.get(layoutId);
         if (scene != null) {
@@ -81,7 +80,7 @@ public final class Scene {
      *                  and transitions will take place.
      */
     public Scene(ViewGroup sceneRoot) {
-        this.mSceneRoot = sceneRoot;
+        mSceneRoot = sceneRoot;
     }
 
     /**
@@ -100,9 +99,9 @@ public final class Scene {
      *                  the layout resource.
      */
     private Scene(ViewGroup sceneRoot, int layoutId, Context context) {
-        this.mContext = context;
-        this.mSceneRoot = sceneRoot;
-        this.mLayoutId = layoutId;
+        mContext = context;
+        mSceneRoot = sceneRoot;
+        mLayoutId = layoutId;
     }
 
     /**
@@ -116,16 +115,16 @@ public final class Scene {
      *                  of sceneRoot when this scene is entered.
      */
     public Scene(ViewGroup sceneRoot, View layout) {
-        this.mSceneRoot = sceneRoot;
-        this.mLayout = layout;
+        mSceneRoot = sceneRoot;
+        mLayout = layout;
     }
 
     /**
      * You can use {@link #Scene(ViewGroup, View)}.
      */
     public Scene(ViewGroup sceneRoot, ViewGroup layout) {
-        this.mSceneRoot = sceneRoot;
-        this.mLayout = layout;
+        mSceneRoot = sceneRoot;
+        mLayout = layout;
     }
 
     /**
@@ -136,7 +135,7 @@ public final class Scene {
      * @return The root of the view hierarchy affected by this scene.
      */
     public ViewGroup getSceneRoot() {
-        return this.mSceneRoot;
+        return mSceneRoot;
     }
 
     /**
@@ -147,9 +146,9 @@ public final class Scene {
      * if there is one.
      */
     public void exit() {
-        if (Scene.getCurrentScene(this.mSceneRoot) == this) {
-            if (this.mExitAction != null) {
-                this.mExitAction.run();
+        if (getCurrentScene(mSceneRoot) == this) {
+            if (mExitAction != null) {
+                mExitAction.run();
             }
         }
     }
@@ -167,23 +166,23 @@ public final class Scene {
     public void enter() {
 
         // Apply layout change, if any
-        if (this.mLayoutId > 0 || this.mLayout != null) {
+        if (mLayoutId > 0 || mLayout != null) {
             // empty out parent container before adding to it
-            this.getSceneRoot().removeAllViews();
+            getSceneRoot().removeAllViews();
 
-            if (this.mLayoutId > 0) {
-                LayoutInflater.from(this.mContext).inflate(this.mLayoutId, this.mSceneRoot);
+            if (mLayoutId > 0) {
+                LayoutInflater.from(mContext).inflate(mLayoutId, mSceneRoot);
             } else {
-                this.mSceneRoot.addView(this.mLayout);
+                mSceneRoot.addView(mLayout);
             }
         }
 
         // Notify next scene that it is entering. Subclasses may override to configure scene.
-        if (this.mEnterAction != null) {
-            this.mEnterAction.run();
+        if (mEnterAction != null) {
+            mEnterAction.run();
         }
 
-        Scene.setCurrentScene(this.mSceneRoot, this);
+        setCurrentScene(mSceneRoot, this);
     }
 
     /**
@@ -195,7 +194,7 @@ public final class Scene {
      * @param view The view on which the current scene is being set
      */
     static void setCurrentScene(View view, Scene scene) {
-        view.setTag(id.current_scene, scene);
+        view.setTag(R.id.current_scene, scene);
     }
 
     /**
@@ -206,7 +205,7 @@ public final class Scene {
      * no Scene is currently set.
      */
     public static Scene getCurrentScene(View view) {
-        return (Scene) view.getTag(id.current_scene);
+        return (Scene) view.getTag(R.id.current_scene);
     }
 
     /**
@@ -228,7 +227,7 @@ public final class Scene {
      * @see Scene#Scene(ViewGroup, ViewGroup)
      */
     public void setEnterAction(Runnable action) {
-        this.mEnterAction = action;
+        mEnterAction = action;
     }
 
     /**
@@ -249,7 +248,7 @@ public final class Scene {
      * @see Scene#Scene(ViewGroup, ViewGroup)
      */
     public void setExitAction(Runnable action) {
-        this.mExitAction = action;
+        mExitAction = action;
     }
 
 
@@ -265,6 +264,6 @@ public final class Scene {
      * arbitrarily is unknown and should be avoided.
      */
     boolean isCreatedFromLayoutResource() {
-        return (this.mLayoutId > 0);
+        return (mLayoutId > 0);
     }
 }

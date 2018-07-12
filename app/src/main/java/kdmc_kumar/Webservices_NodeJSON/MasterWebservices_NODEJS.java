@@ -72,11 +72,11 @@ public class MasterWebservices_NODEJS {
     @SuppressLint("LongLogTag")
     public void ExecuteAll() {
 
-        if (BaseConfig.CheckNetwork(this.ctx)) {
+        if (BaseConfig.CheckNetwork(ctx)) {
 
             try {
 
-                if (MasterWebservices_NODEJS.CheckNodeServer()) {
+                if (CheckNodeServer()) {
 
                     Log.e("###########", "################");
                     Log.e("MobyDoctor BackGround", "Thread Master Service running 2");
@@ -84,42 +84,42 @@ public class MasterWebservices_NODEJS {
                     Log.e("MobyDoctor BackGround", "Thread Master Service running 2");
                     Log.e("###########", "################");
 
-                    this.ImportPharamcy();
+                    ImportPharamcy();
 
-                    this.Mstr_diagonisdetails();
-                    this.Mstr_Symptoms();
+                    Mstr_diagonisdetails();
+                    Mstr_Symptoms();
 
-                    this.Mstr_current_patient_list();
-                    this.Mstr_MultipleHospital();
+                    Mstr_current_patient_list();
+                    Mstr_MultipleHospital();
 
-                    this.Mstr_Academic();
-                    this.Mstr_Special();
-                    this.Mstr_xray();
-                    this.Mstr_RoomType();
-                    this.Mstr_FoodItems();
-                    this.Mstr_DietSession();
-                    this.Mstr_ward();
-                    this.Mstr_room();
-                    this.Mstr_bed();
-                    this.Mstr_WardCategory();
-                    this.Mstr_listofvaccine();
+                    Mstr_Academic();
+                    Mstr_Special();
+                    Mstr_xray();
+                    Mstr_RoomType();
+                    Mstr_FoodItems();
+                    Mstr_DietSession();
+                    Mstr_ward();
+                    Mstr_room();
+                    Mstr_bed();
+                    Mstr_WardCategory();
+                    Mstr_listofvaccine();
                     //Mstr_Room_avaliability();
-                    this.Mstr_diet_entry();
+                    Mstr_diet_entry();
 
-                    this.Mstr_Allergy();
-                    this.Mstr_MedicalHistory();
-                    this.Mstr_FamilyHistory();
-                    this.Mstr_HereditaryDiseases();
+                    Mstr_Allergy();
+                    Mstr_MedicalHistory();
+                    Mstr_FamilyHistory();
+                    Mstr_HereditaryDiseases();
 
                     //New masters
-                    this.Mstr_Gender();
-                    this.Mstr_BloodGroup();
-                    this.Mstr_MaritalStatus();
-                    this.Mstr_Prefix();
-                    this.Mstr_FeeExemptionCategory();
-                    this.Mstr_Caste();
-                    this.Mstr_Occupation();
-                    this.Mstr_Signs();
+                    Mstr_Gender();
+                    Mstr_BloodGroup();
+                    Mstr_MaritalStatus();
+                    Mstr_Prefix();
+                    Mstr_FeeExemptionCategory();
+                    Mstr_Caste();
+                    Mstr_Occupation();
+                    Mstr_Signs();
 
 
                 }
@@ -138,7 +138,7 @@ public class MasterWebservices_NODEJS {
         try {
             GetMaster postTableData;
             // Instantiate a controller
-            MagnetMobileClient magnetClient = MagnetMobileClient.getInstance(this.ctx);
+            MagnetMobileClient magnetClient = MagnetMobileClient.getInstance(ctx);
             GetMasterFactory controllerFactory = new GetMasterFactory(magnetClient);
             postTableData = controllerFactory.obtainInstance();
             String contentType = "application/json";
@@ -172,7 +172,7 @@ public class MasterWebservices_NODEJS {
         try {
             NewImportMaster postTableData;
             // Instantiate a controller
-            MagnetMobileClient magnetClient = MagnetMobileClient.getInstance(this.ctx);
+            MagnetMobileClient magnetClient = MagnetMobileClient.getInstance(ctx);
             NewImportMasterFactory controllerFactory = new NewImportMasterFactory(magnetClient);
             postTableData = controllerFactory.obtainInstance();
             String contentType = "application/json";
@@ -247,7 +247,7 @@ public class MasterWebservices_NODEJS {
         String tableId = "ImportPharamcy";
         String isUpdateMax = str;
 
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
 
         ContentValues values1;
@@ -317,7 +317,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from diagonisdetails";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -340,7 +340,7 @@ public class MasterWebservices_NODEJS {
 
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
 
         try {
@@ -349,29 +349,29 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("ProvdiagID"));
-                    this.Medicine = String.valueOf(objJson.getString("DiagnosisName"));
-                    this.IsActive = objJson.getString("IsActive");
+                    ServerId = String.valueOf(objJson.getString("ProvdiagID"));
+                    Medicine = String.valueOf(objJson.getString("DiagnosisName"));
+                    IsActive = objJson.getString("IsActive");
 
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
-                    values1.put("diagnosisdata", this.Medicine);
-                    values1.put("isactive", this.IsActive);
+                    values1.put("ServerId", ServerId);
+                    values1.put("diagnosisdata", Medicine);
+                    values1.put("isactive", IsActive);
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from diagonisdetails where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from diagonisdetails where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("diagonisdetails", null, values1);
                     } else {
-                        db.update("diagonisdetails", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("diagonisdetails", values1, "ServerId='" + ServerId + "'", null);
                     }
 
 
@@ -391,7 +391,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from trmntfor";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -412,7 +412,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -420,29 +420,29 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
-                    this.Medicine = String.valueOf(objJson.getString("treatmentfor"));
-                    this.IsActive = objJson.getString("IsActive");
+                    ServerId = String.valueOf(objJson.getString("Id"));
+                    Medicine = String.valueOf(objJson.getString("treatmentfor"));
+                    IsActive = objJson.getString("IsActive");
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
-                    values1.put("treatmentfor", this.Medicine);
-                    values1.put("isactive", this.IsActive);
+                    values1.put("ServerId", ServerId);
+                    values1.put("treatmentfor", Medicine);
+                    values1.put("isactive", IsActive);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from trmntfor where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from trmntfor where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("trmntfor", null, values1);
                     } else {
-                        db.update("trmntfor", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("trmntfor", values1, "ServerId='" + ServerId + "'", null);
                     }
 
                 }
@@ -461,7 +461,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(IsUpdate),'0') as IsUpdateMax from current_patient_list";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -483,7 +483,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -491,7 +491,7 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -542,7 +542,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_MultipleHospital";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -564,7 +564,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -572,14 +572,14 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
+                    ServerId = String.valueOf(objJson.getString("Id"));
                     String Hospital_Name = String.valueOf(objJson.getString("Hospital_Name"));
                     String Hospital_Code = String.valueOf(objJson.getString("Hospital_Code"));
                     String Email = String.valueOf(objJson.getString("Email"));
@@ -594,15 +594,15 @@ public class MasterWebservices_NODEJS {
                     String Pincode = String.valueOf(objJson.getString("Pincode"));
                     String Address = String.valueOf(objJson.getString("Address"));
                     String Hospital_Logo = String.valueOf(objJson.getString("Hospital_Logo"));
-                    this.IsActive = String.valueOf(objJson.getString("IsActive"));
+                    IsActive = String.valueOf(objJson.getString("IsActive"));
                     String HID = String.valueOf(objJson.getString("HID"));
-                    this.IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
+                    IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
 
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
-                    values1.put("IsUpdate", this.IsUpdate);
-                    values1.put("IsActive", this.IsActive);
+                    values1.put("ServerId", ServerId);
+                    values1.put("IsUpdate", IsUpdate);
+                    values1.put("IsActive", IsActive);
                     values1.put("Hospital_Name", Hospital_Name);
                     values1.put("Hospital_Code", Hospital_Code);
                     values1.put("Phone", Phone);
@@ -621,12 +621,12 @@ public class MasterWebservices_NODEJS {
                     values1.put("Email", Email);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_MultipleHospital where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_MultipleHospital where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("Mstr_MultipleHospital", null, values1);
                     } else {
-                        db.update("Mstr_MultipleHospital", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_MultipleHospital", values1, "ServerId='" + ServerId + "'", null);
                     }
 
                 }
@@ -645,7 +645,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Academic";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -667,7 +667,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -675,39 +675,39 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
+                    ServerId = String.valueOf(objJson.getString("Id"));
                     String Academic = String.valueOf(objJson.getString("Academic"));
-                    this.IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
+                    IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
 
 
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true")) {
-                        this.IsActive = "1";
+                    if (IsActive.equalsIgnoreCase("true")) {
+                        IsActive = "1";
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("Academic", Academic);
-                    values1.put("IsUpdate", this.IsUpdate);
-                    values1.put("IsActive", this.IsActive);
+                    values1.put("IsUpdate", IsUpdate);
+                    values1.put("IsActive", IsActive);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_Academic where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_Academic where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("Mstr_Academic", null, values1);
                     } else {
-                        db.update("Mstr_Academic", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_Academic", values1, "ServerId='" + ServerId + "'", null);
                     }
 
 
@@ -726,7 +726,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Special";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -748,7 +748,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -756,39 +756,39 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
+                    ServerId = String.valueOf(objJson.getString("Id"));
                     String specialization = String.valueOf(objJson.getString("specialization"));
-                    this.IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
+                    IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
 
 
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true")) {
-                        this.IsActive = "1";
+                    if (IsActive.equalsIgnoreCase("true")) {
+                        IsActive = "1";
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("specialization", specialization);
-                    values1.put("IsUpdate", this.IsUpdate);
-                    values1.put("IsActive", this.IsActive);
+                    values1.put("IsUpdate", IsUpdate);
+                    values1.put("IsActive", IsActive);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_Special where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_Special where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("Mstr_Special", null, values1);
                     } else {
-                        db.update("Mstr_Special", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_Special", values1, "ServerId='" + ServerId + "'", null);
                     }
 
 
@@ -807,7 +807,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from xray_mstr";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -828,7 +828,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -836,41 +836,41 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("id"));
-                    this.IsUpdate = String.valueOf(objJson.getString("Isupdate"));
+                    ServerId = String.valueOf(objJson.getString("id"));
+                    IsUpdate = String.valueOf(objJson.getString("Isupdate"));
                     String xraydetail = String.valueOf(objJson.getString("xraydetail"));
 
 
-                    this.IsActive = objJson.getString("IsActive");
-                    if (this.IsActive.equalsIgnoreCase("1")) {
-                        this.IsActive = "1";
+                    IsActive = objJson.getString("IsActive");
+                    if (IsActive.equalsIgnoreCase("1")) {
+                        IsActive = "1";
                     } else {
 
-                        this.IsActive = "0";
+                        IsActive = "0";
 
                     }
 
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
-                    values1.put("IsUpdate", this.IsUpdate);
-                    values1.put("IsActive", this.IsActive);
+                    values1.put("ServerId", ServerId);
+                    values1.put("IsUpdate", IsUpdate);
+                    values1.put("IsActive", IsActive);
                     values1.put("xraydetail", xraydetail);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from xray_mstr where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from xray_mstr where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("xray_mstr", null, values1);
                     } else {
-                        db.update("xray_mstr", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("xray_mstr", values1, "ServerId='" + ServerId + "'", null);
                     }
 
                 }
@@ -887,7 +887,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_RoomType";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -909,7 +909,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -917,40 +917,40 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Roomtypeid"));
-                    this.IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
+                    ServerId = String.valueOf(objJson.getString("Roomtypeid"));
+                    IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
                     String roomName = String.valueOf(objJson.getString("Roomtypename"));
 
 
                     String e = objJson.getString("IsActive");
                     if (e.equalsIgnoreCase("true")) {
-                        this.IsActive = "1";
+                        IsActive = "1";
                     } else {
 
-                        this.IsActive = "0";
+                        IsActive = "0";
 
                     }
 
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
-                    values1.put("IsUpdate", this.IsUpdate);
-                    values1.put("IsActive", this.IsActive);
+                    values1.put("ServerId", ServerId);
+                    values1.put("IsUpdate", IsUpdate);
+                    values1.put("IsActive", IsActive);
                     values1.put("roomt_type_name", roomName);
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_RoomType where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_RoomType where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("Mstr_RoomType", null, values1);
                     } else {
-                        db.update("Mstr_RoomType", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_RoomType", values1, "ServerId='" + ServerId + "'", null);
                     }
 
 
@@ -969,7 +969,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_FoodItems";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -991,7 +991,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -999,33 +999,33 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Dietitemid"));
+                    ServerId = String.valueOf(objJson.getString("Dietitemid"));
                     String DietName = String.valueOf(objJson.getString("DietName"));
                     String Calories = objJson.getString("Calories");
-                    this.IsActive = objJson.getString("IsActive");
-                    this.IsUpdate = objJson.getString("IsUpdate");
+                    IsActive = objJson.getString("IsActive");
+                    IsUpdate = objJson.getString("IsUpdate");
 
                     values1 = new ContentValues();
-                    values1.put("food_id", this.ServerId);
+                    values1.put("food_id", ServerId);
                     values1.put("food_name", DietName);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
                     values1.put("calories", Calories);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_FoodItems where food_id='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_FoodItems where food_id='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("Mstr_FoodItems", null, values1);
                     } else {
-                        db.update("Mstr_FoodItems", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_FoodItems", values1, "ServerId='" + ServerId + "'", null);
                     }
 
                 }
@@ -1043,7 +1043,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_DietSession";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -1065,7 +1065,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -1073,36 +1073,36 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("DietsessId"));
+                    ServerId = String.valueOf(objJson.getString("DietsessId"));
                     String SessionName = String.valueOf(objJson.getString("Sessionname"));
-                    this.IsActive = objJson.getString("IsActive");
-                    this.IsUpdate = objJson.getString("IsUpdate");
+                    IsActive = objJson.getString("IsActive");
+                    IsUpdate = objJson.getString("IsUpdate");
 
-                    if (this.IsActive.equalsIgnoreCase("true")) {
-                        this.IsActive = "1";
-                    } else if (this.IsActive.equalsIgnoreCase("false")) {
-                        this.IsActive = "0";
+                    if (IsActive.equalsIgnoreCase("true")) {
+                        IsActive = "1";
+                    } else if (IsActive.equalsIgnoreCase("false")) {
+                        IsActive = "0";
                     }
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("SessionName", SessionName);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_DietSession where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_DietSession where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("Mstr_DietSession", null, values1);
                     } else {
-                        db.update("Mstr_DietSession", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_DietSession", values1, "ServerId='" + ServerId + "'", null);
                     }
 
 
@@ -1120,7 +1120,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from mast_ward";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -1142,7 +1142,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -1150,50 +1150,50 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Ward_id"));
+                    ServerId = String.valueOf(objJson.getString("Ward_id"));
                     String WardcatID = String.valueOf(objJson.getString("WardcatID"));
                     String WardName_NO = String.valueOf(objJson.getString("WardName_NO"));
                     String No_of_beds = String.valueOf(objJson.getString("No_of_beds"));
                     String DepartmentID = String.valueOf(objJson.getString("DepartmentID"));
                     String BlockID = String.valueOf(objJson.getString("BlockID"));
                     String FloorID = String.valueOf(objJson.getString("FloorID"));
-                    this.curDate = String.valueOf(objJson.getString("curDate"));
-                    this.IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
+                    curDate = String.valueOf(objJson.getString("curDate"));
+                    IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
 
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true")) {
-                        this.IsActive = "1";
+                    if (IsActive.equalsIgnoreCase("true")) {
+                        IsActive = "1";
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("WardcatID", WardcatID);
                     values1.put("WardName_NO", WardName_NO);
                     values1.put("No_of_beds", No_of_beds);
                     values1.put("DepartmentID", DepartmentID);
                     values1.put("BlockID", BlockID);
                     values1.put("FloorID", FloorID);
-                    values1.put("curDate", this.curDate);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("curDate", curDate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from mast_ward where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from mast_ward where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("mast_ward", null, values1);
                     } else {
-                        db.update("mast_ward", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("mast_ward", values1, "ServerId='" + ServerId + "'", null);
                     }
 
                 }
@@ -1212,7 +1212,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from mast_room";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -1234,7 +1234,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -1242,40 +1242,40 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("RoomeID"));
+                    ServerId = String.valueOf(objJson.getString("RoomeID"));
                     String WardID = String.valueOf(objJson.getString("WardID"));
                     String RoomtypeID = String.valueOf(objJson.getString("RoomtypeID"));
                     String Roomno = String.valueOf(objJson.getString("Roomno"));
-                    this.curDate = String.valueOf(objJson.getString("curDate"));
-                    this.IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
+                    curDate = String.valueOf(objJson.getString("curDate"));
+                    IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
                     String WardcatId = String.valueOf(objJson.getString("WardcatId"));
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true")) {
-                        this.IsActive = "1";
+                    if (IsActive.equalsIgnoreCase("true")) {
+                        IsActive = "1";
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("RoomtypeID", RoomtypeID);
                     values1.put("WardID", WardID);
                     values1.put("Roomno", Roomno);
-                    values1.put("curDate", this.curDate);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("curDate", curDate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
                     values1.put("WardcatId", WardcatId);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from mast_room where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from mast_room where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
 
@@ -1283,7 +1283,7 @@ public class MasterWebservices_NODEJS {
 
                     } else {
 
-                        db.update("mast_room", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("mast_room", values1, "ServerId='" + ServerId + "'", null);
                     }
 
 
@@ -1302,7 +1302,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from mast_bed";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -1324,7 +1324,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -1332,49 +1332,49 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("BedID"));
+                    ServerId = String.valueOf(objJson.getString("BedID"));
                     String WardID = String.valueOf(objJson.getString("WardID"));
                     String RoomID = String.valueOf(objJson.getString("RoomID"));
                     String Bed = String.valueOf(objJson.getString("Bed"));
-                    this.curDate = String.valueOf(objJson.getString("curDate"));
-                    this.IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
+                    curDate = String.valueOf(objJson.getString("curDate"));
+                    IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
                     String WardcatId = String.valueOf(objJson.getString("WardcatId"));
                     String status = String.valueOf(objJson.getString("Status"));
 
 
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true")) {
-                        this.IsActive = "1";
+                    if (IsActive.equalsIgnoreCase("true")) {
+                        IsActive = "1";
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("RoomID", RoomID);
                     values1.put("WardID", WardID);
                     values1.put("Bed", Bed);
                     values1.put("WardcatId", WardcatId);
-                    values1.put("curDate", this.curDate);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("curDate", curDate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
                     values1.put("status", status);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from mast_bed where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from mast_bed where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("mast_bed", null, values1);
                     } else {
-                        db.update("mast_bed", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("mast_bed", values1, "ServerId='" + ServerId + "'", null);
                     }
 
                 }
@@ -1393,7 +1393,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_WardCategory";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -1415,7 +1415,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -1423,42 +1423,42 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("WardcatID"));
-                    this.IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
-                    this.WardCategoryName = String.valueOf(objJson.getString("WardCategoryName"));
-                    this.HID = String.valueOf(objJson.getString("HID"));
+                    ServerId = String.valueOf(objJson.getString("WardcatID"));
+                    IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
+                    WardCategoryName = String.valueOf(objJson.getString("WardCategoryName"));
+                    HID = String.valueOf(objJson.getString("HID"));
 
 
-                    this.IsActive = objJson.getString("IsActive");
-                    if (this.IsActive.equalsIgnoreCase("true")) {
-                        this.IsActive = "1";
+                    IsActive = objJson.getString("IsActive");
+                    if (IsActive.equalsIgnoreCase("true")) {
+                        IsActive = "1";
                     } else {
 
-                        this.IsActive = "0";
+                        IsActive = "0";
 
                     }
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
-                    values1.put("IsUpdate", this.IsUpdate);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("WardCatName", this.WardCategoryName);
-                    values1.put("HID", this.HID);
+                    values1.put("ServerId", ServerId);
+                    values1.put("IsUpdate", IsUpdate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("WardCatName", WardCategoryName);
+                    values1.put("HID", HID);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_WardCategory where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_WardCategory where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("Mstr_WardCategory", null, values1);
                     } else {
-                        db.update("Mstr_WardCategory", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_WardCategory", values1, "ServerId='" + ServerId + "'", null);
                     }
                 }
             }
@@ -1475,7 +1475,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(IsUpdate),'0') as IsUpdateMax from listofvaccine";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -1497,7 +1497,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -1505,7 +1505,7 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -1516,7 +1516,7 @@ public class MasterWebservices_NODEJS {
                     String Docid = String.valueOf(objJson.getString("Schedule"));
                     String OperationNo = objJson.getString("Isactive");
                     String OperationName = objJson.getString("Dt");
-                    this.IsUpdate = objJson.getString("IsUpdate");
+                    IsUpdate = objJson.getString("IsUpdate");
 
 
                     values1 = new ContentValues();
@@ -1525,14 +1525,14 @@ public class MasterWebservices_NODEJS {
                     values1.put("schedule", Docid);
                     values1.put("isactive", OperationNo);
                     values1.put("dt", OperationName);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("IsUpdate", IsUpdate);
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from listofvaccine where IsUpdate='" + this.IsUpdate + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from listofvaccine where IsUpdate='" + IsUpdate + "'");
 
                     if (!GetStatus) {
                         db.insert("listofvaccine", null, values1);
                     } else {
-                        db.update("listofvaccine", values1, "IsUpdate='" + this.IsUpdate + "'", null);
+                        db.update("listofvaccine", values1, "IsUpdate='" + IsUpdate + "'", null);
                     }
 
                 }
@@ -1550,7 +1550,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Room_avaliability";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -1572,7 +1572,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -1580,33 +1580,33 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("RoomAval_Id"));
+                    ServerId = String.valueOf(objJson.getString("RoomAval_Id"));
                     String Patid = String.valueOf(objJson.getString("Patid"));
                     String WardId = String.valueOf(objJson.getString("WardId"));
                     String RoomId = String.valueOf(objJson.getString("RoomId"));
                     String BedId = String.valueOf(objJson.getString("BedId"));
                     String Status = String.valueOf(objJson.getString("Status"));
-                    this.curDate = String.valueOf(objJson.getString("curDate"));
-                    this.IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
+                    curDate = String.valueOf(objJson.getString("curDate"));
+                    IsUpdate = String.valueOf(objJson.getString("IsUpdate"));
 
 
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true")) {
-                        this.IsActive = "1";
+                    if (IsActive.equalsIgnoreCase("true")) {
+                        IsActive = "1";
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("Patid", Patid);
                     values1.put("WardId", WardId);
                     values1.put("RoomId", RoomId);
@@ -1615,17 +1615,17 @@ public class MasterWebservices_NODEJS {
 
                     values1.put("BedId", BedId);
 
-                    values1.put("curDate", this.curDate);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("curDate", curDate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Room_avaliability where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Room_avaliability where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("Room_avaliability", null, values1);
                     } else {
-                        db.update("Room_avaliability", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Room_avaliability", values1, "ServerId='" + ServerId + "'", null);
                     }
 
                 }
@@ -1642,7 +1642,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from diet_entry";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -1664,7 +1664,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -1672,51 +1672,51 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
+                    ServerId = String.valueOf(objJson.getString("Id"));
                     String diet_id = String.valueOf(objJson.getString("diet_id"));
                     String pat_id = String.valueOf(objJson.getString("pat_id"));
                     String doc_id = String.valueOf(objJson.getString("doc_id"));
                     String diet_session_id = String.valueOf(objJson.getString("DietsessionID"));
                     String food_id = String.valueOf(objJson.getString("DietitemID"));
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true")) {
+                    if (IsActive.equalsIgnoreCase("true")) {
 
-                        this.IsActive = "1";
+                        IsActive = "1";
 
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
-                    this.IsUpdate = objJson.getString("IsUpdate");
+                    IsUpdate = objJson.getString("IsUpdate");
 
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("diet_id", diet_id);
                     values1.put("pat_id", pat_id);
                     values1.put("doc_id", doc_id);
                     values1.put("diet_session_id", diet_session_id);
                     values1.put("food_id", food_id);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
                     values1.put("IsDelete", 0);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from diet_entry where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from diet_entry where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
 
                         db.insert("diet_entry", null, values1);
 
                     } else {
-                        db.update("diet_entry", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("diet_entry", values1, "ServerId='" + ServerId + "'", null);
 
                     }
                 }
@@ -1731,14 +1731,14 @@ public class MasterWebservices_NODEJS {
 
         SQLiteDatabase db = BaseConfig.GetDb();//ctx);
         String tableId = "0";
-        String isUpdateMax = String.valueOf(this.GetMaxUpdateValueFromTable("Mstr_Others", "1", "ServerId"));
+        String isUpdateMax = String.valueOf(GetMaxUpdateValueFromTable("Mstr_Others", "1", "ServerId"));
 
         String masterId = "1";
 
         try {
 
             StringBuilder results = new StringBuilder();
-            results = this.getMasterTableREST_ResultNew(results, tableId, masterId, isUpdateMax);
+            results = getMasterTableREST_ResultNew(results, tableId, masterId, isUpdateMax);
             JSONArray jsonArray = new JSONArray(results.toString());
 
             JSONObject objJson = null;
@@ -1750,27 +1750,27 @@ public class MasterWebservices_NODEJS {
 
                 objJson = jsonArray.getJSONObject(i);
 
-                this.ServerId = String.valueOf(objJson.getString("Id"));
+                ServerId = String.valueOf(objJson.getString("Id"));
                 String MasterId = String.valueOf(objJson.getString("MasterId"));
                 String MasterName = String.valueOf(objJson.getString("Mastername"));
-                this.Data = String.valueOf(objJson.getString("Name"));
-                this.IsActive = objJson.getString("IsActive");
-                this.IsUpdate = objJson.getString("IsUpdate");
+                Data = String.valueOf(objJson.getString("Name"));
+                IsActive = objJson.getString("IsActive");
+                IsUpdate = objJson.getString("IsUpdate");
 
                 values1 = new ContentValues();
-                values1.put("ServerId", this.ServerId);
+                values1.put("ServerId", ServerId);
                 values1.put("MasterId", MasterId);
                 values1.put("MasterName", MasterName);
-                values1.put("DataVal", this.Data);
-                values1.put("IsActive", this.IsActive);
-                values1.put("IsUpdate", this.IsUpdate);
+                values1.put("DataVal", Data);
+                values1.put("IsActive", IsActive);
+                values1.put("IsUpdate", IsUpdate);
 
-                GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_Others where ServerId='" + this.ServerId + "'");
+                GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_Others where ServerId='" + ServerId + "'");
 
                 if (!GetStatus) {
                     db.insert("Mstr_Others", null, values1);
                 } else {
-                    db.update("Mstr_Others", values1, "ServerId='" + this.ServerId + "'", null);
+                    db.update("Mstr_Others", values1, "ServerId='" + ServerId + "'", null);
                 }
 
 
@@ -1788,7 +1788,7 @@ public class MasterWebservices_NODEJS {
     private void Mstr_MedicalHistory() {
         SQLiteDatabase db = BaseConfig.GetDb();//ctx);
         String tableId = "0";
-        String isUpdateMax = String.valueOf(this.GetMaxUpdateValueFromTable("Mstr_Others", "2", "ServerId"));
+        String isUpdateMax = String.valueOf(GetMaxUpdateValueFromTable("Mstr_Others", "2", "ServerId"));
 
         String masterId = "2";
 
@@ -1799,7 +1799,7 @@ public class MasterWebservices_NODEJS {
 
 
             StringBuilder results = new StringBuilder();
-            results = this.getMasterTableREST_ResultNew(results, tableId, masterId, isUpdateMax);
+            results = getMasterTableREST_ResultNew(results, tableId, masterId, isUpdateMax);
             JSONArray jsonArray = new JSONArray(results.toString());
 
 
@@ -1812,27 +1812,27 @@ public class MasterWebservices_NODEJS {
 
                 objJson = jsonArray.getJSONObject(i);
 
-                this.ServerId = String.valueOf(objJson.getString("Id"));
+                ServerId = String.valueOf(objJson.getString("Id"));
                 String MasterId = String.valueOf(objJson.getString("MasterId"));
                 String MasterName = String.valueOf(objJson.getString("Mastername"));
-                this.Data = String.valueOf(objJson.getString("Name"));
-                this.IsActive = objJson.getString("IsActive");
-                this.IsUpdate = objJson.getString("IsUpdate");
+                Data = String.valueOf(objJson.getString("Name"));
+                IsActive = objJson.getString("IsActive");
+                IsUpdate = objJson.getString("IsUpdate");
 
                 values1 = new ContentValues();
-                values1.put("ServerId", this.ServerId);
+                values1.put("ServerId", ServerId);
                 values1.put("MasterId", MasterId);
                 values1.put("MasterName", MasterName);
-                values1.put("DataVal", this.Data);
-                values1.put("IsActive", this.IsActive);
-                values1.put("IsUpdate", this.IsUpdate);
+                values1.put("DataVal", Data);
+                values1.put("IsActive", IsActive);
+                values1.put("IsUpdate", IsUpdate);
 
-                GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_Others where ServerId='" + this.ServerId + "'");
+                GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_Others where ServerId='" + ServerId + "'");
 
                 if (!GetStatus) {
                     db.insert("Mstr_Others", null, values1);
                 } else {
-                    db.update("Mstr_Others", values1, "ServerId='" + this.ServerId + "'", null);
+                    db.update("Mstr_Others", values1, "ServerId='" + ServerId + "'", null);
                 }
 
 
@@ -1851,7 +1851,7 @@ public class MasterWebservices_NODEJS {
 
         SQLiteDatabase db = BaseConfig.GetDb();//ctx);
         String tableId = "0";
-        String isUpdateMax = String.valueOf(this.GetMaxUpdateValueFromTable("Mstr_Others", "3", "ServerId"));
+        String isUpdateMax = String.valueOf(GetMaxUpdateValueFromTable("Mstr_Others", "3", "ServerId"));
         String masterId = "3";
 
         //Call<String> call = masterothers_RESTAPI.table1(tableId, masterId, isUpdateMax, null);
@@ -1861,7 +1861,7 @@ public class MasterWebservices_NODEJS {
 
 
             StringBuilder results = new StringBuilder();
-            results = this.getMasterTableREST_ResultNew(results, tableId, masterId, isUpdateMax);
+            results = getMasterTableREST_ResultNew(results, tableId, masterId, isUpdateMax);
 
 
             JSONArray jsonArray = new JSONArray(results.toString());
@@ -1874,27 +1874,27 @@ public class MasterWebservices_NODEJS {
 
                 objJson = jsonArray.getJSONObject(i);
 
-                this.ServerId = String.valueOf(objJson.getString("Id"));
+                ServerId = String.valueOf(objJson.getString("Id"));
                 String MasterId = String.valueOf(objJson.getString("MasterId"));
                 String MasterName = String.valueOf(objJson.getString("Mastername"));
-                this.Data = String.valueOf(objJson.getString("Name"));
-                this.IsActive = objJson.getString("IsActive");
-                this.IsUpdate = objJson.getString("IsUpdate");
+                Data = String.valueOf(objJson.getString("Name"));
+                IsActive = objJson.getString("IsActive");
+                IsUpdate = objJson.getString("IsUpdate");
 
                 values1 = new ContentValues();
-                values1.put("ServerId", this.ServerId);
+                values1.put("ServerId", ServerId);
                 values1.put("MasterId", MasterId);
                 values1.put("MasterName", MasterName);
-                values1.put("DataVal", this.Data);
-                values1.put("IsActive", this.IsActive);
-                values1.put("IsUpdate", this.IsUpdate);
+                values1.put("DataVal", Data);
+                values1.put("IsActive", IsActive);
+                values1.put("IsUpdate", IsUpdate);
 
-                GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_Others where ServerId='" + this.ServerId + "'");
+                GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_Others where ServerId='" + ServerId + "'");
 
                 if (!GetStatus) {
                     db.insert("Mstr_Others", null, values1);
                 } else {
-                    db.update("Mstr_Others", values1, "ServerId='" + this.ServerId + "'", null);
+                    db.update("Mstr_Others", values1, "ServerId='" + ServerId + "'", null);
                 }
 
 
@@ -1913,7 +1913,7 @@ public class MasterWebservices_NODEJS {
 
         SQLiteDatabase db = BaseConfig.GetDb();//ctx);
         String tableId = "0";
-        String isUpdateMax = String.valueOf(this.GetMaxUpdateValueFromTable("Mstr_Others", "4", "ServerId"));
+        String isUpdateMax = String.valueOf(GetMaxUpdateValueFromTable("Mstr_Others", "4", "ServerId"));
 
         String masterId = "4";
 
@@ -1923,7 +1923,7 @@ public class MasterWebservices_NODEJS {
 
 
             StringBuilder results = new StringBuilder();
-            results = this.getMasterTableREST_ResultNew(results, tableId, masterId, isUpdateMax);
+            results = getMasterTableREST_ResultNew(results, tableId, masterId, isUpdateMax);
 
             if (!results.toString().equalsIgnoreCase("") && !results.toString().equalsIgnoreCase("[]")) {
 
@@ -1939,27 +1939,27 @@ public class MasterWebservices_NODEJS {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
+                    ServerId = String.valueOf(objJson.getString("Id"));
                     String MasterId = String.valueOf(objJson.getString("MasterId"));
                     String MasterName = String.valueOf(objJson.getString("Mastername"));
-                    this.Data = String.valueOf(objJson.getString("Name"));
-                    this.IsActive = objJson.getString("IsActive");
-                    this.IsUpdate = objJson.getString("IsUpdate");
+                    Data = String.valueOf(objJson.getString("Name"));
+                    IsActive = objJson.getString("IsActive");
+                    IsUpdate = objJson.getString("IsUpdate");
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("MasterId", MasterId);
                     values1.put("MasterName", MasterName);
-                    values1.put("DataVal", this.Data);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("DataVal", Data);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_Others where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Mstr_Others where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
                         db.insert("Mstr_Others", null, values1);
                     } else {
-                        db.update("Mstr_Others", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_Others", values1, "ServerId='" + ServerId + "'", null);
                     }
 
 
@@ -1987,7 +1987,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Gender";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -2008,7 +2008,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -2016,42 +2016,42 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
+                    ServerId = String.valueOf(objJson.getString("Id"));
                     String Gender = String.valueOf(objJson.getString("Gender"));
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true") || this.IsActive.equalsIgnoreCase("1")) {
+                    if (IsActive.equalsIgnoreCase("true") || IsActive.equalsIgnoreCase("1")) {
 
-                        this.IsActive = "1";
+                        IsActive = "1";
 
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
-                    this.IsUpdate = objJson.getString("IsUpdate");
+                    IsUpdate = objJson.getString("IsUpdate");
 
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("Gender", Gender);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_Gender where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_Gender where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
 
                         db.insert("Mstr_Gender", null, values1);
 
                     } else {
-                        db.update("Mstr_Gender", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_Gender", values1, "ServerId='" + ServerId + "'", null);
 
                     }
                 }
@@ -2070,7 +2070,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_BloodGroup";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -2091,7 +2091,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -2099,42 +2099,42 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
+                    ServerId = String.valueOf(objJson.getString("Id"));
                     String Bloodgroup = String.valueOf(objJson.getString("Bloodgroup"));
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true") || this.IsActive.equalsIgnoreCase("1")) {
+                    if (IsActive.equalsIgnoreCase("true") || IsActive.equalsIgnoreCase("1")) {
 
-                        this.IsActive = "1";
+                        IsActive = "1";
 
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
-                    this.IsUpdate = objJson.getString("IsUpdate");
+                    IsUpdate = objJson.getString("IsUpdate");
 
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("Bloodgroup", Bloodgroup);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_BloodGroup where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_BloodGroup where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
 
                         db.insert("Mstr_BloodGroup", null, values1);
 
                     } else {
-                        db.update("Mstr_BloodGroup", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_BloodGroup", values1, "ServerId='" + ServerId + "'", null);
 
                     }
                 }
@@ -2153,7 +2153,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_MaritalStatus";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -2174,7 +2174,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -2182,42 +2182,42 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
+                    ServerId = String.valueOf(objJson.getString("Id"));
                     String Marital_Status = String.valueOf(objJson.getString("MaritalStatus"));
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true") || this.IsActive.equalsIgnoreCase("1")) {
+                    if (IsActive.equalsIgnoreCase("true") || IsActive.equalsIgnoreCase("1")) {
 
-                        this.IsActive = "1";
+                        IsActive = "1";
 
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
-                    this.IsUpdate = objJson.getString("IsUpdate");
+                    IsUpdate = objJson.getString("IsUpdate");
 
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("Marital_Status", Marital_Status);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_MaritalStatus where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_MaritalStatus where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
 
                         db.insert("Mstr_MaritalStatus", null, values1);
 
                     } else {
-                        db.update("Mstr_MaritalStatus", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_MaritalStatus", values1, "ServerId='" + ServerId + "'", null);
 
                     }
                 }
@@ -2235,7 +2235,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Prefix";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -2256,7 +2256,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -2264,42 +2264,42 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
+                    ServerId = String.valueOf(objJson.getString("Id"));
                     String Prefix = String.valueOf(objJson.getString("Prefix"));
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true") || this.IsActive.equalsIgnoreCase("1")) {
+                    if (IsActive.equalsIgnoreCase("true") || IsActive.equalsIgnoreCase("1")) {
 
-                        this.IsActive = "1";
+                        IsActive = "1";
 
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
-                    this.IsUpdate = objJson.getString("IsUpdate");
+                    IsUpdate = objJson.getString("IsUpdate");
 
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("Prefix", Prefix);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_Prefix where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_Prefix where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
 
                         db.insert("Mstr_Prefix", null, values1);
 
                     } else {
-                        db.update("Mstr_Prefix", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_Prefix", values1, "ServerId='" + ServerId + "'", null);
 
                     }
                 }
@@ -2318,7 +2318,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_FeeExemptions";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -2339,7 +2339,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -2347,42 +2347,42 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
+                    ServerId = String.valueOf(objJson.getString("Id"));
                     String FeeExemption = String.valueOf(objJson.getString("FeeExemption"));
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true") || this.IsActive.equalsIgnoreCase("1")) {
+                    if (IsActive.equalsIgnoreCase("true") || IsActive.equalsIgnoreCase("1")) {
 
-                        this.IsActive = "1";
+                        IsActive = "1";
 
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
-                    this.IsUpdate = objJson.getString("IsUpdate");
+                    IsUpdate = objJson.getString("IsUpdate");
 
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("FeeExemption", FeeExemption);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_FeeExemptions where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_FeeExemptions where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
 
                         db.insert("Mstr_FeeExemptions", null, values1);
 
                     } else {
-                        db.update("Mstr_FeeExemptions", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_FeeExemptions", values1, "ServerId='" + ServerId + "'", null);
 
                     }
                 }
@@ -2402,7 +2402,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Caste";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -2423,7 +2423,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -2431,42 +2431,42 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
+                    ServerId = String.valueOf(objJson.getString("Id"));
                     String Caste = String.valueOf(objJson.getString("Caste"));
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true") || this.IsActive.equalsIgnoreCase("1")) {
+                    if (IsActive.equalsIgnoreCase("true") || IsActive.equalsIgnoreCase("1")) {
 
-                        this.IsActive = "1";
+                        IsActive = "1";
 
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
-                    this.IsUpdate = objJson.getString("IsUpdate");
+                    IsUpdate = objJson.getString("IsUpdate");
 
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("Caste", Caste);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_Caste where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_Caste where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
 
                         db.insert("Mstr_Caste", null, values1);
 
                     } else {
-                        db.update("Mstr_Caste", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_Caste", values1, "ServerId='" + ServerId + "'", null);
 
                     }
                 }
@@ -2487,7 +2487,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Occupation";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -2508,7 +2508,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -2516,42 +2516,42 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
+                    ServerId = String.valueOf(objJson.getString("Id"));
                     String Occupation = String.valueOf(objJson.getString("Occupation"));
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true") || this.IsActive.equalsIgnoreCase("1")) {
+                    if (IsActive.equalsIgnoreCase("true") || IsActive.equalsIgnoreCase("1")) {
 
-                        this.IsActive = "1";
+                        IsActive = "1";
 
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
-                    this.IsUpdate = objJson.getString("IsUpdate");
+                    IsUpdate = objJson.getString("IsUpdate");
 
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("Occupation", Occupation);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_Occupation where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_Occupation where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
 
                         db.insert("Mstr_Occupation", null, values1);
 
                     } else {
-                        db.update("Mstr_Occupation", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_Occupation", values1, "ServerId='" + ServerId + "'", null);
 
                     }
                 }
@@ -2571,7 +2571,7 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Signs";
 
 
-        Cursor c = this.db.rawQuery(Query, null);
+        Cursor c = db.rawQuery(Query, null);
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -2592,7 +2592,7 @@ public class MasterWebservices_NODEJS {
         String isUpdateMax = str;
 
         StringBuilder result = new StringBuilder();
-        result = this.getMasterTableREST_Result(result, tableId, isUpdateMax);
+        result = getMasterTableREST_Result(result, tableId, isUpdateMax);
 
         try {
             if (!result.toString().equalsIgnoreCase("") && !result.toString().equalsIgnoreCase("[]")) {
@@ -2600,42 +2600,42 @@ public class MasterWebservices_NODEJS {
                 JSONObject objJson = null;
                 ContentValues values1;
                 boolean GetStatus;
-                SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+                final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
 
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
                     objJson = jsonArray.getJSONObject(i);
 
-                    this.ServerId = String.valueOf(objJson.getString("Id"));
+                    ServerId = String.valueOf(objJson.getString("Id"));
                     String signs = String.valueOf(objJson.getString("Signs"));
-                    this.IsActive = objJson.getString("IsActive");
+                    IsActive = objJson.getString("IsActive");
 
-                    if (this.IsActive.equalsIgnoreCase("true") || this.IsActive.equalsIgnoreCase("1")) {
+                    if (IsActive.equalsIgnoreCase("true") || IsActive.equalsIgnoreCase("1")) {
 
-                        this.IsActive = "1";
+                        IsActive = "1";
 
                     } else {
-                        this.IsActive = "0";
+                        IsActive = "0";
                     }
-                    this.IsUpdate = objJson.getString("IsUpdate");
+                    IsUpdate = objJson.getString("IsUpdate");
 
 
                     values1 = new ContentValues();
-                    values1.put("ServerId", this.ServerId);
+                    values1.put("ServerId", ServerId);
                     values1.put("signs", signs);
-                    values1.put("IsActive", this.IsActive);
-                    values1.put("IsUpdate", this.IsUpdate);
+                    values1.put("IsActive", IsActive);
+                    values1.put("IsUpdate", IsUpdate);
 
 
-                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_Signs where ServerId='" + this.ServerId + "'");
+                    GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1   from Mstr_Signs where ServerId='" + ServerId + "'");
 
                     if (!GetStatus) {
 
                         db.insert("Mstr_Signs", null, values1);
 
                     } else {
-                        db.update("Mstr_Signs", values1, "ServerId='" + this.ServerId + "'", null);
+                        db.update("Mstr_Signs", values1, "ServerId='" + ServerId + "'", null);
 
                     }
                 }

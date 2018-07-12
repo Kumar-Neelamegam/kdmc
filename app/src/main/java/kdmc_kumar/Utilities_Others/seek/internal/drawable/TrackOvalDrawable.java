@@ -29,7 +29,7 @@ import android.support.annotation.NonNull;
  * @hide
  */
 public class TrackOvalDrawable extends StateDrawable {
-    private final RectF mRectF = new RectF();
+    private RectF mRectF = new RectF();
 
     public TrackOvalDrawable(@NonNull ColorStateList tintStateList) {
         super(tintStateList);
@@ -37,8 +37,8 @@ public class TrackOvalDrawable extends StateDrawable {
 
     @Override
     void doDraw(Canvas canvas, Paint paint) {
-        this.mRectF.set(this.getBounds());
-        canvas.drawOval(this.mRectF, paint);
+        mRectF.set(getBounds());
+        canvas.drawOval(mRectF, paint);
     }
 
 }

@@ -1,10 +1,7 @@
 package kdmc_kumar.Core_Modules;
 
-import android.R.color;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -24,11 +21,7 @@ import java.util.ArrayList;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.OnlineConsultation_DataObjects;
 import kdmc_kumar.Adapters_GetterSetter.OnlineConsultationRecylerAdapter;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.DashBoardAdapter;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
@@ -37,26 +30,26 @@ import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMen
 public class OnlineConsultation extends AppCompatActivity {
 
 
-    @BindView(id.parent_layout)
+    @BindView(R.id.parent_layout)
     CoordinatorLayout parentLayout;
-    @BindView(id.img_nodata)
+    @BindView(R.id.img_nodata)
     AppCompatImageView imgNodata;
-    @BindView(id.swipeRefreshLayout)
+    @BindView(R.id.swipeRefreshLayout)
     SwipeRefreshLayout swipeRefreshLayout;
-    @BindView(id.list)
+    @BindView(R.id.list)
     RecyclerView list;
 
-    @BindView(id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(id.toolbar_back)
+    @BindView(R.id.toolbar_back)
     AppCompatImageView toolbarBack;
-    @BindView(id.toolbar_title)
+    @BindView(R.id.toolbar_title)
     TextView toolbarTitle;
-    @BindView(id.toolbar_exit)
+    @BindView(R.id.toolbar_exit)
     AppCompatImageView toolbarExit;
 
-    private OnlineConsultationRecylerAdapter onlineConsultationRecylerAdapter;
-    private GridLayoutManager lLayout;
+    private OnlineConsultationRecylerAdapter onlineConsultationRecylerAdapter = null;
+    private GridLayoutManager lLayout = null;
 
 
     public OnlineConsultation() {
@@ -66,15 +59,15 @@ public class OnlineConsultation extends AppCompatActivity {
     protected final void onCreate(Bundle savedInstanceState) {
 
         super.onCreate(savedInstanceState);
-        this.setContentView(layout.onlineconsultation_list);
+        setContentView(R.layout.onlineconsultation_list);
 
         try {
 
-            this.GETINITIALIZE();
+            GETINITIALIZE();
 
-            this.CONTROLLISTENERS();
+            CONTROLLISTENERS();
 
-            this.AUTOREFRESHPATIENTLIST();
+            AUTOREFRESHPATIENTLIST();
 
 
         } catch (Exception e) {
@@ -91,20 +84,20 @@ public class OnlineConsultation extends AppCompatActivity {
     private void AUTOREFRESHPATIENTLIST() {
 
 
-        this.timerHandler = new Handler();
+        timerHandler = new Handler();
 
-        this.timerRunnable = new Runnable() {
+        timerRunnable = new Runnable() {
             @Override
             public void run() {
 
-                OnlineConsultation.this.SelectedGetPatientDetails();
+                SelectedGetPatientDetails();
 
-                OnlineConsultation.this.timerHandler.postDelayed(this, 180000); //run every second
+                timerHandler.postDelayed(this, 180000); //run every second
 
             }
         };
 
-        this.timerHandler.postDelayed(this.timerRunnable, 180000); //Start timer after 1 sec
+        timerHandler.postDelayed(timerRunnable, 180000); //Start timer after 1 sec
 
     }
 
@@ -112,8 +105,8 @@ public class OnlineConsultation extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (this.timerHandler != null) {
-            this.timerHandler.removeCallbacks(this.timerRunnable);
+        if (timerHandler != null) {
+            timerHandler.removeCallbacks(timerRunnable);
         }
 
     }
@@ -121,19 +114,19 @@ public class OnlineConsultation extends AppCompatActivity {
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        if (this.timerHandler != null) {
-            this.timerHandler.removeCallbacks(this.timerRunnable);
+        if (timerHandler != null) {
+            timerHandler.removeCallbacks(timerRunnable);
         }
     }
 
 
     private void CONTROLLISTENERS() {
 
-        this.toolbarExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(this, null));
+        toolbarExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(OnlineConsultation.this, null));
 
-        this.toolbarBack.setOnClickListener(view -> this.LoadBack());
+        toolbarBack.setOnClickListener(view -> LoadBack());
 
-        this.SelectedGetPatientDetails();
+        SelectedGetPatientDetails();
 
 
     }
@@ -145,27 +138,27 @@ public class OnlineConsultation extends AppCompatActivity {
 
         BaseConfig.welcometoast = 0;
 
-        this.toolbarTitle.setText(String.format("%s - %s", this.getString(string.app_name), this.getString(string.onlin_consultations)));
+        toolbarTitle.setText(String.format("%s - %s", getString(R.string.app_name), getString(R.string.onlin_consultations)));
 
-        this.setSupportActionBar(this.toolbar);
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            ViewCompat.setTransitionName(this.toolbar, DashBoardAdapter.VIEW_NAME_HEADER_TITLE);
+        setSupportActionBar(toolbar);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ViewCompat.setTransitionName(toolbar, DashBoardAdapter.VIEW_NAME_HEADER_TITLE);
         }
 
 
-        this.lLayout = new GridLayoutManager(this, 2);
-        this.list.setHasFixedSize(true);
-        this.list.setLayoutManager(this.lLayout);
-        this.list.setNestedScrollingEnabled(false);
-        this.list.setItemAnimator(new DefaultItemAnimator());
+        lLayout = new GridLayoutManager(OnlineConsultation.this, 2);
+        list.setHasFixedSize(true);
+        list.setLayoutManager(lLayout);
+        list.setNestedScrollingEnabled(false);
+        list.setItemAnimator(new DefaultItemAnimator());
 
-        this.swipeRefreshLayout = this.findViewById(id.swipeRefreshLayout);
-        this.swipeRefreshLayout.setColorSchemeResources(color.holo_green_dark, color.holo_red_dark, color.holo_blue_bright);
-        this.swipeRefreshLayout.setOnRefreshListener(() -> {
+        swipeRefreshLayout = findViewById(R.id.swipeRefreshLayout);
+        swipeRefreshLayout.setColorSchemeResources(android.R.color.holo_green_dark, android.R.color.holo_red_dark, android.R.color.holo_blue_bright);
+        swipeRefreshLayout.setOnRefreshListener(() -> {
 
             try {
 
-                this.SelectedGetPatientDetails();
+                SelectedGetPatientDetails();
 
             } catch (RuntimeException e) {
                 e.printStackTrace();
@@ -184,7 +177,7 @@ public class OnlineConsultation extends AppCompatActivity {
 
     private final void SelectedGetPatientDetails() {
 
-        ArrayList<OnlineConsultation_DataObjects> allItems = new ArrayList<>();
+        ArrayList<CommonDataObjects.OnlineConsultation_DataObjects> allItems = new ArrayList<>();
 
         try {
 
@@ -206,7 +199,7 @@ public class OnlineConsultation extends AppCompatActivity {
                         String ConsultationId = c.getString(c.getColumnIndex("ServerId"));
                         String MedId = c.getString(c.getColumnIndex("Medid"));
 
-                        allItems.add(new OnlineConsultation_DataObjects(Id, PatientName, PatientId, Age, Gender, PatientPhoto, ConsultationId, MedId));
+                        allItems.add(new CommonDataObjects.OnlineConsultation_DataObjects(Id, PatientName, PatientId, Age, Gender, PatientPhoto, ConsultationId, MedId));
 
                     } while (c.moveToNext());
                 }
@@ -215,32 +208,32 @@ public class OnlineConsultation extends AppCompatActivity {
             db.close();
             c.close();
 
-            this.onlineConsultationRecylerAdapter = new OnlineConsultationRecylerAdapter(allItems, this);
-            this.list.setAdapter(this.onlineConsultationRecylerAdapter);
+            onlineConsultationRecylerAdapter = new OnlineConsultationRecylerAdapter(allItems, OnlineConsultation.this);
+            list.setAdapter(onlineConsultationRecylerAdapter);
 
         } catch (RuntimeException e) {
             e.printStackTrace();
         }
 
         //nabeel
-        if (this.imgNodata != null) {
+        if (imgNodata != null) {
             if (allItems.size() > 0) {
-                this.imgNodata.setVisibility(View.GONE);
+                imgNodata.setVisibility(View.GONE);
             } else {
-                this.imgNodata.setVisibility(View.VISIBLE);
+                imgNodata.setVisibility(View.VISIBLE);
             }
         }
 
 
         // Stop refresh animation
-        this.swipeRefreshLayout.setRefreshing(false);
+        swipeRefreshLayout.setRefreshing(false);
 
     }
 
     @Override
     public final void onBackPressed() {
 
-        this.LoadBack();
+        LoadBack();
 
     }
 

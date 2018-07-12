@@ -2,7 +2,6 @@ package kdmc_kumar.Inpatient_Module;
 
 import android.annotation.SuppressLint;
 import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -13,7 +12,6 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.CoordinatorLayout;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v7.app.AlertDialog.Builder;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.AppCompatImageView;
@@ -22,11 +20,9 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
-import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.Button;
 import android.widget.DatePicker;
-import android.widget.DatePicker.OnDateChangedListener;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -39,11 +35,6 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.anim;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
-import displ.mobydocmarathi.com.R.style;
 import kdmc_kumar.CaseNotes_Modules.CaseNotes;
 import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Core_Modules.ClinicalInformation;
@@ -67,15 +58,15 @@ import kdmc_kumar.Inpatient_Module.Inpatient_Charts.Chart_Line_TemperatureChart;
 public class Inpatient_Detailed_View extends AppCompatActivity {
 
 
-    @BindView(id.inpatient_parent_layout) CoordinatorLayout inpatientParentLayout;
-    @BindView(id.inpatient_imgvw_patient_photo) ImageView inpatientImgvwPatientPhoto;
-    @BindView(id.inpatient_webvw_profile) WebView inpatientWebvwProfile;
-    @BindView(id.inpatient_fab) FloatingActionButton inpatientFab;
+    @BindView(R.id.inpatient_parent_layout) CoordinatorLayout inpatientParentLayout;
+    @BindView(R.id.inpatient_imgvw_patient_photo) ImageView inpatientImgvwPatientPhoto;
+    @BindView(R.id.inpatient_webvw_profile) WebView inpatientWebvwProfile;
+    @BindView(R.id.inpatient_fab) FloatingActionButton inpatientFab;
 
-    @BindView(id.toolbar) Toolbar toolbar;
-    @BindView(id.toolbar_back) AppCompatImageView toolbarBack;
-    @BindView(id.toolbar_title) TextView toolbarTitle;
-    @BindView(id.toolbar_exit) AppCompatImageView toolbarExit;
+    @BindView(R.id.toolbar) Toolbar toolbar;
+    @BindView(R.id.toolbar_back) AppCompatImageView toolbarBack;
+    @BindView(R.id.toolbar_title) TextView toolbarTitle;
+    @BindView(R.id.toolbar_exit) AppCompatImageView toolbarExit;
 
     String COMMON_PATIENTID;
 
@@ -88,26 +79,26 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
      */
 
 
-    private static int mYear;
-    private static int mMonth;
-    private static int mDay;
-    public static int mcYear;
-    public static int mcMonth;
-    public static int mcDay;
+    private static int mYear = 0;
+    private static int mMonth = 0;
+    private static int mDay = 0;
+    public static int mcYear = 0;
+    public static int mcMonth = 0;
+    public static int mcDay = 0;
 
-    private String Bundle_Patient_Id;
-    private String Bundle_Patient_Name;
-    private String Bundle_Patient_Agegender;
+    private String Bundle_Patient_Id = null;
+    private String Bundle_Patient_Name = null;
+    private String Bundle_Patient_Agegender = null;
 
 
-    private DatePickerDialog fromDatePickerDialog;
-    private SimpleDateFormat dateFormatter;
+    private DatePickerDialog fromDatePickerDialog = null;
+    private SimpleDateFormat dateFormatter = null;
 
-    private final OnDateSetListener mDateSetListener = (datePicker, i, i1, i2) -> {
-        Inpatient_Detailed_View.mYear = i;
-        Inpatient_Detailed_View.mMonth = i1;
-        Inpatient_Detailed_View.mDay = i2;
-        this.updateDisplay();
+    private final DatePickerDialog.OnDateSetListener mDateSetListener = (datePicker, i, i1, i2) -> {
+        mYear = i;
+        mMonth = i1;
+        mDay = i2;
+        updateDisplay();
     };
 
     public Inpatient_Detailed_View() {
@@ -119,14 +110,14 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
     @Override
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        this.setContentView(layout.new_layout_inpatient_view);
+        setContentView(R.layout.new_layout_inpatient_view);
 
 
         try {
 
-            this.GETINITIALIZE();
+            GETINITIALIZE();
 
-            this.CONTROLLISTENERS();
+            CONTROLLISTENERS();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -136,38 +127,38 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
     private void GETINITIALIZE() {
 
-        ButterKnife.bind(this);
+        ButterKnife.bind(Inpatient_Detailed_View.this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
-        this.setSupportActionBar(this.toolbar);
+        setSupportActionBar(toolbar);
 
-        this.toolbarTitle.setText(String.format("%s - %s", this.getString(string.app_name), this.getString(string.inpat)));
+        toolbarTitle.setText(String.format("%s - %s", getString(R.string.app_name), getString(R.string.inpat)));
 
-        this.inpatientWebvwProfile.getSettings().setJavaScriptEnabled(true);
-        this.inpatientWebvwProfile.setWebChromeClient(new WebChromeClient());
-        this.inpatientWebvwProfile.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        this.inpatientWebvwProfile.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        this.inpatientWebvwProfile.getSettings().setRenderPriority(RenderPriority.HIGH);
+        inpatientWebvwProfile.getSettings().setJavaScriptEnabled(true);
+        inpatientWebvwProfile.setWebChromeClient(new WebChromeClient());
+        inpatientWebvwProfile.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        inpatientWebvwProfile.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        inpatientWebvwProfile.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
 
 
-        Calendar c = Calendar.getInstance();
-        Inpatient_Detailed_View.mYear = c.get(Calendar.YEAR);
-        Inpatient_Detailed_View.mMonth = c.get(Calendar.MONTH);
-        Inpatient_Detailed_View.mDay = c.get(Calendar.DAY_OF_MONTH);
+        final Calendar c = Calendar.getInstance();
+        mYear = c.get(Calendar.YEAR);
+        mMonth = c.get(Calendar.MONTH);
+        mDay = c.get(Calendar.DAY_OF_MONTH);
 
-        Bundle b = this.getIntent().getExtras();
+        Bundle b = getIntent().getExtras();
         if (b != null) {
 
-            this.COMMON_PATIENTID = b.getString(BaseConfig.BUNDLE_PATIENT_ID);
+            COMMON_PATIENTID = b.getString(BaseConfig.BUNDLE_PATIENT_ID);
 
         }
 
 
 
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
-        this.dateFormatter = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
+        dateFormatter = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
         try {
-            this.LoadWebview(sdf.format(new Date()));
+            LoadWebview(sdf.format(new Date()));
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -178,22 +169,22 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
     private void CONTROLLISTENERS() {
 
 
-        this.inpatientFab.setOnClickListener(view -> this.ShowDialog());
+        inpatientFab.setOnClickListener(view -> ShowDialog());
 
-        this.toolbarExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(this, null));
+        toolbarExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(Inpatient_Detailed_View.this, null));
 
-        this.toolbarBack.setOnClickListener(view -> this.LoadBack());
+        toolbarBack.setOnClickListener(view -> LoadBack());
 
-        this.inpatientImgvwPatientPhoto.setOnClickListener(v -> {
+        inpatientImgvwPatientPhoto.setOnClickListener(v -> {
 
-            String Query = "select name as ret_values from Patreg where Patid='" + this.Bundle_Patient_Id + '\'';
+            String Query = "select name as ret_values from Patreg where Patid='" + Bundle_Patient_Id + '\'';
 
-            this.Bundle_Patient_Name = BaseConfig.GetValues(Query);
+            Bundle_Patient_Name = BaseConfig.GetValues(Query);
 
-            String Query1 = "select age||'-'||gender as ret_values from Patreg where Patid='" + this.Bundle_Patient_Id + '\'';
-            this.Bundle_Patient_Agegender = BaseConfig.GetValues(Query1);
+            String Query1 = "select age||'-'||gender as ret_values from Patreg where Patid='" + Bundle_Patient_Id + '\'';
+            Bundle_Patient_Agegender = BaseConfig.GetValues(Query1);
 
-            BaseConfig.Show_Patient_PhotoInDetail(this.Bundle_Patient_Name, this.Bundle_Patient_Id, this.Bundle_Patient_Agegender, this);
+            BaseConfig.Show_Patient_PhotoInDetail(Bundle_Patient_Name, Bundle_Patient_Id, Bundle_Patient_Agegender, Inpatient_Detailed_View.this);
 
         });
 
@@ -216,14 +207,14 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
             case 1:
 
 
-                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_MainChart where patid='" + this.Bundle_Patient_Id + "' order by id desc");
+                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_MainChart where patid='" + Bundle_Patient_Id + "' order by id desc");
                 if (status) {
-                    Intent intent = new Intent(this, Chart_Bar_Inpatient.class);
+                    Intent intent = new Intent(Inpatient_Detailed_View.this, Chart_Bar_Inpatient.class);
                     intent.putExtra("ID", "1");
-                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, this.Bundle_Patient_Id);
-                    this.startActivity(intent);
+                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, Bundle_Patient_Id);
+                    startActivity(intent);
                 } else {
-                    BaseConfig.KDMC_COMMON_DILOAGS(4, this, this.getString(string.information), this.getString(string.nodata), this.getString(string.ok));
+                    BaseConfig.KDMC_COMMON_DILOAGS(4, Inpatient_Detailed_View.this, getString(R.string.information), getString(R.string.nodata), getString(R.string.ok));
                 }
 
                 break;
@@ -232,14 +223,14 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
             case 2:
 
 
-                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_DiabeticChart where patid='" + this.Bundle_Patient_Id + "' order by id desc");
+                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_DiabeticChart where patid='" + Bundle_Patient_Id + "' order by id desc");
                 if (status) {
-                    Intent intent = new Intent(this, Chart_Bar_DiabeticChart.class);
+                    Intent intent = new Intent(Inpatient_Detailed_View.this, Chart_Bar_DiabeticChart.class);
                     intent.putExtra("ID", "1");
-                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, this.Bundle_Patient_Id);
-                    this.startActivity(intent);
+                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, Bundle_Patient_Id);
+                    startActivity(intent);
                 } else {
-                    BaseConfig.KDMC_COMMON_DILOAGS(4, this, this.getString(string.information), this.getString(string.no_data), this.getString(string.ok));
+                    BaseConfig.KDMC_COMMON_DILOAGS(4, Inpatient_Detailed_View.this, getString(R.string.information), getString(R.string.no_data), getString(R.string.ok));
                 }
 
                 break;
@@ -247,14 +238,14 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
             case 3:
 
-                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_TemperatureChart where patid='" + this.Bundle_Patient_Id + "' order by id desc");
+                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_TemperatureChart where patid='" + Bundle_Patient_Id + "' order by id desc");
                 if (status) {
-                    Intent intent = new Intent(this, Chart_Bar_TemperatureChart.class);
+                    Intent intent = new Intent(Inpatient_Detailed_View.this, Chart_Bar_TemperatureChart.class);
                     intent.putExtra("ID", "1");
-                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, this.Bundle_Patient_Id);
-                    this.startActivity(intent);
+                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, Bundle_Patient_Id);
+                    startActivity(intent);
                 } else {
-                    BaseConfig.KDMC_COMMON_DILOAGS(4, this, this.getString(string.information), this.getString(string.no_data), this.getString(string.ok));
+                    BaseConfig.KDMC_COMMON_DILOAGS(4, Inpatient_Detailed_View.this, getString(R.string.information), getString(R.string.no_data), getString(R.string.ok));
                 }
 
 
@@ -264,14 +255,14 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
             case 4:
 
 
-                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_MainChart where patid='" + this.Bundle_Patient_Id + "' order by id desc");
+                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_MainChart where patid='" + Bundle_Patient_Id + "' order by id desc");
                 if (status) {
-                    Intent intent = new Intent(this, Chart_Bar_InputChart.class);
+                    Intent intent = new Intent(Inpatient_Detailed_View.this, Chart_Bar_InputChart.class);
                     intent.putExtra("ID", "1");
-                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, this.Bundle_Patient_Id);
-                    this.startActivity(intent);
+                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, Bundle_Patient_Id);
+                    startActivity(intent);
                 } else {
-                    BaseConfig.KDMC_COMMON_DILOAGS(4, this, this.getString(string.information), this.getString(string.no_data), this.getString(string.ok));
+                    BaseConfig.KDMC_COMMON_DILOAGS(4, Inpatient_Detailed_View.this, getString(R.string.information), getString(R.string.no_data), getString(R.string.ok));
                 }
 
 
@@ -281,14 +272,14 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
             case 5:
 
 
-                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_MainChart where patid='" + this.Bundle_Patient_Id + "' order by id desc");
+                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_MainChart where patid='" + Bundle_Patient_Id + "' order by id desc");
                 if (status) {
-                    Intent intent = new Intent(this, Chart_Bar_OutputChart.class);
+                    Intent intent = new Intent(Inpatient_Detailed_View.this, Chart_Bar_OutputChart.class);
                     intent.putExtra("ID", "1");
-                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, this.Bundle_Patient_Id);
-                    this.startActivity(intent);
+                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, Bundle_Patient_Id);
+                    startActivity(intent);
                 } else {
-                    BaseConfig.KDMC_COMMON_DILOAGS(4, this, this.getString(string.information), this.getString(string.no_data), this.getString(string.ok));
+                    BaseConfig.KDMC_COMMON_DILOAGS(4, Inpatient_Detailed_View.this, getString(R.string.information), getString(R.string.no_data), getString(R.string.ok));
                 }
 
 
@@ -297,14 +288,14 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
             case 6:
 
-                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_MainChart where patid='" + this.Bundle_Patient_Id + "' order by id desc");
+                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_MainChart where patid='" + Bundle_Patient_Id + "' order by id desc");
                 if (status) {
-                    Intent intent = new Intent(this, Chart_Line_Inpatient.class);
+                    Intent intent = new Intent(Inpatient_Detailed_View.this, Chart_Line_Inpatient.class);
                     intent.putExtra("ID", "1");
-                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, this.Bundle_Patient_Id);
-                    this.startActivity(intent);
+                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, Bundle_Patient_Id);
+                    startActivity(intent);
                 } else {
-                    BaseConfig.KDMC_COMMON_DILOAGS(4, this, this.getString(string.information), this.getString(string.no_data), this.getString(string.ok));
+                    BaseConfig.KDMC_COMMON_DILOAGS(4, Inpatient_Detailed_View.this, getString(R.string.information), getString(R.string.no_data), getString(R.string.ok));
                 }
 
 
@@ -314,14 +305,14 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
             case 7:
 
 
-                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_DiabeticChart where patid='" + this.Bundle_Patient_Id + "' order by id desc");
+                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_DiabeticChart where patid='" + Bundle_Patient_Id + "' order by id desc");
                 if (status) {
-                    Intent intent = new Intent(this, Chart_Line_DiabeticChart.class);
+                    Intent intent = new Intent(Inpatient_Detailed_View.this, Chart_Line_DiabeticChart.class);
                     intent.putExtra("ID", "1");
-                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, this.Bundle_Patient_Id);
-                    this.startActivity(intent);
+                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, Bundle_Patient_Id);
+                    startActivity(intent);
                 } else {
-                    BaseConfig.KDMC_COMMON_DILOAGS(4, this, this.getString(string.information), this.getString(string.no_data), this.getString(string.ok));
+                    BaseConfig.KDMC_COMMON_DILOAGS(4, Inpatient_Detailed_View.this, getString(R.string.information), getString(R.string.no_data), getString(R.string.ok));
                 }
 
 
@@ -331,14 +322,14 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
             case 8:
 
 
-                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_TemperatureChart where patid='" + this.Bundle_Patient_Id + "' order by id desc");
+                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_TemperatureChart where patid='" + Bundle_Patient_Id + "' order by id desc");
                 if (status) {
-                    Intent intent = new Intent(this, Chart_Line_TemperatureChart.class);
+                    Intent intent = new Intent(Inpatient_Detailed_View.this, Chart_Line_TemperatureChart.class);
                     intent.putExtra("ID", "1");
-                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, this.Bundle_Patient_Id);
-                    this.startActivity(intent);
+                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, Bundle_Patient_Id);
+                    startActivity(intent);
                 } else {
-                    BaseConfig.KDMC_COMMON_DILOAGS(4, this, this.getString(string.information), this.getString(string.no_data), this.getString(string.ok));
+                    BaseConfig.KDMC_COMMON_DILOAGS(4, Inpatient_Detailed_View.this, getString(R.string.information), getString(R.string.no_data), getString(R.string.ok));
                 }
 
 
@@ -346,14 +337,14 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
             case 9:
 
-                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_MainChart where patid='" + this.Bundle_Patient_Id + "' order by id desc");
+                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_MainChart where patid='" + Bundle_Patient_Id + "' order by id desc");
                 if (status) {
-                    Intent intent = new Intent(this, Chart_Line_InputChart.class);
+                    Intent intent = new Intent(Inpatient_Detailed_View.this, Chart_Line_InputChart.class);
                     intent.putExtra("ID", "1");
-                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, this.Bundle_Patient_Id);
-                    this.startActivity(intent);
+                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, Bundle_Patient_Id);
+                    startActivity(intent);
                 } else {
-                    BaseConfig.KDMC_COMMON_DILOAGS(4, this, this.getString(string.information), this.getString(string.no_data), this.getString(string.ok));
+                    BaseConfig.KDMC_COMMON_DILOAGS(4, Inpatient_Detailed_View.this, getString(R.string.information), getString(R.string.no_data), getString(R.string.ok));
                 }
 
 
@@ -362,14 +353,14 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
             case 10:
 
-                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_MainChart where patid='" + this.Bundle_Patient_Id + "' order by id desc");
+                status = BaseConfig.LoadReportsBooleanStatus("select id as dstatus1 from Inpatient_MainChart where patid='" + Bundle_Patient_Id + "' order by id desc");
                 if (status) {
-                    Intent intent = new Intent(this, Chart_Line_OutputChart.class);
+                    Intent intent = new Intent(Inpatient_Detailed_View.this, Chart_Line_OutputChart.class);
                     intent.putExtra("ID", "1");
-                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, this.Bundle_Patient_Id);
-                    this.startActivity(intent);
+                    intent.putExtra(BaseConfig.BUNDLE_PATIENT_ID, Bundle_Patient_Id);
+                    startActivity(intent);
                 } else {
-                    BaseConfig.KDMC_COMMON_DILOAGS(4, this, this.getString(string.information), this.getString(string.no_data), this.getString(string.ok));
+                    BaseConfig.KDMC_COMMON_DILOAGS(4, Inpatient_Detailed_View.this, getString(R.string.information), getString(R.string.no_data), getString(R.string.ok));
                 }
 
                 break;
@@ -383,10 +374,10 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
     @Override
     protected final void onActivityResult(int requestCode, int resultCode, Intent data) {
-        this.overridePendingTransition(anim.slide_in_left, anim.slide_out_right);
+        overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
 
-        if (requestCode == Inpatient_Detailed_View.LoadBack_ACTIVITY) {
-            if (resultCode == Activity.RESULT_OK) {
+        if (requestCode == LoadBack_ACTIVITY) {
+            if (resultCode == RESULT_OK) {
 
                 Bundle bundle = data.getExtras();
                 String status = bundle.getString("status");
@@ -394,7 +385,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
                     try {
 
-                        this.LoadWebview("");
+                        LoadWebview("");
 
                     } catch (Exception e) {
                         e.printStackTrace();
@@ -408,19 +399,19 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
     private final void LoadWebview(String DateValue) {
         try {
 
-            this.inpatientWebvwProfile.getSettings().setJavaScriptEnabled(true);
-            this.inpatientWebvwProfile.setLayerType(View.LAYER_TYPE_NONE, null);
-            this.inpatientWebvwProfile.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-            this.inpatientWebvwProfile.getSettings().setRenderPriority(RenderPriority.HIGH);
+            inpatientWebvwProfile.getSettings().setJavaScriptEnabled(true);
+            inpatientWebvwProfile.setLayerType(View.LAYER_TYPE_NONE, null);
+            inpatientWebvwProfile.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+            inpatientWebvwProfile.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
 
-            this.inpatientWebvwProfile.setWebChromeClient(new Inpatient_Detailed_View.MyWebChromeClient());
+            inpatientWebvwProfile.setWebChromeClient(new MyWebChromeClient());
 
-            this.inpatientWebvwProfile.setBackgroundColor(0x00000000);
+            inpatientWebvwProfile.setBackgroundColor(0x00000000);
 
-            this.inpatientWebvwProfile.addJavascriptInterface(new WebAppInterface(this), "android");
+            inpatientWebvwProfile.addJavascriptInterface(new WebAppInterface(Inpatient_Detailed_View.this), "android");
             try {
 
-                this.inpatientWebvwProfile.loadDataWithBaseURL("file:///android_asset/", this.LoadInPatientProfile(DateValue), "text/html", "utf-8", null);
+                inpatientWebvwProfile.loadDataWithBaseURL("file:///android_asset/", LoadInPatientProfile(DateValue), "text/html", "utf-8", null);
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -444,7 +435,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
             //Patient Info
             SQLiteDatabase db = BaseConfig.GetDb();//Inpatient_Detailed_View.this);
 
-            Cursor c = db.rawQuery("select wardno,roomno,bedno,admitdt,admit_time,Patid,name,bloodgroup,Address,Address1,District,city,caretaker,crtknum,phone,age,gender,PC from Patreg where patid='" + this.COMMON_PATIENTID + "'  order by id desc;", null);
+            Cursor c = db.rawQuery("select wardno,roomno,bedno,admitdt,admit_time,Patid,name,bloodgroup,Address,Address1,District,city,caretaker,crtknum,phone,age,gender,PC from Patreg where patid='" + COMMON_PATIENTID + "'  order by id desc;", null);
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -477,7 +468,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
                         PatientName = BaseConfig.CheckDBString(c.getString(c.getColumnIndex("name")));
                         PatientId = BaseConfig.CheckDBString(c.getString(c.getColumnIndex("Patid")));
 
-                        this.Bundle_Patient_Id = PatientId;
+                        Bundle_Patient_Id = PatientId;
 
                         BloodGroup = BaseConfig.CheckDBString(c.getString(c.getColumnIndex("bloodgroup")));
                         Address = BaseConfig.CheckDBString(c.getString(c.getColumnIndex("Address")));
@@ -492,7 +483,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
                         Photo = BaseConfig.CheckDBString(c.getString(c.getColumnIndex("PC")));
 
-                        BaseConfig.LoadPatientImage(Photo, this.inpatientImgvwPatientPhoto, 100);
+                        BaseConfig.LoadPatientImage(Photo, inpatientImgvwPatientPhoto, 100);
 
 
                     } while (c.moveToNext());
@@ -509,43 +500,43 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
                     "<tbody>\n" +
                     '\n' +
                     "<tr >\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-id-card-o\" aria-hidden=\"true\"></i><b>  " + this.getString(string.patient_id) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-id-card-o\" aria-hidden=\"true\"></i><b>  " + getString(R.string.patient_id) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + PatientId + "</td> \n" +
                     "</tr>\n" +
                     '\n' +
                     "<tr >\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-user-circle-o\" aria-hidden=\"true\"></i><b>  " + this.getString(string.name) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-user-circle-o\" aria-hidden=\"true\"></i><b>  " + getString(R.string.name) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + PatientName + "</td> \n" +
                     "</tr>\n" +
                     '\n' +
                     " \n" +
                     '\n' +
                     "<tr > \n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-calendar-check-o\" aria-hidden=\"true\"></i><b>  " + this.getString(string.age) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-calendar-check-o\" aria-hidden=\"true\"></i><b>  " + getString(R.string.age) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:  " + age + "</td>\n" +
                     "</tr>\n" +
                     '\n' +
                     '\n' +
                     "<tr >\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-mars-stroke\" aria-hidden=\"true\"></i><b>  " + this.getString(string.gender) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-mars-stroke\" aria-hidden=\"true\"></i><b>  " + getString(R.string.gender) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + gender + "</td>\n" +
                     "</tr>\n" +
                     '\n' +
                     " \n" +
                     '\n' +
                     "<tr>\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + this.getString(string.blood_group) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + getString(R.string.blood_group) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + BloodGroup + "</td>\n" +
                     "</tr>\n" +
                     '\n' +
                     "<tr>\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + this.getString(string.address1) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + getString(R.string.address1) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + Address + "</td>\n" +
                     "</tr>\n" +
                     " \n" +
                     " \n" +
                     " <tr>\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + this.getString(string.address2) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + getString(R.string.address2) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + Address1 + "</td>\n" +
                     "</tr>\n" +
                     '\n' +
@@ -554,31 +545,31 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
                     '\n' +
 
                     "<tr>\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + this.getString(string.city) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + getString(R.string.city) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + city + "</td>\n" +
                     "</tr>\n" +
                     '\n' +
 
                     "<tr>\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + this.getString(string.district_title) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + getString(R.string.district_title) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + District + "</td>\n" +
                     "</tr>\n" +
                     '\n' +
 
                     "<tr>\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + this.getString(string.phone) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + getString(R.string.phone) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + phone + "</td>\n" +
                     "</tr>\n" +
                     '\n' +
                     '\n' +
                     " <tr>\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + this.getString(string.caretaker) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + getString(R.string.caretaker) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + caretaker + "</td>\n" +
                     "</tr>\n" +
                     '\n' +
                     '\n' +
                     " <tr>\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + this.getString(string.caretaker_number) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-asterisk\" aria-hidden=\"true\"></i><b>  " + getString(R.string.caretaker_number) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + crtknum + "</td>\n" +
                     "</tr>\n" +
                     '\n' +
@@ -598,32 +589,32 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
                     '\n' +
                     '\n' +
                     "<tr>\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i><b> " + this.getString(string.ward) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-address-card-o\" aria-hidden=\"true\"></i><b> " + getString(R.string.ward) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + ward_values + "</td> \n" +
                     "</tr>\n" +
                     '\n' +
                     '\n' +
                     '\n' +
                     "<tr>\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-address-card\" aria-hidden=\"true\"></i><b>   " + this.getString(string.room_no) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-address-card\" aria-hidden=\"true\"></i><b>   " + getString(R.string.room_no) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + room_values + "</td>\n" +
                     "</tr>\n" +
                     '\n' +
                     '\n' +
                     "<tr>\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i><b>  " + this.getString(string.bed_no) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i><b>  " + getString(R.string.bed_no) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + bed_values + "</td>\n" +
                     "</tr>\n" +
                     '\n' +
                     '\n' +
                     "<tr>\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i><b>  " + this.getString(string.admitted_date) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i><b>  " + getString(R.string.admitted_date) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + admitDate + "</td>\n" +
                     "</tr>\n" +
                     '\n' +
                     '\n' +
                     "<tr>\n" +
-                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i><b>  " + this.getString(string.admitted_time) + "</b></td> \n" +
+                    "<td height=\"20\" style=\"color:#3d5987;\"><i class=\"fa fa-globe\" aria-hidden=\"true\"></i><b>  " + getString(R.string.admitted_time) + "</b></td> \n" +
                     "<td height=\"20\" style=\"color:#000000;\">:   " + admitTime + "</td>\n" +
                     "</tr>\n" +
                     '\n' +
@@ -645,7 +636,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
             StringBuilder Str3 = new StringBuilder();
 
             //IP CHART
-            Cursor c6 = db.rawQuery("select * from Inpatient_MainChart where substr(Actdate,1,10)='" + DateValue + "' and patid='" + this.COMMON_PATIENTID + "'  order by id desc;", null);
+            Cursor c6 = db.rawQuery("select * from Inpatient_MainChart where substr(Actdate,1,10)='" + DateValue + "' and patid='" + COMMON_PATIENTID + "'  order by id desc;", null);
 
             if (c6 != null) {
                 if (c6.moveToFirst()) {
@@ -689,7 +680,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
                     diab_lente = "-", diab_insulin = "-", diab_bldsugar = "-", diab_ketone = "-";
 
             //DIABETIC
-            Cursor c5 = db.rawQuery("select * from Inpatient_DiabeticChart where substr(Actdate,1,10)='" + DateValue + "' and patid='" + this.COMMON_PATIENTID + "'  order by id desc;", null);
+            Cursor c5 = db.rawQuery("select * from Inpatient_DiabeticChart where substr(Actdate,1,10)='" + DateValue + "' and patid='" + COMMON_PATIENTID + "'  order by id desc;", null);
 
             if (c5 != null) {
                 if (c5.moveToFirst()) {
@@ -722,7 +713,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
             String temperature_date = "-", temperature_time = "-", temperature_visitdoc = "-", temp_range = "-", temp_visit = "-", temp_takentime = "-";
 
             //TEMP
-            Cursor c4 = db.rawQuery("select * from Inpatient_TemperatureChart where substr(Actdate,1,10)='" + DateValue + "' and patid='" + this.COMMON_PATIENTID + "'  order by id desc;", null);
+            Cursor c4 = db.rawQuery("select * from Inpatient_TemperatureChart where substr(Actdate,1,10)='" + DateValue + "' and patid='" + COMMON_PATIENTID + "'  order by id desc;", null);
 
             if (c4 != null) {
                 if (c4.moveToFirst()) {
@@ -751,7 +742,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
             String mc_temp_date, mc_temp_time, mc_temp_visitdoctor, mc_clinicalnotes_tv, mc_treatmentdiet_tv;
             String value1[];
             //
-            Cursor c3 = db.rawQuery("select * from InPatient_MedicalCaseRecords where  pat_id='" + this.COMMON_PATIENTID + "' and substr(ActDate,1,10)='" + DateValue + "'   order by id desc;", null);
+            Cursor c3 = db.rawQuery("select * from InPatient_MedicalCaseRecords where  pat_id='" + COMMON_PATIENTID + "' and substr(ActDate,1,10)='" + DateValue + "'   order by id desc;", null);
 
             if (c3 != null) {
                 if (c3.moveToFirst()) {
@@ -804,7 +795,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
             String Prescription_Date = DateValue.replace("/","-");
 
-            String Prescription_Query ="select * from Mprescribed where  Ptid='" + this.COMMON_PATIENTID + "' and substr(Actdate,1,10)='"+Prescription_Date+"' order by Medid desc;";
+            String Prescription_Query ="select * from Mprescribed where  Ptid='" + COMMON_PATIENTID + "' and substr(Actdate,1,10)='"+Prescription_Date+"' order by Medid desc;";
 
             Cursor c2 = db.rawQuery(Prescription_Query, null);
 
@@ -829,7 +820,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
             String surgery_date = "", pre_operativediag = "-", operative_notes = "-", position = "-", procedure = "-", closure = "-", post_operativediag = "-", surgeon = "-", anaesthetist = "-", asst = "-", bloodloss = "-", histopathological = "-", post_op_instruct = "-";
 
             //Medical Case record
-            Cursor c1 = db.rawQuery("select * from Inpatient_SurgeryRecord where substr(Actdate,1,10)='" + DateValue + "' and patid='" + this.COMMON_PATIENTID + "' order by id desc  limit 1 ;", null);
+            Cursor c1 = db.rawQuery("select * from Inpatient_SurgeryRecord where substr(Actdate,1,10)='" + DateValue + "' and patid='" + COMMON_PATIENTID + "' order by id desc  limit 1 ;", null);
 
             if (c1 != null) {
                 if (c1.moveToFirst()) {
@@ -860,7 +851,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
 
             //Update html full code below
-            String value2 = "<!DOCTYPE html>\n" + "\n" + "<html lang=\"en\">\n" + "<head>\n" + "\n" + "<script type=\"text/javascript\">\n" + "    function showAndroidToast(toast) {\n" + "        android.showToast(toast);\n" + "    }\n" + "</script>\n" + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/>\n" + "<link rel=\"stylesheet\"  type=\"text/css\" href=\"file:///android_asset/Doctor_Profile/css/english.css\"/>\n" + "\n" + "<link rel=\"stylesheet\" href=\"file:///android_asset/Doctor_Profile/css/bootstrap.min.css\" />\n" + "<link rel=\"stylesheet\" href=\"file:///android_asset/Doctor_Profile/css/bootstrap-theme.min.css\" />\n" + "\n" + "<link rel=\"stylesheet\" href=\"file:///android_asset/Doctor_Profile/css/font-awesome.min.css\" type=\"text/css\" />\n" + "\n" + "<script src=\"file:///android_asset/Doctor_Profile/css/jquery.min.js\"></script>\n" + "<script src=\"file:///android_asset/Doctor_Profile/css/bootstrap.min.js\" ></script>\n" + "\n" + "\n" + "\n" + "\n" + "</head>\n" + "<body>  \n" + " \n" + "  \n" + "<font class=\"sub\">  \n" + "\n" + "<i class=\"fa fa-user-circle-o fa-2x\" aria-hidden=\"true\"></i> " + this.getString(string.patientdetails) + "</font>\n" + "\n" + "" + Str1 + "\n" + "\n" + "\n" + "<br/>\n" + "<!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + this.getString(string.admission_details) + "</font>\n" + "\n" + "\n" + Str2 + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + " <!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + this.getString(string.i_pchart) + "</font>\n" + "\n" + "\n" + "\n" + "\n" + "<div class=\"table-responsive\">  \n" + "\n" + "        \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "  \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.date) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.time) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.visited_doctor) + "</font></th>\n" + "\t \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">BPS</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">BPD</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Pulse</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Temp</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Resp</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">SPO2</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.drug_order) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.nursing_instrutions) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Input Oral</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Input Fluids</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Output Rvles</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Output Motion</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Output Urine</font></th>\n" + "\t \n" + "  </tr>\n" + "  \n" + " " + Str3 + "\n" + "</table>\n" + "</div>\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + " <!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + this.getString(string.diabetic_chart) + "</font>\n" + "\n" + "\n" + "\n" + "\n" + "<div class=\"table-responsive\">          \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "  \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.date) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.time) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.visited_doctor) + "</font></th>\n" + "\t   \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.special_instruction) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.urine_sugar) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.lente) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.insulin_plain) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.blood_sugar) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.ketone_bodies) + "</font></th> \n" + "  </tr>\n" + "  \n" + "  \n" + "  \n" + "  " + Str4 + "\n" + " \n" + "</table>\n" + "</div>\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + " <!--------------------------------------------------------------------->\n" + "\n" + " \n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + this.getString(string.temperature_chart) + "</font>\n" + "\n" + "\n" + "\n" + "<div class=\"table-responsive\">          \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "  \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.date) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.time) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.visited_doctor) + "</font></th>\n" + "\t \n" + "\t \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.temperature_range) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.visitsummary) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.taken_time) + "</font></th> \n" + "  </tr>\n" + "  \n" + "  " + Str5 + "\n" + " \n" + "</table>\n" + "</div>\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + " <!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + this.getString(string.medical_case_record) + "</font>\n" + "\n" + "\n" + "\n" + "<div class=\"table-responsive\">          \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "  \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.date) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.time) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.visited_doctor) + "</font></th>\n" + "\t \n" + "  \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.clinical_notes) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.treatment_and_diet) + "</font></th>\n" + "\t \n" + "  </tr>\n" + "  \n" + "  " + Str6 + "\n" + " \n" + "</table>\n" + "</div>\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + " <!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + this.getString(string.medical_prescription) + "</font>\n" + "\n" + "\n" + "<div class=\"bs-example\"> \n" + "\n" + "\n" + "<div class=\"table-responsive\">          \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.medicinename) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.interval) + "</font></th>\n" + "\t<th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.frequency) + "</font></th>\n" + "\t<th bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.duration) + "</font></th>\n" + "\t \n" + "  </tr>\n" + "  \n" + "  " + Medicine_List + "\n" + " \n" + "</table>\n" + "</div>\n" + "\n" + "</div>\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + " <!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + this.getString(string.surgery_record) + "</font>\n" + "\n" + "\n" + "<div class=\"bs-example\"> \n" + " \n" + "\n" + "\n" + "<table style=\"width:100%\" class=\"table\">\n" + "   \n" + "<tbody>\n" + "\n" + "<td height=\"20\" style=\"color:#fff; background:#777575\"> <b>  " + this.getString(string.notes) + "</b></td>\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"><b> " + this.getString(string.date) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + surgery_date + "</td> \n" + "</tr>\n" + "\n" + "\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"><b>   " + this.getString(string.pre_operative_diagnosis) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + pre_operativediag + "</td>\n" + "</tr>\n" + "\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"><b>  " + this.getString(string.operativenotes) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + operative_notes + "</td>\n" + "</tr>\n" + "\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"><b>  " + this.getString(string.position) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + position + "</td>\n" + "</tr>\n" + "\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"><b>  " + this.getString(string.procedure) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + procedure + "</td>\n" + "</tr>\n" + "\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"><b>  " + this.getString(string.closure) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + closure + "</td>\n" + "</tr>\n" + "\n" + " \n" + " <tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  " + this.getString(string.post_operative_diagnosis) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + post_operativediag + "</td>\n" + "</tr>\n" + " \n" + " \n" + "<td height=\"20\" style=\"color:#fff; background:#777575\"> <b>  " + this.getString(string.treatment) + "</b></td>\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  " + this.getString(string.surgeon) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + surgeon + "</td>\n" + "</tr>\n" + "\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  " + this.getString(string.anaesthetist) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + anaesthetist + "</td>\n" + "</tr>\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  Asst</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + asst + "</td>\n" + "</tr>\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  " + this.getString(string.bloodloss) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + bloodloss + "</td>\n" + "</tr>\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  " + this.getString(string.histo_pathological_diagnosis) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + histopathological + "</td>\n" + "</tr>\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  " + this.getString(string.post_operative_instruction) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + post_op_instruct + "</td>\n" + "</tr>\n" + "</tbody>\n" + "</table>\n" + "\n" + "</div>\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<!----------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-bar-chart fa-2x\" aria-hidden=\"true\"></i> Bar chart</font>\n" + "<div class=\"table-responsive\">  \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "  \n" + "    <th onClick=\"showAndroidToast('1')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.inpatient_chart) + "</font></th>\n" + "    <th onClick=\"showAndroidToast('2')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.diabetic_chart) + "</font></th>\n" + "\t </tr>\n" + "\t \n" + "\t <tr>\n" + "\t <th onClick=\"showAndroidToast('3')\"  bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.temperature_chart) + "</font></th>\n" + "\t <th onClick=\"showAndroidToast('4')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.input_chart) + "</font></th> \n" + "\t</tr>\n" + "\t\n" + "\t<tr>\n" + "\t <th onClick=\"showAndroidToast('5')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.output_chart) + "</font></th> \n" + "\t</tr>\n" + "\t\n" + "</tbody>\n" + "</table>\n" + "</div>\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-line-chart fa-2x\" aria-hidden=\"true\"></i> Line chart</font>\n" + "<div class=\"table-responsive\">  \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "  \n" + "    <th onClick=\"showAndroidToast('6')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.inpatient_chart) + "</font></th>\n" + "    <th onClick=\"showAndroidToast('7')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.diabetic_chart) + "</font></th>\n" + "\t </tr>\n" + "\t \n" + "\t <tr>\n" + "\t <th onClick=\"showAndroidToast('8')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.temperature_chart) + "</font></th>\n" + "\t <th onClick=\"showAndroidToast('9')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.input_chart) + "</font></th> \n" + "\t</tr>\n" + "\t\n" + "\t<tr>\n" + "\t <th onClick=\"showAndroidToast('10')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + this.getString(string.output_chart) + "</font></th> \n" + "\t</tr>\n" + "\t\n" + "</tbody>\n" + "</table>\n" + "</div>" + "<!----------------------------------------------------------------->\n" + "</body>\n" + "</html>";
+            String value2 = "<!DOCTYPE html>\n" + "\n" + "<html lang=\"en\">\n" + "<head>\n" + "\n" + "<script type=\"text/javascript\">\n" + "    function showAndroidToast(toast) {\n" + "        android.showToast(toast);\n" + "    }\n" + "</script>\n" + "<meta name=\"viewport\" content=\"width=device-width, initial-scale=1\"/>\n" + "<link rel=\"stylesheet\"  type=\"text/css\" href=\"file:///android_asset/Doctor_Profile/css/english.css\"/>\n" + "\n" + "<link rel=\"stylesheet\" href=\"file:///android_asset/Doctor_Profile/css/bootstrap.min.css\" />\n" + "<link rel=\"stylesheet\" href=\"file:///android_asset/Doctor_Profile/css/bootstrap-theme.min.css\" />\n" + "\n" + "<link rel=\"stylesheet\" href=\"file:///android_asset/Doctor_Profile/css/font-awesome.min.css\" type=\"text/css\" />\n" + "\n" + "<script src=\"file:///android_asset/Doctor_Profile/css/jquery.min.js\"></script>\n" + "<script src=\"file:///android_asset/Doctor_Profile/css/bootstrap.min.js\" ></script>\n" + "\n" + "\n" + "\n" + "\n" + "</head>\n" + "<body>  \n" + " \n" + "  \n" + "<font class=\"sub\">  \n" + "\n" + "<i class=\"fa fa-user-circle-o fa-2x\" aria-hidden=\"true\"></i> " + getString(R.string.patientdetails) + "</font>\n" + "\n" + "" + Str1 + "\n" + "\n" + "\n" + "<br/>\n" + "<!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + getString(R.string.admission_details) + "</font>\n" + "\n" + "\n" + Str2 + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + " <!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + getString(R.string.i_pchart) + "</font>\n" + "\n" + "\n" + "\n" + "\n" + "<div class=\"table-responsive\">  \n" + "\n" + "        \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "  \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.date) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.time) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.visited_doctor) + "</font></th>\n" + "\t \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">BPS</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">BPD</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Pulse</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Temp</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Resp</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">SPO2</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.drug_order) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.nursing_instrutions) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Input Oral</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Input Fluids</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Output Rvles</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Output Motion</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">Output Urine</font></th>\n" + "\t \n" + "  </tr>\n" + "  \n" + " " + Str3 + "\n" + "</table>\n" + "</div>\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + " <!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + getString(R.string.diabetic_chart) + "</font>\n" + "\n" + "\n" + "\n" + "\n" + "<div class=\"table-responsive\">          \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "  \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.date) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.time) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.visited_doctor) + "</font></th>\n" + "\t   \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.special_instruction) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.urine_sugar) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.lente) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.insulin_plain) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.blood_sugar) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.ketone_bodies) + "</font></th> \n" + "  </tr>\n" + "  \n" + "  \n" + "  \n" + "  " + Str4 + "\n" + " \n" + "</table>\n" + "</div>\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + " <!--------------------------------------------------------------------->\n" + "\n" + " \n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + getString(R.string.temperature_chart) + "</font>\n" + "\n" + "\n" + "\n" + "<div class=\"table-responsive\">          \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "  \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.date) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.time) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.visited_doctor) + "</font></th>\n" + "\t \n" + "\t \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.temperature_range) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.visitsummary) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.taken_time) + "</font></th> \n" + "  </tr>\n" + "  \n" + "  " + Str5 + "\n" + " \n" + "</table>\n" + "</div>\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + " <!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + getString(R.string.medical_case_record) + "</font>\n" + "\n" + "\n" + "\n" + "<div class=\"table-responsive\">          \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "  \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.date) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.time) + "</font></th>\n" + "\t <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.visited_doctor) + "</font></th>\n" + "\t \n" + "  \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.clinical_notes) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.treatment_and_diet) + "</font></th>\n" + "\t \n" + "  </tr>\n" + "  \n" + "  " + Str6 + "\n" + " \n" + "</table>\n" + "</div>\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + " <!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + getString(R.string.medical_prescription) + "</font>\n" + "\n" + "\n" + "<div class=\"bs-example\"> \n" + "\n" + "\n" + "<div class=\"table-responsive\">          \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.medicinename) + "</font></th>\n" + "    <th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.interval) + "</font></th>\n" + "\t<th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.frequency) + "</font></th>\n" + "\t<th bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.duration) + "</font></th>\n" + "\t \n" + "  </tr>\n" + "  \n" + "  " + Medicine_List + "\n" + " \n" + "</table>\n" + "</div>\n" + "\n" + "</div>\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<br/>\n" + "<!----------------------------------------------------------------->\n" + " <!--------------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-address-card-o fa-2x\" aria-hidden=\"true\"></i> " + getString(R.string.surgery_record) + "</font>\n" + "\n" + "\n" + "<div class=\"bs-example\"> \n" + " \n" + "\n" + "\n" + "<table style=\"width:100%\" class=\"table\">\n" + "   \n" + "<tbody>\n" + "\n" + "<td height=\"20\" style=\"color:#fff; background:#777575\"> <b>  " + getString(R.string.notes) + "</b></td>\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"><b> " + getString(R.string.date) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + surgery_date + "</td> \n" + "</tr>\n" + "\n" + "\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"><b>   " + getString(R.string.pre_operative_diagnosis) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + pre_operativediag + "</td>\n" + "</tr>\n" + "\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"><b>  " + getString(R.string.operativenotes) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + operative_notes + "</td>\n" + "</tr>\n" + "\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"><b>  " + getString(R.string.position) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + position + "</td>\n" + "</tr>\n" + "\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"><b>  " + getString(R.string.procedure) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + procedure + "</td>\n" + "</tr>\n" + "\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"><b>  " + getString(R.string.closure) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + closure + "</td>\n" + "</tr>\n" + "\n" + " \n" + " <tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  " + getString(R.string.post_operative_diagnosis) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + post_operativediag + "</td>\n" + "</tr>\n" + " \n" + " \n" + "<td height=\"20\" style=\"color:#fff; background:#777575\"> <b>  " + getString(R.string.treatment) + "</b></td>\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  " + getString(R.string.surgeon) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + surgeon + "</td>\n" + "</tr>\n" + "\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  " + getString(R.string.anaesthetist) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + anaesthetist + "</td>\n" + "</tr>\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  Asst</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + asst + "</td>\n" + "</tr>\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  " + getString(R.string.bloodloss) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + bloodloss + "</td>\n" + "</tr>\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  " + getString(R.string.histo_pathological_diagnosis) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + histopathological + "</td>\n" + "</tr>\n" + "\n" + "<tr>\n" + "<td height=\"20\" style=\"color:#3d5987;\"> <b>  " + getString(R.string.post_operative_instruction) + "</b></td> \n" + "<td height=\"20\" style=\"color:#000000;\">:   " + post_op_instruct + "</td>\n" + "</tr>\n" + "</tbody>\n" + "</table>\n" + "\n" + "</div>\n" + "\n" + "\n" + "\n" + "\n" + "\n" + "<!----------------------------------------------------------------->\n" + "\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-bar-chart fa-2x\" aria-hidden=\"true\"></i> Bar chart</font>\n" + "<div class=\"table-responsive\">  \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "  \n" + "    <th onClick=\"showAndroidToast('1')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.inpatient_chart) + "</font></th>\n" + "    <th onClick=\"showAndroidToast('2')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.diabetic_chart) + "</font></th>\n" + "\t </tr>\n" + "\t \n" + "\t <tr>\n" + "\t <th onClick=\"showAndroidToast('3')\"  bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.temperature_chart) + "</font></th>\n" + "\t <th onClick=\"showAndroidToast('4')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.input_chart) + "</font></th> \n" + "\t</tr>\n" + "\t\n" + "\t<tr>\n" + "\t <th onClick=\"showAndroidToast('5')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.output_chart) + "</font></th> \n" + "\t</tr>\n" + "\t\n" + "</tbody>\n" + "</table>\n" + "</div>\n" + "\n" + "<font class=\"sub\"><i class=\"fa fa-line-chart fa-2x\" aria-hidden=\"true\"></i> Line chart</font>\n" + "<div class=\"table-responsive\">  \n" + "<table class=\"table table-bordered\">\n" + "  <tr>\n" + "  \n" + "  \n" + "    <th onClick=\"showAndroidToast('6')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.inpatient_chart) + "</font></th>\n" + "    <th onClick=\"showAndroidToast('7')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.diabetic_chart) + "</font></th>\n" + "\t </tr>\n" + "\t \n" + "\t <tr>\n" + "\t <th onClick=\"showAndroidToast('8')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.temperature_chart) + "</font></th>\n" + "\t <th onClick=\"showAndroidToast('9')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.input_chart) + "</font></th> \n" + "\t</tr>\n" + "\t\n" + "\t<tr>\n" + "\t <th onClick=\"showAndroidToast('10')\" bgcolor=\"#3d5987\"><font color=\"#fff\">" + getString(R.string.output_chart) + "</font></th> \n" + "\t</tr>\n" + "\t\n" + "</tbody>\n" + "</table>\n" + "</div>" + "<!----------------------------------------------------------------->\n" + "</body>\n" + "</html>";
 
 
             db.close();
@@ -876,13 +867,13 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
     @Override
     public final void onBackPressed() {
-        this.LoadBack();
+        LoadBack();
     }
 
     //#######################################################################################################
     public final void selectDate(View view) {
         DialogFragment newFragment = new SelectDateFragment();
-        newFragment.show(this.getFragmentManager(), "DatePicker");
+        newFragment.show(getFragmentManager(), "DatePicker");
 
     }
 
@@ -897,8 +888,8 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
     protected final Dialog onCreateDialog(int id) {
         switch (id) {
 
-            case Inpatient_Detailed_View.DATE_DIALOG_ID:
-                return new DatePickerDialog(this, this.mDateSetListener, Inpatient_Detailed_View.mYear, Inpatient_Detailed_View.mMonth, Inpatient_Detailed_View.mDay);
+            case DATE_DIALOG_ID:
+                return new DatePickerDialog(this, mDateSetListener, mYear, mMonth, mDay);
         }
         return null;
     }
@@ -906,8 +897,8 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
     protected final void onPrepareDialog(int id, Dialog dialog) {
         switch (id) {
 
-            case Inpatient_Detailed_View.DATE_DIALOG_ID:
-                ((DatePickerDialog) dialog).updateDate(Inpatient_Detailed_View.mYear, Inpatient_Detailed_View.mMonth, Inpatient_Detailed_View.mDay);
+            case DATE_DIALOG_ID:
+                ((DatePickerDialog) dialog).updateDate(mYear, mMonth, mDay);
 
                 break;
         }
@@ -926,7 +917,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
         Date got;
 
         try {
-            got = dateFormat.parse(Inpatient_Detailed_View.mDay + "/" + (Inpatient_Detailed_View.mMonth + 1) + '/' + Inpatient_Detailed_View.mYear);
+            got = dateFormat.parse(mDay + "/" + (mMonth + 1) + '/' + mYear);
 
             int result = dateFormat.parse(strdate1).compareTo(got);
 
@@ -948,95 +939,95 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
     private final void ShowDialog() {
 
 
-        CharSequence[] items =
+        final CharSequence[] items =
                 {
-                        this.getString(string.search),
-                        this.getString(string.add_inpatient_details_txt),
-                        this.getString(string.add_diet_details),
-                        this.getString(string.clinical_informaiton),
-                        this.getString(string.casenotes),
-                        this.getString(string.investigation),
-                        this.getString(string.prescription),
-                        this.getString(string.close)
+                        getString(R.string.search),
+                        getString(R.string.add_inpatient_details_txt),
+                        getString(R.string.add_diet_details),
+                        getString(R.string.clinical_informaiton),
+                        getString(R.string.casenotes),
+                        getString(R.string.investigation),
+                        getString(R.string.prescription),
+                        getString(R.string.close)
                 };
 
-        Builder builder = new Builder(this, style.MyAlertDialogStyle);
-        builder.setTitle(this.getString(string.options));
+        android.support.v7.app.AlertDialog.Builder builder = new android.support.v7.app.AlertDialog.Builder(Inpatient_Detailed_View.this, R.style.MyAlertDialogStyle);
+        builder.setTitle(getString(R.string.options));
         builder.setItems(items, (dialog, item) -> {
 
 
-            if (items[item].toString().equalsIgnoreCase(this.getString(string.clinical_informaiton))) {
+            if (items[item].toString().equalsIgnoreCase(getString(R.string.clinical_informaiton))) {
 
-                Intent i = new Intent(this, ClinicalInformation.class);
+                Intent i = new Intent(Inpatient_Detailed_View.this, ClinicalInformation.class);
                 i.putExtra("FROM", "INPATIENT");
                 i.putExtra("CONTINUE_STATUS", "True");
-                i.putExtra("PASSING_PATIENT_ID", this.COMMON_PATIENTID);
-                this.startActivity(i);
-                this.finish();
+                i.putExtra("PASSING_PATIENT_ID", COMMON_PATIENTID);
+                startActivity(i);
+                finish();
 
-            } else if (items[item].toString().equalsIgnoreCase(this.getString(string.casenotes))) {
-                Intent i = new Intent(this, CaseNotes.class);
-                i.putExtra("FROM", "INPATIENT");
-                i.putExtra("CONTINUE_STATUS", "True");
-                i.putExtra("PASSING_TREATMENTFOR", "");
-                i.putExtra("PASSING_DIAGNOSIS", "");
-                i.putExtra("PASSING_PATIENT_ID", this.COMMON_PATIENTID);
-                this.startActivity(i);
-                this.finish();
-
-            } else if (items[item].toString().equalsIgnoreCase(this.getString(string.investigation))) {
-
-                Intent i = new Intent(this, Investigations.class);
+            } else if (items[item].toString().equalsIgnoreCase(getString(R.string.casenotes))) {
+                Intent i = new Intent(Inpatient_Detailed_View.this, CaseNotes.class);
                 i.putExtra("FROM", "INPATIENT");
                 i.putExtra("CONTINUE_STATUS", "True");
                 i.putExtra("PASSING_TREATMENTFOR", "");
                 i.putExtra("PASSING_DIAGNOSIS", "");
-                i.putExtra("PASSING_PATIENT_ID", this.COMMON_PATIENTID);
-                this.startActivity(i);
-                this.finish();
+                i.putExtra("PASSING_PATIENT_ID", COMMON_PATIENTID);
+                startActivity(i);
+                finish();
 
-            } else if (items[item].toString().equalsIgnoreCase(this.getString(string.prescription))) {
+            } else if (items[item].toString().equalsIgnoreCase(getString(R.string.investigation))) {
 
-                Intent i = new Intent(this, MedicinePrescription.class);
+                Intent i = new Intent(Inpatient_Detailed_View.this, Investigations.class);
                 i.putExtra("FROM", "INPATIENT");
                 i.putExtra("CONTINUE_STATUS", "True");
                 i.putExtra("PASSING_TREATMENTFOR", "");
                 i.putExtra("PASSING_DIAGNOSIS", "");
-                i.putExtra("PASSING_PATIENT_ID", this.COMMON_PATIENTID);
-                this.startActivity(i);
-                this.finish();
+                i.putExtra("PASSING_PATIENT_ID", COMMON_PATIENTID);
+                startActivity(i);
+                finish();
+
+            } else if (items[item].toString().equalsIgnoreCase(getString(R.string.prescription))) {
+
+                Intent i = new Intent(Inpatient_Detailed_View.this, MedicinePrescription.class);
+                i.putExtra("FROM", "INPATIENT");
+                i.putExtra("CONTINUE_STATUS", "True");
+                i.putExtra("PASSING_TREATMENTFOR", "");
+                i.putExtra("PASSING_DIAGNOSIS", "");
+                i.putExtra("PASSING_PATIENT_ID", COMMON_PATIENTID);
+                startActivity(i);
+                finish();
 
             }
-            else if (items[item].toString().equalsIgnoreCase(this.getString(string.add_inpatient_details_txt))) {
+            else if (items[item].toString().equalsIgnoreCase(getString(R.string.add_inpatient_details_txt))) {
 
 
-                Intent intent = new Intent(this, Inpatient_Inputs.class);
+                Intent intent = new Intent(Inpatient_Detailed_View.this, Inpatient_Inputs.class);
                 Bundle b = new Bundle();
-                b.putString(BaseConfig.BUNDLE_PATIENT_ID, this.Bundle_Patient_Id);
+                b.putString(BaseConfig.BUNDLE_PATIENT_ID, Bundle_Patient_Id);
                 intent.putExtras(b);
-                this.startActivityForResult(intent, Inpatient_Detailed_View.LoadBack_ACTIVITY);
+                startActivityForResult(intent, LoadBack_ACTIVITY);
 
 
-            } else if (items[item].toString().equalsIgnoreCase(this.getString(string.add_diet_details))) {
+            } else if (items[item].toString().equalsIgnoreCase(getString(R.string.add_diet_details))) {
 
-                Intent i = new Intent(this, AddDietActivity.class);
+                Intent i = new Intent(Inpatient_Detailed_View.this, AddDietActivity.class);
                 Bundle b = new Bundle();
-                b.putString(BaseConfig.BUNDLE_PATIENT_ID, this.Bundle_Patient_Id);
+                b.putString(BaseConfig.BUNDLE_PATIENT_ID, Bundle_Patient_Id);
                 i.putExtras(b);
-                this.startActivity(i);
+                startActivity(i);
 
-            }else if (items[item].toString().equalsIgnoreCase(this.getString(string.search))) {
+            }else if (items[item].toString().equalsIgnoreCase(getString(R.string.search))) {
 
-                this.LoadSearch();
+                LoadSearch();
 
-            }else if (items[item].toString().equalsIgnoreCase(this.getString(string.close))) {
+            }else if (items[item].toString().equalsIgnoreCase(getString(R.string.close))) {
 
 
             }
 
 
         });
-        builder.create().getWindow().getAttributes().windowAnimations = style.DialogAnimation;
+        builder.create().getWindow().getAttributes().windowAnimations = R.style.DialogAnimation;
         builder.create().show();
 
 
@@ -1047,9 +1038,9 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
         super.onResume();
         try {
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
-            this.dateFormatter = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
+            dateFormatter = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
             try {
-                this.LoadWebview(sdf.format(new Date()));
+                LoadWebview(sdf.format(new Date()));
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -1061,23 +1052,23 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
     private void LoadSearch() {
 
         Calendar newCalendar = Calendar.getInstance();
-        this.fromDatePickerDialog = new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {
+        fromDatePickerDialog = new DatePickerDialog(this, (view, year, monthOfYear, dayOfMonth) -> {
             Calendar newDate = Calendar.getInstance();
             newDate.set(year, monthOfYear, dayOfMonth);
             //Toast.makeText(this, ""+ dateFormatter.format(newDate.getTime()), Toast.LENGTH_SHORT).show();
 
-            String Date = this.dateFormatter.format(newDate.getTime());
-            this.LoadWebview(Date);
+            String Date = dateFormatter.format(newDate.getTime());
+            LoadWebview(Date);
 
 
         }, newCalendar.get(Calendar.YEAR), newCalendar.get(Calendar.MONTH), newCalendar.get(Calendar.DAY_OF_MONTH));
 
-        this.fromDatePickerDialog.show();
+        fromDatePickerDialog.show();
 
     }
 
-    private final OnDateChangedListener dateChangedListener =
-            new OnDateChangedListener(){
+    private DatePicker.OnDateChangedListener dateChangedListener =
+            new DatePicker.OnDateChangedListener(){
                 @Override
                 public void onDateChanged(DatePicker datePicker, int i, int i1, int i2) {
                     Toast.makeText(Inpatient_Detailed_View.this, "picked date is " + datePicker.getDayOfMonth() +
@@ -1096,7 +1087,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
          * Instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
-            this.mContext = c;
+            mContext = c;
         }
 
         /**
@@ -1105,7 +1096,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
         @JavascriptInterface
         public final void showToast(String id) {//Blood report
 
-            Inpatient_Detailed_View.this.LoadingChart(null, Integer.parseInt(id));
+            LoadingChart(null, Integer.parseInt(id));
 
         }
 
@@ -1115,21 +1106,21 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
     // /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
     @SuppressLint("ValidFragment")
-    public class SelectDateFragment extends DialogFragment implements OnDateSetListener {
+    public class SelectDateFragment extends DialogFragment implements DatePickerDialog.OnDateSetListener {
         public SelectDateFragment() {
         }
 
         @Override
         public final Dialog onCreateDialog(Bundle savedInstanceState) {
-            Calendar calendar = Calendar.getInstance();
+            final Calendar calendar = Calendar.getInstance();
             int yy = calendar.get(Calendar.YEAR);
             int mm = calendar.get(Calendar.MONTH);
             int dd = calendar.get(Calendar.DAY_OF_MONTH);
-            return new DatePickerDialog(this.getActivity(), this, yy, mm, dd);
+            return new DatePickerDialog(getActivity(), this, yy, mm, dd);
         }
 
         public final void onDateSet(DatePicker datePicker, int i, int i1, int i2) {
-            Inpatient_Detailed_View.this.populateSetDate(i, i1 + 1, i2);
+            populateSetDate(i, i1 + 1, i2);
 
         }
 

@@ -1,17 +1,13 @@
 package kdmc_kumar.Inpatient_Module;
 
 import android.app.AlertDialog;
-import android.app.AlertDialog.Builder;
 import android.app.DatePickerDialog;
-import android.app.DatePickerDialog.OnDateSetListener;
 import android.app.Dialog;
 import android.content.ContentValues;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.annotation.RequiresApi;
@@ -31,7 +27,6 @@ import android.util.DisplayMetrics;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.ViewGroup.LayoutParams;
 import android.view.Window;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -55,13 +50,7 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.anim;
-import displ.mobydocmarathi.com.R.color;
-import displ.mobydocmarathi.com.R.drawable;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
-import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects;
+import kdmc_kumar.Adapters_GetterSetter.CommonDataObjects.MyPatientGetSet;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.DashBoardAdapter;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
 import kdmc_kumar.Adapters_GetterSetter.InpatientRecyclerAdapter;
@@ -75,54 +64,55 @@ public class Inpatient_List extends AppCompatActivity {
     private static final int LoadBack_ACTIVITY = 2;
     private static final int RESULT_SPEECH = 1;
     private static final int DATE_DIALOG_ID_1 = 1;
-    public static int mcYear;
-    public static int mcMonth;
-    public static int mcDay;
-    private static int mYear;
-    private static int mMonth;
-    private static int mDay;
+    public static int mcYear = 0;
+    public static int mcMonth = 0;
+    public static int mcDay = 0;
+    private static int mYear = 0;
+    private static int mMonth = 0;
+    private static int mDay = 0;
 
     private final String QueryInPatient = "select id,prefix,patientname as name,Patid,age,gender,PC as photo  from Patreg  where enable_inpatient=1 order by patientname, id ";
-    private final OnDateSetListener mDateSetListener1 = (datePicker, i, i1, i2) -> {
-        Inpatient_List.mYear = i;
-        Inpatient_List.mMonth = i1;
-        Inpatient_List.mDay = i2;
-        this.updateDisplay();
+    ;
+    private final DatePickerDialog.OnDateSetListener mDateSetListener1 = (datePicker, i, i1, i2) -> {
+        mYear = i;
+        mMonth = i1;
+        mDay = i2;
+        updateDisplay();
     };
-    @BindView(id.inpatient_parent_layout)
+    @BindView(R.id.inpatient_parent_layout)
     CoordinatorLayout inpatientParentLayout;
-    @BindView(id.inpatient_toolbar)
+    @BindView(R.id.inpatient_toolbar)
     Toolbar inpatientToolbar;
-    @BindView(id.inpatient_back)
+    @BindView(R.id.inpatient_back)
     AppCompatImageView inpatientBack;
-    @BindView(id.txvw_title)
+    @BindView(R.id.txvw_title)
     TextView txvwTitle;
-    @BindView(id.listgrid)
+    @BindView(R.id.listgrid)
     AppCompatImageView listgrid;
-    @BindView(id.admin_request)
+    @BindView(R.id.admin_request)
     AppCompatImageView adminRequest;
-    @BindView(id.operation_theater)
+    @BindView(R.id.operation_theater)
     AppCompatImageView operationTheater;
-    @BindView(id.imgvw_exit)
+    @BindView(R.id.imgvw_exit)
     AppCompatImageView imgvwExit;
-    @BindView(id.cardvw_search_bar)
+    @BindView(R.id.cardvw_search_bar)
     CardView cardvwSearchBar;
-    @BindView(id.edittext_search)
+    @BindView(R.id.edittext_search)
     EditText edittextSearch;
-    @BindView(id.button_clear)
+    @BindView(R.id.button_clear)
     ImageButton btClear;
-    @BindView(id.button_refresh)
+    @BindView(R.id.button_refresh)
     ImageButton btRefresh;
-    @BindView(id.textvw_patient_count)
+    @BindView(R.id.textvw_patient_count)
     TextView textvwPatientCount;
-    @BindView(id.imagevw_no_data_available)
+    @BindView(R.id.imagevw_no_data_available)
     AppCompatImageView imagevwNoDataAvailable;
-    @BindView(id.inpatient_fastscrollview)
+    @BindView(R.id.inpatient_fastscrollview)
     FastScrollRecyclerView inpatientFastscrollview;
     //**********************************************************************************************
     Dialog builderDialog;
-    private ArrayList<CommonDataObjects.MyPatientGetSet> rowItems;
-    private InpatientRecyclerAdapter inpatientRecyclerAdapter;
+    private ArrayList<MyPatientGetSet> rowItems = null;
+    private InpatientRecyclerAdapter inpatientRecyclerAdapter = null;
 
     public Inpatient_List() {
     }
@@ -162,12 +152,12 @@ public class Inpatient_List extends AppCompatActivity {
 
         super.onCreate(savedInstanceState);
 
-        this.setContentView(layout.kdmc_layout_inpatient_list);
+        setContentView(R.layout.kdmc_layout_inpatient_list);
 
 
         try {
-            this.GETINITIALIZE();
-            this.CONTROLLISTENERS();
+            GETINITIALIZE();
+            CONTROLLISTENERS();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -178,15 +168,15 @@ public class Inpatient_List extends AppCompatActivity {
     private void CONTROLLISTENERS() {
 
 
-        this.edittextSearch.addTextChangedListener(new TextWatcher() {
+        edittextSearch.addTextChangedListener(new TextWatcher() {
 
-            @RequiresApi(api = VERSION_CODES.N)
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void onTextChanged(CharSequence charSequence, int i, int i1,
                                       int i2) {
 
 
-                if (Inpatient_List.this.edittextSearch.getText().toString().length() > 0) {
+                if (edittextSearch.getText().toString().length() > 0) {
                     boolean istext = false;
                     try {
                         Integer.parseInt(charSequence.toString());
@@ -195,9 +185,9 @@ public class Inpatient_List extends AppCompatActivity {
                     } catch (NumberFormatException ignored) {
                         istext = true;
                     }
-                    Inpatient_List.this.SelectedGetPatientDetailsFilter(Inpatient_List.this.QueryInPatient, charSequence.toString(), istext);
+                    SelectedGetPatientDetailsFilter(QueryInPatient, charSequence.toString(), istext);
                 } else {
-                    Inpatient_List.this.textvwPatientCount.setText(String.format("%s: %d", Inpatient_List.this.getString(string.no_of_pat), Inpatient_List.this.rowItems.size()));
+                    textvwPatientCount.setText(String.format("%s: %d", getString(R.string.no_of_pat), rowItems.size()));
                 }
 
 
@@ -205,16 +195,16 @@ public class Inpatient_List extends AppCompatActivity {
 
             @Override
             public void afterTextChanged(Editable editable) {
-                if (Inpatient_List.this.edittextSearch.getText().toString().length() > 0) {
+                if (edittextSearch.getText().toString().length() > 0) {
 
 
                 } else {
-                    Inpatient_List.this.SelectedGetPatientDetails(Inpatient_List.this.QueryInPatient);
-                    Inpatient_List.this.textvwPatientCount.setText(String.format("%s: %d", Inpatient_List.this.getString(string.no_of_pat), Inpatient_List.this.rowItems.size()));
+                    SelectedGetPatientDetails(QueryInPatient);
+                    textvwPatientCount.setText(String.format("%s: %d", getString(R.string.no_of_pat), rowItems.size()));
                 }
             }
 
-            @RequiresApi(api = VERSION_CODES.N)
+            @RequiresApi(api = Build.VERSION_CODES.N)
             @Override
             public void beforeTextChanged(CharSequence charSequence, int i,
                                           int i1, int i2) {
@@ -231,19 +221,19 @@ public class Inpatient_List extends AppCompatActivity {
                 }
 
 
-                Inpatient_List.this.SelectedGetPatientDetailsFilter(Inpatient_List.this.QueryInPatient, charSequence.toString(), istext);
+                SelectedGetPatientDetailsFilter(QueryInPatient, charSequence.toString(), istext);
 
             }
         });
 
-        this.btClear.setOnClickListener(view -> {
+        btClear.setOnClickListener(view -> {
 
-            if (this.edittextSearch.getText().toString().length() > 0) {
+            if (edittextSearch.getText().toString().length() > 0) {
 
-                this.edittextSearch.setText("");
-                this.inpatientRecyclerAdapter = new InpatientRecyclerAdapter(this.rowItems);
-                this.inpatientFastscrollview.setAdapter(this.inpatientRecyclerAdapter);
-                this.textvwPatientCount.setText(String.format("%s:%s", this.getString(string.noofpatient), String.valueOf(this.rowItems.size())));
+                edittextSearch.setText("");
+                inpatientRecyclerAdapter = new InpatientRecyclerAdapter(rowItems);
+                inpatientFastscrollview.setAdapter(inpatientRecyclerAdapter);
+                textvwPatientCount.setText(String.format("%s:%s", getString(R.string.noofpatient), String.valueOf(rowItems.size())));
 
 
             }
@@ -251,56 +241,56 @@ public class Inpatient_List extends AppCompatActivity {
         });
 
 
-        this.inpatientBack.setOnClickListener(v -> {
+        inpatientBack.setOnClickListener(v -> {
 
-            BaseConfig.globalStartIntent(this, Dashboard_NavigationMenu.class, null);
-
-        });
-
-        this.adminRequest.setOnClickListener(v -> this.ShowRequestDialog());
-
-        this.operationTheater.setOnClickListener(v -> {
-
-            BaseConfig.globalStartIntent(this, OperationTheater.class, null);
+            BaseConfig.globalStartIntent(Inpatient_List.this, Dashboard_NavigationMenu.class, null);
 
         });
 
+        adminRequest.setOnClickListener(v -> ShowRequestDialog());
 
-        this.imgvwExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(this, null));
+        operationTheater.setOnClickListener(v -> {
+
+            BaseConfig.globalStartIntent(Inpatient_List.this, OperationTheater.class, null);
+
+        });
 
 
-        this.listgrid.setOnClickListener(v -> {
+        imgvwExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(Inpatient_List.this, null));
+
+
+        listgrid.setOnClickListener(v -> {
             if (BaseConfig.listViewType.equals(ListViewType.ListView)) {
                 BaseConfig.listViewType = ListViewType.GrideView;
-                this.inpatientFastscrollview.setLayoutManager(new GridLayoutManager(this, 2));
-                this.inpatientFastscrollview.setHasFixedSize(true);
-                this.inpatientFastscrollview.setNestedScrollingEnabled(false);
-                this.SelectedGetPatientDetails(this.QueryInPatient);
-                this.listgrid.setImageResource(drawable.list);
+                inpatientFastscrollview.setLayoutManager(new GridLayoutManager(Inpatient_List.this, 2));
+                inpatientFastscrollview.setHasFixedSize(true);
+                inpatientFastscrollview.setNestedScrollingEnabled(false);
+                SelectedGetPatientDetails(QueryInPatient);
+                listgrid.setImageResource(R.drawable.list);
             } else {
                 BaseConfig.listViewType = ListViewType.ListView;
-                this.listgrid.setImageResource(drawable.grid);
-                this.inpatientFastscrollview.setLayoutManager(new LinearLayoutManager(this));
-                this.inpatientFastscrollview.setHasFixedSize(true);
-                this.inpatientFastscrollview.setNestedScrollingEnabled(false);
-                this.SelectedGetPatientDetails(this.QueryInPatient);
+                listgrid.setImageResource(R.drawable.grid);
+                inpatientFastscrollview.setLayoutManager(new LinearLayoutManager(Inpatient_List.this));
+                inpatientFastscrollview.setHasFixedSize(true);
+                inpatientFastscrollview.setNestedScrollingEnabled(false);
+                SelectedGetPatientDetails(QueryInPatient);
             }
         });
 
 
-        assert this.inpatientFastscrollview != null;
+        assert inpatientFastscrollview != null;
 
 
-        Animation animRotate = AnimationUtils.loadAnimation(this, anim.anim_rotate);
+        final Animation animRotate = AnimationUtils.loadAnimation(this, R.anim.anim_rotate);
 
-        this.btRefresh.setOnClickListener(v -> {
+        btRefresh.setOnClickListener(v -> {
 
             try {
-                this.edittextSearch.setText("");
+                edittextSearch.setText("");
                 v.startAnimation(animRotate);
-                this.SelectedGetPatientDetails(this.QueryInPatient);
+                SelectedGetPatientDetails(QueryInPatient);
 
-                Toast.makeText(this, string.refresh_txt, Toast.LENGTH_LONG).show();
+                Toast.makeText(Inpatient_List.this, R.string.refresh_txt, Toast.LENGTH_LONG).show();
 
 
             } catch (Exception e) {
@@ -318,9 +308,9 @@ public class Inpatient_List extends AppCompatActivity {
         ButterKnife.bind(this);
 
 
-        this.setSupportActionBar(this.inpatientToolbar);
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            ViewCompat.setTransitionName(this.inpatientToolbar, DashBoardAdapter.VIEW_NAME_HEADER_TITLE);
+        setSupportActionBar(inpatientToolbar);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ViewCompat.setTransitionName(inpatientToolbar, DashBoardAdapter.VIEW_NAME_HEADER_TITLE);
         }
 
 
@@ -328,31 +318,31 @@ public class Inpatient_List extends AppCompatActivity {
 
         BaseConfig.welcometoast = 0;
         if (BaseConfig.HOSPITALNAME.length() > 0) {
-            this.txvwTitle.setText(String.format("%s  -  %s", BaseConfig.HOSPITALNAME, this.getString(string.title_inpatient)));
+            txvwTitle.setText(String.format("%s  -  %s", BaseConfig.HOSPITALNAME, getString(R.string.title_inpatient)));
         } else {
-            this.txvwTitle.setText(this.getString(string.title_inpatient));
+            txvwTitle.setText(getString(R.string.title_inpatient));
         }
 
 
-        this.rowItems = new ArrayList<>();
+        rowItems = new ArrayList<>();
 
-        GridLayoutManager lLayout = new GridLayoutManager(this, 2);
-        this.inpatientFastscrollview.setHasFixedSize(true);
-        this.inpatientFastscrollview.setLayoutManager(lLayout);
-        this.inpatientFastscrollview.setNestedScrollingEnabled(false);
+        GridLayoutManager lLayout = new GridLayoutManager(Inpatient_List.this, 2);
+        inpatientFastscrollview.setHasFixedSize(true);
+        inpatientFastscrollview.setLayoutManager(lLayout);
+        inpatientFastscrollview.setNestedScrollingEnabled(false);
 
 
         if (BaseConfig.listViewType.equals(ListViewType.ListView)) {
-            this.inpatientFastscrollview.setLayoutManager(new LinearLayoutManager(this));
+            inpatientFastscrollview.setLayoutManager(new LinearLayoutManager(this));
         } else {
-            this.inpatientFastscrollview.setLayoutManager(new GridLayoutManager(this, 2));
+            inpatientFastscrollview.setLayoutManager(new GridLayoutManager(Inpatient_List.this, 2));
         }
 
 
-        this.imagevwNoDataAvailable.setVisibility(View.GONE);
+        imagevwNoDataAvailable.setVisibility(View.GONE);
 
 
-        new LoadPatientInfo(this.QueryInPatient, 1).execute();
+        new LoadPatientInfo(QueryInPatient, 1).execute();
 
 
     }
@@ -362,7 +352,7 @@ public class Inpatient_List extends AppCompatActivity {
 
             SQLiteDatabase db = BaseConfig.GetDb();//);
             Cursor c = db.rawQuery(Query, null);
-            this.rowItems.clear();
+            rowItems.clear();
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -377,9 +367,9 @@ public class Inpatient_List extends AppCompatActivity {
                         String PHOTO = c.getString(c.getColumnIndex("photo"));
 
 
-                        CommonDataObjects.MyPatientGetSet item = new CommonDataObjects.MyPatientGetSet(PREFIX, PREFIX+"."+NAME, PATID, AGE, GENDER, PHOTO);
+                        MyPatientGetSet item = new MyPatientGetSet(PREFIX, PREFIX+"."+NAME, PATID, AGE, GENDER, PHOTO);
                         item.IsOnlinePatient = false;
-                        this.rowItems.add(item);
+                        rowItems.add(item);
 
 
                     } while (c.moveToNext());
@@ -403,7 +393,7 @@ public class Inpatient_List extends AppCompatActivity {
 
             SQLiteDatabase db = BaseConfig.GetDb();//);
             Cursor c = db.rawQuery(Query, null);
-            this.rowItems.clear();
+            rowItems.clear();
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -418,7 +408,7 @@ public class Inpatient_List extends AppCompatActivity {
                         String PHOTO = c.getString(c.getColumnIndex("photo"));
 
 
-                        CommonDataObjects.MyPatientGetSet item = new CommonDataObjects.MyPatientGetSet(PREFIX, PREFIX+"."+NAME, PATID, AGE, GENDER, PHOTO);
+                        MyPatientGetSet item = new MyPatientGetSet(PREFIX, PREFIX+"."+NAME, PATID, AGE, GENDER, PHOTO);
                         String val = c.getString(c.getColumnIndex("name"));
                         String name[] = val.split("\\.");
                         item.IsOnlinePatient = false;
@@ -431,13 +421,13 @@ public class Inpatient_List extends AppCompatActivity {
                         }
                         if (isName) {
                             if (val1.toLowerCase().startsWith(filtervalue)) {
-                                this.rowItems.add(item);
+                                rowItems.add(item);
                             }
 
                         } else {
 
                             if (c.getString(c.getColumnIndex("Patid")).split("/")[3].startsWith(filtervalue)) {
-                                this.rowItems.add(item);
+                                rowItems.add(item);
                             }
                         }
 
@@ -450,11 +440,11 @@ public class Inpatient_List extends AppCompatActivity {
             c.close();
             db.close();
 
-            this.inpatientRecyclerAdapter = new InpatientRecyclerAdapter(this.rowItems);
+            inpatientRecyclerAdapter = new InpatientRecyclerAdapter(rowItems);
 
-            this.inpatientFastscrollview.setAdapter(this.inpatientRecyclerAdapter);
+            inpatientFastscrollview.setAdapter(inpatientRecyclerAdapter);
 
-            this.textvwPatientCount.setText(String.format("%s: %s", this.getString(string.no_of_pat), String.valueOf(this.rowItems.size())));
+            textvwPatientCount.setText(String.format("%s: %s", getString(R.string.no_of_pat), String.valueOf(rowItems.size())));
 
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -474,9 +464,9 @@ public class Inpatient_List extends AppCompatActivity {
     protected final Dialog onCreateDialog(int id) {
         switch (id) {
 
-            case Inpatient_List.DATE_DIALOG_ID_1:
+            case DATE_DIALOG_ID_1:
 
-                return new DatePickerDialog(this, this.mDateSetListener1, Inpatient_List.mYear, Inpatient_List.mMonth, Inpatient_List.mDay);
+                return new DatePickerDialog(this, mDateSetListener1, mYear, mMonth, mDay);
 
 
         }
@@ -491,12 +481,12 @@ public class Inpatient_List extends AppCompatActivity {
         String strdate1 = sdf1.format(c1.getTime());
         Date got;
         try {
-            got = dateFormat.parse(Inpatient_List.mDay + "/" + (Inpatient_List.mMonth + 1) + '/' + Inpatient_List.mYear);
+            got = dateFormat.parse(mDay + "/" + (mMonth + 1) + '/' + mYear);
             int result = dateFormat.parse(strdate1).compareTo(got);
 
             if (result < 0) {
 
-                BaseConfig.showSimplePopUp("Invalid Selection. Please select correct date", "Warning!", this, drawable.ic_warning_black_24dp, color.orange_500);
+                BaseConfig.showSimplePopUp("Invalid Selection. Please select correct date", "Warning!", this, R.drawable.ic_warning_black_24dp, R.color.orange_500);
 
             }
         } catch (Exception e) {
@@ -506,10 +496,10 @@ public class Inpatient_List extends AppCompatActivity {
     }
 
     private void ShowSuccessFullyPlacedRequest() {
-        Builder alertBuilder = new Builder(this);
-        alertBuilder.setTitle(this.getString(string.title_inpatient));
-        alertBuilder.setMessage(string.request_placed);
-        alertBuilder.setPositiveButton(this.getString(string.ok), (dialog, which) -> {
+        AlertDialog.Builder alertBuilder = new AlertDialog.Builder(this);
+        alertBuilder.setTitle(getString(R.string.title_inpatient));
+        alertBuilder.setMessage(R.string.request_placed);
+        alertBuilder.setPositiveButton(getString(R.string.ok), (dialog, which) -> {
 
         });
         alertBuilder.show();
@@ -517,18 +507,18 @@ public class Inpatient_List extends AppCompatActivity {
 
     private void ShowRequestDialog() {
 
-        View view = this.getLayoutInflater().inflate(layout.inpatient_request_layout, null);
-        AutoCompleteTextView patientAuto = view.findViewById(id.patient_detail_values);
+        View view = getLayoutInflater().inflate(R.layout.inpatient_request_layout, null);
+        final AutoCompleteTextView patientAuto = view.findViewById(R.id.patient_detail_values);
         patientAuto.setThreshold(1);
-        Inpatient_List.LoadPatentIDnameForAuto(patientAuto);
-        EditText remarksEdt = view.findViewById(id.request_remarks_edt);
-        Button submitBtn = view.findViewById(id.submit);
-        Button cancelBtn = view.findViewById(id.cancel);
-        Spinner WardCategory = view.findViewById(id.ward_category);
+        LoadPatentIDnameForAuto(patientAuto);
+        final EditText remarksEdt = view.findViewById(R.id.request_remarks_edt);
+        Button submitBtn = view.findViewById(R.id.submit);
+        Button cancelBtn = view.findViewById(R.id.cancel);
+        Spinner WardCategory = view.findViewById(R.id.ward_category);
         TextView Title_PatientName, Title_WarCategory, Title_Remarks;
-        Title_PatientName = view.findViewById(id.txtvw_patname);
-        Title_WarCategory = view.findViewById(id.txtvw_wardcategory);
-        Title_Remarks = view.findViewById(id.txtvw_remarks);
+        Title_PatientName = view.findViewById(R.id.txtvw_patname);
+        Title_WarCategory = view.findViewById(R.id.txtvw_wardcategory);
+        Title_Remarks = view.findViewById(R.id.txtvw_remarks);
 
         String first2 = "Patient Name";
         String next2 = "<font color='#EE0000'><b>*</b></font>";
@@ -542,9 +532,9 @@ public class Inpatient_List extends AppCompatActivity {
         String next4 = "<font color='#EE0000'><b>*</b></font>";
         Title_Remarks.setText(Html.fromHtml(first4 + next4));
 
-        BaseConfig.LoadValuesSpinner(WardCategory, this, "select distinct WardCatName as dvalue from Mstr_WardCategory where HID='" + BaseConfig.HID + "' order by ServerId;", "select ward category");
+        BaseConfig.LoadValuesSpinner(WardCategory, Inpatient_List.this, "select distinct WardCatName as dvalue from Mstr_WardCategory where HID='" + BaseConfig.HID + "' order by ServerId;", "select ward category");
 
-        Dialog dialog = new Dialog(this);
+        final Dialog dialog = new Dialog(this);
         dialog.requestWindowFeature(Window.FEATURE_NO_TITLE);
         dialog.setContentView(view);
         submitBtn.setOnClickListener(v -> {
@@ -578,7 +568,7 @@ public class Inpatient_List extends AppCompatActivity {
                                 Db.insert("inpatient_request", null, values);
                                 dialog.dismiss();
 
-                                this.ShowSuccessFullyPlacedRequest();
+                                ShowSuccessFullyPlacedRequest();
 
                             } else {
 //                                Toast.makeText(Inpatient_List.this, "Selected Patient Id/Name is not valid!", Toast.LENGTH_LONG).show();
@@ -595,31 +585,31 @@ public class Inpatient_List extends AppCompatActivity {
                         }
 
                     } else {
-                        Toast.makeText(this, string.valid_patient_details, Toast.LENGTH_LONG).show();
-                        BaseConfig.SnackBar(this, this.getResources().getString(string.valid_patient_details), view, 2);
+                        Toast.makeText(Inpatient_List.this, R.string.valid_patient_details, Toast.LENGTH_LONG).show();
+                        BaseConfig.SnackBar(this, getResources().getString(R.string.valid_patient_details), view, 2);
 
                     }
 
                 } else {
 
-                    Toast.makeText(this, string.choose_ward, Toast.LENGTH_LONG).show();
-                    BaseConfig.SnackBar(this, this.getResources().getString(string.choose_ward), view, 2);
+                    Toast.makeText(Inpatient_List.this, R.string.choose_ward, Toast.LENGTH_LONG).show();
+                    BaseConfig.SnackBar(this, getResources().getString(R.string.choose_ward), view, 2);
 
                 }
 
             } else {
-                Toast.makeText(this, string.pl_select_patient, Toast.LENGTH_LONG).show();
-                BaseConfig.SnackBar(this, this.getResources().getString(string.pl_select_patient), view, 2);
+                Toast.makeText(Inpatient_List.this, R.string.pl_select_patient, Toast.LENGTH_LONG).show();
+                BaseConfig.SnackBar(this, getResources().getString(R.string.pl_select_patient), view, 2);
 
             }
 
         });
         cancelBtn.setOnClickListener(v -> dialog.dismiss());
 
-        DisplayMetrics metrics = this.getResources().getDisplayMetrics();
+        DisplayMetrics metrics = getResources().getDisplayMetrics();
         int width = metrics.widthPixels;
         int height = metrics.heightPixels;
-        dialog.getWindow().setLayout((6 * width) / 7, LayoutParams.WRAP_CONTENT);
+        dialog.getWindow().setLayout((6 * width) / 7, ViewGroup.LayoutParams.WRAP_CONTENT);
 
         dialog.show();
 
@@ -632,15 +622,15 @@ public class Inpatient_List extends AppCompatActivity {
         int PASSING_ID = 1;
 
         LoadPatientInfo(String select_MyPatient_Query, int Id) {
-            PASSING_ID = Id;
-            PASSING_QUERY = select_MyPatient_Query;
+            this.PASSING_ID = Id;
+            this.PASSING_QUERY = select_MyPatient_Query;
         }
 
         @Override
         protected void onPreExecute() {
-            Inpatient_List.this.builderDialog = BaseConfig.showCustomDialog(Inpatient_List.this.getString(string.please_wait), "Loading My Patients..", Inpatient_List.this);
-            Inpatient_List.this.builderDialog.setCancelable(false);
-            Inpatient_List.this.builderDialog.show();
+            builderDialog = BaseConfig.showCustomDialog(getString(R.string.please_wait), "Loading My Patients..", Inpatient_List.this);
+            builderDialog.setCancelable(false);
+            builderDialog.show();
             super.onPreExecute();
         }
 
@@ -652,8 +642,8 @@ public class Inpatient_List extends AppCompatActivity {
 
             Log.e("Present Count: ", String.valueOf(PresentCount));
 
-            if (PresentCount > Inpatient_List.this.rowItems.size()) {
-                Inpatient_List.this.SelectedGetPatientDetails(this.PASSING_QUERY);
+            if (PresentCount > rowItems.size()) {
+                SelectedGetPatientDetails(PASSING_QUERY);
             }
 
             return null;
@@ -662,16 +652,16 @@ public class Inpatient_List extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
 
-            if (Inpatient_List.this.builderDialog.isShowing() && Inpatient_List.this.builderDialog != null) {
-                Inpatient_List.this.builderDialog.dismiss();
+            if (builderDialog.isShowing() && builderDialog != null) {
+                builderDialog.dismiss();
             }
 
 
-            Inpatient_List.this.inpatientRecyclerAdapter = new InpatientRecyclerAdapter(Inpatient_List.this.rowItems);
+            inpatientRecyclerAdapter = new InpatientRecyclerAdapter(rowItems);
 
-            Inpatient_List.this.inpatientFastscrollview.setAdapter(Inpatient_List.this.inpatientRecyclerAdapter);
+            inpatientFastscrollview.setAdapter(inpatientRecyclerAdapter);
 
-            Inpatient_List.this.textvwPatientCount.setText(String.format("%s: %s", Inpatient_List.this.getString(string.noofpatient), String.valueOf(Inpatient_List.this.rowItems.size())));
+            textvwPatientCount.setText(String.format("%s: %s", getString(R.string.noofpatient), String.valueOf(rowItems.size())));
 
 
             super.onPostExecute(aVoid);

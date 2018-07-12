@@ -18,7 +18,6 @@ package kdmc_kumar.Utilities_Others;
 
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.BitmapFactory.Options;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.util.Log;
@@ -26,7 +25,6 @@ import android.util.Log;
 import java.io.FileDescriptor;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.WeakHashMap;
 
 /**
@@ -46,8 +44,8 @@ import java.util.WeakHashMap;
 public class BitmapManager {
 
     private static final String TAG = "BitmapManager";
-    private static BitmapManager sManager;
-    private final WeakHashMap<Thread, BitmapManager.ThreadStatus> mThreadStatus =
+    private static BitmapManager sManager = null;
+    private final WeakHashMap<Thread, ThreadStatus> mThreadStatus =
             new WeakHashMap<>();
 
     private BitmapManager() {
@@ -57,23 +55,23 @@ public class BitmapManager {
     public static BitmapManager instance() {
         synchronized (BitmapManager.class) {
 
-            if (BitmapManager.sManager == null) {
-                BitmapManager.sManager = new BitmapManager();
+            if (sManager == null) {
+                sManager = new BitmapManager();
             }
-            return BitmapManager.sManager;
+            return sManager;
         }
     }
 
     /**
      * Get thread status and create one if specified.
      */
-    private BitmapManager.ThreadStatus getOrCreateThreadStatus(Thread t) {
+    private ThreadStatus getOrCreateThreadStatus(Thread t) {
         synchronized (this) {
 
-            BitmapManager.ThreadStatus status = this.mThreadStatus.get(t);
+            ThreadStatus status = mThreadStatus.get(t);
             if (status == null) {
-                status = new BitmapManager.ThreadStatus();
-                this.mThreadStatus.put(t, status);
+                status = new ThreadStatus();
+                mThreadStatus.put(t, status);
             }
             return status;
         }
@@ -84,18 +82,18 @@ public class BitmapManager {
      * BitmapFaction.Options used for decoding and cancelling.
      */
     private void setDecodingOptions(Thread t,
-                                    Options options) {
+                                    BitmapFactory.Options options) {
         synchronized (this) {
 
-            this.getOrCreateThreadStatus(t).mOptions = options;
+            getOrCreateThreadStatus(t).mOptions = options;
         }
     }
 
     @Nullable
-    final Options getDecodingOptions(Thread t) {
+    final BitmapFactory.Options getDecodingOptions(Thread t) {
         synchronized (this) {
 
-            BitmapManager.ThreadStatus status = this.mThreadStatus.get(t);
+            ThreadStatus status = mThreadStatus.get(t);
             return status != null ? status.mOptions : null;
         }
     }
@@ -103,7 +101,7 @@ public class BitmapManager {
     private final void removeDecodingOptions(Thread t) {
         synchronized (this) {
 
-            BitmapManager.ThreadStatus status = this.mThreadStatus.get(t);
+            ThreadStatus status = mThreadStatus.get(t);
             status.mOptions = null;
         }
     }
@@ -112,22 +110,22 @@ public class BitmapManager {
      * The following two methods are used to allow/cancel a set of threads
      * for bitmap decoding.
      */
-    public final void allowThreadDecoding(BitmapManager.ThreadSet threads) {
+    public final void allowThreadDecoding(ThreadSet threads) {
         synchronized (this) {
 
             for (Iterator<Thread> iterator = threads.iterator(); iterator.hasNext(); ) {
                 Thread t = iterator.next();
-                this.allowThreadDecoding(t);
+                allowThreadDecoding(t);
             }
         }
     }
 
-    public final void cancelThreadDecoding(BitmapManager.ThreadSet threads) {
+    public final void cancelThreadDecoding(ThreadSet threads) {
         synchronized (this) {
 
             for (Iterator<Thread> iterator = threads.iterator(); iterator.hasNext(); ) {
                 Thread t = iterator.next();
-                this.cancelThreadDecoding(t);
+                cancelThreadDecoding(t);
             }
         }
     }
@@ -139,34 +137,34 @@ public class BitmapManager {
     private final boolean canThreadDecoding(Thread t) {
         synchronized (this) {
 
-            BitmapManager.ThreadStatus status = this.mThreadStatus.get(t);
+            ThreadStatus status = mThreadStatus.get(t);
             if (status == null) {
                 // allow decoding by default
                 return true;
             }
 
-            return (status.mState != BitmapManager.State.CANCEL);
+            return (status.mState != State.CANCEL);
         }
     }
 
     private final void allowThreadDecoding(Thread t) {
         synchronized (this) {
 
-            this.getOrCreateThreadStatus(t).mState = BitmapManager.State.ALLOW;
+            getOrCreateThreadStatus(t).mState = State.ALLOW;
         }
     }
 
     private final void cancelThreadDecoding(Thread t) {
         synchronized (this) {
 
-            BitmapManager.ThreadStatus status = this.getOrCreateThreadStatus(t);
-            status.mState = BitmapManager.State.CANCEL;
+            ThreadStatus status = getOrCreateThreadStatus(t);
+            status.mState = State.CANCEL;
             if (status.mOptions != null) {
                 status.mOptions.requestCancelDecode();
             }
 
             // Wake up threads in waiting list
-            this.notifyAll();
+            notifyAll();
         }
     }
 
@@ -176,8 +174,8 @@ public class BitmapManager {
     public final void dump() {
         synchronized (this) {
 
-            for (Entry<Thread, BitmapManager.ThreadStatus> entry : this.mThreadStatus.entrySet()) {
-                Log.v(BitmapManager.TAG, "[Dump] Thread " + entry.getKey() + " ("
+            for (Map.Entry<Thread, ThreadStatus> entry : mThreadStatus.entrySet()) {
+                Log.v(TAG, "[Dump] Thread " + entry.getKey() + " ("
                         + entry.getKey().getId()
                         + ")'s status is " + entry.getValue());
             }
@@ -189,22 +187,22 @@ public class BitmapManager {
      */
     @Nullable
     public final Bitmap decodeFileDescriptor(FileDescriptor fd,
-                                             Options options) {
+                                             BitmapFactory.Options options) {
 
         if (options.mCancel) {
             return null;
         }
 
         Thread thread = Thread.currentThread();
-        if (!this.canThreadDecoding(thread)) {
+        if (!canThreadDecoding(thread)) {
             // Log.d(TAG, "Thread " + thread + " is not allowed to decode.");
             return null;
         }
 
-        this.setDecodingOptions(thread, options);
+        setDecodingOptions(thread, options);
         Bitmap b = BitmapFactory.decodeFileDescriptor(fd, null, options);
 
-        this.removeDecodingOptions(thread);
+        removeDecodingOptions(thread);
         return b;
     }
 
@@ -212,9 +210,9 @@ public class BitmapManager {
 
     private static class ThreadStatus {
 
-        BitmapManager.State mState = BitmapManager.State.ALLOW;
+        State mState = State.ALLOW;
         @Nullable
-        Options mOptions;
+        BitmapFactory.Options mOptions = null;
 
         private ThreadStatus() {
         }
@@ -223,7 +221,7 @@ public class BitmapManager {
         public final String toString() {
 
             String s;
-            switch (this.mState) {
+            switch (mState) {
                 case CANCEL:
                     s = "Cancel";
                     break;
@@ -234,7 +232,7 @@ public class BitmapManager {
                     s = "?";
                     break;
             }
-            s = "thread state = " + s + ", options = " + this.mOptions;
+            s = "thread state = " + s + ", options = " + mOptions;
             return s;
         }
     }
@@ -249,18 +247,18 @@ public class BitmapManager {
 
         public final void add(Thread t) {
 
-            this.mWeakCollection.put(t, null);
+            mWeakCollection.put(t, null);
         }
 
         public final void remove(Thread t) {
 
-            this.mWeakCollection.remove(t);
+            mWeakCollection.remove(t);
         }
 
         @NonNull
         public final Iterator<Thread> iterator() {
 
-            return this.mWeakCollection.keySet().iterator();
+            return mWeakCollection.keySet().iterator();
         }
     }
 }

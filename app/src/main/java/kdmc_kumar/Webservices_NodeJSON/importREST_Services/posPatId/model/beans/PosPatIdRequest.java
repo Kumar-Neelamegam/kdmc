@@ -19,13 +19,13 @@ public class PosPatIdRequest {
 
 
     @com.google.gson.annotations.SerializedName("PatientId")
-    private String patientId;
+    private String patientId = null;
 
     public PosPatIdRequest() {
     }
 
     public final String getPatientId() {
-        return this.patientId;
+        return patientId;
     }
 
     public final void setPatientId(String patientId) {
@@ -42,11 +42,11 @@ public class PosPatIdRequest {
         }
 
         public final PosPatIdRequest build() {
-            return this.toBuild;
+            return toBuild;
         }
 
-        public final PosPatIdRequest.PosPatIdRequestBuilder patientId(String value) {
-            this.toBuild.setPatientId(value);
+        public final PosPatIdRequestBuilder patientId(String value) {
+            toBuild.setPatientId(value);
             return this;
         }
     }

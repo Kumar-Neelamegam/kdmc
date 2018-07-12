@@ -1429,5 +1429,8 @@
     <string name="clinicaldetail">CLINIC DETAILS</string>
     <string name="doctor_signature">Doctor Signature</string>
 
+    <string name="show_today_patients">Show today patients</string>
+
+
 
 </resources>

@@ -3,8 +3,6 @@ package kdmc_kumar.Adapters_GetterSetter;
 import android.content.Context;
 import android.graphics.Color;
 import android.support.v7.widget.RecyclerView;
-import android.support.v7.widget.RecyclerView.Adapter;
-import android.support.v7.widget.RecyclerView.ViewHolder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,47 +18,43 @@ import java.util.Locale;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.color;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import kdmc_kumar.Adapters_GetterSetter.DateTimelineRowitemAdapter.MyViewHolder;
 
-public class DateTimelineRowitemAdapter extends Adapter<MyViewHolder>  {
+public class DateTimelineRowitemAdapter extends RecyclerView.Adapter<DateTimelineRowitemAdapter.MyViewHolder>  {
 
 
     List<Timeline_Objects> objects;
     Context context;
     LayoutInflater layoutInflater;
 
-    private static TextView selectedView;
-    private static LinearLayout linearLayout;
+    private static TextView selectedView=null;
+    private static LinearLayout linearLayout=null;
 
-    DateTimelineRowitemAdapter.OnItemClickListener mOnItemClickListener;
+    OnItemClickListener mOnItemClickListener;
 
     public interface OnItemClickListener {
 
-        void onItemClick(DateTimelineRowitemAdapter.MyViewHolder view, int position, List<Timeline_Objects> items);
+        void onItemClick(MyViewHolder view, int position, List<Timeline_Objects> items);
     }
 
-    public void setOnItemClickListener(DateTimelineRowitemAdapter.OnItemClickListener mItemClickListener) {
-        mOnItemClickListener = mItemClickListener;
+    public void setOnItemClickListener(final OnItemClickListener mItemClickListener) {
+        this.mOnItemClickListener = mItemClickListener;
     }
 
 
     public DateTimelineRowitemAdapter(Context context, List<Timeline_Objects> objects) {
         this.context = context;
         this.objects = objects;
-        layoutInflater = LayoutInflater.from(context);
+        this.layoutInflater = LayoutInflater.from(context);
     }
 
     @Override
-    public void onBindViewHolder(DateTimelineRowitemAdapter.MyViewHolder holder, int position) {
+    public void onBindViewHolder(final MyViewHolder holder, final int position) {
 
         String VISITED_DATE= "";
         String UNIQUE_ID ="";
 
-        VISITED_DATE = this.objects.get(position).getUnique_Id();
-        UNIQUE_ID = this.objects.get(position).getVisitedDate();
+        VISITED_DATE = objects.get(position).getUnique_Id();
+        UNIQUE_ID = objects.get(position).getVisitedDate();
 
 //        Log.e("VISITED DATE: ", VISITED_DATE);
 //        Log.e("UNIQUE ID: ",UNIQUE_ID);
@@ -76,15 +70,15 @@ public class DateTimelineRowitemAdapter extends Adapter<MyViewHolder>  {
             date = spf.format(newDate);
             System.out.println(date);
 
-            holder.txtvwDaymonth.setText(String.format("%s-%s", date, this.objects.get(position).getVisitedDate().substring(0, 4)));
+            holder.txtvwDaymonth.setText(String.format("%s-%s", date, objects.get(position).getVisitedDate().substring(0, 4)));
         } catch (Exception e) {
             e.printStackTrace();
         }
 
 
         holder.fab.setOnClickListener(view -> {
-            this.selectItem(view, holder);
-            this.mOnItemClickListener.onItemClick(holder, position, this.objects);
+            selectItem(view, holder);
+            mOnItemClickListener.onItemClick(holder, position, objects);
         });
 
 
@@ -97,57 +91,57 @@ public class DateTimelineRowitemAdapter extends Adapter<MyViewHolder>  {
 
     }
 
-    private void selectItem(View view, DateTimelineRowitemAdapter.MyViewHolder holder) {
+    private void selectItem(View view, MyViewHolder holder) {
         //If FirstTime Checked
-        if (DateTimelineRowitemAdapter.selectedView ==null) {
+        if (selectedView==null) {
 
-            DateTimelineRowitemAdapter.selectedView =holder.txtvwDaymonth;
-            DateTimelineRowitemAdapter.linearLayout =holder.linearLayout;
+            selectedView=holder.txtvwDaymonth;
+            linearLayout=holder.linearLayout;
 
-            DateTimelineRowitemAdapter.selectedView.setBackgroundColor(Color.parseColor("#0a4991"));
-            DateTimelineRowitemAdapter.selectedView.setTextColor(Color.parseColor("#ffffff"));
-            DateTimelineRowitemAdapter.linearLayout.setBackgroundColor(view.getContext().getResources().getColor(color.colorPrimaryDark));
+            selectedView.setBackgroundColor(Color.parseColor("#0a4991"));
+            selectedView.setTextColor(Color.parseColor("#ffffff"));
+            linearLayout.setBackgroundColor(view.getContext().getResources().getColor(R.color.colorPrimaryDark));
 
         }else
         {
             //Already Selected set White
-            DateTimelineRowitemAdapter.selectedView.setBackgroundColor(Color.parseColor("#00FFFFFF"));
-            DateTimelineRowitemAdapter.selectedView.setTextColor(Color.parseColor("#ffffff"));
-            DateTimelineRowitemAdapter.linearLayout.setBackgroundColor(view.getContext().getResources().getColor(color.colorPrimary));
+            selectedView.setBackgroundColor(Color.parseColor("#00FFFFFF"));
+            selectedView.setTextColor(Color.parseColor("#ffffff"));
+            linearLayout.setBackgroundColor(view.getContext().getResources().getColor(R.color.colorPrimary));
 
 
             //New Initilize to set Control
-            DateTimelineRowitemAdapter.selectedView =holder.txtvwDaymonth;
-            DateTimelineRowitemAdapter.linearLayout =holder.linearLayout;
+            selectedView=holder.txtvwDaymonth;
+            linearLayout=holder.linearLayout;
 
-            DateTimelineRowitemAdapter.selectedView.setBackgroundColor(Color.parseColor("#0a4991"));
-            DateTimelineRowitemAdapter.selectedView.setTextColor(Color.parseColor("#ffffff"));
-            DateTimelineRowitemAdapter.linearLayout.setBackgroundColor(view.getContext().getResources().getColor(color.colorPrimaryDark));
+            selectedView.setBackgroundColor(Color.parseColor("#0a4991"));
+            selectedView.setTextColor(Color.parseColor("#ffffff"));
+            linearLayout.setBackgroundColor(view.getContext().getResources().getColor(R.color.colorPrimaryDark));
         }
     }
 
     @Override
     public int getItemCount() {
-        return this.objects.size();
+        return objects.size();
     }
 
     @Override
-    public DateTimelineRowitemAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
 
-        View view = LayoutInflater.from(parent.getContext()).inflate(layout.date_timeline_rowitem, parent, false);
+        View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.date_timeline_rowitem, parent, false);
 
-        return new DateTimelineRowitemAdapter.MyViewHolder(view);
+        return new MyViewHolder(view);
     }
 
-    public class MyViewHolder extends ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
 
-        @BindView(id.txtvw_daymonth)
+        @BindView(R.id.txtvw_daymonth)
         public TextView txtvwDaymonth;
-        @BindView(id.fab)
+        @BindView(R.id.fab)
         public ImageView fab;
-        @BindView(id.txtvw_year)
+        @BindView(R.id.txtvw_year)
         public TextView txtvwYear;
-        @BindView(id.linearlayout)
+        @BindView(R.id.linearlayout)
         public LinearLayout linearLayout;
 
 

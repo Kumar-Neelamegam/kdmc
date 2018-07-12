@@ -5,8 +5,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.design.widget.CoordinatorLayout;
@@ -19,7 +17,6 @@ import android.view.View;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
-import android.webkit.WebSettings.RenderPriority;
 import android.webkit.WebView;
 import android.widget.ImageView;
 import android.widget.TextView;
@@ -27,10 +24,6 @@ import android.widget.TextView;
 import butterknife.BindView;
 import butterknife.ButterKnife;
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.drawable;
-import displ.mobydocmarathi.com.R.id;
-import displ.mobydocmarathi.com.R.layout;
-import displ.mobydocmarathi.com.R.string;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.DashBoardAdapter;
 import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMenu;
 
@@ -38,34 +31,34 @@ import kdmc_kumar.Adapters_GetterSetter.DashboardAdapter.Dashboard_NavigationMen
 public class CloudData extends AppCompatActivity {
 
 
-    @BindView(id.parent_layout)
+    @BindView(R.id.parent_layout)
     CoordinatorLayout parentLayout;
-    @BindView(id.imagevw_serverconnectivity)
+    @BindView(R.id.imagevw_serverconnectivity)
     ImageView imagevwServerconnectivity;
-    @BindView(id.textview_servertitle)
+    @BindView(R.id.textview_servertitle)
     TextView textviewServertitle;
-    @BindView(id.imagevw_internet)
+    @BindView(R.id.imagevw_internet)
     ImageView imagevwInternet;
-    @BindView(id.textvw_internet)
+    @BindView(R.id.textvw_internet)
     TextView textvwInternet;
-    @BindView(id.webvw_profile)
+    @BindView(R.id.webvw_profile)
     WebView webvwProfile;
 
-    @BindView(id.toolbar)
+    @BindView(R.id.toolbar)
     Toolbar toolbar;
-    @BindView(id.toolbar_back)
+    @BindView(R.id.toolbar_back)
     AppCompatImageView toolbarBack;
-    @BindView(id.toolbar_title)
+    @BindView(R.id.toolbar_title)
     TextView toolbarTitle;
-    @BindView(id.toolbar_exit)
+    @BindView(R.id.toolbar_exit)
     AppCompatImageView toolbarExit;
     BaseConfig bc = new BaseConfig();
     //#######################################################################################################
-    int COUNT_PATIENT_REGISTRATION;
-    int COUNT_CLINICAL_INFORMATION;
-    int COUNT_CASENOTES;
-    int COUNT_INVESTIGATION;
-    int COUNT_PRESCRIPTION;
+    int COUNT_PATIENT_REGISTRATION = 0;
+    int COUNT_CLINICAL_INFORMATION = 0;
+    int COUNT_CASENOTES = 0;
+    int COUNT_INVESTIGATION = 0;
+    int COUNT_PRESCRIPTION = 0;
 
     private Handler timerHandler;
     private Runnable timerRunnable;
@@ -78,11 +71,11 @@ public class CloudData extends AppCompatActivity {
 
         try {
             super.onCreate(savedInstanceState);
-            this.setContentView(layout.layout_cloud);
+            setContentView(R.layout.layout_cloud);
 
-            this.GETINITIALIZATION();
+            GETINITIALIZATION();
 
-            this.CONTROLLISTNERS();
+            CONTROLLISTNERS();
 
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -96,11 +89,11 @@ public class CloudData extends AppCompatActivity {
         ButterKnife.bind(this);
         AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
-        this.toolbarTitle.setText(String.format("%s - %s", this.getString(string.app_name), this.getString(string.cloud)));
+        toolbarTitle.setText(String.format("%s - %s", getString(R.string.app_name), getString(R.string.cloud)));
 
-        this.setSupportActionBar(this.toolbar);
-        if (VERSION.SDK_INT >= VERSION_CODES.LOLLIPOP) {
-            ViewCompat.setTransitionName(this.toolbar, DashBoardAdapter.VIEW_NAME_HEADER_TITLE);
+        setSupportActionBar(toolbar);
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.LOLLIPOP) {
+            ViewCompat.setTransitionName(toolbar, DashBoardAdapter.VIEW_NAME_HEADER_TITLE);
         }
 
         //  toolbar.setBackgroundColor(Color.parseColor(CloudData.this.getResources().getString(Integer.parseInt(BaseConfig.SetActionBarColour))));
@@ -109,35 +102,35 @@ public class CloudData extends AppCompatActivity {
     }
 
     private void CONTROLLISTNERS() {
-        this.toolbarExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(this, null));
+        toolbarExit.setOnClickListener(v -> BaseConfig.ExitSweetDialog(CloudData.this, null));
 
 
-        this.toolbarBack.setOnClickListener(v -> this.LoadBack());
+        toolbarBack.setOnClickListener(v -> LoadBack());
 
 
-        this.CheckServerConnectivity();
+        CheckServerConnectivity();
 
-        this.AUTO_REFRESH_CLOUD_COUNT();
+        AUTO_REFRESH_CLOUD_COUNT();
 
     }
 
     private void AUTO_REFRESH_CLOUD_COUNT() {
 
 
-        this.timerHandler = new Handler();
+        timerHandler = new Handler();
 
-        this.timerRunnable = new Runnable() {
+        timerRunnable = new Runnable() {
             @Override
             public void run() {
 
                 new CheckPendingData().execute();
 
-                CloudData.this.timerHandler.postDelayed(this, 1000); //run every second
+                timerHandler.postDelayed(this, 1000); //run every second
 
             }
         };
 
-        this.timerHandler.postDelayed(this.timerRunnable, 1000); //Start timer after 1 sec
+        timerHandler.postDelayed(timerRunnable, 1000); //Start timer after 1 sec
 
     }
 
@@ -145,22 +138,22 @@ public class CloudData extends AppCompatActivity {
     @Override
     protected void onStop() {
         super.onStop();
-        if (this.timerHandler != null) {
-            this.timerHandler.removeCallbacks(this.timerRunnable);
+        if (timerHandler != null) {
+            timerHandler.removeCallbacks(timerRunnable);
         }
 
     }
 
     private void CheckServerConnectivity() {
-        if (BaseConfig.CheckNetwork(this)) {
-            this.imagevwInternet.setImageBitmap(null);
-            this.imagevwInternet.setImageResource(drawable.ic_status_ready);
+        if (BaseConfig.CheckNetwork(CloudData.this)) {
+            imagevwInternet.setImageBitmap(null);
+            imagevwInternet.setImageResource(R.drawable.ic_status_ready);
         } else {
-            this.imagevwInternet.setImageResource(drawable.ic_status_busy);
+            imagevwInternet.setImageResource(R.drawable.ic_status_busy);
         }
 
         try {
-            BaseConfig.checkNodeServer(this.imagevwServerconnectivity);
+            BaseConfig.checkNodeServer(imagevwServerconnectivity);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -175,18 +168,18 @@ public class CloudData extends AppCompatActivity {
     @Override
     public final void onBackPressed() {
 
-        this.LoadBack();
+        LoadBack();
 
     }
 
     private final void CheckPending() {
 
         try {
-            this.COUNT_PATIENT_REGISTRATION = this.CheckCount("select count(*) as ret_values  from Bind_Patient_Registration where Isupdate='0' group by PatientId");
-            this.COUNT_CLINICAL_INFORMATION = this.CheckCount("select count(*) as ret_values from ClinicalInformation where Isupdate='0' group by ptid");
-            this.COUNT_CASENOTES = this.CheckCount("select count(*) as ret_values from Diagonis where Isupdate='0' group by DiagId");
-            this.COUNT_INVESTIGATION = this.CheckCount("select count(*)  ret_values from Medicaltest where Isupdate='0' group by mtestid");
-            this.COUNT_PRESCRIPTION = this.CheckCount("select count(*) as ret_values from Mprescribed where Isupdate='0' group by Medid");
+            COUNT_PATIENT_REGISTRATION = CheckCount("select count(*) as ret_values  from Bind_Patient_Registration where Isupdate='0' group by PatientId");
+            COUNT_CLINICAL_INFORMATION = CheckCount("select count(*) as ret_values from ClinicalInformation where Isupdate='0' group by ptid");
+            COUNT_CASENOTES = CheckCount("select count(*) as ret_values from Diagonis where Isupdate='0' group by DiagId");
+            COUNT_INVESTIGATION = CheckCount("select count(*)  ret_values from Medicaltest where Isupdate='0' group by mtestid");
+            COUNT_PRESCRIPTION = CheckCount("select count(*) as ret_values from Mprescribed where Isupdate='0' group by Medid");
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -218,27 +211,27 @@ public class CloudData extends AppCompatActivity {
     @SuppressLint("AddJavascriptInterface")
     private final void LoadWebview() {
 
-        this.webvwProfile = this.findViewById(id.webvw_profile);
-        this.webvwProfile.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
-        this.webvwProfile.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        this.webvwProfile.getSettings().setRenderPriority(RenderPriority.HIGH);
-        this.webvwProfile.setOnLongClickListener(v -> true);
-        this.webvwProfile.setLongClickable(false);
-        this.webvwProfile.setLayerType(View.LAYER_TYPE_NONE, null);
-        this.webvwProfile.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
-        this.webvwProfile.getSettings().setRenderPriority(RenderPriority.HIGH);
-        this.webvwProfile.getSettings().setDefaultTextEncodingName("utf-8");
-        this.webvwProfile.setWebChromeClient(new CloudData.MyWebChromeClient());
-        this.webvwProfile.setBackgroundColor(0x00000000);
-        this.webvwProfile.setVerticalScrollBarEnabled(true);
-        this.webvwProfile.setHorizontalScrollBarEnabled(true);
-        this.webvwProfile.getSettings().setJavaScriptEnabled(true);
-        this.webvwProfile.getSettings().setAllowContentAccess(true);
-        this.webvwProfile.addJavascriptInterface(new CloudData.WebAppInterface(this), "android");
+        webvwProfile = findViewById(R.id.webvw_profile);
+        webvwProfile.setLayerType(View.LAYER_TYPE_SOFTWARE, null);
+        webvwProfile.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webvwProfile.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        webvwProfile.setOnLongClickListener(v -> true);
+        webvwProfile.setLongClickable(false);
+        webvwProfile.setLayerType(View.LAYER_TYPE_NONE, null);
+        webvwProfile.getSettings().setCacheMode(WebSettings.LOAD_NO_CACHE);
+        webvwProfile.getSettings().setRenderPriority(WebSettings.RenderPriority.HIGH);
+        webvwProfile.getSettings().setDefaultTextEncodingName("utf-8");
+        webvwProfile.setWebChromeClient(new MyWebChromeClient());
+        webvwProfile.setBackgroundColor(0x00000000);
+        webvwProfile.setVerticalScrollBarEnabled(true);
+        webvwProfile.setHorizontalScrollBarEnabled(true);
+        webvwProfile.getSettings().setJavaScriptEnabled(true);
+        webvwProfile.getSettings().setAllowContentAccess(true);
+        webvwProfile.addJavascriptInterface(new WebAppInterface(CloudData.this), "android");
 
         try {
 
-            this.webvwProfile.loadDataWithBaseURL("file:///android_asset/", this.LoadCloudDetails(), "text/html", "utf-8", null);
+            webvwProfile.loadDataWithBaseURL("file:///android_asset/", LoadCloudDetails(), "text/html", "utf-8", null);
 
         } catch (RuntimeException e) {
             e.printStackTrace();
@@ -281,37 +274,37 @@ public class CloudData extends AppCompatActivity {
                 "  <tr>\n" +
                 "  \n" +
                 "  \n" +
-                "    <th class=\"fixed\" bgcolor=\"#3d5987\"  ><font color=\"#fff\">" + this.getString(string.pending_data) + "</font></th>\n" +
-                "    <th class=\"fixed\" bgcolor=\"#3d5987\" style=\"text-align:center\"><font color=\"#fff\">" + this.getString(string.count) + "</font></th> \n" +
+                "    <th class=\"fixed\" bgcolor=\"#3d5987\"  ><font color=\"#fff\">" + getString(R.string.pending_data) + "</font></th>\n" +
+                "    <th class=\"fixed\" bgcolor=\"#3d5987\" style=\"text-align:center\"><font color=\"#fff\">" + getString(R.string.count) + "</font></th> \n" +
                 " \n" +
                 "  </tr>\n" +
                 "  \n" +
 
                 "\t<tr>\n" +
-                "\t<td><b>" + this.getString(string.patientregistration) + "</b></td>  \n" +
-                "\t<td style=\"text-align:center\">" + this.COUNT_PATIENT_REGISTRATION + "</td> \n" +
+                "\t<td><b>" + getString(R.string.patientregistration) + "</b></td>  \n" +
+                "\t<td style=\"text-align:center\">" + COUNT_PATIENT_REGISTRATION + "</td> \n" +
                 "\t</tr>  \n" +
                 "\t\n" +
 
                 "\t<tr>\n" +
-                "\t<td><b>" + this.getString(string.clinical_informaiton) + "</b></td>  \n" +
-                "\t<td style=\"text-align:center\">" + this.COUNT_CLINICAL_INFORMATION + "</td> \n" +
+                "\t<td><b>" + getString(R.string.clinical_informaiton) + "</b></td>  \n" +
+                "\t<td style=\"text-align:center\">" + COUNT_CLINICAL_INFORMATION + "</td> \n" +
                 "\t</tr>  \n" +
 
                 "\t\n" +
                 "\t<tr>\n" +
-                "\t<td><b>" + this.getString(string.case_notes) + "</b></td>  \n" +
-                "\t<td style=\"text-align:center\">" + this.COUNT_CASENOTES + "</td> \n" +
+                "\t<td><b>" + getString(R.string.case_notes) + "</b></td>  \n" +
+                "\t<td style=\"text-align:center\">" + COUNT_CASENOTES + "</td> \n" +
                 "\t</tr>  \n" +
                 "\t\n" +
                 "\t<tr>\n" +
-                "\t<td><b>" + this.getString(string.investigation) + "</b></td>  \n" +
-                "\t<td style=\"text-align:center\">" + this.COUNT_INVESTIGATION + "</td> \n" +
+                "\t<td><b>" + getString(R.string.investigation) + "</b></td>  \n" +
+                "\t<td style=\"text-align:center\">" + COUNT_INVESTIGATION + "</td> \n" +
                 "\t</tr>  \n" +
                 "\t\n" +
                 "\t\t<tr>\n" +
-                "\t<td><b>" + this.getString(string.prescription) + "</b></td>  \n" +
-                "\t<td style=\"text-align:center\">" + this.COUNT_PRESCRIPTION + "</td> \n" +
+                "\t<td><b>" + getString(R.string.prescription) + "</b></td>  \n" +
+                "\t<td style=\"text-align:center\">" + COUNT_PRESCRIPTION + "</td> \n" +
                 "\t</tr> \n" +
                 " \n" +
                 "</table>\n" +
@@ -321,7 +314,7 @@ public class CloudData extends AppCompatActivity {
                 "</div>\n" +
                 "  \n" +
                 "<h4 style=\"padding:5px\";>\n" +
-                "<b>Note:</b><br>" + this.getString(string.content_cloud) + "\n" +
+                "<b>Note:</b><br>" + getString(R.string.content_cloud) + "\n" +
                 "</h4>\n" +
                 "\n" +
                 " \n" +
@@ -348,7 +341,7 @@ public class CloudData extends AppCompatActivity {
          * Instantiate the interface and set the context
          */
         WebAppInterface(Context c) {
-            this.mContext = c;
+            mContext = c;
         }
 
         /**
@@ -370,7 +363,7 @@ public class CloudData extends AppCompatActivity {
         protected final void onPostExecute(Void result) {
 
             try {
-                CloudData.this.LoadWebview();
+                LoadWebview();
             } catch (RuntimeException e) {
                 e.printStackTrace();
             }
@@ -385,7 +378,7 @@ public class CloudData extends AppCompatActivity {
         @Override
         protected final Void doInBackground(Void... params) {
 
-            CloudData.this.CheckPending();
+            CheckPending();
 
             return null;
         }

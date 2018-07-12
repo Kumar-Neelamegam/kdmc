@@ -20,17 +20,17 @@ public class GetMastersRequest {
 
 
     @com.google.gson.annotations.SerializedName("IsUpdateMax")
-    private String isUpdateMax;
+    private String isUpdateMax = null;
 
 
     @com.google.gson.annotations.SerializedName("TableName")
-    private String tableName;
+    private String tableName = null;
 
     public GetMastersRequest() {
     }
 
     public final String getIsUpdateMax() {
-        return this.isUpdateMax;
+        return isUpdateMax;
     }
 
     public final void setIsUpdateMax(String isUpdateMax) {
@@ -38,7 +38,7 @@ public class GetMastersRequest {
     }
 
     public final String getTableName() {
-        return this.tableName;
+        return tableName;
     }
 
     public final void setTableName(String tableName) {
@@ -56,16 +56,16 @@ public class GetMastersRequest {
         }
 
         public final GetMastersRequest build() {
-            return this.toBuild;
+            return toBuild;
         }
 
-        public final GetMastersRequest.GetMastersRequestBuilder isUpdateMax(String value) {
-            this.toBuild.setIsUpdateMax(value);
+        public final GetMastersRequestBuilder isUpdateMax(String value) {
+            toBuild.setIsUpdateMax(value);
             return this;
         }
 
-        public final GetMastersRequest.GetMastersRequestBuilder tableName(String value) {
-            this.toBuild.setTableName(value);
+        public final GetMastersRequestBuilder tableName(String value) {
+            toBuild.setTableName(value);
             return this;
         }
     }

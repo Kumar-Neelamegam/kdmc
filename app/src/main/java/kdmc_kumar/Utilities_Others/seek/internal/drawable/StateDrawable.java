@@ -40,19 +40,20 @@ public abstract class StateDrawable extends Drawable {
     private int mAlpha = 255;
 
     public StateDrawable(@NonNull ColorStateList tintStateList) {
-        this.setColorStateList(tintStateList);
-        this.mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        super();
+        setColorStateList(tintStateList);
+        mPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     }
 
     @Override
     public boolean isStateful() {
-        return (this.mTintStateList.isStateful()) || super.isStateful();
+        return (mTintStateList.isStateful()) || super.isStateful();
     }
 
     @Override
     public boolean setState(int[] stateSet) {
         boolean handled = super.setState(stateSet);
-        handled = this.updateTint(stateSet) || handled;
+        handled = updateTint(stateSet) || handled;
         return handled;
     }
 
@@ -62,11 +63,11 @@ public abstract class StateDrawable extends Drawable {
     }
 
     private boolean updateTint(int[] state) {
-        int color = this.mTintStateList.getColorForState(state, this.mCurrentColor);
-        if (color != this.mCurrentColor) {
-            this.mCurrentColor = color;
+        final int color = mTintStateList.getColorForState(state, mCurrentColor);
+        if (color != mCurrentColor) {
+            mCurrentColor = color;
             //We've changed states
-            this.invalidateSelf();
+            invalidateSelf();
             return true;
         }
         return false;
@@ -74,15 +75,15 @@ public abstract class StateDrawable extends Drawable {
 
     @Override
     public void draw(Canvas canvas) {
-        this.mPaint.setColor(this.mCurrentColor);
-        int alpha = this.modulateAlpha(Color.alpha(this.mCurrentColor));
-        this.mPaint.setAlpha(alpha);
-        this.doDraw(canvas, this.mPaint);
+        mPaint.setColor(mCurrentColor);
+        int alpha = modulateAlpha(Color.alpha(mCurrentColor));
+        mPaint.setAlpha(alpha);
+        doDraw(canvas, mPaint);
     }
 
     public void setColorStateList(@NonNull ColorStateList tintStateList) {
-        this.mTintStateList = tintStateList;
-        this.mCurrentColor = tintStateList.getDefaultColor();
+        mTintStateList = tintStateList;
+        mCurrentColor = tintStateList.getDefaultColor();
     }
 
     /**
@@ -96,23 +97,23 @@ public abstract class StateDrawable extends Drawable {
 
     @Override
     public void setAlpha(int alpha) {
-        this.mAlpha = alpha;
-        this.invalidateSelf();
+        mAlpha = alpha;
+        invalidateSelf();
     }
 
     int modulateAlpha(int alpha) {
-        int scale = this.mAlpha + (this.mAlpha >> 7);
+        int scale = mAlpha + (mAlpha >> 7);
         return alpha * scale >> 8;
     }
 
     @Override
     public int getAlpha() {
-        return this.mAlpha;
+        return mAlpha;
     }
 
     @Override
     public void setColorFilter(ColorFilter cf) {
-        this.mPaint.setColorFilter(cf);
+        mPaint.setColorFilter(cf);
     }
 
 }

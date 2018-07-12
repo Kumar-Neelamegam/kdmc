@@ -23,13 +23,11 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.os.Build;
-import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.view.View;
 import android.view.ViewGroup;
 
 import displ.mobydocmarathi.com.R;
-import displ.mobydocmarathi.com.R.styleable;
 import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.AnimatorUtils;
 
 /**
@@ -62,7 +60,7 @@ import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.Anima
  * attributes of {@link com.transitionseverywhere.R.styleable#Fade} and
  * {@link com.transitionseverywhere.R.styleable#Transition}.</p>
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class Fade extends Visibility {
 
     static final String PROPNAME_ALPHA = "fade:alpha";
@@ -97,35 +95,35 @@ public class Fade extends Visibility {
      *                   {@link #IN} and {@link #OUT}.
      */
     public Fade(int fadingMode) {
-        this.setMode(fadingMode);
+        setMode(fadingMode);
     }
 
     public Fade(Context context, AttributeSet attrs) {
         super(context, attrs);
-        TypedArray a = context.obtainStyledAttributes(attrs, styleable.Fade);
-        @Visibility.VisibilityMode int fadingMode = a.getInt(styleable.Fade_fadingMode, this.getMode());
+        TypedArray a = context.obtainStyledAttributes(attrs, R.styleable.Fade);
+        @VisibilityMode int fadingMode = a.getInt(R.styleable.Fade_fadingMode, getMode());
         a.recycle();
-        this.setMode(fadingMode);
+        setMode(fadingMode);
     }
 
     @Override
     public void captureStartValues(TransitionValues transitionValues) {
         super.captureStartValues(transitionValues);
         if (transitionValues.view != null) {
-            transitionValues.values.put(Fade.PROPNAME_ALPHA, transitionValues.view.getAlpha());
+            transitionValues.values.put(PROPNAME_ALPHA, transitionValues.view.getAlpha());
         }
     }
 
     /**
      * Utility method to handle creating and running the Animator.
      */
-    private Animator createAnimation(View view, float startAlpha, float endAlpha, TransitionValues values) {
-        float curAlpha = view.getAlpha();
+    private Animator createAnimation(final View view, float startAlpha, float endAlpha, TransitionValues values) {
+        final float curAlpha = view.getAlpha();
         startAlpha = curAlpha * startAlpha;
         endAlpha = curAlpha * endAlpha;
 
-        if (values != null && values.values.containsKey(Fade.PROPNAME_ALPHA)) {
-            float savedAlpha = (Float) values.values.get(Fade.PROPNAME_ALPHA);
+        if (values != null && values.values.containsKey(PROPNAME_ALPHA)) {
+            float savedAlpha = (Float) values.values.get(PROPNAME_ALPHA);
             // if saved value is not equal curAlpha it means that previous
             // transition was interrupted and in the onTransitionEnd
             // we've applied endListenerAlpha. we should apply proper value to
@@ -136,10 +134,10 @@ public class Fade extends Visibility {
         }
 
         view.setAlpha(startAlpha);
-        ObjectAnimator anim = ObjectAnimator.ofFloat(view, View.ALPHA, endAlpha);
-        Fade.FadeAnimatorListener listener = new Fade.FadeAnimatorListener(view, curAlpha);
+        final ObjectAnimator anim = ObjectAnimator.ofFloat(view, View.ALPHA, endAlpha);
+        final FadeAnimatorListener listener = new FadeAnimatorListener(view, curAlpha);
         anim.addListener(listener);
-        this.addListener(new Transition.TransitionListenerAdapter() {
+        addListener(new TransitionListenerAdapter() {
             @Override
             public void onTransitionEnd(Transition transition) {
                 view.setAlpha(curAlpha);
@@ -153,39 +151,39 @@ public class Fade extends Visibility {
     public Animator onAppear(ViewGroup sceneRoot, View view,
                              TransitionValues startValues,
                              TransitionValues endValues) {
-        return this.createAnimation(view, 0, 1, startValues);
+        return createAnimation(view, 0, 1, startValues);
     }
 
     @Override
-    public Animator onDisappear(ViewGroup sceneRoot, View view, TransitionValues startValues,
+    public Animator onDisappear(ViewGroup sceneRoot, final View view, TransitionValues startValues,
                                 TransitionValues endValues) {
-        return this.createAnimation(view, 1, 0, startValues);
+        return createAnimation(view, 1, 0, startValues);
     }
 
     private static class FadeAnimatorListener extends AnimatorListenerAdapter {
         private final View mView;
-        private final float mEndListenerAlpha;
-        private boolean mLayerTypeChanged;
+        private float mEndListenerAlpha;
+        private boolean mLayerTypeChanged = false;
 
         public FadeAnimatorListener(View view, float endListenerAlpha) {
-            this.mView = view;
-            this.mEndListenerAlpha = endListenerAlpha;
+            mView = view;
+            mEndListenerAlpha = endListenerAlpha;
         }
 
         @Override
         public void onAnimationStart(Animator animator) {
-            if (AnimatorUtils.hasOverlappingRendering(this.mView) &&
-                    this.mView.getLayerType() == View.LAYER_TYPE_NONE) {
-                this.mLayerTypeChanged = true;
-                this.mView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
+            if (AnimatorUtils.hasOverlappingRendering(mView) &&
+                    mView.getLayerType() == View.LAYER_TYPE_NONE) {
+                mLayerTypeChanged = true;
+                mView.setLayerType(View.LAYER_TYPE_HARDWARE, null);
             }
         }
 
         @Override
         public void onAnimationEnd(Animator animator) {
-            this.mView.setAlpha(this.mEndListenerAlpha);
-            if (this.mLayerTypeChanged) {
-                this.mView.setLayerType(View.LAYER_TYPE_NONE, null);
+            mView.setAlpha(mEndListenerAlpha);
+            if (mLayerTypeChanged) {
+                mView.setLayerType(View.LAYER_TYPE_NONE, null);
             }
         }
 

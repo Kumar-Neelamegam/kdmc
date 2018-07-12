@@ -24,8 +24,6 @@ import android.content.Context;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.os.Build.VERSION;
-import android.os.Build.VERSION_CODES;
 import android.util.AttributeSet;
 import android.util.Property;
 import android.view.View;
@@ -44,7 +42,7 @@ import kdmc_kumar.Utilities_Others.Transistion.transitionseverywhere.utils.IntPr
  * color} of the text for target TextViews. If the color changes between
  * scenes, the color change is animated.
  */
-@TargetApi(VERSION_CODES.ICE_CREAM_SANDWICH)
+@TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
 public class Recolor extends Transition {
 
     private static final String PROPNAME_BACKGROUND = "android:recolor:background";
@@ -54,7 +52,7 @@ public class Recolor extends Transition {
     public static final Property<ColorDrawable, Integer> COLORDRAWABLE_COLOR;
 
     static {
-        if (VERSION.SDK_INT >= VERSION_CODES.ICE_CREAM_SANDWICH) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH) {
             TEXTVIEW_TEXT_COLOR = new IntProperty<TextView>() {
 
                 @Override
@@ -92,21 +90,21 @@ public class Recolor extends Transition {
     }
 
     private void captureValues(TransitionValues transitionValues) {
-        transitionValues.values.put(Recolor.PROPNAME_BACKGROUND, transitionValues.view.getBackground());
+        transitionValues.values.put(PROPNAME_BACKGROUND, transitionValues.view.getBackground());
         if (transitionValues.view instanceof TextView) {
-            transitionValues.values.put(Recolor.PROPNAME_TEXT_COLOR,
+            transitionValues.values.put(PROPNAME_TEXT_COLOR,
                     ((TextView) transitionValues.view).getCurrentTextColor());
         }
     }
 
     @Override
     public void captureStartValues(TransitionValues transitionValues) {
-        this.captureValues(transitionValues);
+        captureValues(transitionValues);
     }
 
     @Override
     public void captureEndValues(TransitionValues transitionValues) {
-        this.captureValues(transitionValues);
+        captureValues(transitionValues);
     }
 
     @Override
@@ -115,28 +113,28 @@ public class Recolor extends Transition {
         if (startValues == null || endValues == null) {
             return null;
         }
-        View view = endValues.view;
-        Drawable startBackground = (Drawable) startValues.values.get(Recolor.PROPNAME_BACKGROUND);
-        Drawable endBackground = (Drawable) endValues.values.get(Recolor.PROPNAME_BACKGROUND);
+        final View view = endValues.view;
+        Drawable startBackground = (Drawable) startValues.values.get(PROPNAME_BACKGROUND);
+        Drawable endBackground = (Drawable) endValues.values.get(PROPNAME_BACKGROUND);
         ObjectAnimator bgAnimator = null;
         if (startBackground instanceof ColorDrawable && endBackground instanceof ColorDrawable) {
             ColorDrawable startColor = (ColorDrawable) startBackground;
             ColorDrawable endColor = (ColorDrawable) endBackground;
             if (startColor.getColor() != endColor.getColor()) {
-                int finalColor = endColor.getColor();
+                final int finalColor = endColor.getColor();
                 endColor.setColor(startColor.getColor());
-                bgAnimator = ObjectAnimator.ofInt(endColor, Recolor.COLORDRAWABLE_COLOR, startColor.getColor(), finalColor);
+                bgAnimator = ObjectAnimator.ofInt(endColor, COLORDRAWABLE_COLOR, startColor.getColor(), finalColor);
                 bgAnimator.setEvaluator(new ArgbEvaluator());
             }
         }
         ObjectAnimator textColorAnimator = null;
         if (view instanceof TextView) {
             TextView textView = (TextView) view;
-            int start = (Integer) startValues.values.get(Recolor.PROPNAME_TEXT_COLOR);
-            int end = (Integer) endValues.values.get(Recolor.PROPNAME_TEXT_COLOR);
+            int start = (Integer) startValues.values.get(PROPNAME_TEXT_COLOR);
+            int end = (Integer) endValues.values.get(PROPNAME_TEXT_COLOR);
             if (start != end) {
                 textView.setTextColor(end);
-                textColorAnimator = ObjectAnimator.ofInt(textView, Recolor.TEXTVIEW_TEXT_COLOR, start, end);
+                textColorAnimator = ObjectAnimator.ofInt(textView, TEXTVIEW_TEXT_COLOR, start, end);
                 textColorAnimator.setEvaluator(new ArgbEvaluator());
             }
         }

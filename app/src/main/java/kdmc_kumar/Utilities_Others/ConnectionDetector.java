@@ -3,7 +3,6 @@ package kdmc_kumar.Utilities_Others;
 import android.content.Context;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
-import android.net.NetworkInfo.State;
 
 public class ConnectionDetector {
 
@@ -14,12 +13,12 @@ public class ConnectionDetector {
     }
 
     public final boolean isConnectingToInternet() {
-        ConnectivityManager connectivity = (ConnectivityManager) this.context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        ConnectivityManager connectivity = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
         if (connectivity != null) {
             NetworkInfo[] info = connectivity.getAllNetworkInfo();
             if (info != null)
                 for (NetworkInfo anInfo : info)
-                    if (anInfo.getState() == State.CONNECTED) {
+                    if (anInfo.getState() == NetworkInfo.State.CONNECTED) {
                         return true;
                     }
 
