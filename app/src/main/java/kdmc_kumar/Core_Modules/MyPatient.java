@@ -538,12 +538,12 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                 }
                 //  }
 
-                timerHandler.postDelayed(this, 180000); //run every second
+                timerHandler.postDelayed(this, 60000); //run every second
 
             }
         };
 
-        timerHandler.postDelayed(timerRunnable, 180000); //Start timer after 1 sec
+        timerHandler.postDelayed(timerRunnable, 60000); //Start timer after 1 sec
 
     }
 
@@ -817,7 +817,6 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                         Calendar c1 = null;
 
                         String date = c.getString(c.getColumnIndex("date"));
-                        ////Log.e("Online patient date 1 : ", date.toString());
                         if (date.contains("T")) {
 
                             date = date.split("T")[0];
@@ -868,9 +867,9 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                         Date TodayDate = c1.getTime();
 
 
-                        if (c1Day == c2Day && c1Month == c2Month && c1Year == c2Year) {
+                       // if (c1Day == c2Day && c1Month == c2Month && c1Year == c2Year) {
                             IsCorrectDate = true;
-                        }
+                       // }
 
                         if (IsCorrectDate && closed.equalsIgnoreCase("0")) {
 

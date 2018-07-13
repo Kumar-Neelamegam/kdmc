@@ -84,28 +84,12 @@ public class MasterWebservices_NODEJS {
                     Log.e("MobyDoctor BackGround", "Thread Master Service running 2");
                     Log.e("###########", "################");
 
-                    ImportPharamcy();
-
-                    Mstr_diagonisdetails();
-                    Mstr_Symptoms();
 
                     Mstr_current_patient_list();
-                    Mstr_MultipleHospital();
-
-                    Mstr_Academic();
-                    Mstr_Special();
-                    Mstr_xray();
-                    Mstr_RoomType();
-                    Mstr_FoodItems();
-                    Mstr_DietSession();
-                    Mstr_ward();
-                    Mstr_room();
-                    Mstr_bed();
-                    Mstr_WardCategory();
+                    Mstr_diagonisdetails();
+                    Mstr_Symptoms();
+                    ImportPharamcy();
                     Mstr_listofvaccine();
-                    //Mstr_Room_avaliability();
-                    Mstr_diet_entry();
-
                     Mstr_Allergy();
                     Mstr_MedicalHistory();
                     Mstr_FamilyHistory();
@@ -120,6 +104,20 @@ public class MasterWebservices_NODEJS {
                     Mstr_Caste();
                     Mstr_Occupation();
                     Mstr_Signs();
+
+
+                    Mstr_MultipleHospital();
+                    Mstr_Academic();
+                    Mstr_Special();
+                    Mstr_xray();
+                    Mstr_RoomType();
+                    Mstr_FoodItems();
+                    Mstr_DietSession();
+                    Mstr_ward();
+                    Mstr_room();
+                    Mstr_bed();
+                    Mstr_WardCategory();
+                    Mstr_diet_entry();
 
 
                 }
@@ -225,24 +223,7 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(serverid),'0') as IsUpdateMax from cims";
-
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
+        str =    BaseConfig.GetMaxValues(Query);
 
         String tableId = "ImportPharamcy";
         String isUpdateMax = str;
@@ -315,25 +296,7 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from diagonisdetails";
-
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
-
+        str = BaseConfig.GetMaxValues(Query);
 
         String tableId = "1";
         String isUpdateMax = str;
@@ -391,22 +354,8 @@ public class MasterWebservices_NODEJS {
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from trmntfor";
 
 
-        Cursor c = db.rawQuery(Query, null);
+        str = BaseConfig.GetMaxValues(Query);
 
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         String tableId = "2";
         String isUpdateMax = str;
@@ -460,27 +409,12 @@ public class MasterWebservices_NODEJS {
 
         String Query = "select IFNULL(max(IsUpdate),'0') as IsUpdateMax from current_patient_list";
 
+        str = BaseConfig.GetMaxValues(Query);
 
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         //str = "0";
         String tableId = "19";
-        String isUpdateMax = str;
+        String isUpdateMax = str+"^"+BaseConfig.doctorId+"^"+BaseConfig.HID;
 
         StringBuilder result = new StringBuilder();
         result = getMasterTableREST_Result(result, tableId, isUpdateMax);
@@ -492,7 +426,7 @@ public class MasterWebservices_NODEJS {
                 ContentValues values1;
                 boolean GetStatus;
                 final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
-
+               // db.execSQL("Delete from current_patient_list");
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
@@ -516,7 +450,9 @@ public class MasterWebservices_NODEJS {
                     values1.put("closed", "0");
                     values1.put("HID", HID);
 
+
                     if (HID.equalsIgnoreCase(BaseConfig.HID)) {
+
                         GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from current_patient_list where ServerId='" + ServerId + "'");
 
                         if (!GetStatus) {
@@ -540,24 +476,8 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_MultipleHospital";
+        str = BaseConfig.GetMaxValues(Query);
 
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         // str = "0";
         String tableId = "16";
@@ -644,23 +564,8 @@ public class MasterWebservices_NODEJS {
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Academic";
 
+        str =  BaseConfig.GetMaxValues(Query);
 
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         //str = "0";
         String tableId = "9";
@@ -724,24 +629,7 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Special";
-
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
+        str = BaseConfig.GetMaxValues(Query);
 
         //str = "0";
         String tableId = "10";
@@ -806,23 +694,9 @@ public class MasterWebservices_NODEJS {
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from xray_mstr";
 
+        str =         BaseConfig.GetMaxValues(Query);
 
-        Cursor c = db.rawQuery(Query, null);
 
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
         //str = "0";
         String tableId = "15";
         String isUpdateMax = str;
@@ -885,24 +759,8 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_RoomType";
+        str =  BaseConfig.GetMaxValues(Query);
 
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         //str = "0";
         String tableId = "3";
@@ -967,24 +825,8 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_FoodItems";
+        str =   BaseConfig.GetMaxValues(Query);
 
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         //str = "0";
         String tableId = "4";
@@ -1041,24 +883,8 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_DietSession";
+        str =  BaseConfig.GetMaxValues(Query);
 
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         //str = "0";
         String tableId = "5";
@@ -1118,24 +944,8 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from mast_ward";
+        str =   BaseConfig.GetMaxValues(Query);
 
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         //str = "0";
         String tableId = "6";
@@ -1210,24 +1020,7 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from mast_room";
-
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
+        str =   BaseConfig.GetMaxValues(Query);
 
         // str = "0";
         String tableId = "7";
@@ -1300,24 +1093,8 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from mast_bed";
+        str =  BaseConfig.GetMaxValues(Query);
 
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         // str = "0";
         String tableId = "8";
@@ -1391,24 +1168,8 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_WardCategory";
+        str =   BaseConfig.GetMaxValues(Query);
 
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         // str = "0";
         String tableId = "13";
@@ -1473,24 +1234,8 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(IsUpdate),'0') as IsUpdateMax from listofvaccine";
+        str =  BaseConfig.GetMaxValues(Query);
 
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         //str = "0";
         String tableId = "14";
@@ -1640,24 +1385,8 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from diet_entry";
+        str =   BaseConfig.GetMaxValues(Query);
 
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         //str = "0";
         String tableId = "18";
@@ -1986,23 +1715,8 @@ public class MasterWebservices_NODEJS {
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Gender";
 
+        str =  BaseConfig.GetMaxValues(Query);
 
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         String tableId = "20";
         String isUpdateMax = str;
@@ -2069,23 +1783,8 @@ public class MasterWebservices_NODEJS {
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_BloodGroup";
 
+        str =  BaseConfig.GetMaxValues(Query);
 
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         String tableId = "21";
         String isUpdateMax = str;
@@ -2151,24 +1850,8 @@ public class MasterWebservices_NODEJS {
         String str = "";
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_MaritalStatus";
+        str =  BaseConfig.GetMaxValues(Query);
 
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         String tableId = "22";
         String isUpdateMax = str;
@@ -2234,23 +1917,8 @@ public class MasterWebservices_NODEJS {
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Prefix";
 
+        str =  BaseConfig.GetMaxValues(Query);
 
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         String tableId = "23";
         String isUpdateMax = str;
@@ -2317,23 +1985,8 @@ public class MasterWebservices_NODEJS {
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_FeeExemptions";
 
+        str =   BaseConfig.GetMaxValues(Query);
 
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         String tableId = "24";
         String isUpdateMax = str;
@@ -2401,23 +2054,8 @@ public class MasterWebservices_NODEJS {
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Caste";
 
+        str =    BaseConfig.GetMaxValues(Query);
 
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
 
         String tableId = "25";
         String isUpdateMax = str;
@@ -2486,23 +2124,7 @@ public class MasterWebservices_NODEJS {
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Occupation";
 
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
+        str =  BaseConfig.GetMaxValues(Query);
 
         String tableId = "26";
         String isUpdateMax = str;
@@ -2570,23 +2192,7 @@ public class MasterWebservices_NODEJS {
 
         String Query = "select IFNULL(max(ServerId),'0') as IsUpdateMax from Mstr_Signs";
 
-
-        Cursor c = db.rawQuery(Query, null);
-
-        if (c != null) {
-            if (c.moveToFirst()) {
-                do {
-
-                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
-                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
-                    } else {
-                        str = "0";
-                    }
-
-                } while (c.moveToNext());
-
-            }
-        }
+        str =  BaseConfig.GetMaxValues(Query);
 
         String tableId = "27";
         String isUpdateMax = str;

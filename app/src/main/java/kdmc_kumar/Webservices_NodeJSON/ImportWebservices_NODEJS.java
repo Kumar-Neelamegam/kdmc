@@ -336,13 +336,10 @@ public class ImportWebservices_NODEJS {
                     Log.e("###########", "################");
 
 
-                    this.CheckDbUpdatesNodeJs(ctx);  // TODO: 1/24/2018 Completed
-
                     LoadDoctorValues();// TODO: 1/24/2018 Note Used
 
                     //HID IsUpdateMax
                     this.InsertPatientMapping(); // TODO: 1/24/2018 Completed
-
 
                     //Docid
                     this.ImportDoctorInfo();         // TODO: 1/24/2018 Completed
@@ -420,6 +417,7 @@ public class ImportWebservices_NODEJS {
 
                     LoadInvestigation_Notification(); // Investigation Notification
 
+                    this.CheckDbUpdatesNodeJs(ctx);  // TODO: 1/24/2018 Completed
 
 
 

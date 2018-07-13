@@ -128,7 +128,7 @@ public class MyPatienRecylerAdapter extends RecyclerView.Adapter<MyPatienRecyler
                 .setOnPossitiveListener(() -> {
 
 
-                    String Query = "Update current_patient_list set closed = '1' where patid = '" + mValues.get(position).getPatient_Id() + '\'';
+                    String Query = "Update current_patient_list set closed ='1' where patid = '" + mValues.get(position).getPatient_Id() +"'";
 
                     SQLiteDatabase db = BaseConfig.GetDb();
                     db.execSQL(Query);

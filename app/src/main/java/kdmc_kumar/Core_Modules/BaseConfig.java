@@ -1213,7 +1213,6 @@ public class BaseConfig {
 
     }
 
-
     public static void StartWebservice_Export(final Context ctx, int id) {
 
         Export_scheduler = Executors.newSingleThreadScheduledExecutor();
@@ -1902,6 +1901,31 @@ public class BaseConfig {
                 do {
 
                     str = c.getString(c.getColumnIndex("ret_values"));
+
+                } while (c.moveToNext());
+
+            }
+        }
+
+        c.close();
+        db.close();
+        return str;
+    }
+
+    public static String GetMaxValues(String Query) {
+        String str = "";
+        SQLiteDatabase db = GetDb();
+        Cursor c = db.rawQuery(Query, null);
+        if (c != null) {
+            if (c.moveToFirst()) {
+                do {
+
+                    if (c.getString(c.getColumnIndex("IsUpdateMax")) != null) {
+                        str = c.getString(c.getColumnIndex("IsUpdateMax"));
+                    } else {
+                        str = "0";
+                    }
+
 
                 } while (c.moveToNext());
 
