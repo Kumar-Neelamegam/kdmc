@@ -102,6 +102,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import displ.mobydocmarathi.com.R;
+import kdmc_kumar.Doctor_Modules.Login;
 import kdmc_kumar.Utilities_Others.CustomIntent;
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
 import kdmc_kumar.Utilities_Others.LocalSharedPref;
@@ -112,6 +113,7 @@ import kdmc_kumar.Utilities_Others.toggle.LabeledSwitch;
 import kdmc_kumar.Webservices_NodeJSON.ExportWebservices_NODEJS;
 import kdmc_kumar.Webservices_NodeJSON.ImportWebservices_NODEJS;
 import kdmc_kumar.Webservices_NodeJSON.MasterWebservices_NODEJS;
+import kdmc_kumar.Webservices_NodeJSON.ResultsWebservices_NODEJS;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
 
@@ -175,9 +177,9 @@ public class BaseConfig {
     private static final String TABLE_SIGNS = "Mstr_Signs";
     private static final String TABLE_DIAGONISDETAILS = "diagonisdetails";
     private static final Calendar currentDate = Calendar.getInstance();
-    private static final SimpleDateFormat formatterr = new SimpleDateFormat("dd",Locale.ENGLISH);
+    private static final SimpleDateFormat formatterr = new SimpleDateFormat("dd", Locale.ENGLISH);
     private static final String daynum = formatterr.format(currentDate.getTime());
-    private static final SimpleDateFormat formatterm = new SimpleDateFormat("yyyy",Locale.ENGLISH);
+    private static final SimpleDateFormat formatterm = new SimpleDateFormat("yyyy", Locale.ENGLISH);
     private static final String yrnum = formatterm.format(currentDate.getTime());
     private static final String dayname = (String) android.text.format.DateFormat.format("EEEE", currentDate);
     private static final String Monthname = (String) android.text.format.DateFormat.format("MMMM", currentDate);
@@ -306,9 +308,12 @@ public class BaseConfig {
     private static int mcYear;
     private static int mcMonth;
     private static int mcDay;
-    private static ScheduledExecutorService Import_scheduler;
-    private static ScheduledExecutorService Masters_Import_scheduler;
-    private static ScheduledExecutorService Export_scheduler;
+
+    //ScheduledExecutorService Import_scheduler;
+    //ScheduledExecutorService Masters_Import_scheduler;
+    //ScheduledExecutorService Export_scheduler;
+    //ScheduledExecutorService UpdatedResults_scheduler;
+
     private static List<String> mypatientdetails = new ArrayList<String>();
     private static List<String> mypatientprevmedicalhistory2 = new ArrayList<String>();
     private static List<String> mypatientprevmedicalhistory2_dgid = new ArrayList<String>();
@@ -1081,7 +1086,7 @@ public class BaseConfig {
         }
 
         // Create a media file name
-        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss",Locale.ENGLISH).format(new Date());
+        String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.ENGLISH).format(new Date());
         File mediaFile;
         if (type == MEDIA_TYPE_IMAGE) {
             mediaFile = new File(mediaStorageDir.getPath() + File.separator
@@ -1164,114 +1169,203 @@ public class BaseConfig {
 
     }
 
-    public static void StartWebservice_Import(final Context ctx, int id) {
 
-        //IF ID == 1 : DOTNET SERVICES
-        //ELSE ID == 2 : NODEJS SERVICES
+    //************************************************************************************************
+
+    /**
+     * 1
+     * METHOD TO GET ALL MASTERS VALUES
+     * @param ctx
+     * @param id
+     */
+    public static void StartWebservice_MasterWebservices_NODEJS(final Context ctx, int id) {
+
+        //IF ID == 1 : START
+        //ELSE ID == 2 : STOP
         //===============================
-        Masters_Import_scheduler = Executors.newSingleThreadScheduledExecutor();
+        ScheduledExecutorService Masters_Import_scheduler = Executors.newSingleThreadScheduledExecutor();
 
-        Masters_Import_scheduler.scheduleAtFixedRate(new Runnable() {
-            public void run() {
+        if(id==1)
+        {
+            Masters_Import_scheduler.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+                    try {
+
+
+                        MasterWebservices_NODEJS service2 = new MasterWebservices_NODEJS(ctx);
+                        service2.ExecuteAll();
+                        Log.e("WEBSERVICES", "*** NODEJS MASTER SERVICES STARTED (1)***");
+                        Log.e("WEBSERVICES", "*** NODEJS MASTER SERVICES STARTED (1)***");
+
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    System.gc();
+                }
+            }, 0, 5, TimeUnit.SECONDS);
+
+
+        }else if(id==2)
+        {
+
+            if (Masters_Import_scheduler != null) {
                 try {
-
-
-                    MasterWebservices_NODEJS service2 = new MasterWebservices_NODEJS(ctx);
-                    service2.ExecuteAll();
-                    Log.e("WEBSERVICES", "*** NODEJS MASTER SERVICES STARTED (1)***");
-                    Log.e("WEBSERVICES", "*** NODEJS MASTER SERVICES STARTED (1)***");
-
-
+                    Log.e("SERVICES", "MASTERS WEBSERVICES (1): STOPPED");
+                    Log.e("SERVICES", "MASTERS WEBSERVICES (1): STOPPED");
+                    Masters_Import_scheduler.shutdownNow();
+                    System.gc();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.gc();
             }
-        }, 0, 20, TimeUnit.SECONDS);
+        }
 
+    }
+
+    /**
+     * 2
+     * METHOD TO GET ALL DATA FROM OTHER DEVICE AND SERVER
+     * @param ctx
+     * @param id
+     */
+    public static void StartWebservice_ImportWebservices_NODEJS(final Context ctx, int id) {
 
         //===============================
-        Import_scheduler = Executors.newSingleThreadScheduledExecutor();
+        ScheduledExecutorService Import_scheduler = Executors.newSingleThreadScheduledExecutor();
 
-        Import_scheduler.scheduleAtFixedRate(new Runnable() {
-            public void run() {
+        if(id==1)
+        {
+            Import_scheduler.scheduleAtFixedRate(new Runnable() {
+                public void run() {
 
+                    try {
+
+                        ImportWebservices_NODEJS service1 = new ImportWebservices_NODEJS(ctx);
+                        service1.ExecuteAll();
+                        Log.e("WEBSERVICES", "*** NODEJS IMPORT SERVICES STARTED (2)***");
+                        Log.e("WEBSERVICES", "*** NODEJS IMPORT SERVICES STARTED (2)***");
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    System.gc();
+                }
+            }, 0, 10, TimeUnit.SECONDS);
+
+        }else if(id==2)
+        {
+
+            if (Import_scheduler != null) {
                 try {
-
-                    ImportWebservices_NODEJS service1 = new ImportWebservices_NODEJS(ctx);
-                    service1.ExecuteAll();
-                    Log.e("WEBSERVICES", "*** NODEJS IMPORT SERVICES STARTED (2)***");
-                    Log.e("WEBSERVICES", "*** NODEJS IMPORT SERVICES STARTED (2)***");
-
+                    Log.e("SERVICES", "IMPORT WEBSERVICES (2): STOPPED");
+                    Log.e("SERVICES", "IMPORT WEBSERVICES (2): STOPPED");
+                    Import_scheduler.shutdownNow();
+                    System.gc();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.gc();
             }
-        }, 0, 15, TimeUnit.SECONDS);
+        }
 
 
     }
 
-    public static void StartWebservice_Export(final Context ctx, int id) {
+    /**
+     * 4
+     * METHOD TO EXPORT THE DATA ENTERED FROM DEVICE TO SERVER
+     * @param ctx
+     * @param id
+     */
+    public static void StartWebservice_ExportWebservices_NODEJS(final Context ctx, int id) {
 
-        Export_scheduler = Executors.newSingleThreadScheduledExecutor();
+        ScheduledExecutorService Export_scheduler = Executors.newSingleThreadScheduledExecutor();
 
-        Export_scheduler.scheduleAtFixedRate(new Runnable() {
-            public void run() {
+        if(id==1)
+        {
+            Export_scheduler.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+                    try {
+
+
+                        ExportWebservices_NODEJS service2 = new ExportWebservices_NODEJS(ctx);
+                        service2.ExecuteAll();
+                        Log.e("WEBSERVICES", "*** NODEJS EXPORT SERVICES STARTED (3)***");
+                        Log.e("WEBSERVICES", "*** NODEJS EXPORT SERVICES STARTED (3)***");
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    System.gc();
+                }
+            }, 0, 15, TimeUnit.SECONDS);
+
+        }else if(id==2)
+        {
+            if (Export_scheduler != null) {
                 try {
-
-
-                    ExportWebservices_NODEJS service2 = new ExportWebservices_NODEJS(ctx);
-                    service2.ExecuteAll();
-                    Log.e("WEBSERVICES", "*** NODEJS EXPORT SERVICES STARTED (3)***");
-                    Log.e("WEBSERVICES", "*** NODEJS EXPORT SERVICES STARTED (3)***");
-
+                    Log.e("SERVICES", "EXPORT WEBSERVICES (3): STOPPED");
+                    Log.e("SERVICES", "EXPORT WEBSERVICES (3): STOPPED");
+                    Export_scheduler.shutdownNow();
+                    System.gc();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-                System.gc();
-            }
-        }, 0, 10, TimeUnit.SECONDS);
-
-    }
-
-    public static void StopwebService_Import() {
-        if (Import_scheduler != null) {
-            try {
-                Log.e("SERVICES", "IMPORT WEBSERVICES : STOPPED");
-                Log.e("SERVICES", "IMPORT WEBSERVICES : STOPPED");
-                Import_scheduler.shutdownNow();
-                System.gc();
-            } catch (Exception e) {
-                e.printStackTrace();
             }
         }
 
-        if (Masters_Import_scheduler != null) {
-            try {
-                Log.e("SERVICES", "MASTERS WEBSERVICES : STOPPED");
-                Log.e("SERVICES", "MASTERS WEBSERVICES : STOPPED");
-                Masters_Import_scheduler.shutdownNow();
-                System.gc();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
     }
 
-    public static void StopwebService_Export() {
-        if (Export_scheduler != null) {
-            try {
-                Log.e("SERVICES", "EXPORT WEBSERVICES : STOPPED");
-                Log.e("SERVICES", "EXPORT WEBSERVICES : STOPPED");
-                Export_scheduler.shutdownNow();
-                System.gc();
-            } catch (Exception e) {
-                e.printStackTrace();
+    /**
+     * 4
+     * METHOD TO GET ALL THE UPDATED RESULTS FROM SERVER
+     * @param ctx
+     * @param id
+     */
+    public static void StartWebservice_UpdatedResults_scheduler(final Context ctx, int id) {
+
+
+        ScheduledExecutorService UpdatedResults_scheduler = Executors.newSingleThreadScheduledExecutor();
+
+        if(id==1)
+        {
+            UpdatedResults_scheduler.scheduleAtFixedRate(new Runnable() {
+                public void run() {
+
+                    try {
+
+                        ResultsWebservices_NODEJS service1 = new ResultsWebservices_NODEJS(ctx);
+                        service1.ExecuteAll();
+                        Log.e("WEBSERVICES", "*** NODEJS IMPORT UPDATED RESULTS SERVICES STARTED (4)***");
+                        Log.e("WEBSERVICES", "*** NODEJS IMPORT UPDATED RESULTS SERVICES STARTED (4)***");
+
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    System.gc();
+                }
+            }, 0, 15, TimeUnit.SECONDS);
+
+        }
+        else if(id==2)
+        {
+            if (UpdatedResults_scheduler != null) {
+                try {
+                    Log.e("SERVICES", "UPDATED RESULTS WEBSERVICES (4): STOPPED");
+                    Log.e("SERVICES", "UPDATED RESULTS WEBSERVICES (4): STOPPED");
+                    UpdatedResults_scheduler.shutdownNow();
+                    System.gc();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
             }
         }
+
     }
+
+
+    //************************************************************************************************
+
 
     public static void customtoast(Context cnt, Activity activity, String textval) {
 
@@ -1438,8 +1532,11 @@ public class BaseConfig {
                     @Override
                     public void onPossitivePerformed() {
 
-                        BaseConfig.StopwebService_Import();
-                        BaseConfig.StopwebService_Export();
+                        BaseConfig.StartWebservice_MasterWebservices_NODEJS(ctx, 2);
+                        BaseConfig.StartWebservice_ImportWebservices_NODEJS(ctx, 2);
+                        BaseConfig.StartWebservice_ExportWebservices_NODEJS(ctx, 2);
+                        BaseConfig.StartWebservice_UpdatedResults_scheduler(ctx, 2);
+
                         ((Activity) ctx).finishAffinity();
                         Log.e("Webservices", "************Stopped***********");
                         Log.e("Webservices", "************Stopped***********");
@@ -1659,8 +1756,7 @@ public class BaseConfig {
     }
 
 
-
-    public static void setLocale_new(String lang,Context ctx) {
+    public static void setLocale_new(String lang, Context ctx) {
 
         try {
 
@@ -1677,7 +1773,6 @@ public class BaseConfig {
         }
 
     }
-
 
 
     public static void SaveLaguagePreference(String LanguageCode, Context ctx) {
@@ -2034,8 +2129,7 @@ public class BaseConfig {
 
                     String name = names[1].trim();
 
-                    if (name.toLowerCase().startsWith(filtervalue))
-                    {
+                    if (name.toLowerCase().startsWith(filtervalue)) {
                         list.add(PATIENT_NAME + "-" + PATIENT_ID);
                     }
 
@@ -2230,7 +2324,7 @@ public class BaseConfig {
         String return_date = "";
 
         //9/4/2017 6:16:09 PM
-        SimpleDateFormat dateformt = new SimpleDateFormat("MMM-dd-yyyy / hh:mm a",Locale.ENGLISH);
+        SimpleDateFormat dateformt = new SimpleDateFormat("MMM-dd-yyyy / hh:mm a", Locale.ENGLISH);
         return_date = dateformt.format(Date.parse(ServerDate));
 
         return return_date;
@@ -2238,7 +2332,7 @@ public class BaseConfig {
     }
 
     public static String DateFormatter2(String ServerDate) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss",Locale.ENGLISH);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.ENGLISH);
         Date convertedDate = new Date();
         try {
             convertedDate = dateFormat.parse(ServerDate);
@@ -2247,7 +2341,7 @@ public class BaseConfig {
             e.printStackTrace();
         }
 
-        SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
+        SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         String dates = spf.format(convertedDate);
 
 
@@ -2259,10 +2353,10 @@ public class BaseConfig {
         SimpleDateFormat dateFormat;//= new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aaa",Locale.ENGLISH);
         if (ServerDate.toString().contains("-")) {
             //"16-11-2017 06:48:21"
-            dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss",Locale.ENGLISH);
+            dateFormat = new SimpleDateFormat("dd-MM-yyyy hh:mm:ss", Locale.ENGLISH);
         } else {
             //"11-16-2017 06:48:21"
-            dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aaa",Locale.ENGLISH);
+            dateFormat = new SimpleDateFormat("MM/dd/yyyy hh:mm:ss aaa", Locale.ENGLISH);
         }
 
         Date convertedDate = new Date();
@@ -2273,7 +2367,7 @@ public class BaseConfig {
             e.printStackTrace();
         }
 
-        SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
+        SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         String dates = spf.format(convertedDate);
 
 
@@ -2281,7 +2375,7 @@ public class BaseConfig {
     }
 
     public static String DateFormatter3(String ServerDate) {
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS",Locale.ENGLISH);
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSS", Locale.ENGLISH);
         Date convertedDate = new Date();
         try {
             convertedDate = dateFormat.parse(ServerDate);
@@ -2290,7 +2384,7 @@ public class BaseConfig {
             e.printStackTrace();
         }
 
-        SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss",Locale.ENGLISH);
+        SimpleDateFormat spf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss", Locale.ENGLISH);
         String dates = spf.format(convertedDate);
 
 
@@ -2302,7 +2396,7 @@ public class BaseConfig {
 
         //2017/04/09 19:51:10
         String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-        SimpleDateFormat dateformt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss",Locale.ENGLISH);
+        SimpleDateFormat dateformt = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss", Locale.ENGLISH);
         date = dateformt.format(Date.parse(currentDateTimeString));
 
         return date;
@@ -2314,7 +2408,7 @@ public class BaseConfig {
         try {
             //2017/04/09 19:51:10
             String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-            SimpleDateFormat dateformt = new SimpleDateFormat("yyyy/MM/dd",Locale.ENGLISH);
+            SimpleDateFormat dateformt = new SimpleDateFormat("yyyy/MM/dd", Locale.ENGLISH);
             date = dateformt.format(Date.parse(currentDateTimeString));
         } catch (Exception e) {
             e.printStackTrace();
@@ -2328,7 +2422,7 @@ public class BaseConfig {
 
         try {
             String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-            SimpleDateFormat dateformt = new SimpleDateFormat("MM/dd/yyyy",Locale.ENGLISH);
+            SimpleDateFormat dateformt = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
             date = dateformt.format(Date.parse(currentDateTimeString));
         } catch (Exception e) {
             e.printStackTrace();
@@ -2343,7 +2437,7 @@ public class BaseConfig {
         try {
             //2017/04/09 19:51:10
             String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-            SimpleDateFormat dateformt = new SimpleDateFormat("yyyy-MM-dd",Locale.ENGLISH);
+            SimpleDateFormat dateformt = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
             date = dateformt.format(Date.parse(currentDateTimeString));
         } catch (Exception e) {
             e.printStackTrace();
@@ -2358,7 +2452,7 @@ public class BaseConfig {
         try {
             //2017/04/09 19:51:10
             String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-            SimpleDateFormat dateformt = new SimpleDateFormat("MM/dd/yyyy",Locale.ENGLISH);
+            SimpleDateFormat dateformt = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
             date = dateformt.format(Date.parse(currentDateTimeString));
         } catch (Exception e) {
             e.printStackTrace();
@@ -2373,7 +2467,7 @@ public class BaseConfig {
         try {
             //2017/04/09 19:51:10
             String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-            SimpleDateFormat dateformt = new SimpleDateFormat("MM-dd-yyyy",Locale.ENGLISH);
+            SimpleDateFormat dateformt = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
             date = dateformt.format(Date.parse(currentDateTimeString));
         } catch (Exception e) {
             e.printStackTrace();
@@ -2387,7 +2481,7 @@ public class BaseConfig {
 
         try {
             String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
-            SimpleDateFormat dateformt = new SimpleDateFormat("MMM-dd-yyyy",Locale.ENGLISH);
+            SimpleDateFormat dateformt = new SimpleDateFormat("MMM-dd-yyyy", Locale.ENGLISH);
             date = dateformt.format(Date.parse(currentDateTimeString));
         } catch (Exception e) {
             e.printStackTrace();
@@ -2449,7 +2543,7 @@ public class BaseConfig {
         String date_return = "";
 
         try {
-            SimpleDateFormat dateformt = new SimpleDateFormat("MMM-dd-yyyy",Locale.ENGLISH);
+            SimpleDateFormat dateformt = new SimpleDateFormat("MMM-dd-yyyy", Locale.ENGLISH);
             date_return = dateformt.format(Date.parse(date));
         } catch (Exception e) {
             e.printStackTrace();
@@ -2747,6 +2841,7 @@ public class BaseConfig {
             ret_bitmap = Glide.with(ctx).asBitmap().load(path).into(150, 150).get();
 
             return ret_bitmap;
+
         } catch (InterruptedException e) {
             e.printStackTrace();
         } catch (ExecutionException e) {
@@ -2888,7 +2983,7 @@ public class BaseConfig {
             EditText edt = (EditText) control;
             str = EditTextOperations(edt, id, "", "");
 
-        }  else if (control instanceof AutoCompleteTextView) {
+        } else if (control instanceof AutoCompleteTextView) {
             AutoCompleteTextView edt = (AutoCompleteTextView) control;
             str = AutoCompleteTextViewOperations(edt, id, "", "");
 
@@ -2925,10 +3020,9 @@ public class BaseConfig {
 
             str = SpinnerOperations(spn, id);
 
-        } else if(control instanceof  SeekBar)
-        {
+        } else if (control instanceof SeekBar) {
             SeekBar seekbar = (SeekBar) control;
-            str = SeekBarOperations(seekbar,id,"" ,"");
+            str = SeekBarOperations(seekbar, id, "", "");
 
         } else if (control instanceof TextView) {
             TextView txtvw = (TextView) control;
@@ -2940,14 +3034,12 @@ public class BaseConfig {
 
     }
 
-    public static String SeekBarOperations(SeekBar seekbar, int id, String setdata, String errormsg)
-    {
-        String str="";
-        switch(id)
-        {
+    public static String SeekBarOperations(SeekBar seekbar, int id, String setdata, String errormsg) {
+        String str = "";
+        switch (id) {
             case 1://Get text
                 int p = seekbar.getProgress();
-                str=String.valueOf(p);
+                str = String.valueOf(p);
                 break;
 
         }
@@ -3244,8 +3336,8 @@ public class BaseConfig {
             case 1:
                 if (rbtn.isChecked()) {
                     str = rbtn.getText().toString();
-                }else {
-                    str="";
+                } else {
+                    str = "";
                 }
 
                 break;
@@ -3272,8 +3364,8 @@ public class BaseConfig {
             case 1:
                 if (rbtn.isChecked()) {
                     str = rbtn.getText().toString();
-                }else {
-                    str="";
+                } else {
+                    str = "";
                 }
 
                 break;
@@ -3453,6 +3545,21 @@ public class BaseConfig {
         });
 
 
+    }
+
+    public static String GetCurrentTime() {
+        String str = null;
+        try {
+
+            str = "";
+            SimpleDateFormat sdf4 = new SimpleDateFormat("h:mm a");
+            String currentDateandTime = sdf4.format(new Date());     //8:29 PM
+            str = currentDateandTime;
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return str;
     }
 
     public BaseConfig getInstance() {
@@ -4118,23 +4225,6 @@ public class BaseConfig {
         db.endTransaction();
         db.close();
 
-    }
-
-
-    public static String GetCurrentTime()
-    {
-        String str= null;
-        try {
-
-            str = "";
-            SimpleDateFormat sdf4 = new SimpleDateFormat("h:mm a");
-            String currentDateandTime = sdf4.format(new Date());     //8:29 PM
-            str= currentDateandTime;
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return str;
     }
 
 //**************************************************************************************************

@@ -624,8 +624,11 @@ public class Dashboard_NavigationMenu extends AppCompatActivity {
                         .setNegativeButtonTitle("NO")
                         .setOnPossitiveListener(() -> {
 
-                            BaseConfig.StopwebService_Import();
-                            BaseConfig.StopwebService_Export();
+                            BaseConfig.StartWebservice_MasterWebservices_NODEJS(getApplicationContext(), 2);
+                            BaseConfig.StartWebservice_ImportWebservices_NODEJS(getApplicationContext(), 2);
+                            BaseConfig.StartWebservice_ExportWebservices_NODEJS(getApplicationContext(), 2);
+                            BaseConfig.StartWebservice_UpdatedResults_scheduler(getApplicationContext(), 2);
+
                             Log.e("Webservices", "************Stopped***********");
                             Dashboard_NavigationMenu.this.finish();
                             Intent intent = new Intent(getApplicationContext(), Login.class);

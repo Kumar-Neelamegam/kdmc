@@ -84,8 +84,11 @@ public class PinPassword extends AppCompatActivity {
                     startActivityForResult(intent, 500);
                     overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
-                        BaseConfig.StartWebservice_Import(PinPassword.this,2);
-                        BaseConfig.StartWebservice_Export(PinPassword.this,2);
+                    BaseConfig.StartWebservice_MasterWebservices_NODEJS(PinPassword.this,1);
+                    BaseConfig.StartWebservice_ImportWebservices_NODEJS(PinPassword.this,1);
+                    BaseConfig.StartWebservice_ExportWebservices_NODEJS(PinPassword.this,1);
+                    BaseConfig.StartWebservice_UpdatedResults_scheduler(PinPassword.this,1);
+
 
                 } else {
 

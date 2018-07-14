@@ -493,6 +493,7 @@ public class Patient_Registration extends AppCompatActivity {
 
             String DefaultPhotoPath = BaseConfig.AppDBFolderName + "/male_avatar.jpg";
 
+
             str_PhotoURL = str_PhotoURL.equalsIgnoreCase("") ? DefaultPhotoPath : str_PhotoURL;
 
             str_Patient_Prefix = GetGenderPrefix(str_Gender, str_MaritalStatus, str_Patient_Prefix);

@@ -180,37 +180,41 @@ public class Splash_Screen extends AppCompatActivity {
 
     private final void GetIniliz() {
 
-        ButterKnife.bind(Splash_Screen.this);
-        AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
+        try {
 
-        //Getting Imei and mac id....
-        GetIMEI();
-        GetMAC();
+            ButterKnife.bind(Splash_Screen.this);
+            AppCompatDelegate.setCompatVectorFromResourcesEnabled(true);
 
+            //Getting Imei and mac id....
+            GetIMEI();
+            GetMAC();
 
-        String category = SPLASH_SCREEN_OPTION_3;
+            String category = SPLASH_SCREEN_OPTION_3;
 
-        Bundle extras = getIntent().getExtras();
-        if (extras != null && extras.containsKey(SPLASH_SCREEN_OPTION)) {
-            category = extras.getString(SPLASH_SCREEN_OPTION, SPLASH_SCREEN_OPTION_1);
+            Bundle extras = getIntent().getExtras();
+            if (extras != null && extras.containsKey(SPLASH_SCREEN_OPTION)) {
+                category = extras.getString(SPLASH_SCREEN_OPTION, SPLASH_SCREEN_OPTION_1);
+            }
+
+            mLogo.setAlpha((float) 0);
+            setAnimation(category);
+
+            Animation anim_app_banner = AnimationUtils.loadAnimation(this, R.anim.up_to_bottom_splash);
+            top_banner.startAnimation(anim_app_banner);
+
+            BaseConfig.Glide_LoadImageView(app_logo,   new LocalSharedPref(Splash_Screen.this).getValue("AppLogo"));
+
+            Animation anim_app_logo = AnimationUtils.loadAnimation(this, R.anim.push_left_in);
+            app_logo.startAnimation(anim_app_logo);
+
+            CallNextIntent();
+
+            configApplicationLanguage();
+
         }
-
-        mLogo.setAlpha((float) 0);
-        setAnimation(category);
-
-        Animation anim_app_banner = AnimationUtils.loadAnimation(this, R.anim.up_to_bottom_splash);
-        top_banner.startAnimation(anim_app_banner);
-
-        BaseConfig.Glide_LoadImageView(app_logo, BaseConfig.AppLogo);
-
-        Animation anim_app_logo = AnimationUtils.loadAnimation(this, R.anim.push_left_in);
-        app_logo.startAnimation(anim_app_logo);
-
-
-
-        CallNextIntent();
-
-        configApplicationLanguage();
+        catch (Exception e) {
+            e.printStackTrace();
+        }
 
     }
 

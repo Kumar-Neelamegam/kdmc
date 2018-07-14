@@ -198,7 +198,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked)
                 {
-                    new LoadPatientInfo(1, 1).execute();
+                    btRefresh.performClick();
                 }
             }
         });
@@ -208,7 +208,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 if(isChecked)
                 {
-                    new LoadPatientInfo(2, 0).execute();
+                    btRefresh.performClick();
                 }
             }
         });
@@ -369,9 +369,6 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
             @Override
             public void onClick(View v) {
 
-
-                CheckPatientsOnline();
-
                 v.startAnimation(animRotate);
 
                 etSearch.setText("");
@@ -382,11 +379,10 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                     if(radio_showall_patients.isChecked())
                     {
                         new LoadPatientInfo(1, 1).execute();
+                    }else if(radio_today_patients.isChecked())
+                    {
+                        new LoadPatientInfo(2, 0).execute();//if id==1 load all patient, id==2 load all today patients
                     }
-
-
-                    // new LoadPatientInfo(1, 1).execute();
-                    radio_showall_patients.performClick();
 
                     Toast.makeText(MyPatient.this, "Please wait refreshing patient list...", Toast.LENGTH_LONG).show();
 

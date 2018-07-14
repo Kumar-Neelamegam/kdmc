@@ -400,7 +400,7 @@ class Initialization : CoreActivity() {
                 LocalSharedPref(Initialization@this).setValue("AppDBFolderName",BaseConfig.AppDBFolderName)
                 LocalSharedPref(Initialization@this).setValue("AppDatabaseName",BaseConfig.AppDatabaseName)
                 LocalSharedPref(Initialization@this).setValue("AppDirectoryPictures",BaseConfig.AppDirectoryPictures)
-                LocalSharedPref(Initialization@this).setValue("AppLogo",BaseConfig.AppLogo)
+                LocalSharedPref(Initialization@this).setValue("AppLogo", BaseConfig.AppLogo)
 
 
                 val contentValues = ContentValues()
@@ -573,29 +573,26 @@ class Initialization : CoreActivity() {
     }
 
 
-    private fun copyLogoFileAssets() {
+    private fun copyLogoFileAssets() = try {
+        var file = this@Initialization.applicationContext.assets.open("male_avatar.png")
 
-        try {
-            val file = this@Initialization.applicationContext.assets.open("male_avatar.png")
+        // Copy the database into the destination
+        var os = FileOutputStream(BaseConfig.AppDBFolderName + "/male_avatar.jpg")
+        var buffer = ByteArray(1024)
 
-            // Copy the database into the destination
-            val os = FileOutputStream(BaseConfig.AppDBFolderName + "/male_avatar.jpg")
-            val buffer = ByteArray(1024)
-
-            var length: Int = file.read(buffer)
-            while ((length) > 0) {
-                os.write(buffer, 0, length)
-                length = file.read(buffer)
-            }
-
-            os.flush()
-            os.close()
-            file.close()
-
-        } catch (e: Exception) {
-            e.printStackTrace()
+        var length: Int = file.read(buffer)
+        while ((length) > 0) {
+            os.write(buffer, 0, length)
+            length = file.read(buffer)
         }
 
+        os.flush()
+        os.close()
+        file.close()
+
+
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 
     //***************************************************************************************************

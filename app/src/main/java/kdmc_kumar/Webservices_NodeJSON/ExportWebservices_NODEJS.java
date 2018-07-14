@@ -111,7 +111,6 @@ public class ExportWebservices_NODEJS {
     }
 
     public void ExecuteAll() {
-        Log.e("Executing Webservices 2", "OnReady Execute All Called 2");
 
         if (BaseConfig.CheckNetwork(ctx)) {
 

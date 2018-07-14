@@ -1048,8 +1048,12 @@ public class Login extends AppCompatActivity {
     private void LOAD_WEBSERVICES() {
 
         try {
-            BaseConfig.StartWebservice_Import(Login.this, 2);
-            BaseConfig.StartWebservice_Export(Login.this, 2);
+
+            BaseConfig.StartWebservice_MasterWebservices_NODEJS(Login.this,1);
+            BaseConfig.StartWebservice_ImportWebservices_NODEJS(Login.this,1);
+            BaseConfig.StartWebservice_ExportWebservices_NODEJS(Login.this,1);
+            BaseConfig.StartWebservice_UpdatedResults_scheduler(Login.this,1);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -1209,7 +1213,6 @@ public class Login extends AppCompatActivity {
                     BaseConfig.Assistant_Task = "False";
                     Intent intent = new Intent(login.getContext(), Dashboard_NavigationMenu.class);
                     startActivity(intent);
-                    //  overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
 
                     LOAD_WEBSERVICES();
 
