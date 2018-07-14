@@ -5,6 +5,7 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.util.Log;
 
 import com.magnet.android.mms.MagnetMobileClient;
@@ -28,6 +29,10 @@ import kdmc_kumar.Webservices_NodeJSON.getMasters.controller.api.GetMaster;
 import kdmc_kumar.Webservices_NodeJSON.getMasters.controller.api.GetMasterFactory;
 import kdmc_kumar.Webservices_NodeJSON.getMasters.model.beans.GetMastersRequest;
 import kdmc_kumar.Webservices_NodeJSON.getMasters.model.beans.MastersResult;
+import kdmc_kumar.Webservices_NodeJSON.importREST_Services.getPatientMapping.controller.api.PatientMapping;
+import kdmc_kumar.Webservices_NodeJSON.importREST_Services.getPatientMapping.controller.api.PatientMappingFactory;
+import kdmc_kumar.Webservices_NodeJSON.importREST_Services.getPatientMapping.model.beans.GetPatientMappingRequest;
+import kdmc_kumar.Webservices_NodeJSON.importREST_Services.getPatientMapping.model.beans.PatientMappingResult;
 
 /**
  * Created by Android on 9/19/2017.
@@ -79,11 +84,13 @@ public class MasterWebservices_NODEJS {
                 if (CheckNodeServer()) {
 
                     Log.e("###########", "################");
-                    Log.e("MobyDoctor BackGround", "Thread Master Service running 2");
-                    Log.e("MobyDoctor BackGround", "Thread Master Service running 2");
-                    Log.e("MobyDoctor BackGround", "Thread Master Service running 2");
+                    Log.e("MobyDoctor BackGround", "Thread Master Service running (1)");
+                    Log.e("MobyDoctor BackGround", "Thread Master Service running (1)");
+                    Log.e("MobyDoctor BackGround", "Thread Master Service running (1)");
                     Log.e("###########", "################");
 
+                    //HID IsUpdateMax
+                    this.InsertPatientMapping(); // TODO: 1/24/2018 Completed
 
                     Mstr_current_patient_list();
                     Mstr_diagonisdetails();
@@ -402,6 +409,233 @@ public class MasterWebservices_NODEJS {
     }
 
 
+    private void InsertPatientMapping() {
+
+
+        final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
+
+
+        ContentValues values1;
+
+        try {
+
+
+            final MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(this.ctx);
+            final PatientMappingFactory patientMappingFactory = new PatientMappingFactory(magnetMobileClient);
+            final PatientMapping patientMapping = patientMappingFactory.obtainInstance();
+
+            final GetPatientMappingRequest getPatientMappingRequest = new GetPatientMappingRequest();
+            getPatientMappingRequest.sethID(BaseConfig.doctorId);
+            getPatientMappingRequest.setIsUpdateMax("0");
+
+            final Call<PatientMappingResult> resultCall = patientMapping.getPatientMapping(getPatientMappingRequest, null);
+
+            final String resultsRequestSOAP = resultCall.get().getResults();
+
+            if (!"[]".equalsIgnoreCase(resultsRequestSOAP)) {
+                final JSONArray jsonArray = new JSONArray(resultsRequestSOAP);
+                JSONObject objJson;
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    objJson = jsonArray.getJSONObject(i);
+
+                    final String id_data = String.valueOf(objJson.getString("id"));
+                    final String Patid_data = String.valueOf(objJson.getString("Patid"));
+                    final String Docid_data = String.valueOf(objJson.getString("Docid"));
+                    final String reffered_data = String.valueOf(objJson.getString("reffered"));
+                    final String name_data = String.valueOf(objJson.getString("name"));
+                    final String age_data = String.valueOf(objJson.getString("age"));
+                    final String gender_data = String.valueOf(objJson.getString("gender"));
+                    final String DOB_data = String.valueOf(objJson.getString("DOB"));
+                    final String weight_data = String.valueOf(objJson.getString("weight"));
+                    final String Country_data = String.valueOf(objJson.getString("Country"));
+                    final String State_data = String.valueOf(objJson.getString("State"));
+                    final String District_data = String.valueOf(objJson.getString("District"));
+                    final String Address_data = String.valueOf(objJson.getString("Address"));
+                    final String pincode_data = String.valueOf(objJson.getString("pincode"));
+                    final String phone_data = String.valueOf(objJson.getString("phone"));
+                    final String PMH_data = String.valueOf(objJson.getString("PMH"));
+                    //String PC_data = String.valueOf(objJson.getString("PC"));//Commented because to save base64 into images
+
+                    final String Allergy_data = String.valueOf(objJson.getString("Allergy"));
+                    final String IsActive_data = String.valueOf(objJson.getString("IsActive"));
+                    final String imei_data = String.valueOf(objJson.getString("imei"));
+                    final String city_data = String.valueOf(objJson.getString("city"));
+                    final String altphone_data = String.valueOf(objJson.getString("altphone"));
+                    final String Actdate_data = String.valueOf(objJson.getString("Actdate"));
+                    final String Isupdate_data = String.valueOf(objJson.getString("Isupdate"));
+                    final String Address1_data = String.valueOf(objJson.getString("Address1"));
+                    final String email_data = String.valueOf(objJson.getString("email"));
+                    final String caretaker_data = String.valueOf(objJson.getString("caretaker"));
+                    final String crtknum_data = String.valueOf(objJson.getString("crtknum"));
+                    final String relationship_data = String.valueOf(objJson.getString("relationship"));
+                    final String willingsms_data = String.valueOf(objJson.getString("willingsms"));
+                    final String smsto_data = String.valueOf(objJson.getString("smsto"));
+                    final String smsfor_data = String.valueOf(objJson.getString("smsfor"));
+                    final String willingblood_data = String.valueOf(objJson.getString("willingblood"));
+                    final String willingeye_data = String.valueOf(objJson.getString("willingeye"));
+                    final String hereditary_data = String.valueOf(objJson.getString("hereditary"));
+                    final String mbid_data = String.valueOf(objJson.getString("mbid"));
+                    final String pinno_data = String.valueOf(objJson.getString("pinno"));
+                    final String issms_data = String.valueOf(objJson.getString("issms"));
+                    final String bloodgroup_data = String.valueOf(objJson.getString("bloodgroup"));
+                    final String Policyname_data = String.valueOf(objJson.getString("Policyname"));
+                    final String Inscompany_data = String.valueOf(objJson.getString("Inscompany"));
+                    final String Insamount_data = String.valueOf(objJson.getString("Insamount"));
+                    final String Insvalidity_data = String.valueOf(objJson.getString("Insvalidity"));
+                    final String Authorhospital_data = String.valueOf(objJson.getString("Authorhospital"));
+                    final String Isprfupdate_data = String.valueOf(objJson.getString("Isprfupdate"));
+                    final String Pages_data = String.valueOf(objJson.getString("Pages"));
+                    final String docReferName_data = String.valueOf(objJson.getString("docReferName"));
+                    final String docReferNo_data = String.valueOf(objJson.getString("docReferNo"));
+                    String enable_inpatient_data = String.valueOf(objJson.getString("enable_inpatient"));
+                    if ("true".equalsIgnoreCase(enable_inpatient_data)) {
+                        enable_inpatient_data = "1";
+                    } else if ("false".equalsIgnoreCase(enable_inpatient_data)) {
+                        enable_inpatient_data = "0";
+                    }
+
+                    final String admitdt_data = String.valueOf(objJson.getString("admitdt"));
+                    final String admittime_data = String.valueOf(objJson.getString("admittime"));
+                    final String Ward_data = String.valueOf(objJson.getString("Ward"));
+                    final String Bed_data = String.valueOf(objJson.getString("Bed"));
+                    final String roomno_data = String.valueOf(objJson.getString("roomno"));
+                    final String dischargedt_data = String.valueOf(objJson.getString("dischargedt"));
+                    final String HospitalId_data = String.valueOf(objJson.getString("HospitalId"));
+                    final String Presentwithco_data = String.valueOf(objJson.getString("Presentwithco"));
+                    final String doc_refer_name_data = String.valueOf(objJson.getString("doc_refer_name"));
+                    final String doc_refer_no_data = String.valueOf(objJson.getString("doc_refer_no"));
+                    final String IsFeeExemp_data = String.valueOf(objJson.getString("IsFeeExemp"));
+                    final String FeeExempCateg_data = String.valueOf(objJson.getString("FeeExempCateg"));
+                    final String bplCardNo_data = String.valueOf(objJson.getString("bplCardNo"));
+                    final String AadharCardNo_data = String.valueOf(objJson.getString("AadharCardNo"));
+                    final String FeeExempReason_data = String.valueOf(objJson.getString("FeeExempReason"));
+                    final String caste_data = String.valueOf(objJson.getString("caste"));
+                    final String income_data = String.valueOf(objJson.getString("income"));
+                    final String under_care_of_data = String.valueOf(objJson.getString("under_care_of"));
+                    final String Occupation_data = String.valueOf(objJson.getString("Occupation"));
+                    final String distime = String.valueOf(objJson.getString("distime"));
+                    final String disdate = String.valueOf(objJson.getString("disdate"));
+                    final String Fathername_data = String.valueOf(objJson.getString("Fathername"));
+                    final String spouse = String.valueOf(objJson.getString("spouse"));
+
+                    values1 = new ContentValues();
+
+                    values1.put("Patid", Patid_data);
+                    values1.put("Docid", Docid_data);
+                    values1.put("referred_by", reffered_data);
+                    values1.put("name", name_data);
+                    try {
+                        if (name_data.contains(".")) {
+                            final String[] prefixData = name_data.split("\\.");
+                            values1.put("prefix", prefixData[0]);
+                            values1.put("patientname", prefixData[1].trim());
+                        }
+                    } catch (final Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    String PatientPhoto = "";
+                    try {
+                        final Bitmap theBitmap = BaseConfig.Glide_GetBitmap(ctx, String.valueOf(objJson.getString("PC")));//Glide.with(this.ctx).load(String.valueOf(objJson.getString("PC"))).asBitmap().into(-1, -1).get();
+
+                        PatientPhoto = BaseConfig.saveURLImagetoSDcard(theBitmap, Patid_data.replace("/", "-"));
+
+                    } catch (final Exception e) {
+                        e.printStackTrace();
+                    }
+
+                    values1.put("age", age_data);
+                    values1.put("gender", gender_data);
+                    values1.put("DOB", DOB_data);
+                    values1.put("weight", weight_data);
+                    values1.put("Country", Country_data);
+                    values1.put("State", State_data);
+                    values1.put("District", District_data);
+                    values1.put("Address", Address_data);
+                    values1.put("pincode", pincode_data);
+                    values1.put("phone", phone_data);
+                    values1.put("PMH", PMH_data);
+                    values1.put("PC", PatientPhoto);
+                    values1.put("Allergy", Allergy_data);
+                    values1.put("IsActive", IsActive_data);
+                    values1.put("imei", imei_data);
+                    values1.put("city", city_data);
+                    values1.put("altphone", altphone_data);
+                    values1.put("Actdate", Actdate_data);
+                    values1.put("Isupdate", Isupdate_data);
+                    values1.put("Address1", Address1_data);
+                    values1.put("email", email_data);
+                    values1.put("caretaker", caretaker_data);
+                    values1.put("crtknum", crtknum_data);
+                    values1.put("relationship", relationship_data);
+                    values1.put("willingsms", willingsms_data);
+                    values1.put("smsto", smsto_data);
+                    values1.put("smsfor", smsfor_data);
+                    values1.put("willingblood", willingblood_data);
+                    values1.put("willingeye", willingeye_data);
+                    values1.put("hereditary", hereditary_data);
+                    values1.put("PatientPin", pinno_data);
+                    values1.put("bloodgroup", bloodgroup_data);
+                    values1.put("policyname", Policyname_data);
+                    values1.put("insurancecompany", Inscompany_data);
+                    values1.put("amountinsured", Insamount_data);
+                    values1.put("validity", Insvalidity_data);
+                    values1.put("inshosp", Authorhospital_data);
+                    values1.put("enable_inpatient", enable_inpatient_data);
+                    values1.put("admitdt", admitdt_data);
+                    values1.put("admit_time", admittime_data);
+                    values1.put("wardno", Ward_data);
+                    values1.put("bedno", Bed_data);
+                    values1.put("roomno", roomno_data);
+                    values1.put("discharge_date", disdate);
+                    values1.put("discharge_time", distime);
+                    values1.put("HospitalId", HospitalId_data);
+                    values1.put("Presentwithco", Presentwithco_data);
+                    values1.put("doc_refer_name", doc_refer_name_data);
+                    values1.put("doc_refer_no", doc_refer_no_data);
+                    values1.put("IsFeeExemp", IsFeeExemp_data.toString().equalsIgnoreCase("true")? "Yes" : "No");
+                    values1.put("FeeExempCateg", FeeExempCateg_data);
+                    values1.put("bplCardNo", bplCardNo_data);
+                    values1.put("AadharCardNo", AadharCardNo_data);
+                    values1.put("FeeExempReason", FeeExempReason_data);
+                    values1.put("caste", caste_data);
+                    values1.put("income", income_data);
+                    values1.put("under_care_of", under_care_of_data);
+                    values1.put("referred_by", doc_refer_name_data);
+                    values1.put("Occupation", Occupation_data);
+                    values1.put("Fathername", Fathername_data);
+                    values1.put("spouse", spouse);
+
+                    final boolean GetStatus = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where Patid='" + Patid_data + '\'');
+
+                    if (!GetStatus) {
+
+                        db.insert("Patreg", null, values1);
+                        ImportWebservices_NODEJS.LoadForVaccination(Patid_data, name_data, age_data + "-" + gender_data, phone_data);
+
+                    } else {
+
+                        db.update("Patreg", values1, "Patid ='" + Patid_data + '\'', null);
+
+                        String Update_Vaccination = "update  Vaccination set pname='"+name_data+ "',agegen='"+age_data+ '-'+ gender_data+ "',mobnum='"+phone_data+ "' where patid='"+Patid_data+ "';";
+                        BaseConfig.SaveData(Update_Vaccination);
+
+                    }
+
+
+                }
+            }
+
+        } catch (final Exception e) {
+            e.printStackTrace();
+        }
+
+        db.close();
+
+    }
+
+
     private void Mstr_current_patient_list() {
 
 
@@ -430,6 +664,7 @@ public class MasterWebservices_NODEJS {
 
                 for (int i = 0; i < jsonArray.length(); i++) {
 
+
                     objJson = jsonArray.getJSONObject(i);
 
                     String date = String.valueOf(objJson.getString("date"));
@@ -450,6 +685,13 @@ public class MasterWebservices_NODEJS {
                     values1.put("closed", "0");
                     values1.put("HID", HID);
 
+                    if (i==0) {
+                        try {
+                            BaseConfig.GetDb().execSQL("DELETE FROM current_patient_list WHERE date!='"+date+"';");
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
+                    }
 
                     if (HID.equalsIgnoreCase(BaseConfig.HID)) {
 

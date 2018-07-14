@@ -74,8 +74,8 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
 
     protected static final int RESULT_SPEECH = 1;
-    private final ArrayList<String> CurrentPatientList = new ArrayList<>();
-    public String Load_All_PatientsQuery = "select id,prefix,patientname as name,Patid,age,gender,PC as photo  from Patreg order by patientname, id";
+    private ArrayList<String> CurrentPatientList = new ArrayList<>();
+    public String Load_All_PatientsQuery = "select id,prefix,patientname as name,Patid,age,gender,PC as photo  from Patreg where Docid='"+BaseConfig.doctorId+"' order by patientname, id";
     public String Load_Today_PatientsQuery = "";
 
     @BindView(R.id.mypatient_parent_layout)
@@ -368,6 +368,8 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
             @Override
             public void onClick(View v) {
+
+
                 CheckPatientsOnline();
 
                 v.startAnimation(animRotate);
@@ -375,6 +377,13 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                 etSearch.setText("");
 
                 try {
+
+
+                    if(radio_showall_patients.isChecked())
+                    {
+                        new LoadPatientInfo(1, 1).execute();
+                    }
+
 
                     // new LoadPatientInfo(1, 1).execute();
                     radio_showall_patients.performClick();
@@ -560,8 +569,8 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
         SQLiteDatabase db = BaseConfig.GetDb();//);
         Cursor c = db.rawQuery("select * from  Patreg where Patid='" + patientid + "'", null);
-        rowItems.clear();
-        CurrentPatientList.clear();
+        rowItems=new LinkedList<>();
+        CurrentPatientList = new ArrayList<>();
 
         if (c != null) {
             if (c.moveToFirst()) {
@@ -805,8 +814,8 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
             String Query ="select * from current_patient_list where date='"+BaseConfig.Device_OnlyDateMMDDYYYY()+"' and docid = '" + BaseConfig.doctorId + "' or (status  = 'true' and HID='" + BaseConfig.HID + "')";
             Log.e("Currentpatientlist: ",Query);
             Cursor c = db.rawQuery(Query, null);
-            rowItems.clear();
-            CurrentPatientList.clear();
+            rowItems=new LinkedList<>();
+            CurrentPatientList = new ArrayList<>();
 
             if (c != null) {
                 if (c.moveToFirst()) {
@@ -833,6 +842,10 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
         } catch (Exception e) {
             e.printStackTrace();
         }
+
+        Log.e("Current Patient List Size: ", String.valueOf(CurrentPatientList.size()));
+        Log.e("Current Patient List: ", String.valueOf(CurrentPatientList));
+
         return CurrentPatientList;
     }
 
@@ -945,7 +958,9 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
         try {
             String LOAD_ALL_PATIENTS_QUERY = Load_All_PatientsQuery;
+
             CheckPatientsOnline();
+
             String pdtls, paggen;
             Bitmap bm;
 
@@ -981,6 +996,9 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
             e.printStackTrace();
         }
 
+        Log.e("RowItem Count: ", String.valueOf(rowItems.size()));
+        Log.e("RowItem Data: ", String.valueOf(rowItems));
+
     }
 
     public class LoadPatientInfo extends AsyncTask<Void, Void, Void> {
@@ -1006,9 +1024,12 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
             if (PASSING_ID == 1)//Get All Paitents
             {
+                Log.e("MYPATIENT: ","Load filter patient list");
                 LOAD_ALL_PATIENTS(PASSING_LOAD_FILTER);
-            } else//Get only selected patients
+            }
+            else//Get only selected patients
             {
+                Log.e("MYPATIENT: ","Load todays patient list");
                 LOAD_TODAY_PATIENTS();
             }
 
@@ -1018,13 +1039,18 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
         @Override
         protected void onPostExecute(Void aVoid) {
 
-            if (builderDialog.isShowing() && builderDialog != null) {
-                builderDialog.dismiss();
+            try {
+                if (builderDialog.isShowing() && builderDialog != null) {
+                    builderDialog.dismiss();
+                }
+            } catch (Exception e) {
+                e.printStackTrace();
             }
 
             recylerAdapter = new MyPatienRecylerAdapter(rowItems);
             patient_list.setItemAnimator(new DefaultItemAnimator());
             patient_list.setAdapter(recylerAdapter);
+            recylerAdapter.notifyDataSetChanged();
 
             String ListCount = String.valueOf(rowItems.size());
             txtCount.setText(getString(R.string.no_of_pat) + ": " + ListCount);

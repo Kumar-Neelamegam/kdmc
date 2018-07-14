@@ -120,9 +120,9 @@ public class ExportWebservices_NODEJS {
                 if (CheckNodeServer()) {
 
                     Log.e("###########", "################");
-                    Log.e("MobyDoctor BackGround", "Thread Export Service running 2");
-                    Log.e("MobyDoctor BackGround", "Thread Export Service running 2");
-                    Log.e("MobyDoctor BackGround", "Thread Export Service running 2");
+                    Log.e("MobyDoctor BackGround", "Thread Export Service running (3)");
+                    Log.e("MobyDoctor BackGround", "Thread Export Service running (3)");
+                    Log.e("MobyDoctor BackGround", "Thread Export Service running (3)");
                     Log.e("###########", "################");
 
                     //Patient Registration
@@ -290,6 +290,8 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+
                 JSONArray jsonArray = new JSONArray(results);
 
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -303,10 +305,11 @@ public class ExportWebservices_NODEJS {
                     //String ServerId = jsonObject.getString("ServerId");
 
 
-                    db.delete("Bind_Patient_Registration", " Id='"+Local_Id+"' ",null);
+                    db.delete("Bind_Patient_Registration", " Id='" + Local_Id + "' ", null);
 
 
                 }
+            }
 
 
             }
@@ -442,26 +445,30 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                    String LocalId = jsonObject.getString("LocalId");
-                    String ServerId = jsonObject.getString("Id");
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
-                    ContentValues values = new ContentValues();
-                    values.put("Isupdate", 1);
-                    values.put("isactive", 2);
-                    values.put("ServerId", ServerId);
-                    db.update("ClinicalInformation", values, "Id=" + LocalId + "", null);
+                        String LocalId = jsonObject.getString("LocalId");
+                        String ServerId = jsonObject.getString("Id");
+
+                        ContentValues values = new ContentValues();
+                        values.put("Isupdate", 1);
+                        values.put("isactive", 2);
+                        values.put("ServerId", ServerId);
+                        db.update("ClinicalInformation", values, "Id=" + LocalId + "", null);
 
 
+                    }
                 }
+
 
 
             }
@@ -542,29 +549,32 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
-
-
-                    String LocalId = jsonObject.getString("LocalId");
-                    String ServerId = jsonObject.getString("Id");
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
-                    ContentValues values = new ContentValues();
-                    values.put("Isupdate", 2);
-                    values.put("isactive", 2);
-                    values.put("ServerId", ServerId);
-
-                    db.update("Vaccination", values, "Id=" + Local_Id + "", null);
+                        String LocalId = jsonObject.getString("LocalId");
+                        String ServerId = jsonObject.getString("Id");
 
 
+                        ContentValues values = new ContentValues();
+                        values.put("Isupdate", 2);
+                        values.put("isactive", 2);
+                        values.put("ServerId", ServerId);
+
+                        db.update("Vaccination", values, "Id=" + Local_Id + "", null);
+
+
+                    }
                 }
+
 
             }
 
@@ -1814,28 +1824,30 @@ public class ExportWebservices_NODEJS {
 
                     String results = postDataExportData(methodName, jsonData, ctx);
 
-
-                    JSONArray jsonArray = new JSONArray(results);
-
-
-                    for (int i = 0; i < jsonArray.length(); i++) {
-
-                        //Exectue  Array of Result in one by one
-                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
-
-                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
-
-                        String LocalId = jsonObject.getString("LocalId");
-                        String ServerId = jsonObject.getString("ServerId");
+                    if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                        JSONArray jsonArray = new JSONArray(results);
 
 
-                        ContentValues values2 = new ContentValues();
-                        values2.put("IsUpdate", "1");
+                        for (int i = 0; i < jsonArray.length(); i++) {
 
-                        db.update("inpatient_request", values2, "Id='" + LocalId + "'", null);
+                            //Exectue  Array of Result in one by one
+                            JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+
+                            JSONObject jsonObject = jsonArray1.getJSONObject(0);
+
+                            String LocalId = jsonObject.getString("LocalId");
+                            String ServerId = jsonObject.getString("ServerId");
 
 
+                            ContentValues values2 = new ContentValues();
+                            values2.put("IsUpdate", "1");
+
+                            db.update("inpatient_request", values2, "Id='" + LocalId + "'", null);
+
+
+                        }
                     }
+
 
                 }
 
@@ -1914,26 +1926,29 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
-
-
-                    String ServerId = jsonObject.getString("ServerId");
-                    String ReturnId = jsonObject.getString("LocalId");
-
-                    ContentValues values = new ContentValues();
-                    values.put("Isupdate", 1);
-                    values.put("ServerId", ServerId);
-                    db.update("drsettings", values, "Id=" + ReturnId + "", null);
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
+                        String ServerId = jsonObject.getString("ServerId");
+                        String ReturnId = jsonObject.getString("LocalId");
+
+                        ContentValues values = new ContentValues();
+                        values.put("Isupdate", 1);
+                        values.put("ServerId", ServerId);
+                        db.update("drsettings", values, "Id=" + ReturnId + "", null);
+
+
+                    }
                 }
+
 
             }
             db.close();
@@ -2005,32 +2020,35 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
-
-
-                    String ID = jsonObject.getString("LocalId");
-                    String TokenId = jsonObject.getString("TokenId");
-                    String DepartID = jsonObject.getString("DepartmentId");
-                    String PatientMapId = jsonObject.getString("PatientMapId");
-                    String CPatListId = jsonObject.getString("CPatListId");
-                    String CertificatId = jsonObject.getString("CertificateId");
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
-                    //Write to Get Reuslt in one by one
-                    ContentValues values = new ContentValues();
-                    values.put("Isupdate", 1);
-                    values.put("ServerId", CertificatId);
-                    db.update("Certificate", values, "id=" + ID + "", null);
+                        String ID = jsonObject.getString("LocalId");
+                        String TokenId = jsonObject.getString("TokenId");
+                        String DepartID = jsonObject.getString("DepartmentId");
+                        String PatientMapId = jsonObject.getString("PatientMapId");
+                        String CPatListId = jsonObject.getString("CPatListId");
+                        String CertificatId = jsonObject.getString("CertificateId");
 
 
+                        //Write to Get Reuslt in one by one
+                        ContentValues values = new ContentValues();
+                        values.put("Isupdate", 1);
+                        values.put("ServerId", CertificatId);
+                        db.update("Certificate", values, "id=" + ID + "", null);
+
+
+                    }
                 }
+
 
 
             }
@@ -2090,24 +2108,27 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
-
-
-                    String ServerId = jsonObject.getString("ServerId");
-                    String LocalId = jsonObject.getString("LocalId");
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
-                    ContentValues values = new ContentValues();
-                    values.put("Isupdate", 1);
-                    values.put("ServerId", ServerId);
-                    db.update("DietRestriction", values, "id=" + LocalId + "", null);
+                        String ServerId = jsonObject.getString("ServerId");
+                        String LocalId = jsonObject.getString("LocalId");
+
+
+                        ContentValues values = new ContentValues();
+                        values.put("Isupdate", 1);
+                        values.put("ServerId", ServerId);
+                        db.update("DietRestriction", values, "id=" + LocalId + "", null);
+
+                    }
 
                 }
 
@@ -2164,27 +2185,30 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
-
-
-                    String LocalId = jsonObject.getString("LocalId");
-                    String ServerId = jsonObject.getString("ServerId");
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
-                    ContentValues values = new ContentValues();
-                    values.put("Isupdate", 1);
-                    values.put("ServerId", ServerId);
-                    db.update("SendBulkMedicine", values, "id=" + LocalId + "", null);
+                        String LocalId = jsonObject.getString("LocalId");
+                        String ServerId = jsonObject.getString("ServerId");
 
 
+                        ContentValues values = new ContentValues();
+                        values.put("Isupdate", 1);
+                        values.put("ServerId", ServerId);
+                        db.update("SendBulkMedicine", values, "id=" + LocalId + "", null);
+
+
+                    }
                 }
+
 
 
             }
@@ -2270,24 +2294,27 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
-                    String LocalId = jsonObject.getString("LocalId");
-                    String ServerId = jsonObject.getString("ServerId");
+                        String LocalId = jsonObject.getString("LocalId");
+                        String ServerId = jsonObject.getString("ServerId");
 
 
-                    ContentValues values = new ContentValues();
-                    values.put("Isupdate", "1");
-                    values.put("ServerId", ServerId);
-                    db.update("Mprescribed", values, "id=" + LocalId + "", null);
+                        ContentValues values = new ContentValues();
+                        values.put("Isupdate", "1");
+                        values.put("ServerId", ServerId);
+                        db.update("Mprescribed", values, "id=" + LocalId + "", null);
 
+
+                    }
 
                 }
 
@@ -2354,25 +2381,28 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
-                    String ServerId = jsonObject.getString("ServerId");
-                    String LocalId = jsonObject.getString("LocalId");
+                        String ServerId = jsonObject.getString("ServerId");
+                        String LocalId = jsonObject.getString("LocalId");
 
-                    ContentValues values = new ContentValues();
-                    values.put("IsUpdate", 1);
-                    values.put("ServerId", ServerId);
-                    db.update("diet_entry", values, "Id='" + LocalId + "'", null);
+                        ContentValues values = new ContentValues();
+                        values.put("IsUpdate", 1);
+                        values.put("ServerId", ServerId);
+                        db.update("diet_entry", values, "Id='" + LocalId + "'", null);
+                    }
+
+
                 }
-
 
             }
 
@@ -2434,21 +2464,24 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
-
-
-                    String LocalId = jsonObject.getString("LocalId");
-                    String ServerId = jsonObject.getString("ServerId");
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
-                    db.delete("diet_entry", "ServerId='" + ServerId + "'", null);
+                        String LocalId = jsonObject.getString("LocalId");
+                        String ServerId = jsonObject.getString("ServerId");
+
+
+                        db.delete("diet_entry", "ServerId='" + ServerId + "'", null);
+
+                    }
 
                 }
 
@@ -2528,23 +2561,26 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
-                    String ServerId = jsonObject.getString("ServerId");
-                    String LocalOperationId = jsonObject.getString("LocalOperationId");
+                        String ServerId = jsonObject.getString("ServerId");
+                        String LocalOperationId = jsonObject.getString("LocalOperationId");
 
-                    ContentValues values = new ContentValues();
-                    values.put("IsUpdateLocal", 1);
-                    db.update("operation_details", values, "ServerId='" + LocalOperationId + "'", null);
+                        ContentValues values = new ContentValues();
+                        values.put("IsUpdateLocal", 1);
+                        db.update("operation_details", values, "ServerId='" + LocalOperationId + "'", null);
 
+
+                    }
 
                 }
 
@@ -2620,22 +2656,25 @@ public class ExportWebservices_NODEJS {
 
                     String results = postDataExportData(methodName, jsonData, ctx);
 
-                    JSONArray jsonArray = new JSONArray(results);
+                    if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                        JSONArray jsonArray = new JSONArray(results);
 
-                    for (int i = 0; i < jsonArray.length(); i++) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
 
-                        //Exectue  Array of Result in one by one
-                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                            //Exectue  Array of Result in one by one
+                            JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
+                            JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
-                        String ServerId = jsonObject.getString("ServerId");
-                        String LocalId = jsonObject.getString("LocalId");
+                            String ServerId = jsonObject.getString("ServerId");
+                            String LocalId = jsonObject.getString("LocalId");
 
-                        ContentValues values2 = new ContentValues();
-                        values2.put("IsUpdate", "1");
-                        db.update("inpatient_discharge_request", values2, "Id='" + LocalId + "'", null);
+                            ContentValues values2 = new ContentValues();
+                            values2.put("IsUpdate", "1");
+                            db.update("inpatient_discharge_request", values2, "Id='" + LocalId + "'", null);
+
+                        }
 
                     }
 
@@ -2712,25 +2751,28 @@ public class ExportWebservices_NODEJS {
 
                     String results = postDataExportData(methodName, jsonData, ctx);
 
-                    JSONArray jsonArray = new JSONArray(results);
+                    if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                        JSONArray jsonArray = new JSONArray(results);
 
-                    for (int i = 0; i < jsonArray.length(); i++) {
+                        for (int i = 0; i < jsonArray.length(); i++) {
 
-                        //Exectue  Array of Result in one by one
-                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                            //Exectue  Array of Result in one by one
+                            JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
-
-
-                        String LocalId = jsonObject.getString("LocalId");
-                        String ServerId = jsonObject.getString("ServerId");
+                            JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
-                        ContentValues values2 = new ContentValues();
-                        values2.put("IsUpdate", 1);
-                        values2.put("ServerId", ServerId);
+                            String LocalId = jsonObject.getString("LocalId");
+                            String ServerId = jsonObject.getString("ServerId");
 
-                        db.update("Bind_EmergencyCausality", values2, "Id='" + LocalId + "'", null);
+
+                            ContentValues values2 = new ContentValues();
+                            values2.put("IsUpdate", 1);
+                            values2.put("ServerId", ServerId);
+
+                            db.update("Bind_EmergencyCausality", values2, "Id='" + LocalId + "'", null);
+
+                        }
 
                     }
 
@@ -2790,23 +2832,28 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                    String ServerId=jsonObject.getString("Id");
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
+
+                        String ServerId=jsonObject.getString("Id");
 
 
-                    ContentValues values = new ContentValues();
+                        ContentValues values = new ContentValues();
 
-                    values.put("dt", "0");
-                    values.put("ServerId", ServerId);
-                    db.update("users", values, "ServerId=" + ServerId + "", null);
+                        values.put("dt", "0");
+                        values.put("ServerId", ServerId);
+                        db.update("users", values, "ServerId=" + ServerId + "", null);
+
+                    }
+
 
                 }
 
@@ -2876,26 +2923,29 @@ public class ExportWebservices_NODEJS {
 
                             String results = postDataExportData(methodName, jsonData, ctx);
 
-                            JSONArray jsonArray = new JSONArray(results);
+                            if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                                JSONArray jsonArray = new JSONArray(results);
 
-                            for (int i = 0; i < jsonArray.length(); i++) {
+                                for (int i = 0; i < jsonArray.length(); i++) {
 
-                                //Exectue  Array of Result in one by one
-                                JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                                    //Exectue  Array of Result in one by one
+                                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                                JSONObject jsonObject = jsonArray1.getJSONObject(0);
-
-
-                                String Upload_ServerId = jsonObject.getString("Upload_ServerId");
-                                String LocalId = jsonObject.getString("LocalId");
-                                String ReportGallery_ServerId = jsonObject.getString("ReportGallery_ServerId");
+                                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
-                                ContentValues values = new ContentValues();
-                                values.put("Isupdate", 1);
-                                values.put("ServerId", ReportGallery_ServerId);
-                                db.update("ReportGallery", values, "id=" + LocalId + "", null);
+                                    String Upload_ServerId = jsonObject.getString("Upload_ServerId");
+                                    String LocalId = jsonObject.getString("LocalId");
+                                    String ReportGallery_ServerId = jsonObject.getString("ReportGallery_ServerId");
 
+
+                                    ContentValues values = new ContentValues();
+                                    values.put("Isupdate", 1);
+                                    values.put("ServerId", ReportGallery_ServerId);
+                                    db.update("ReportGallery", values, "id=" + LocalId + "", null);
+
+
+                                }
 
                             }
 
@@ -2952,29 +3002,32 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
-
-
-                    String ServerId = jsonObject.getString("ServerId");
-                    String LocalId = jsonObject.getString("LocalId");
-
-                    ContentValues values;//
-                    values = new ContentValues();
-                    values.put("Isupdate", 1);
-                    values.put("IsNew", "True");
-                    values.put("isactive", "True");
-                    values.put("ServerId", ServerId);
-                    db.update("Medicine", values, "id=" + LocalId + "", null);
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
+                        String ServerId = jsonObject.getString("ServerId");
+                        String LocalId = jsonObject.getString("LocalId");
+
+                        ContentValues values;//
+                        values = new ContentValues();
+                        values.put("Isupdate", 1);
+                        values.put("IsNew", "True");
+                        values.put("isactive", "True");
+                        values.put("ServerId", ServerId);
+                        db.update("Medicine", values, "id=" + LocalId + "", null);
+
+
+                    }
                 }
+
 
 
             }
@@ -3027,27 +3080,30 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
-
-
-                    String LocalId = jsonObject.getString("LocalId");
-                    String ServerId = jsonObject.getString("ServerId");
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
-                    ContentValues values;//
-                    values = new ContentValues();
-                    //values.put("Isupdate", 1);
-                    values.put("IsNew", "True");
-                    values.put("isactive", "True");
-                    values.put("ServerId", ServerId);
-                    db.update("diagonisdetails", values, "id=" + LocalId + "", null);
+                        String LocalId = jsonObject.getString("LocalId");
+                        String ServerId = jsonObject.getString("ServerId");
+
+
+                        ContentValues values;//
+                        values = new ContentValues();
+                        //values.put("Isupdate", 1);
+                        values.put("IsNew", "True");
+                        values.put("isactive", "True");
+                        values.put("ServerId", ServerId);
+                        db.update("diagonisdetails", values, "id=" + LocalId + "", null);
+
+                    }
 
                 }
 
@@ -3101,29 +3157,34 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-
-                    String LocalId = jsonObject.getString("LocalId");
-                    String ServerId = jsonObject.getString("ServerId");
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
-                    ContentValues values;//
-                    values = new ContentValues();
-                    values.put("Isupdate", 1);
-                    values.put("IsNew", "True");
-                    values.put("isactive", "True");
-                    values.put("ServerId", ServerId);
-                    db.update("trmntfor", values, "id=" + LocalId + "", null);
+                        String LocalId = jsonObject.getString("LocalId");
+                        String ServerId = jsonObject.getString("ServerId");
+
+
+                        ContentValues values;//
+                        values = new ContentValues();
+                        values.put("Isupdate", 1);
+                        values.put("IsNew", "True");
+                        values.put("isactive", "True");
+                        values.put("ServerId", ServerId);
+                        db.update("trmntfor", values, "id=" + LocalId + "", null);
+
+                    }
 
                 }
+
 
 
             }
@@ -3176,23 +3237,27 @@ public class ExportWebservices_NODEJS {
 
                 String results = postDataExportData(methodName, jsonData, ctx);
 
-                JSONArray jsonArray = new JSONArray(results);
+                if (!"[]".equalsIgnoreCase(results) && !"".equalsIgnoreCase(results)) {
 
-                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONArray jsonArray = new JSONArray(results);
 
-                    //Exectue  Array of Result in one by one
-                    JSONArray jsonArray1 = jsonArray.getJSONArray(i);
+                    for (int i = 0; i < jsonArray.length(); i++) {
 
-                    JSONObject jsonObject = jsonArray1.getJSONObject(0);
+                        //Exectue  Array of Result in one by one
+                        JSONArray jsonArray1 = jsonArray.getJSONArray(i);
 
-
-                    String ServerId = jsonObject.getString("ServerId");
-                    String LocalId = jsonObject.getString("LocalId");
+                        JSONObject jsonObject = jsonArray1.getJSONObject(0);
 
 
-                    ContentValues values = new ContentValues();
-                    values.put("IsUpdate", 1);
-                    db.update("OnlineConsultancy", values, "ServerId=" + LocalId + "", null);
+                        String ServerId = jsonObject.getString("ServerId");
+                        String LocalId = jsonObject.getString("LocalId");
+
+
+                        ContentValues values = new ContentValues();
+                        values.put("IsUpdate", 1);
+                        db.update("OnlineConsultancy", values, "ServerId=" + LocalId + "", null);
+
+                    }
 
                 }
 

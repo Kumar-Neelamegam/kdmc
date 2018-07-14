@@ -624,7 +624,7 @@ public class Patient_Registration extends AppCompatActivity {
 
             //Insert as current patient list
             value = new ContentValues();
-            value.put("date", BaseConfig.Device_OnlyDate2());
+            value.put("date", BaseConfig.Device_OnlyDateMMDDYYYY());
             value.put("patid", str_PatientId);
             value.put("docid", BaseConfig.doctorId);
             value.put("IsUpdate", 0);

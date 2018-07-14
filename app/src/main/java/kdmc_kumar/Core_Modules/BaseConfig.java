@@ -1178,8 +1178,8 @@ public class BaseConfig {
 
                     MasterWebservices_NODEJS service2 = new MasterWebservices_NODEJS(ctx);
                     service2.ExecuteAll();
-                    Log.e("WEBSERVICES", "*** NODEJS MASTER SERVICES STARTED ***");
-                    Log.e("WEBSERVICES", "*** NODEJS MASTER SERVICES STARTED ***");
+                    Log.e("WEBSERVICES", "*** NODEJS MASTER SERVICES STARTED (1)***");
+                    Log.e("WEBSERVICES", "*** NODEJS MASTER SERVICES STARTED (1)***");
 
 
                 } catch (Exception e) {
@@ -1200,8 +1200,8 @@ public class BaseConfig {
 
                     ImportWebservices_NODEJS service1 = new ImportWebservices_NODEJS(ctx);
                     service1.ExecuteAll();
-                    Log.e("WEBSERVICES", "*** NODEJS IMPORT SERVICES STARTED ***");
-                    Log.e("WEBSERVICES", "*** NODEJS IMPORT SERVICES STARTED ***");
+                    Log.e("WEBSERVICES", "*** NODEJS IMPORT SERVICES STARTED (2)***");
+                    Log.e("WEBSERVICES", "*** NODEJS IMPORT SERVICES STARTED (2)***");
 
                 } catch (Exception e) {
                     e.printStackTrace();
@@ -1224,8 +1224,8 @@ public class BaseConfig {
 
                     ExportWebservices_NODEJS service2 = new ExportWebservices_NODEJS(ctx);
                     service2.ExecuteAll();
-                    Log.e("WEBSERVICES", "*** NODEJS EXPORT SERVICES STARTED ***");
-                    Log.e("WEBSERVICES", "*** NODEJS EXPORT SERVICES STARTED ***");
+                    Log.e("WEBSERVICES", "*** NODEJS EXPORT SERVICES STARTED (3)***");
+                    Log.e("WEBSERVICES", "*** NODEJS EXPORT SERVICES STARTED (3)***");
 
                 } catch (Exception e) {
                     e.printStackTrace();
