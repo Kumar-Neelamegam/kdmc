@@ -457,9 +457,9 @@ public class MasterWebservices_NODEJS {
 
                         if (!GetStatus) {
                             db.insert("current_patient_list", null, values1);
-                        } else {
+                        }/* else {
                             db.update("current_patient_list", values1, "ServerId='" + ServerId + "'", null);
-                        }
+                        }*/
                     }
 
 

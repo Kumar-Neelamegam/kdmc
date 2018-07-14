@@ -2323,6 +2323,20 @@ public class BaseConfig {
         return date;
     }
 
+    public static String Device_OnlyDateMMDDYYYY() {
+        String date = "";
+
+        try {
+            String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+            SimpleDateFormat dateformt = new SimpleDateFormat("MM/dd/yyyy",Locale.ENGLISH);
+            date = dateformt.format(Date.parse(currentDateTimeString));
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        return date;
+    }
+
     public static String Device_OnlyDateWithHypon() {
         String date = "";
 

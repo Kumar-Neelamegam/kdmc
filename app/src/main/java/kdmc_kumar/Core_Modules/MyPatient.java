@@ -27,6 +27,7 @@ import android.text.Editable;
 import android.text.Html;
 import android.text.TextWatcher;
 import android.util.DisplayMetrics;
+import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewGroup;
@@ -49,7 +50,6 @@ import com.simplecityapps.recyclerview_fastscroll.views.FastScrollRecyclerView;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -802,76 +802,20 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
         try {
 
             SQLiteDatabase db = BaseConfig.GetDb();//);
-            Cursor c = db.rawQuery("select * from current_patient_list where docid = '" + BaseConfig.doctorId + "' or (status  = 'true' and HID='" + BaseConfig.HID + "')", null);
+            String Query ="select * from current_patient_list where date='"+BaseConfig.Device_OnlyDateMMDDYYYY()+"' and docid = '" + BaseConfig.doctorId + "' or (status  = 'true' and HID='" + BaseConfig.HID + "')";
+            Log.e("Currentpatientlist: ",Query);
+            Cursor c = db.rawQuery(Query, null);
             rowItems.clear();
             CurrentPatientList.clear();
 
             if (c != null) {
                 if (c.moveToFirst()) {
                     do
-
                     {
 
-                        SimpleDateFormat sdf;
-                        Date strDate = null;
-                        Calendar c1 = null;
-
-                        String date = c.getString(c.getColumnIndex("date"));
-                        if (date.contains("T")) {
-
-                            date = date.split("T")[0];
-                            //"2018-01-19"
-                            sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-                            strDate = sdf.parse(date);
-                            c1 = Calendar.getInstance(); // today
-                        } else {
-                            date = date;
-                            ////Log.e("Online patient date: ", date.toString());
-                            //"2018-01-19"
-                            if (date.contains("-")) {
-                                if (date.split("-")[0].length() == 4) {
-                                    sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
-                                    strDate = sdf.parse(date);
-                                    c1 = Calendar.getInstance(); // today
-                                } else if (date.split("-")[0].length() == 2) {
-                                    sdf = new SimpleDateFormat("MM-dd-yyyy", Locale.ENGLISH);
-                                    strDate = sdf.parse(date);
-                                    c1 = Calendar.getInstance(); // today
-                                }
-
-                            } else if (date.contains("/")) {
-
-                                sdf = new SimpleDateFormat("MM/dd/yyyy", Locale.ENGLISH);
-                                strDate = sdf.parse(date);
-                                c1 = Calendar.getInstance(); // today
-
-                            }
-
-
-                        }
-
-
-                        Calendar c2 = Calendar.getInstance();
-
-
-                        c2.setTime(strDate); // your date
                         String closed = c.getString(c.getColumnIndex("closed"));
-                        boolean IsCorrectDate = false;
-                        int c1Month = c1.get(Calendar.MONTH);
-                        int c1Year = c1.get(Calendar.YEAR);
-                        int c1Day = c1.get(Calendar.DAY_OF_MONTH);
 
-                        int c2Month = c2.get(Calendar.MONTH);
-                        int c2Year = c2.get(Calendar.YEAR);
-                        int c2Day = c2.get(Calendar.DAY_OF_MONTH);
-                        Date TodayDate = c1.getTime();
-
-
-                       // if (c1Day == c2Day && c1Month == c2Month && c1Year == c2Year) {
-                            IsCorrectDate = true;
-                       // }
-
-                        if (IsCorrectDate && closed.equalsIgnoreCase("0")) {
+                        if (closed.equalsIgnoreCase("0")) {
 
                             CurrentPatientList.add(c.getString(c.getColumnIndex("patid")));
 
