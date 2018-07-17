@@ -1,6 +1,7 @@
 package kdmc_kumar.Webservices_NodeJSON;
 
 import android.annotation.SuppressLint;
+import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -28,6 +29,7 @@ import java.io.File;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -89,6 +91,9 @@ public class ImportWebservices_NODEJS {
     private String sndserverid = "";
     private String patient_Id = "";
     private String MedId = "";
+
+
+    public static List<Integer> Notification_Id=new ArrayList<>();
 
     public ImportWebservices_NODEJS(final Context ctx) {
         super();
@@ -4419,8 +4424,18 @@ public class ImportWebservices_NODEJS {
         NotificationManager mNotifyManager = (NotificationManager) ctx.getSystemService(Context.NOTIFICATION_SERVICE);
         // tapping notification will open MainActivity
 
+        Notification_Id.add(ids);
 
         mNotifyManager.notify(ids, foregroundNote);
+    }
+
+    public static void clearAllNotification()
+    {
+        for (Integer integer : Notification_Id) {
+            NotificationManager notificationManager = (NotificationManager) ImportWebservices_NODEJS.ctx.getSystemService(Context.NOTIFICATION_SERVICE);
+            notificationManager.cancel(integer);
+        }
+
     }
 
     public Bitmap getPatientBitmpaImage(String patient_Id) {
