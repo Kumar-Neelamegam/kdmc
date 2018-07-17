@@ -1761,6 +1761,9 @@ public class ResultsWebservices_NODEJS {
 
         final ImportWebservices_NODEJS.PatientData data = this.getPatientName(PatId);
 
+        String UNIQUE_DIAGNOSIS_ID = BaseConfig.GenerateCaseNotesID();
+
+
         final String[] split_subtest;
 
         split_subtest = alltest.split("/");
@@ -1768,9 +1771,12 @@ public class ResultsWebservices_NODEJS {
         String compareRBSName = "blood sug random";
         if (split_subtest[1].trim().equalsIgnoreCase(compareRBSName)) {
 
+
+
             final ContentValues values = new ContentValues();
             values.put("Docid", BaseConfig.doctorId);
             values.put("Ptid", PatId);
+            values.put("DiagId", UNIQUE_DIAGNOSIS_ID);
             values.put("pname", data.pName);
             values.put("gender", data.gender);
             values.put("age", data.age);
@@ -1801,6 +1807,7 @@ public class ResultsWebservices_NODEJS {
             values.put("Docid", BaseConfig.doctorId);
             values.put("Ptid", PatId);
             values.put("pname", data.pName);
+            values.put("DiagId", UNIQUE_DIAGNOSIS_ID);
             values.put("gender", data.gender);
             values.put("age", data.age);
             values.put("mobnum", data.mobNum);
@@ -1830,6 +1837,7 @@ public class ResultsWebservices_NODEJS {
             values.put("Docid", BaseConfig.doctorId);
             values.put("Ptid", PatId);
             values.put("pname", data.pName);
+            values.put("DiagId", UNIQUE_DIAGNOSIS_ID);
             values.put("gender", data.gender);
             values.put("age", data.age);
             values.put("mobnum", data.mobNum);

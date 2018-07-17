@@ -1,7 +1,6 @@
 package kdmc_kumar.Webservices_NodeJSON;
 
 import android.annotation.SuppressLint;
-import android.app.Activity;
 import android.app.Notification;
 import android.app.NotificationManager;
 import android.app.PendingIntent;
@@ -4435,7 +4434,7 @@ public class ImportWebservices_NODEJS {
             NotificationManager notificationManager = (NotificationManager) ImportWebservices_NODEJS.ctx.getSystemService(Context.NOTIFICATION_SERVICE);
             notificationManager.cancel(integer);
         }
-
+        ImportWebservices_NODEJS.Notification_Id=new ArrayList<>();
     }
 
     public Bitmap getPatientBitmpaImage(String patient_Id) {

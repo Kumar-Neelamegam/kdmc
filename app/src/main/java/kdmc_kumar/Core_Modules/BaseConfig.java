@@ -116,6 +116,7 @@ import kdmc_kumar.Webservices_NodeJSON.MasterWebservices_NODEJS;
 import kdmc_kumar.Webservices_NodeJSON.ResultsWebservices_NODEJS;
 
 import static android.content.Context.INPUT_METHOD_SERVICE;
+import static kdmc_kumar.Webservices_NodeJSON.ImportWebservices_NODEJS.clearAllNotification;
 
 
 public class BaseConfig {
@@ -1213,6 +1214,7 @@ public class BaseConfig {
                 try {
                     Log.e("SERVICES", "MASTERS WEBSERVICES (1): STOPPED");
                     Log.e("SERVICES", "MASTERS WEBSERVICES (1): STOPPED");
+                    clearAllNotification();
                     Masters_Import_scheduler.shutdownNow();
                     System.gc();
                 } catch (Exception e) {

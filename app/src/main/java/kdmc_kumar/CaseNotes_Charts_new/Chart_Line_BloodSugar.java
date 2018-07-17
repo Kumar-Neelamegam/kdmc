@@ -136,7 +136,7 @@ public class Chart_Line_BloodSugar extends AppCompatActivity {
                     v2 = new BarEntry((float) Integer.parseInt(c.getString(c.getColumnIndex("PPS"))), c.getPosition()); // Jan
                     valueSet2.add(v2);
 
-                    v3 = new BarEntry((float) Integer.parseInt(c.getString(c.getColumnIndex("RBS"))), c.getPosition()); // Jan
+                    v3 = new BarEntry((float) Integer.parseInt(c.getString(c.getColumnIndex("RBS")).equals("-")? "0" : c.getString(c.getColumnIndex("RBS"))), c.getPosition()); // Jan
                     valueSet3.add(v3);
 
 

@@ -26,6 +26,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.List;
 
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -216,7 +217,12 @@ public class Profile_Casenotes extends Fragment {
         //casenotesProfileWebvwProfile.setOnTouchListener();
 
         //Passing DID and Date
-        adapter.setOnItemClickListener((view, position, items) -> LoadWebview(items.get(position).getUnique_Id(), items.get(position).getVisitedDate()));
+        adapter.setOnItemClickListener(new DateTimelineRowitemAdapter.OnItemClickListener() {
+            @Override
+            public void onItemClick(DateTimelineRowitemAdapter.MyViewHolder view, int position, List<Timeline_Objects> items) {
+                Profile_Casenotes.this.LoadWebview(items.get(position).getUnique_Id(), items.get(position).getVisitedDate());
+            }
+        });
 
         imgvwBloodsugarBar.setOnClickListener(new View.OnClickListener() {
             @Override
