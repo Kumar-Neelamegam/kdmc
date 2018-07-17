@@ -91,8 +91,9 @@ public class MasterWebservices_NODEJS {
 
                     //HID IsUpdateMax
                     this.InsertPatientMapping(); // TODO: 1/24/2018 Completed
-
                     Mstr_current_patient_list();
+
+
                     Mstr_diagonisdetails();
                     Mstr_Symptoms();
                     ImportPharamcy();
@@ -662,6 +663,10 @@ public class MasterWebservices_NODEJS {
                 final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
                // db.execSQL("Delete from current_patient_list");
 
+
+                String Query1="DELETE FROM current_patient_list WHERE date!='" + BaseConfig.Device_OnlyDateMMDDYYYY() + "';";
+                BaseConfig.GetDb().execSQL(Query1);
+
                 for (int i = 0; i < jsonArray.length(); i++) {
 
 
@@ -684,14 +689,6 @@ public class MasterWebservices_NODEJS {
                     values1.put("status", status);
                     values1.put("closed", "0");
                     values1.put("HID", HID);
-
-                    if (i==0) {
-                        try {
-                            BaseConfig.GetDb().execSQL("DELETE FROM current_patient_list WHERE date!='"+date+"';");
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
 
                     if (HID.equalsIgnoreCase(BaseConfig.HID)) {
 

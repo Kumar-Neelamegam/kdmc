@@ -11,6 +11,7 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -163,7 +164,13 @@ public class InpatientSummary_Profile extends Fragment {
 
                 int i = 0;
                 db.isOpen();
-                Cursor c = db.rawQuery("select remarks,refdocname,Medid,medicinename,treatmentfor,diagnosis,nextvisit,Actdate from Mprescribed where Ptid='" + BUNDLE_PATIENT_ID + "' and (substr(Actdate,0,12)='" + datevalues.get(ij).toString() + "' or substr(Actdate,0,12)='" + datevalues.get(ij).toString() + "') order by Medid desc ;", null);
+                String query="select remarks,refdocname,Medid,medicinename,treatmentfor,diagnosis,nextvisit,Actdate from Mprescribed where Ptid='" + BUNDLE_PATIENT_ID + "' and (substr(Actdate,0,11)='" + datevalues.get(ij).toString().split("T")[0].trim() + "' or substr(Actdate,0,12)='" + datevalues.get(ij).toString().split("T")[0].trim() + "') order by Medid desc ;";
+
+                Log.e("Query",query);
+                Log.e("Query",query);
+                Log.e("Query",query);
+
+                Cursor c = db.rawQuery(query, null);
 
                 if (c != null) {
                     if (c.moveToFirst()) {

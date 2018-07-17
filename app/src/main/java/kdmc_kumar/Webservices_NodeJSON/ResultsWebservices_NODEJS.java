@@ -673,7 +673,7 @@ public class ResultsWebservices_NODEJS {
                                         values.put("IsActive", "0");
                                         values.put("ReadytoUpdate", "2");
                                         values.put("ValueUpdated", "0");
-                                        db.update("Angiogram", values, "where Ptid='" + ptid + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
+                                        db.update("Angiogram", values, "Ptid='" + ptid + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
 
                                         db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='" + ptid + "' and mtestid='" + mtestid + "'");
 

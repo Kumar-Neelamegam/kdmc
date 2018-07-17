@@ -118,10 +118,13 @@ public class MyPatientDrawer extends AppCompatActivity implements NavigationView
         setContentView(R.layout.activity_my_patient_drawer);
 
 
-        GETINITIALIZE();
+        try {
+            GETINITIALIZE();
 
-        CONTROLLISTENERS();
-
+            CONTROLLISTENERS();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
 
 
     }
@@ -350,28 +353,27 @@ public class MyPatientDrawer extends AppCompatActivity implements NavigationView
 
                 break;
 
-            case R.id.reports:
+         /*   case R.id.reports:
 
                 fragment = new Patient_Reports();
 
-                break;
+                break;*/
 
             case R.id.immunization:
-
                 fragment = new Patient_Immunization();
 
-
                 break;
+
             case R.id.inpatient_summary:
                 fragment = new InpatientSummary_Profile();
-
-
                 break;
 
+/*
 
             case R.id.pdf_summary:
                 fragment = new PDFReport_Profile();
                 break;
+*/
 
 
         }

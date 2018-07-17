@@ -386,8 +386,6 @@ public class ImportWebservices_NODEJS {
                     //Patid
                     this.Importmast_Operations(); // TODO: 1/24/2018 Completed
 
-
-
                     LoadInvestigation_Notification(); // Investigation Notification
 
                     this.CheckDbUpdatesNodeJs(ctx);  // TODO: 1/24/2018 Completed
@@ -4172,19 +4170,31 @@ public class ImportWebservices_NODEJS {
         return resultCall.get().getResults();
     }
 
+    @SuppressLint("LongLogTag")
     private String postPatientIdListRESTMethod(final String patientIdLIst, final String methodName) throws SchemaException, InterruptedException, ExecutionException {
-        final MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(this.ctx);
-        final PostPatientIdListFactory postDoctorIdFactory = new PostPatientIdListFactory(magnetMobileClient);
-        final PostPatientIdList postDoctorId = postDoctorIdFactory.obtainInstance();
+        try {
+            final MagnetMobileClient magnetMobileClient = MagnetMobileClient.getInstance(this.ctx);
+            final PostPatientIdListFactory postDoctorIdFactory = new PostPatientIdListFactory(magnetMobileClient);
+            final PostPatientIdList postDoctorId = postDoctorIdFactory.obtainInstance();
 
-        //Set Body Data
-        final PostPatientIdListRequest body = new PostPatientIdListRequest();
-        body.setPatientList(patientIdLIst);
-        body.setMethodName(methodName);
+            //Set Body Data
+            final PostPatientIdListRequest body = new PostPatientIdListRequest();
+            body.setPatientList(patientIdLIst);
+            body.setMethodName(methodName);
 
-        final Call<PatientIdListResult> resultCall = postDoctorId.postPatientIdList(body, null);
+            final Call<PatientIdListResult> resultCall = postDoctorId.postPatientIdList(body, null);
 
-        return resultCall.get().getResults();
+            //Log.e("postPatientIdListRESTMethod", resultCall.get().getResults());
+            return resultCall.get().getResults();
+
+        } catch (SchemaException e) {
+            e.printStackTrace();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } catch (ExecutionException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     private String getDoctorIdRESTCALL(final String doctorID, final String methodName) throws SchemaException, InterruptedException, ExecutionException {

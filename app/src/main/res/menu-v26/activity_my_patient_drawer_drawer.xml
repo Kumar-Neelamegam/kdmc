@@ -28,11 +28,12 @@
             android:iconTint="@color/colorPrimary"
             android:title="@string/prescription" />
 
-        <item
+       <!-- <item
             android:id="@+id/reports"
             android:icon="@drawable/reports"
             android:iconTint="@color/colorPrimary"
-            android:title="@string/patient_uploaded_reports" />
+            android:title="@string/patient_uploaded_reports" />-->
+
         <item
             android:id="@+id/immunization"
             android:icon="@drawable/reports"
@@ -43,11 +44,12 @@
             android:icon="@drawable/reports"
             android:iconTint="@color/colorPrimary"
             android:title="@string/inpatient_summary" />
-        <item
+
+     <!--   <item
             android:id="@+id/pdf_summary"
             android:icon="@drawable/reports"
             android:iconTint="@color/colorPrimary"
-            android:title="@string/pdfreports" />
+            android:title="@string/pdfreports" />-->
 
     </group>
 

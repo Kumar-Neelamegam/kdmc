@@ -38,8 +38,7 @@
             android:background="#3d5987"
             android:padding="5sp"
             android:scaleType="fitXY"
-            android:visibility="gone"
-            app:srcCompat="@drawable/ac" />
+            android:visibility="gone"  />
 
         <LinearLayout
             android:layout_width="match_parent"

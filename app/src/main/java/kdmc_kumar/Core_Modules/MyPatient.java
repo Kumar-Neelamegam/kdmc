@@ -74,9 +74,10 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
 
     protected static final int RESULT_SPEECH = 1;
-    private ArrayList<String> CurrentPatientList = new ArrayList<>();
-    public String Load_All_PatientsQuery = "select id,prefix,patientname as name,Patid,age,gender,PC as photo  from Patreg where Docid='"+BaseConfig.doctorId+"' order by patientname, id";
-    public String Load_Today_PatientsQuery = "";
+    public String Load_All_PatientsQuery = "select id,prefix,patientname as name,Patid,age,gender,PC as photo  from Patreg where Docid='" + BaseConfig.doctorId + "' order by patientname, id";
+    public String Load_Today_PatientsQuery = "select a.id,a.prefix,a.patientname as name,a.Patid,a.age,a.gender,a.PC as photo  from Patreg a inner join current_patient_list b on a.Patid=b.patid where  b.date='"+BaseConfig.Device_OnlyDateMMDDYYYY()+"'  and (b.Docid='"+BaseConfig.doctorId+"' or (b.status  = 'true' and b.HID='"+BaseConfig.HID+"')) order by b.id desc";
+
+
 
     @BindView(R.id.mypatient_parent_layout)
     CoordinatorLayout mypatientParentLayout;
@@ -115,6 +116,13 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
     //  CheckBox ShowAllPatients;
     //**********************************************************************************************
     Dialog builderDialog;
+    @BindView(R.id.radiogroup_patients_options)
+    RadioGroup patientshow_options;
+    @BindView(R.id.radio_today_patients)
+    RadioButton radio_today_patients;
+    @BindView(R.id.radio_show_all_patients)
+    RadioButton radio_showall_patients;
+    private ArrayList<String> CurrentPatientList = new ArrayList<>();
     private SimpleDateFormat dateformt;
     private Date date;
     private String dttm;
@@ -123,18 +131,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
     private Handler timerHandler;
     //**********************************************************************************************
     private Runnable timerRunnable;
-
     private LinkedList<MyPatientGetSet> rowItems;
-
-
-    @BindView(R.id.radiogroup_patients_options)
-    RadioGroup patientshow_options;
-
-    @BindView(R.id.radio_today_patients)
-    RadioButton radio_today_patients;
-
-    @BindView(R.id.radio_show_all_patients)
-    RadioButton radio_showall_patients;
 
     private static final boolean LoadReportsBooleanStatus(String Query) {
         try {
@@ -180,10 +177,23 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
             CONTROLLISTNERS();
 
+
+            LOAD_PATIENTS();
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    private void LOAD_PATIENTS() {
+        try {
+
+
             AUTOREFRESHPATIENTLIST();
 
             new LoadPatientInfo(2, 0).execute();//if id==1 load all patient, id==2 load all today patients
-
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -196,23 +206,30 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
         radio_showall_patients.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+
                 if(isChecked)
                 {
+
+                    radio_today_patients.setChecked(false);
+                    radio_showall_patients.setChecked(true);
                     btRefresh.performClick();
+
                 }
+
             }
         });
 
         radio_today_patients.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked)
-                {
+                if(isChecked) {
+                    radio_showall_patients.setChecked(false);
+                    radio_today_patients.setChecked(true);
                     btRefresh.performClick();
                 }
+
             }
         });
-
 
 
         mypatientBack.setOnClickListener(new OnClickListener() {
@@ -376,12 +393,10 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                 try {
 
 
-                    if(radio_showall_patients.isChecked())
-                    {
-                        new LoadPatientInfo(1, 1).execute();
-                    }else if(radio_today_patients.isChecked())
-                    {
-                        new LoadPatientInfo(2, 0).execute();//if id==1 load all patient, id==2 load all today patients
+                    if (radio_showall_patients.isChecked()) {
+                        new LoadPatientInfo(1, 1).execute();//ALL PATIENTS
+                    } else {
+                        new LoadPatientInfo(2, 0).execute();//ONL TODAY PATIENT
                     }
 
                     Toast.makeText(MyPatient.this, "Please wait refreshing patient list...", Toast.LENGTH_LONG).show();
@@ -543,12 +558,12 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                 }
                 //  }
 
-                timerHandler.postDelayed(this, 60000); //run every second
+                timerHandler.postDelayed(this, 120000); //run every second
 
             }
         };
 
-        timerHandler.postDelayed(timerRunnable, 60000); //Start timer after 1 sec
+        timerHandler.postDelayed(timerRunnable, 120000); //Start timer after 1 sec
 
     }
 
@@ -559,13 +574,13 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
     }
 
     //**********************************************************************************************
-
+/*
     public boolean checkPatientIsExist(String patientid) {
 
 
         SQLiteDatabase db = BaseConfig.GetDb();//);
         Cursor c = db.rawQuery("select * from  Patreg where Patid='" + patientid + "'", null);
-        rowItems=new LinkedList<>();
+        rowItems = new LinkedList<>();
         CurrentPatientList = new ArrayList<>();
 
         if (c != null) {
@@ -577,7 +592,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
         }
         c.close();
         return false;
-    }
+    }*/
 
     private void ShowRequestDialog() {
 
@@ -760,9 +775,9 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
             String Query1 = "select IsResultAvailable as ret_values from Medicaltest where Ptid='" + PATID + "' and (substr(Actdate,0,11)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "'  or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "')";
             String IsResultAvailable = BaseConfig.GetValues(Query1);
 
-            if (IsResultAvailable!=null && IsResultAvailable.equalsIgnoreCase("1")) {
+            if (IsResultAvailable != null && IsResultAvailable.equalsIgnoreCase("1")) {
                 return "1";
-            } else if (IsResultAvailable!=null && IsResultAvailable.equalsIgnoreCase("2")) {
+            } else if (IsResultAvailable != null && IsResultAvailable.equalsIgnoreCase("2")) {
                 return "2";
             } else {
                 return "0";
@@ -807,16 +822,15 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
         try {
 
             SQLiteDatabase db = BaseConfig.GetDb();//);
-            String Query ="select * from current_patient_list where date='"+BaseConfig.Device_OnlyDateMMDDYYYY()+"' and docid = '" + BaseConfig.doctorId + "' or (status  = 'true' and HID='" + BaseConfig.HID + "')";
-            Log.e("Currentpatientlist: ",Query);
+            String Query = "select * from current_patient_list where date='" + BaseConfig.Device_OnlyDateMMDDYYYY() + "' and docid = '" + BaseConfig.doctorId + "' or (status  = 'true' and HID='" + BaseConfig.HID + "') order by Id desc";
+            Log.e("Currentpatientlist: ", Query);
             Cursor c = db.rawQuery(Query, null);
-            rowItems=new LinkedList<>();
+            rowItems = new LinkedList<>();
             CurrentPatientList = new ArrayList<>();
 
             if (c != null) {
                 if (c.moveToFirst()) {
-                    do
-                    {
+                    do {
 
                         String closed = c.getString(c.getColumnIndex("closed"));
 
@@ -840,7 +854,6 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
         }
 
         Log.e("Current Patient List Size: ", String.valueOf(CurrentPatientList.size()));
-        Log.e("Current Patient List: ", String.valueOf(CurrentPatientList));
 
         return CurrentPatientList;
     }
@@ -907,39 +920,57 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
             } else if (PASSING_LOAD_FILTER == 2)// LOAD APPOINTMENT
             {
                 String Query = "select Patreg.Patid,Patreg.id,Patreg.name,Patreg.age as  age,Patreg.gender  as gender,Patreg.age||Patreg.gender as agegen,' ' as token, Patreg.PC as photo,Patreg.phone as mobnum  from Appoinment INNER JOIN Patreg ON  Patreg.Patid=Appoinment.patid and Appoinment.Appoimentdt='" + dttm + "' and Appoinment.Iscancel='False';";
-                Load_All_PatientsQuery = Query;
+                LOAD_ALL_PATIENTS_QUERY = Query;
             } else if (PASSING_LOAD_FILTER == 3) {// LOAD UPCOMING
 
                 SimpleDateFormat dateformt = new SimpleDateFormat("dd/MM/yyyy", Locale.ENGLISH);
                 Date date = new Date();
                 String dttm = dateformt.format(date);
                 String Query = "select distinct Patid,name,age,gender,PC from patreg where substr(Actdate,0,11)='" + dttm + "'";
-                Load_All_PatientsQuery = Query;
+                LOAD_ALL_PATIENTS_QUERY = Query;
             }
 
+
+            SQLiteDatabase db=BaseConfig.GetDb();
+            Cursor c=db.rawQuery(LOAD_ALL_PATIENTS_QUERY, null);
+            if(c!=null)
+            {
+                if(c.moveToFirst())
+                {
+                    do{
+
+                        String PREFIX = c.getString(c.getColumnIndex("prefix"));
+                        String NAME = c.getString(c.getColumnIndex("name"));
+                        String PATID = c.getString(c.getColumnIndex("Patid"));
+                        String AGE = c.getString(c.getColumnIndex("age"));
+                        String GENDER = c.getString(c.getColumnIndex("gender"));
+                        String PHOTO = c.getString(c.getColumnIndex("photo"));
+
+                        String IsLabReport = LoadLabReport(PATID);
+
+                        MyPatientGetSet item = new MyPatientGetSet(PREFIX, NAME, PATID, AGE, GENDER, PHOTO);
+
+                        item.IsOnlinePatient = false;
+                        item.IsLabReport = IsLabReport;
+                        rowItems.add(item);
+
+
+                    }while(c.moveToNext());
+                }
+            }
+            c.close();
+            db.close();
+
+/*
             SqliteReader.getInstance().setQuery(LOAD_ALL_PATIENTS_QUERY).onDataReceiver(new SqliteReader.Data() {
                 @Override
                 public void onData(Cursor c) {
 
 
-                    String PREFIX = c.getString(c.getColumnIndex("prefix"));
-                    String NAME = c.getString(c.getColumnIndex("name"));
-                    String PATID = c.getString(c.getColumnIndex("Patid"));
-                    String AGE = c.getString(c.getColumnIndex("age"));
-                    String GENDER = c.getString(c.getColumnIndex("gender"));
-                    String PHOTO = c.getString(c.getColumnIndex("photo"));
-
-                    String IsLabReport = LoadLabReport(PATID);
-
-                    MyPatientGetSet item = new MyPatientGetSet(PREFIX, NAME, PATID, AGE, GENDER, PHOTO);
-
-                    item.IsOnlinePatient = false;
-                    item.IsLabReport = IsLabReport;
-                    rowItems.add(item);
 
 
                 }
-            });
+            });*/
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -953,47 +984,55 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
     public void LOAD_TODAY_PATIENTS() {
 
         try {
-            String LOAD_ALL_PATIENTS_QUERY = Load_All_PatientsQuery;
+            String LOAD_ALL_PATIENTS_QUERY = Load_Today_PatientsQuery;
 
-            CheckPatientsOnline();
+           // CheckPatientsOnline();
 
             String pdtls, paggen;
             Bitmap bm;
 
             rowItems.clear();
             rowItems = new LinkedList<>();
-            SqliteReader.getInstance().setQuery(LOAD_ALL_PATIENTS_QUERY).onDataReceiver(new SqliteReader.Data() {
-                @Override
-                public void onData(Cursor c) {
-
-                    String PREFIX = c.getString(c.getColumnIndex("prefix"));
-                    String NAME = c.getString(c.getColumnIndex("name"));
-                    String PATID = c.getString(c.getColumnIndex("Patid"));
-                    String AGE = c.getString(c.getColumnIndex("age"));
-                    String GENDER = c.getString(c.getColumnIndex("gender"));
-                    String PHOTO = c.getString(c.getColumnIndex("photo"));
 
 
-                    String IsLabReport = LoadLabReport(PATID);
+            SQLiteDatabase db=BaseConfig.GetDb();
+            Cursor c=db.rawQuery(LOAD_ALL_PATIENTS_QUERY, null);
+            if(c!=null)
+            {
+                if(c.moveToFirst())
+                {
+                    do{
 
-                    MyPatientGetSet item = new MyPatientGetSet(PREFIX, NAME, PATID, AGE, GENDER, PHOTO);
+                        String PREFIX = c.getString(c.getColumnIndex("prefix"));
+                        String NAME = c.getString(c.getColumnIndex("name"));
+                        String PATID = c.getString(c.getColumnIndex("Patid"));
+                        String AGE = c.getString(c.getColumnIndex("age"));
+                        String GENDER = c.getString(c.getColumnIndex("gender"));
+                        String PHOTO = c.getString(c.getColumnIndex("photo"));
 
-                    if (IsOnlinePatient(PATID)) {
+                        String IsLabReport = LoadLabReport(PATID);
 
-                        rowItems.addFirst(item);
-                        item.IsOnlinePatient = true;
-                        item.IsLabReport = IsLabReport;
+                        MyPatientGetSet item = new MyPatientGetSet(PREFIX, NAME, PATID, AGE, GENDER, PHOTO);
 
-                    }
+                        //if (IsOnlinePatient(PATID)) {
+
+                            rowItems.addFirst(item);
+                            item.IsOnlinePatient = true;
+                            item.IsLabReport = IsLabReport;
+
+                        //}
+
+                    }while(c.moveToNext());
                 }
-            });
+            }
+            c.close();
+            db.close();
 
         } catch (Exception e) {
             e.printStackTrace();
         }
 
         Log.e("RowItem Count: ", String.valueOf(rowItems.size()));
-        Log.e("RowItem Data: ", String.valueOf(rowItems));
 
     }
 
@@ -1020,12 +1059,11 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
             if (PASSING_ID == 1)//Get All Paitents
             {
-                Log.e("MYPATIENT: ","Load filter patient list");
+                Log.e("MYPATIENT: ", "Load filter patient list");
                 LOAD_ALL_PATIENTS(PASSING_LOAD_FILTER);
-            }
-            else//Get only selected patients
+            } else//Get only selected patients
             {
-                Log.e("MYPATIENT: ","Load todays patient list");
+                Log.e("MYPATIENT: ", "Load todays patient list");
                 LOAD_TODAY_PATIENTS();
             }
 
@@ -1099,7 +1137,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                             public void onPossitivePerformed() {
 
                                 try {
-                                    CheckPatientsOnline();
+                           //         CheckPatientsOnline();
 
                                     new LoadPatientInfo(1, 1).execute();
 
@@ -1126,7 +1164,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                             public void onPossitivePerformed() {
 
                                 try {
-                                    CheckPatientsOnline();
+                                   // CheckPatientsOnline();
 
                                     new LoadPatientInfo(1, 1).execute();
 

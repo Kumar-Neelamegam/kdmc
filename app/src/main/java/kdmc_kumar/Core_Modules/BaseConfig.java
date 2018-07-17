@@ -75,6 +75,7 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
+import com.bumptech.glide.request.RequestOptions;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -102,7 +103,6 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import displ.mobydocmarathi.com.R;
-import kdmc_kumar.Doctor_Modules.Login;
 import kdmc_kumar.Utilities_Others.CustomIntent;
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
 import kdmc_kumar.Utilities_Others.LocalSharedPref;
@@ -1183,7 +1183,7 @@ public class BaseConfig {
         //IF ID == 1 : START
         //ELSE ID == 2 : STOP
         //===============================
-        ScheduledExecutorService Masters_Import_scheduler = Executors.newSingleThreadScheduledExecutor();
+       ScheduledExecutorService Masters_Import_scheduler = Executors.newSingleThreadScheduledExecutor();
 
         if(id==1)
         {
@@ -1191,11 +1191,11 @@ public class BaseConfig {
                 public void run() {
                     try {
 
+                        Log.e("WEBSERVICES", "*** NODEJS MASTER SERVICES STARTED (1)***");
+                        Log.e("WEBSERVICES", "*** NODEJS MASTER SERVICES STARTED (1)***");
 
                         MasterWebservices_NODEJS service2 = new MasterWebservices_NODEJS(ctx);
                         service2.ExecuteAll();
-                        Log.e("WEBSERVICES", "*** NODEJS MASTER SERVICES STARTED (1)***");
-                        Log.e("WEBSERVICES", "*** NODEJS MASTER SERVICES STARTED (1)***");
 
 
                     } catch (Exception e) {
@@ -1203,7 +1203,7 @@ public class BaseConfig {
                     }
                     System.gc();
                 }
-            }, 0, 5, TimeUnit.SECONDS);
+            }, 0, 60, TimeUnit.SECONDS);
 
 
         }else if(id==2)
@@ -1240,18 +1240,18 @@ public class BaseConfig {
                 public void run() {
 
                     try {
-
+                        Log.e("WEBSERVICES", "*** NODEJS IMPORT SERVICES STARTED (2)***");
+                        Log.e("WEBSERVICES", "*** NODEJS IMPORT SERVICES STARTED (2)***");
                         ImportWebservices_NODEJS service1 = new ImportWebservices_NODEJS(ctx);
                         service1.ExecuteAll();
-                        Log.e("WEBSERVICES", "*** NODEJS IMPORT SERVICES STARTED (2)***");
-                        Log.e("WEBSERVICES", "*** NODEJS IMPORT SERVICES STARTED (2)***");
+
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     System.gc();
                 }
-            }, 0, 10, TimeUnit.SECONDS);
+            }, 0, 60, TimeUnit.SECONDS);
 
         }else if(id==2)
         {
@@ -1287,18 +1287,18 @@ public class BaseConfig {
                 public void run() {
                     try {
 
-
+                        Log.e("WEBSERVICES", "*** NODEJS EXPORT SERVICES STARTED (3)***");
+                        Log.e("WEBSERVICES", "*** NODEJS EXPORT SERVICES STARTED (3)***");
                         ExportWebservices_NODEJS service2 = new ExportWebservices_NODEJS(ctx);
                         service2.ExecuteAll();
-                        Log.e("WEBSERVICES", "*** NODEJS EXPORT SERVICES STARTED (3)***");
-                        Log.e("WEBSERVICES", "*** NODEJS EXPORT SERVICES STARTED (3)***");
+
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     System.gc();
                 }
-            }, 0, 15, TimeUnit.SECONDS);
+            }, 0, 60, TimeUnit.SECONDS);
 
         }else if(id==2)
         {
@@ -1333,18 +1333,18 @@ public class BaseConfig {
                 public void run() {
 
                     try {
-
+                        Log.e("WEBSERVICES", "*** NODEJS IMPORT UPDATED RESULTS SERVICES STARTED (4)***");
+                        Log.e("WEBSERVICES", "*** NODEJS IMPORT UPDATED RESULTS SERVICES STARTED (4)***");
                         ResultsWebservices_NODEJS service1 = new ResultsWebservices_NODEJS(ctx);
                         service1.ExecuteAll();
-                        Log.e("WEBSERVICES", "*** NODEJS IMPORT UPDATED RESULTS SERVICES STARTED (4)***");
-                        Log.e("WEBSERVICES", "*** NODEJS IMPORT UPDATED RESULTS SERVICES STARTED (4)***");
+
 
                     } catch (Exception e) {
                         e.printStackTrace();
                     }
                     System.gc();
                 }
-            }, 0, 15, TimeUnit.SECONDS);
+            }, 0, 60, TimeUnit.SECONDS);
 
         }
         else if(id==2)
@@ -2811,10 +2811,13 @@ public class BaseConfig {
     public static void Glide_LoadImageView(ImageView imgvw, String location) {
         try {
 
-            Glide.with(imgvw.getContext()).load(new File(location)).into(imgvw);//.onLoadFailed(imgvw.getResources().getDrawable(R.drawable.no_media));
+            Glide.with(imgvw.getContext()).asBitmap().load(new File(location)).into(imgvw).onLoadFailed(imgvw.getResources().getDrawable(R.drawable.no_media));
+
 
         } catch (Exception e) {
-            e.printStackTrace();
+            BaseConfig.Glide_LoadDefaultImageView(imgvw);
+            Log.e("Glide Image error: ", e.getMessage());
+
         }
 
     }

@@ -58,6 +58,7 @@ public class PostPatientIdListFactory extends ControllerFactory<PostPatientIdLis
                         Collections.singletonList("application/json"),
                         Collections.singletonList("application/json"));
                 method1.setBaseUrl(BaseConfig.AppNodeIP);
+              //  method1.setBaseUrl("http://192.168.137.78:1234/");
                 method1.addParam("body",
                         "PLAIN",
                         PostPatientIdListRequest.class,

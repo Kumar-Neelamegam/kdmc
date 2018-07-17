@@ -71,8 +71,8 @@ public class Inpatient_List extends AppCompatActivity {
     private static int mMonth = 0;
     private static int mDay = 0;
 
-    private final String QueryInPatient = "select id,prefix,patientname as name,Patid,age,gender,PC as photo  from Patreg  where enable_inpatient=1 order by patientname, id ";
-    ;
+    private final String QueryInPatient = "select id,prefix,patientname as name,Patid,age,gender,PC as photo  from Patreg  where enable_inpatient=1 and Docid='"+BaseConfig.doctorId+"' order by patientname, id ";
+
     private final DatePickerDialog.OnDateSetListener mDateSetListener1 = (datePicker, i, i1, i2) -> {
         mYear = i;
         mMonth = i1;
@@ -233,7 +233,7 @@ public class Inpatient_List extends AppCompatActivity {
                 edittextSearch.setText("");
                 inpatientRecyclerAdapter = new InpatientRecyclerAdapter(rowItems);
                 inpatientFastscrollview.setAdapter(inpatientRecyclerAdapter);
-                textvwPatientCount.setText(String.format("%s:%s", getString(R.string.noofpatient), String.valueOf(rowItems.size())));
+                textvwPatientCount.setText(String.format("%s:%s", getString(R.string.no_of_pat), String.valueOf(rowItems.size())));
 
 
             }

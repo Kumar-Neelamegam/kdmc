@@ -86,13 +86,13 @@ public final class R {
         public static final int notification_main_column_container = 0x7f0a0424;
         public static final int onAttachStateChangeListener = 0x7f0a042b;
         public static final int onDateChanged = 0x7f0a042c;
-        public static final int right_icon = 0x7f0a0501;
-        public static final int right_side = 0x7f0a0502;
-        public static final int text = 0x7f0a05d4;
-        public static final int text2 = 0x7f0a05d6;
-        public static final int textWatcher = 0x7f0a069e;
-        public static final int time = 0x7f0a06d8;
-        public static final int title = 0x7f0a06d9;
+        public static final int right_icon = 0x7f0a04ff;
+        public static final int right_side = 0x7f0a0500;
+        public static final int text = 0x7f0a05d2;
+        public static final int text2 = 0x7f0a05d4;
+        public static final int textWatcher = 0x7f0a069c;
+        public static final int time = 0x7f0a06d6;
+        public static final int title = 0x7f0a06d7;
     }
     public static final class integer {
         public static final int status_bar_notification_info_maxnum = 0x7f0b000b;

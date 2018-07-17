@@ -66,11 +66,9 @@ public class MyPatienRecylerAdapter extends RecyclerView.Adapter<MyPatienRecyler
 
         String status = mValues.get(position).IsLabReport;
         if (status.equalsIgnoreCase("1")) {
-
             holder.labreport.setVisibility(View.VISIBLE);
             holder.labreport_text.setTextColor(Color.RED);
         } else if (status.equalsIgnoreCase("2")) {
-
             holder.labreport.setVisibility(View.VISIBLE);
             holder.labreport_text.setTextColor(Color.GREEN);
         } else if ((status.equalsIgnoreCase("0"))) {
@@ -78,7 +76,6 @@ public class MyPatienRecylerAdapter extends RecyclerView.Adapter<MyPatienRecyler
         }
 
         holder.labreport.setOnClickListener(v -> {
-
             ((Activity) v.getContext()).finish();
             Intent in = new Intent(v.getContext(), PatientTestResult.class);
             in.putExtra("PatientId", PatientId1);
@@ -86,7 +83,7 @@ public class MyPatienRecylerAdapter extends RecyclerView.Adapter<MyPatienRecyler
         });
 
         try {
-            BaseConfig.LoadPatientImage(mValues.get(position).getPatient_Image(), holder.imageView, 50);
+            BaseConfig.LoadPatientImage(mValues.get(position).getPatient_Image(), holder.imageView, 40);
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -157,7 +154,7 @@ public class MyPatienRecylerAdapter extends RecyclerView.Adapter<MyPatienRecyler
     public static class ViewHolder extends RecyclerView.ViewHolder {
 
         final ImageView closeOnlineButton;
-        final ImageView imageView;
+        final kdmc_kumar.Utilities_Others.CircleImageView imageView;
 
         final TextView txtTitle;
         final LinearLayout layout;
