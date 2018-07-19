@@ -371,7 +371,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
     }
 
 
-
+/*
     @Override
     protected final void onActivityResult(int requestCode, int resultCode, Intent data) {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
@@ -394,7 +394,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
                 }
             }
         }
-    }
+    }*/
 
     private final void LoadWebview(String DateValue) {
         try {
@@ -1033,7 +1033,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
 
     }
 
-    @Override
+/*    @Override
     protected void onResume() {
         super.onResume();
         try {
@@ -1047,7 +1047,7 @@ public class Inpatient_Detailed_View extends AppCompatActivity {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
 
     private void LoadSearch() {
 

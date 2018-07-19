@@ -1731,7 +1731,12 @@ public class ResultsWebservices_NODEJS {
 
         try {
             final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
-            final Cursor c = db.rawQuery("select subtestname,IFNULL(testvalue,'0')as testvalue,IFNULL(bps,'0')as bps,IFNULL(bpd,'0')as bpd,IFNULL(temperature,'0')as temperature,weight from Medicaltestdtls where Ptid = '" + PatId + "' and mtestid = '" + mTestId + "' and alltest = '" + alltest + "' ", null);
+
+            String Query ="select subtestname,IFNULL(testvalue,'0')as testvalue,IFNULL(bps,'0')as bps,IFNULL(bpd,'0')as bpd,IFNULL(temperature,'0')as temperature,weight from" +
+                    " Medicaltestdtls where Ptid = '" + PatId + "' and mtestid = '" + mTestId + "' and alltest = '" + alltest + "' ";
+            Log.e("Update In casenotes: ", Query);
+
+            final Cursor c = db.rawQuery(Query, null);
 
 
             if (c != null) {
@@ -1768,8 +1773,14 @@ public class ResultsWebservices_NODEJS {
 
         split_subtest = alltest.split("/");
 
+        String TREATMENTFOR=BaseConfig.GetValues("select treatmentfor as ret_values  from Medicaltest where Ptid='"+PatId+"' and mtestid='"+mTestId+"'");
+        String DIAGNOSIS=BaseConfig.GetValues("select Diagnosis as ret_values  from Medicaltest where Ptid='"+PatId+"' and mtestid='"+mTestId+"'");
+
         String compareRBSName = "blood sug random";
-        if (split_subtest[1].trim().equalsIgnoreCase(compareRBSName)) {
+        String compareFBSName = "blood sug fasting";
+        String comparePBSName = "blood sug pp";
+
+        if (split_subtest[1].trim().equalsIgnoreCase(compareRBSName) || split_subtest[1].trim().equalsIgnoreCase(compareRBSName) || split_subtest[1].trim().equalsIgnoreCase(compareRBSName)) {
 
 
 
@@ -1783,8 +1794,8 @@ public class ResultsWebservices_NODEJS {
             values.put("mobnum", data.mobNum);
             values.put("clinicname", BaseConfig.clinicname);
 
-            values.put("FBS", 0);//fbs->bps
-            values.put("PPS", 0);//pps->bpd
+            values.put("FBS", bps);//fbs->bps
+            values.put("PPS", bpd);//pps->bpd
             values.put("RBS", temperature);//rbs->temperature
 
             values.put("BpS", 0);
@@ -1793,72 +1804,18 @@ public class ResultsWebservices_NODEJS {
 
             values.put("PWeight", weight);
             values.put("Actdate", BaseConfig.DeviceDate());
+            values.put("treatmentfor", TREATMENTFOR);
+            values.put("Diagnosis", DIAGNOSIS);
+            values.put("Isupdate", 1);
+
 
             final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
             db.insert("Diagonis", null, values);
 
 
         }
-        String compareFBSName = "blood sug fasting";
-        if (split_subtest[1].trim().equalsIgnoreCase(compareFBSName)) {
 
 
-            final ContentValues values = new ContentValues();
-            values.put("Docid", BaseConfig.doctorId);
-            values.put("Ptid", PatId);
-            values.put("pname", data.pName);
-            values.put("DiagId", UNIQUE_DIAGNOSIS_ID);
-            values.put("gender", data.gender);
-            values.put("age", data.age);
-            values.put("mobnum", data.mobNum);
-            values.put("clinicname", BaseConfig.clinicname);
-
-            values.put("FBS", bps);
-            values.put("PPS", 0);
-            values.put("RBS", 0);
-
-            values.put("BpS", 0);
-            values.put("BpD", 0);
-            values.put("temperature", 0);
-
-            values.put("PWeight", weight);
-            values.put("Actdate", BaseConfig.DeviceDate());
-
-            final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
-            db.insert("Diagonis", null, values);
-
-
-        }
-        String comparePBSName = "blood sug pp";
-        if (split_subtest[1].trim().equalsIgnoreCase(comparePBSName)) {
-
-
-            final ContentValues values = new ContentValues();
-            values.put("Docid", BaseConfig.doctorId);
-            values.put("Ptid", PatId);
-            values.put("pname", data.pName);
-            values.put("DiagId", UNIQUE_DIAGNOSIS_ID);
-            values.put("gender", data.gender);
-            values.put("age", data.age);
-            values.put("mobnum", data.mobNum);
-            values.put("clinicname", BaseConfig.clinicname);
-
-            values.put("FBS", 0);
-            values.put("PPS", bpd);
-            values.put("RBS", 0);
-
-            values.put("BpS", 0);
-            values.put("BpD", 0);
-            values.put("temperature", 0);
-
-            values.put("PWeight", weight);
-            values.put("Actdate", BaseConfig.DeviceDate());
-
-            final SQLiteDatabase db = BaseConfig.GetDb();//ctx);
-            db.insert("Diagonis", null, values);
-
-
-        }
 
     }
 

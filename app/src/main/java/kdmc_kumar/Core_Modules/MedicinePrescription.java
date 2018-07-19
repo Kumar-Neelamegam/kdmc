@@ -1748,7 +1748,7 @@ public class MedicinePrescription extends AppCompatActivity {
                 String[] strmed = list.get(j).split("_");
                 String Str = strmed[0].replace("[", "").replace("]", "").trim();
 
-                String MedicineId = BaseConfig.GetMedicineIdFromName(Str, this);
+                String MedicineId = BaseConfig.GetMedicineIdFromName(Str, this, db);
                 String remarkStr = "";
                 remarkStr = _edtxtvwRemarks.getText().length() > 0 ? _edtxtvwRemarks.getText().toString() : "";
 
@@ -1816,7 +1816,7 @@ public class MedicinePrescription extends AppCompatActivity {
              Emergency / Causality
              */
             try {
-                if (_chkInjection.isChecked() || _chkNebulization.isChecked() || _chkSuturing.isChecked() || _chkPlastering.isChecked()) {
+                //if (_chkInjection.isChecked() || _chkNebulization.isChecked() || _chkSuturing.isChecked() || _chkPlastering.isChecked()) {
 
                     String Str_InjectionJson = "";
                     String Str_Nebulization_Normal = "", Str_Nebulization_Asthaline = "";
@@ -1826,7 +1826,7 @@ public class MedicinePrescription extends AppCompatActivity {
                     JSONObject from_db_obj = new JSONObject();
                     JSONArray export_jsonarray = new JSONArray();
 
-                    if (_chkInjection.isChecked()) {
+                    if (injectionGetSets.size()>0) {
                         for (int i = 0; i < injectionGetSets.size(); i++) {
                             from_db_obj = new JSONObject();
                             from_db_obj.put("MedId", injectionGetSets.get(i).getInjectionId());
@@ -1839,7 +1839,7 @@ public class MedicinePrescription extends AppCompatActivity {
 
 
                     //Nebulization**********************************************************************
-                    if (_chkNebulization.isChecked()) {
+                   // if (_chkNebulization.isChecked()) {
                         if (_chkNrmsaline.isChecked()) {
                             Str_Nebulization_Normal = "Normal saline - " + _edtDosage1.getText().toString() + " - " + _edtDuration1.getText().toString() + " - " + _edtQuantity1.getText().toString();
                         }
@@ -1847,18 +1847,18 @@ public class MedicinePrescription extends AppCompatActivity {
                         if (_chkAsthasaline.isChecked()) {
                             Str_Nebulization_Asthaline = "Asthaline saline - " + _edtDosage2.getText().toString() + " - " + _edtDuration2.getText() + " - " + _edtQuantity2.getText().toString();
                         }
-                    }
+                   // }
 
                     //Suturing**************************************************************************
-                    if (_chkSuturing.isChecked()) {
+                   // if (_chkSuturing.isChecked()) {
                         Str_Suturing = _muliautcompltxtSuturing.getText().toString();
-                    }
+                   // }
 
 
                     //Plastering************************************************************************
                     JSONObject from_db_obj1 = new JSONObject();
                     JSONArray export_jsonarray1 = new JSONArray();
-                    if (_chkPlastering.isChecked()) {
+                   // if (_chkPlastering.isChecked()) {
 
                         String Str_Plastering1 = _muliautcompltxtPlastering.getText().toString();
                         if (_chkSlab.isChecked()) {
@@ -1874,7 +1874,7 @@ public class MedicinePrescription extends AppCompatActivity {
                         from_db_obj11.put("Plastering_Slab", Str_Plastering_Slab);
                         from_db_obj11.put("Plastering_Cast", Str_Plastering_Cast);
                         export_jsonarray1.put(from_db_obj11);
-                    }
+                 //   }
 
                     values = new ContentValues();
                     values.put("Patid", STR_PATIENT_ID);
@@ -1891,7 +1891,7 @@ public class MedicinePrescription extends AppCompatActivity {
                     db.insert("Bind_EmergencyCausality", null, values);
 
 
-                }
+               // }
 
             } catch (Exception e) {
                 e.printStackTrace();

@@ -387,7 +387,7 @@ class Initialization : CoreActivity() {
                 }
 
 
-
+                BaseConfig.Patient_Photo_Location = BaseConfig.AppDBFolderName + "/Patient_Photos/"
 
                 AppLogo = BaseConfig.saveURLImagetoSDcard(BaseConfig.Glide_GetBitmap(Initialization@ this, BaseConfig.AppNodeIP + AppLogo), "AppLogo")
                 BaseConfig.AppLogo = AppLogo

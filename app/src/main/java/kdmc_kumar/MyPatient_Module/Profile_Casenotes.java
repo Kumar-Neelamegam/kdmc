@@ -393,7 +393,7 @@ public class Profile_Casenotes extends Fragment {
         Cursor c = null;
         try {
 
-            String Query = "select * from Diagonis where DiagId='" + value1.trim() + "' and Ptid='" + BUNDLE_PATIENT_ID + "';";
+            String Query = "select * from Diagonis where DiagId='" + value1.trim() + "' and Ptid='" + BUNDLE_PATIENT_ID + "' group by DiagId;";
 
             boolean chk = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Diagonis where DiagId='" + value1.trim() + "' and Ptid='" + BUNDLE_PATIENT_ID + "';");
             if (chk) {

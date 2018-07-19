@@ -18,8 +18,10 @@ import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteStatement;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Matrix;
+import android.graphics.Paint;
 import android.graphics.Typeface;
 import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
@@ -75,7 +77,6 @@ import android.widget.Toast;
 import android.widget.ToggleButton;
 
 import com.bumptech.glide.Glide;
-import com.bumptech.glide.request.RequestOptions;
 
 import org.joda.time.DateTime;
 import org.joda.time.DateTimeZone;
@@ -103,6 +104,7 @@ import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 import displ.mobydocmarathi.com.R;
+import kdmc_kumar.Initialization.Initialization;
 import kdmc_kumar.Utilities_Others.CustomIntent;
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
 import kdmc_kumar.Utilities_Others.LocalSharedPref;
@@ -1174,6 +1176,15 @@ public class BaseConfig {
     //************************************************************************************************
 
     /**
+     * Starting all webservices
+     * IMPORT
+     * EXPORT
+     * MASTERS
+     * GETRESULTS
+     */
+    static int SCHEDULER_TIMING = 20;
+
+    /**
      * 1
      * METHOD TO GET ALL MASTERS VALUES
      * @param ctx
@@ -1204,7 +1215,7 @@ public class BaseConfig {
                     }
                     System.gc();
                 }
-            }, 0, 60, TimeUnit.SECONDS);
+            }, 0, SCHEDULER_TIMING, TimeUnit.SECONDS);
 
 
         }else if(id==2)
@@ -1253,7 +1264,7 @@ public class BaseConfig {
                     }
                     System.gc();
                 }
-            }, 0, 60, TimeUnit.SECONDS);
+            }, 0, SCHEDULER_TIMING, TimeUnit.SECONDS);
 
         }else if(id==2)
         {
@@ -1300,7 +1311,7 @@ public class BaseConfig {
                     }
                     System.gc();
                 }
-            }, 0, 60, TimeUnit.SECONDS);
+            }, 0, SCHEDULER_TIMING, TimeUnit.SECONDS);
 
         }else if(id==2)
         {
@@ -1346,7 +1357,7 @@ public class BaseConfig {
                     }
                     System.gc();
                 }
-            }, 0, 60, TimeUnit.SECONDS);
+            }, 0, SCHEDULER_TIMING, TimeUnit.SECONDS);
 
         }
         else if(id==2)
@@ -1825,13 +1836,13 @@ public class BaseConfig {
         return bedIdStr;
     }
 
-    public static String GetMedicineIdFromName(String name, Context ctx) {
+    public static String GetMedicineIdFromName(String name, Context ctx, SQLiteDatabase db) {
 
 
         String bedIdStr = "";
         try {
 
-            SQLiteDatabase db = BaseConfig.GetDb();//);
+           // SQLiteDatabase db = BaseConfig.GetDb();//);
             String query = "select distinct * from cims where (CASE WHEN DOSAGE!='' then  MARKETNAMEOFDRUG ||'-'|| DOSAGE else MARKETNAMEOFDRUG END) ='" + name.toString().trim() + "'";
 
             Cursor c = db.rawQuery(query, null);
@@ -1841,9 +1852,7 @@ public class BaseConfig {
                 if (c.moveToFirst()) {
                     do {
 
-
                         bedIdStr = c.getString(c.getColumnIndex("serverid"));
-
 
                     }
 
@@ -1851,7 +1860,6 @@ public class BaseConfig {
                 }
             }
 
-            db.close();
             c.close();
 
 
@@ -2917,7 +2925,7 @@ public class BaseConfig {
 
         str = "DID/" + TimeUtils.getCurrentTimeInLong() + RandomUtils.getRandomNumbers(4) + "/" + BaseConfig.GetValues("select mdiagnum as ret_values from Diagnosismvalue;");
 
-        Log.e("GenerateCaseNotesID: ", str);
+        //Log.e("GenerateCaseNotesID: ", str);
         if (str != null) {
 
             //  05-03 19:44:20.465 17525-17525/displ.mobydocmarathi.com E/GenerateCaseNotesID:: DID/15253568604523934/1
@@ -4231,6 +4239,50 @@ public class BaseConfig {
         db.close();
 
     }
+
+
+    private void shortcutAdd(String name, int number, Context ctx, Bitmap icon) {
+        // Intent to be send, when shortcut is pressed by user ("launched")
+        Intent shortcutIntent = new Intent(ctx, Initialization.class);
+        final String ACTION_ADD_SHORTCUT = "com.android.launcher.action.INSTALL_SHORTCUT";
+
+        shortcutIntent.setAction(Intent.ACTION_MAIN);
+
+        // Create bitmap with number in it -> very default. You probably want to give it a more stylish look
+        Bitmap bitmap = Bitmap.createBitmap(100, 100, Bitmap.Config.ARGB_8888);
+        Paint paint = new Paint();
+        paint.setColor(0xFF808080); // gray
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextSize(50);
+        new Canvas(bitmap).drawText(""+number, 50, 50, paint);
+       // ((ImageView) findViewById(R.id.icon)).setImageBitmap(bitmap);
+
+        // Decorate the shortcut
+        Intent addIntent = new Intent();
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, name);
+        addIntent.putExtra(Intent.EXTRA_SHORTCUT_ICON, icon);
+
+        // Inform launcher to create shortcut
+        addIntent.setAction("com.android.launcher.action.INSTALL_SHORTCUT");
+        ctx.sendBroadcast(addIntent);
+    }
+
+    private void shortcutDel(String name, Context ctx) {
+        // Intent to be send, when shortcut is pressed by user ("launched")
+        Intent shortcutIntent = new Intent(ctx, Initialization.class);
+        shortcutIntent.setAction(Intent.ACTION_MAIN);
+
+        // Decorate the shortcut
+        Intent delIntent = new Intent();
+        delIntent.putExtra(Intent.EXTRA_SHORTCUT_INTENT, shortcutIntent);
+        delIntent.putExtra(Intent.EXTRA_SHORTCUT_NAME, name);
+
+        // Inform launcher to remove shortcut
+        delIntent.setAction("com.android.launcher.action.UNINSTALL_SHORTCUT");
+        ctx.sendBroadcast(delIntent);
+    }
+
 
 //**************************************************************************************************
 }//END

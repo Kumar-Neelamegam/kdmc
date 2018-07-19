@@ -75,7 +75,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
     protected static final int RESULT_SPEECH = 1;
     public String Load_All_PatientsQuery = "select id,prefix,patientname as name,Patid,age,gender,PC as photo  from Patreg where Docid='" + BaseConfig.doctorId + "' order by patientname, id";
-    public String Load_Today_PatientsQuery = "select a.id,a.prefix,a.patientname as name,a.Patid,a.age,a.gender,a.PC as photo  from Patreg a inner join current_patient_list b on a.Patid=b.patid where  b.date='"+BaseConfig.Device_OnlyDateMMDDYYYY()+"'  and (b.Docid='"+BaseConfig.doctorId+"' or (b.status  = 'true' and b.HID='"+BaseConfig.HID+"')) order by b.id desc";
+    public String Load_Today_PatientsQuery = "select distinct a.id,a.prefix,a.patientname as name,a.Patid,a.age,a.gender,a.PC as photo  from Patreg a inner join current_patient_list b on a.Patid=b.patid where  b.date='"+BaseConfig.Device_OnlyDateMMDDYYYY()+"'  and (b.Docid='"+BaseConfig.doctorId+"' or (b.status  = 'true' and b.HID='"+BaseConfig.HID+"')) order by b.id desc";
 
 
 

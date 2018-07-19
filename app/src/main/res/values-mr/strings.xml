@@ -3,6 +3,8 @@
 <resources>
 
 
+    <string name="app_name">MOBY DOCTOR</string>
+
     <string name="username">वापरकर्त नाव</string>
     <string name="cancel">रद्द</string>
 

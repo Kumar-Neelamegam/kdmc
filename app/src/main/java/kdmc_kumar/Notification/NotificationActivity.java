@@ -48,7 +48,7 @@ public class NotificationActivity extends AppCompatActivity implements View.OnCl
     protected final void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_notifiation);
-        setTitle(BaseConfig.Appname + " Notification");
+        setTitle("Notification");
 
         init();
         ok.setOnClickListener(this);
