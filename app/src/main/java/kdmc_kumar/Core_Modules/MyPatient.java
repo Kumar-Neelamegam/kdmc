@@ -1027,17 +1027,6 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
             c.close();
             db.close();
 
-/*
-            SqliteReader.getInstance().setQuery(LOAD_ALL_PATIENTS_QUERY).onDataReceiver(new SqliteReader.Data() {
-                @Override
-                public void onData(Cursor c) {
-
-
-
-
-                }
-            });*/
-
         } catch (Exception e) {
             e.printStackTrace();
         }
