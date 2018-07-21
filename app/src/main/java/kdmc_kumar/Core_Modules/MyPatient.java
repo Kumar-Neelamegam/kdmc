@@ -72,11 +72,9 @@ import kdmc_kumar.Utilities_Others.customenu.ListViewType;
 
 public class MyPatient extends AppCompatActivity implements TextWatcher {
 
-
     protected static final int RESULT_SPEECH = 1;
     public String Load_All_PatientsQuery = "select id,prefix,patientname as name,Patid,age,gender,PC as photo  from Patreg where Docid='" + BaseConfig.doctorId + "' order by patientname, id";
-    public String Load_Today_PatientsQuery = "select a.id,a.prefix,a.patientname as name,a.Patid,a.age,a.gender,a.PC as photo  from Patreg a inner join current_patient_list b on a.Patid=b.patid where  b.date='"+BaseConfig.Device_OnlyDateMMDDYYYY()+"'  and (b.Docid='"+BaseConfig.doctorId+"' or (b.status  = 'true' and b.HID='"+BaseConfig.HID+"')) order by b.id desc";
-
+    public String Load_Today_PatientsQuery = "select a.id,a.prefix,a.patientname as name,a.Patid,a.age,a.gender,a.PC as photo  from Patreg a inner join current_patient_list b on a.Patid=b.patid where  b.date='" + BaseConfig.Device_OnlyDateMMDDYYYY() + "'  and (b.Docid='" + BaseConfig.doctorId + "' or (b.status  = 'true' and b.HID='" + BaseConfig.HID + "')) order by b.id desc";
 
 
     @BindView(R.id.mypatient_parent_layout)
@@ -122,6 +120,12 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
     RadioButton radio_today_patients;
     @BindView(R.id.radio_show_all_patients)
     RadioButton radio_showall_patients;
+    @BindView(R.id.prev_limit)
+    ImageButton btnPrev;
+    @BindView(R.id.next_limit)
+    ImageButton btnNext;
+    @BindView(R.id.current_limit)
+    TextView curLimit;
     private ArrayList<String> CurrentPatientList = new ArrayList<>();
     private SimpleDateFormat dateformt;
     private Date date;
@@ -132,6 +136,8 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
     //**********************************************************************************************
     private Runnable timerRunnable;
     private LinkedList<MyPatientGetSet> rowItems;
+    private int limit = 0;
+    private static int SIZE = 10;
 
     private static final boolean LoadReportsBooleanStatus(String Query) {
         try {
@@ -207,9 +213,8 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
 
-                if(isChecked)
-                {
-
+                if (isChecked) {
+                    limit = 0;
                     radio_today_patients.setChecked(false);
                     radio_showall_patients.setChecked(true);
                     btRefresh.performClick();
@@ -222,7 +227,8 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
         radio_today_patients.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                if(isChecked) {
+                if (isChecked) {
+                    limit = 0;
                     radio_showall_patients.setChecked(false);
                     radio_today_patients.setChecked(true);
                     btRefresh.performClick();
@@ -408,6 +414,68 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
             }
 
         });
+
+        btnPrev.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                etSearch.setText("");
+                if (limit >= SIZE)
+                    limit = limit - SIZE;
+                else {
+                    limit = 0;
+                    Toast.makeText(MyPatient.this, "Already in first page", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                try {
+
+                    if (radio_showall_patients.isChecked()) {
+                        new LoadPatientInfo(1, 1).execute();//ALL PATIENTS
+                    } else {
+                        new LoadPatientInfo(2, 0).execute();//ONL TODAY PATIENT
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+
+        btnNext.setOnClickListener(new OnClickListener() {
+
+            @Override
+            public void onClick(View v) {
+
+                etSearch.setText("");
+                if (rowItems.size() == SIZE)
+                    limit = limit + SIZE;
+                else if (rowItems.size() < SIZE && rowItems.size() > 0){
+                    Toast.makeText(MyPatient.this, "Already in last page", Toast.LENGTH_LONG).show();
+                    return;
+                }else{
+                    Toast.makeText(MyPatient.this, "Already in last page", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+
+                try {
+
+                    if (radio_showall_patients.isChecked()) {
+                        new LoadPatientInfo(1, 1).execute();//ALL PATIENTS
+                    } else {
+                        new LoadPatientInfo(2, 0).execute();//ONL TODAY PATIENT
+                    }
+
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            }
+
+        });
+
 
     }
 
@@ -906,7 +974,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
         try {
 
-            String LOAD_ALL_PATIENTS_QUERY = Load_All_PatientsQuery;// = Load_All_PatientsQuery;
+            String LOAD_ALL_PATIENTS_QUERY = Load_All_PatientsQuery + " LIMIT " + limit + " , " + SIZE; // = Load_All_PatientsQuery; // Added Limit for pagination
 
             String pdtls, paggen;
             Bitmap bm;
@@ -916,7 +984,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
             if (PASSING_LOAD_FILTER == 1)// LOAD ALL PATIENT
             {
-                LOAD_ALL_PATIENTS_QUERY = Load_All_PatientsQuery;
+                LOAD_ALL_PATIENTS_QUERY = Load_All_PatientsQuery + " LIMIT " + limit + " , " + SIZE;
             } else if (PASSING_LOAD_FILTER == 2)// LOAD APPOINTMENT
             {
                 String Query = "select Patreg.Patid,Patreg.id,Patreg.name,Patreg.age as  age,Patreg.gender  as gender,Patreg.age||Patreg.gender as agegen,' ' as token, Patreg.PC as photo,Patreg.phone as mobnum  from Appoinment INNER JOIN Patreg ON  Patreg.Patid=Appoinment.patid and Appoinment.Appoimentdt='" + dttm + "' and Appoinment.Iscancel='False';";
@@ -931,13 +999,11 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
             }
 
 
-            SQLiteDatabase db=BaseConfig.GetDb();
-            Cursor c=db.rawQuery(LOAD_ALL_PATIENTS_QUERY, null);
-            if(c!=null)
-            {
-                if(c.moveToFirst())
-                {
-                    do{
+            SQLiteDatabase db = BaseConfig.GetDb();
+            Cursor c = db.rawQuery(LOAD_ALL_PATIENTS_QUERY, null);
+            if (c != null) {
+                if (c.moveToFirst()) {
+                    do {
 
                         String PREFIX = c.getString(c.getColumnIndex("prefix"));
                         String NAME = c.getString(c.getColumnIndex("name"));
@@ -955,7 +1021,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                         rowItems.add(item);
 
 
-                    }while(c.moveToNext());
+                    } while (c.moveToNext());
                 }
             }
             c.close();
@@ -984,9 +1050,9 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
     public void LOAD_TODAY_PATIENTS() {
 
         try {
-            String LOAD_ALL_PATIENTS_QUERY = Load_Today_PatientsQuery;
+            String LOAD_ALL_PATIENTS_QUERY = Load_Today_PatientsQuery + " LIMIT " + limit + " , " + SIZE;//Added Limit for pagination
 
-           // CheckPatientsOnline();
+            // CheckPatientsOnline();
 
             String pdtls, paggen;
             Bitmap bm;
@@ -995,13 +1061,11 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
             rowItems = new LinkedList<>();
 
 
-            SQLiteDatabase db=BaseConfig.GetDb();
-            Cursor c=db.rawQuery(LOAD_ALL_PATIENTS_QUERY, null);
-            if(c!=null)
-            {
-                if(c.moveToFirst())
-                {
-                    do{
+            SQLiteDatabase db = BaseConfig.GetDb();
+            Cursor c = db.rawQuery(LOAD_ALL_PATIENTS_QUERY, null);
+            if (c != null) {
+                if (c.moveToFirst()) {
+                    do {
 
                         String PREFIX = c.getString(c.getColumnIndex("prefix"));
                         String NAME = c.getString(c.getColumnIndex("name"));
@@ -1016,13 +1080,13 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
                         //if (IsOnlinePatient(PATID)) {
 
-                            rowItems.addFirst(item);
-                            item.IsOnlinePatient = true;
-                            item.IsLabReport = IsLabReport;
+                        rowItems.addFirst(item);
+                        item.IsOnlinePatient = true;
+                        item.IsLabReport = IsLabReport;
 
                         //}
 
-                    }while(c.moveToNext());
+                    } while (c.moveToNext());
                 }
             }
             c.close();
@@ -1088,6 +1152,9 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
             String ListCount = String.valueOf(rowItems.size());
             txtCount.setText(getString(R.string.no_of_pat) + ": " + ListCount);
+            int start = limit + 1;
+            int end = limit + rowItems.size();
+            curLimit.setText("Showing " + start + " - " + end);
 
             int visibility = Integer.parseInt(ListCount) == 0 ? View.VISIBLE : View.GONE;
             imgNoMedia.setVisibility(visibility);
@@ -1137,7 +1204,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                             public void onPossitivePerformed() {
 
                                 try {
-                           //         CheckPatientsOnline();
+                                    //         CheckPatientsOnline();
 
                                     new LoadPatientInfo(1, 1).execute();
 
@@ -1164,7 +1231,7 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                             public void onPossitivePerformed() {
 
                                 try {
-                                   // CheckPatientsOnline();
+                                    // CheckPatientsOnline();
 
                                     new LoadPatientInfo(1, 1).execute();
 
