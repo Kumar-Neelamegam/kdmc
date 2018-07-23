@@ -15,10 +15,12 @@ import android.view.*
 import android.widget.*
 import com.magnet.android.mms.MagnetMobileClient
 import com.magnet.android.mms.exception.SchemaException
+import displ.mobydocmarathi.com.BuildConfig
 import displ.mobydocmarathi.com.R
 import kdmc_kumar.Core_Modules.BaseConfig
 import kdmc_kumar.Doctor_Modules.Login
 import kdmc_kumar.Doctor_Modules.Splash_Screen
+import kdmc_kumar.Utilities_Others.AppIconNameChanger
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog
 import kdmc_kumar.Utilities_Others.LocalSharedPref
 import kdmc_kumar.Utilities_Others.Tools
@@ -28,6 +30,7 @@ import kotlinx.android.synthetic.main.kdmc_layout_initialization.*
 import org.json.JSONArray
 import org.json.JSONObject
 import java.io.*
+import java.util.*
 import java.util.concurrent.ExecutionException
 
 class Initialization : CoreActivity() {
@@ -437,6 +440,7 @@ class Initialization : CoreActivity() {
                 LocalSharedPref(Initialization@this).setBoolean("initialization_status",true)
 
 
+                ChangeAppName(Appname);
 
 
             }
@@ -450,6 +454,32 @@ class Initialization : CoreActivity() {
             e.printStackTrace()
         } catch (e: Exception) {
             e.printStackTrace()
+        }
+
+    }
+
+    private fun ChangeAppName(Appname:String) {
+
+        if(Appname.equals(getString(R.string.app_name),true))//KDMC
+        {
+            // Active alias name
+            var activeName = "kdmc"
+            // Disable alias names
+            val disableNames : ArrayList<String> = arrayListOf()
+            disableNames.add("mobydoctor")
+            // Initiate App Icon Name Changer
+            AppIconNameChanger.Builder(this@Initialization).activeName(activeName).disableNames(disableNames).packageName(BuildConfig.APPLICATION_ID).build().setNow()
+
+        }
+        else
+        {
+            // Active alias name
+            var activeName = "mobydoctor"
+            // Disable alias names
+            val disableNames : ArrayList<String> = arrayListOf()
+            disableNames.add("kdmc")
+            // Initiate App Icon Name Changer
+            AppIconNameChanger.Builder(this@Initialization).activeName(activeName).disableNames(disableNames).packageName(BuildConfig.APPLICATION_ID).build().setNow()
         }
 
     }

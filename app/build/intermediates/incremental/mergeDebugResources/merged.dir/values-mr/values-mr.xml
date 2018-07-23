@@ -82,6 +82,8 @@
     <string name="any_other_complications_and_referral">कोणतीही इतर गुंतागुंत आणि रेफरल</string>
     <string name="aphasia">वाचाशक्ती नाहीशी होणे</string>
     <string name="app_expired">क्षमस्व, अनुप्रयोगाची परवाना कालबाह्य झाले आहे. \n अनुप्रयोग तपशील: \n तारीख स्थापित:</string>
+    <string name="app_name">KDMC</string>
+    <string name="app_name_mobydoctor">MOBY DOCTOR</string>
     <string name="appointment_sms_and_updates">वैदकीय सल्ल्याचा एसएमएस अॅलर्ट</string>
     <string name="apraxia">हालचाली बरोबर करता न येणे:</string>
     <string name="are_you_sure_want_to_exit">आपण निश्चितपणे निर्गमन करू इच्छित आहात?</string>

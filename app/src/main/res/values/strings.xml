@@ -2,6 +2,11 @@
 <resources>
 
 
+    <string name="app_name">KDMC</string>
+
+    <string name="app_name_mobydoctor">MOBY DOCTOR</string>
+
+
     <string name="hello_world">Hello world!</string>
     <string name="Category_A">A(Controlled studies in women fail to demonstrate a risk to the foetus in the 1st trimester (and there is no evidence of a risk in later trimesters), and the possibility of foetal harm remains remote)</string>
     <string name="Category_B">B(Either animal-reproduction studies have not demonstrated a foetal risk but there are no controlled studies in pregnant woman or animal-reproduction studies have shown an adverse effect (other than a decrease in fertility) that was not confirmed in controlled studies in women in the 1st trimester (and there is no evidence of a risk in later trimesters)).</string>
@@ -207,7 +212,6 @@
     <string name="bodytemp">Temperature(ºF)</string>
     <string name="medicinename">Medicine Name</string>
     <string name="lblfreq">Frequency</string>
-    <string name="app_name">KDMC</string>
     <string name="city">City</string>
     <string name="title_activity_my_patient">MyPatient</string>
     <string name="title_activity_setting">Settings</string>

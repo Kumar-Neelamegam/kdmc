@@ -1,4 +1,4 @@
-#Sat Jul 21 16:47:49 IST 2018
+#Mon Jul 23 13:47:54 IST 2018
 base.0=C\:\\Users\\Android\\Desktop\\MOBYDOCTOR 2018\\KDMC_2018\\KDMC\\app\\build\\intermediates\\transforms\\dexMerger\\debug\\0
 path.1=classes2.dex
 renamed.1=classes2.dex

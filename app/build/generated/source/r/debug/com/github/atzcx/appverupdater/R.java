@@ -730,20 +730,20 @@ public final class R {
         public static final int abc_shareactionprovider_share_with_application = 0x7f100026;
         public static final int abc_toolbar_collapse_description = 0x7f100027;
         public static final int app_name = 0x7f10005e;
-        public static final int appverupdate_not_update_available = 0x7f100061;
-        public static final int appverupdate_update_available = 0x7f100062;
-        public static final int appverupdater_content_not_update_available = 0x7f100063;
-        public static final int appverupdater_content_update_available = 0x7f100064;
-        public static final int appverupdater_denied_message = 0x7f100065;
-        public static final int appverupdater_negativetext_update_available = 0x7f100066;
-        public static final int appverupdater_notes_update_available = 0x7f100067;
-        public static final int appverupdater_positivetext_update_available = 0x7f100068;
-        public static final int appverupdater_progressdialog_message_update_available = 0x7f100069;
-        public static final int search_menu_title = 0x7f10033a;
-        public static final int status_bar_notification_info_overflow = 0x7f10037a;
-        public static final int tedpermission_close = 0x7f1003c9;
-        public static final int tedpermission_confirm = 0x7f1003ca;
-        public static final int tedpermission_setting = 0x7f1003cb;
+        public static final int appverupdate_not_update_available = 0x7f100062;
+        public static final int appverupdate_update_available = 0x7f100063;
+        public static final int appverupdater_content_not_update_available = 0x7f100064;
+        public static final int appverupdater_content_update_available = 0x7f100065;
+        public static final int appverupdater_denied_message = 0x7f100066;
+        public static final int appverupdater_negativetext_update_available = 0x7f100067;
+        public static final int appverupdater_notes_update_available = 0x7f100068;
+        public static final int appverupdater_positivetext_update_available = 0x7f100069;
+        public static final int appverupdater_progressdialog_message_update_available = 0x7f10006a;
+        public static final int search_menu_title = 0x7f10033b;
+        public static final int status_bar_notification_info_overflow = 0x7f10037b;
+        public static final int tedpermission_close = 0x7f1003ca;
+        public static final int tedpermission_confirm = 0x7f1003cb;
+        public static final int tedpermission_setting = 0x7f1003cc;
     }
     public static final class style {
         public static final int AlertDialog_AppCompat = 0x7f110001;

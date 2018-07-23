@@ -1367,6 +1367,7 @@
     <string name="aphasia">Aphasia</string>
     <string name="app_expired">Sorry, application license expired.\nApplication details: \nInstalled date:</string>
     <string name="app_name">KDMC</string>
+    <string name="app_name_mobydoctor">MOBY DOCTOR</string>
     <string name="appbar_scrolling_view_behavior" translatable="false">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
     <string name="appointment_sms_and_updates">APPOINTMENT SMS AND UPDATES</string>
     <string name="appverupdate_not_update_available">No updates available!</string>

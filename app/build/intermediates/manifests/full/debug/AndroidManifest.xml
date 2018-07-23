@@ -38,16 +38,36 @@
         android:supportsRtl="true"
         android:testOnly="true"
         android:theme="@style/AppTheme" >
-        <activity
-            android:name="kdmc_kumar.Initialization.Initialization"
-            android:label="@string/app_name"
+
+        <!-- main activity -->
+        <activity android:name="kdmc_kumar.Initialization.Initialization" /> <!-- MOBYDOCTOR APP -->
+        <activity-alias
+            android:name="displ.mobydocmarathi.com.mobydoctor"
+            android:enabled="false"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name_mobydoctor"
+            android:targetActivity="kdmc_kumar.Initialization.Initialization"
             android:theme="@style/AppTheme.NoActionBar" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
+        </activity-alias> <!-- KDMC APP -->
+        <activity-alias
+            android:name="displ.mobydocmarathi.com.kdmc"
+            android:enabled="true"
+            android:icon="@mipmap/ic_launcher"
+            android:label="@string/app_name"
+            android:targetActivity="kdmc_kumar.Initialization.Initialization"
+            android:theme="@style/AppTheme.NoActionBar" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity-alias>
+
         <activity
             android:name="kdmc_kumar.Doctor_Modules.Login"
             android:theme="@style/AppTheme.NoActionBar"
@@ -110,41 +130,6 @@
         <activity
             android:name="kdmc_kumar.Doctor_Modules.SettingActivity"
             android:label="@string/title_activity_setting"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.Reports.ReportsActivity"
-            android:label="@string/title_activity_reports"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.Reports.Report_daily_consulation"
-            android:label="@string/title_activity_report__dailyconsulation"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.Reports.Report_fee_collection"
-            android:label="@string/title_activity_report_fee_collection"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.Reports.Report_list_of_test_prescribed"
-            android:label="@string/title_activity_report__list_of_test_prescribed"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.Reports.Report_list_of_medicine_prescribed"
-            android:label="@string/title_activity_report__list_of_medicine_prescribed"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.Reports.Report_list_of_doctorreferral"
-            android:label="@string/title_activity_report__list_of_donor"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.Reports.Report_newpatient_consulation"
-            android:label="@string/title_activity_report__list_of_newpatient"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
@@ -272,10 +257,6 @@
         <activity
             android:name="kdmc_kumar.MyPatient_Module.MyPatientDrawer"
             android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="za.co.riggaroo.materialhelptutorial.tutorial.MaterialTutorialActivity"
-            android:theme="@style/Theme.AppCompat.Light.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name="kdmc_kumar.Core_Modules.PatientTestResult"
