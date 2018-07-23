@@ -787,15 +787,13 @@ public class MedicinePrescription extends AppCompatActivity {
                 String[] Pat = _autocompletePatientname.getText().toString().split("-");
                 if (Pat.length == 2) {
 
-                    boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where name='" + Pat[0].trim() + "' ");
-                    if (q) {
+                    boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where Patid='" + Pat[1].trim() + '\'');  if (q) {
                         SAVE_LOCAL();
                     } else {
                         BaseConfig.showSimplePopUp(getString(R.string.not_pat_regist), getString(R.string.info), MedicinePrescription.this, R.drawable.ic_patienticon, R.color.red_500);
                     }
                 } else if (Pat.length == 1) {
-                    boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where name='" + Pat[0].trim() + '\'');
-                    if (q) {
+                    boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where Patid='" + Pat[1].trim() + '\'');  if (q) {
 
 
                         SAVE_LOCAL();

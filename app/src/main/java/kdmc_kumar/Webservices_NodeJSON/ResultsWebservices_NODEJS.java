@@ -194,7 +194,7 @@ public class ResultsWebservices_NODEJS {
                                         values.put("result", ResultValue);
                                         db.update("Medicaltestdtls", values, "Ptid='" + ptid + "' and alltest='" + objJson.getString("alltest") + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
 
-                                        db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='" + ptid + "' and mtestid='" + mtestid + "'");
+                                        db.execSQL("update Medicaltest set IsResultAvailable=2 , Result_Count=Result_Count+1 where Ptid='" + ptid + "' and mtestid='" + mtestid + "'");
 
                                         this.UpdateInCaseNotes(ptid, mtestid, objJson.getString("alltest"));
 
@@ -292,7 +292,7 @@ public class ResultsWebservices_NODEJS {
                                         values.put("ValueUpdated", "0");
                                         db.update("Scantest", values, "where Ptid='" + ptid + "' and scanname='" + objJson.getString("scanname") + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
 
-                                        db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='" + ptid + "' and mtestid='" + mtestid + "'");
+                                        db.execSQL("update Medicaltest set IsResultAvailable=2 , Result_Count=Result_Count+1 where Ptid='" + ptid + "' and mtestid='" + mtestid + "'");
 
 
                                     }
@@ -382,7 +382,7 @@ public class ResultsWebservices_NODEJS {
                                         values.put("ValueUpdated", "0");
                                         db.update("XRAY", values, "where Ptid='" + ptid + "' and xray='" + objJson.getString("xray") + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
 
-                                        db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='" + ptid + "' and mtestid='" + mtestid + "'");
+                                        db.execSQL("update Medicaltest set IsResultAvailable=2 , Result_Count=Result_Count+1 where Ptid='" + ptid + "' and mtestid='" + mtestid + "'");
 
                                     }
 
@@ -471,7 +471,7 @@ public class ResultsWebservices_NODEJS {
                                         values.put("ValueUpdated", "0");
                                         db.update("EEG", values, "Ptid='" + ptid + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
 
-                                        db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='" + ptid + "' and mtestid='" + mtestid + "'");
+                                        db.execSQL("update Medicaltest set IsResultAvailable=2 , Result_Count=Result_Count+1 where Ptid='" + ptid + "' and mtestid='" + mtestid + "'");
 
                                     }
 
@@ -577,7 +577,7 @@ public class ResultsWebservices_NODEJS {
                                         values.put("ValueUpdated", "0");
                                         db.update("ECGTEST", values, " Ptid='" + ptid + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
 
-                                        db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='" + ptid + "' and mtestid='" + mtestid + "'");
+                                        db.execSQL("update Medicaltest set IsResultAvailable=2 , Result_Count=Result_Count+1 where Ptid='" + ptid + "' and mtestid='" + mtestid + "'");
 
                                     }
 
@@ -675,7 +675,7 @@ public class ResultsWebservices_NODEJS {
                                         values.put("ValueUpdated", "0");
                                         db.update("Angiogram", values, "Ptid='" + ptid + "' and IsActive='1' and mtestid='" + mtestid + '\'', null);
 
-                                        db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='" + ptid + "' and mtestid='" + mtestid + "'");
+                                        db.execSQL("update Medicaltest set IsResultAvailable=2 , Result_Count=Result_Count+1 where Ptid='" + ptid + "' and mtestid='" + mtestid + "'");
 
 
                                     }
@@ -898,7 +898,9 @@ public class ResultsWebservices_NODEJS {
                                 + "ValueUpdated='0',IsNew=1,result='" + Result_Status + "' where Ptid='" + Patid + "' and IsActive='1' and mtestid='" + Mtestid + "' and subtestid='" + Subtestid + '\'';
                         db.execSQL(Update_Query_Mpre);
 
-                        db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='" + Patid + "' and mtestid='" + Mtestid + "'");
+                        db.execSQL("update Medicaltest set IsResultAvailable=2, Result_Count=Result_Count+1 where Ptid='" + Patid + "' and mtestid='" + Mtestid + "'");
+
+
 
 
                     }
@@ -1081,7 +1083,7 @@ public class ResultsWebservices_NODEJS {
                                 + "ValueUpdated='0',IsNew=1,result='" + Result_Status + "' where Ptid='" + Patid + "' and IsActive='1' and mtestid='" + Mtestid + "' and subtestid='" + Subtestid + '\'';
                         db.execSQL(Update_Query_Mpre);
 
-                        db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='" + Patid + "' and mtestid='" + Mtestid + "'");
+                        db.execSQL("update Medicaltest set IsResultAvailable=2 , Result_Count=Result_Count+1 where Ptid='" + Patid + "' and mtestid='" + Mtestid + "'");
 
                     }
 
@@ -1251,7 +1253,7 @@ public class ResultsWebservices_NODEJS {
                                 + "ValueUpdated='0',IsNew=1,result='" + Result_Status + "' where Ptid='" + Patid + "' and IsActive='1' and mtestid='" + Mtestid + "' and subtestid='" + Subtestid + '\'';
                         db.execSQL(Update_Query_Mpre);
 
-                        db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='" + Patid + "' and mtestid='" + Mtestid + "'");
+                        db.execSQL("update Medicaltest set IsResultAvailable=2 , Result_Count=Result_Count+1 where Ptid='" + Patid + "' and mtestid='" + Mtestid + "'");
 
                     }
 
@@ -1433,7 +1435,7 @@ public class ResultsWebservices_NODEJS {
                                 + "ValueUpdated='0',IsNew=1,result='" + Result_Status + "' where Ptid='" + Patid + "' and IsActive='1' and mtestid='" + Mtestid + "' and subtestid='" + Subtestid + '\'';
                         db.execSQL(Update_Query_Mpre);
 
-                        db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='" + Patid + "' and mtestid='" + Mtestid + "'");
+                        db.execSQL("update Medicaltest set IsResultAvailable=2, Result_Count=Result_Count+1  where Ptid='" + Patid + "' and mtestid='" + Mtestid + "'");
 
                     }
 
@@ -1634,7 +1636,7 @@ public class ResultsWebservices_NODEJS {
                                 + "ValueUpdated='0',IsNew=1,result='" + Result_Status + "' where Ptid='" + Patid + "' and IsActive='1' and mtestid='" + Mtestid + "' and subtestid='" + Subtestid + '\'';
                         db.execSQL(Update_Query_Mpre);
 
-                        db.execSQL("update Medicaltest set IsResultAvailable=2 where Ptid='" + Patid + "' and mtestid='" + Mtestid + "'");
+                        db.execSQL("update Medicaltest set IsResultAvailable=2 , Result_Count=Result_Count+1 where Ptid='" + Patid + "' and mtestid='" + Mtestid + "'");
 
                     }
 

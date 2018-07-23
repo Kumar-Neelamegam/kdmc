@@ -893,8 +893,7 @@ public class CaseNotes extends AppCompatActivity {
 
 
 
-                boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where name='" + Pat[0].trim() + '\'');
-                if (q) {
+                boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where Patid='" + Pat[1].trim() + '\''); if (q) {
 
 
                     if (buttonSubmit.getText().toString().equalsIgnoreCase(getString(R.string.submit))) {
@@ -924,8 +923,7 @@ public class CaseNotes extends AppCompatActivity {
             }
             else if (Pat.length == 1) {
 
-                boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where name='" + Pat[0].trim() + '\'');
-                if (q) {
+                boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where Patid='" + Pat[1].trim() + '\'');  if (q) {
 
 
                     if (buttonSubmit.getText().toString().equalsIgnoreCase(getString(R.string.submit))) {

@@ -1,0 +1,177 @@
+// Generated code from Butter Knife. Do not modify!
+package kdmc_kumar.CaseNotes_Modules;
+
+import android.support.annotation.CallSuper;
+import android.support.annotation.UiThread;
+import android.view.View;
+import android.widget.EditText;
+import android.widget.LinearLayout;
+import android.widget.TextView;
+import butterknife.Unbinder;
+import butterknife.internal.Utils;
+import displ.mobydocmarathi.com.R;
+import java.lang.IllegalStateException;
+import java.lang.Override;
+
+public class CaseNotes$LOAD_CLINICAL_ViewBinding implements Unbinder {
+  private CaseNotes.LOAD_CLINICAL target;
+
+  @UiThread
+  public CaseNotes$LOAD_CLINICAL_ViewBinding(CaseNotes.LOAD_CLINICAL target, View source) {
+    this.target = target;
+
+    target.clinical = Utils.findRequiredViewAsType(source, R.id.Clinical, "field 'clinical'", LinearLayout.class);
+    target.textViewHaemogram = Utils.findRequiredViewAsType(source, R.id.textView_haemogram, "field 'textViewHaemogram'", TextView.class);
+    target.textViewHaemoglobinGDl = Utils.findRequiredViewAsType(source, R.id.textView_haemoglobin_g_dl, "field 'textViewHaemoglobinGDl'", TextView.class);
+    target.editTextHaemoglobinGDl = Utils.findRequiredViewAsType(source, R.id.editText_haemoglobin_g_dl, "field 'editTextHaemoglobinGDl'", EditText.class);
+    target.editTextWBC = Utils.findRequiredViewAsType(source, R.id.editText_wbc, "field 'editTextWBC'", EditText.class);
+    target.textViewMonocytes = Utils.findRequiredViewAsType(source, R.id.textView_monocytes, "field 'textViewMonocytes'", TextView.class);
+    target.editTextMonocytes = Utils.findRequiredViewAsType(source, R.id.editText_monocytes, "field 'editTextMonocytes'", EditText.class);
+    target.textViewBasophils = Utils.findRequiredViewAsType(source, R.id.textView_basophils, "field 'textViewBasophils'", TextView.class);
+    target.editTextBasophils = Utils.findRequiredViewAsType(source, R.id.editText_basophils, "field 'editTextBasophils'", EditText.class);
+    target.textViewRbc = Utils.findRequiredViewAsType(source, R.id.textView_rbc, "field 'textViewRbc'", TextView.class);
+    target.editTextRbc = Utils.findRequiredViewAsType(source, R.id.editText_rbc, "field 'editTextRbc'", EditText.class);
+    target.textViewEsr = Utils.findRequiredViewAsType(source, R.id.textView_esr, "field 'textViewEsr'", TextView.class);
+    target.editTextEsr = Utils.findRequiredViewAsType(source, R.id.editText_esr, "field 'editTextEsr'", EditText.class);
+    target.textViewPolymorphs = Utils.findRequiredViewAsType(source, R.id.textView_polymorphs, "field 'textViewPolymorphs'", TextView.class);
+    target.editTextPolymorphs = Utils.findRequiredViewAsType(source, R.id.editText_polymorphs, "field 'editTextPolymorphs'", EditText.class);
+    target.textViewLymphocytes = Utils.findRequiredViewAsType(source, R.id.textView_lymphocytes, "field 'textViewLymphocytes'", TextView.class);
+    target.editTextLymphocytes = Utils.findRequiredViewAsType(source, R.id.editText_lymphocytes, "field 'editTextLymphocytes'", EditText.class);
+    target.textViewRenalMarkers = Utils.findRequiredViewAsType(source, R.id.TextView_renal_markers, "field 'textViewRenalMarkers'", TextView.class);
+    target.textViewEosinophils = Utils.findRequiredViewAsType(source, R.id.textView_eosinophils, "field 'textViewEosinophils'", TextView.class);
+    target.editTextEosinophils = Utils.findRequiredViewAsType(source, R.id.editText_eosinophils, "field 'editTextEosinophils'", EditText.class);
+    target.textViewUrea = Utils.findRequiredViewAsType(source, R.id.textView_urea, "field 'textViewUrea'", TextView.class);
+    target.editTextUrea = Utils.findRequiredViewAsType(source, R.id.editText_urea, "field 'editTextUrea'", EditText.class);
+    target.textViewCreatinine = Utils.findRequiredViewAsType(source, R.id.textView_creatinine, "field 'textViewCreatinine'", TextView.class);
+    target.editTextCreatinine = Utils.findRequiredViewAsType(source, R.id.editText_creatinine, "field 'editTextCreatinine'", EditText.class);
+    target.textViewUricAcid = Utils.findRequiredViewAsType(source, R.id.textView_uric_acid, "field 'textViewUricAcid'", TextView.class);
+    target.editTextUricAcid = Utils.findRequiredViewAsType(source, R.id.editText_uric_acid, "field 'editTextUricAcid'", EditText.class);
+    target.textViewElectrolytes = Utils.findRequiredViewAsType(source, R.id.TextView_electrolytes, "field 'textViewElectrolytes'", TextView.class);
+    target.textViewSodium = Utils.findRequiredViewAsType(source, R.id.TextView_sodium, "field 'textViewSodium'", TextView.class);
+    target.editTextSodium = Utils.findRequiredViewAsType(source, R.id.EditText_sodium, "field 'editTextSodium'", EditText.class);
+    target.textViewPotassium = Utils.findRequiredViewAsType(source, R.id.TextView_potassium, "field 'textViewPotassium'", TextView.class);
+    target.editTextPotassium = Utils.findRequiredViewAsType(source, R.id.EditText_potassium, "field 'editTextPotassium'", EditText.class);
+    target.textViewChloride = Utils.findRequiredViewAsType(source, R.id.TextView_chloride, "field 'textViewChloride'", TextView.class);
+    target.editTextChloride = Utils.findRequiredViewAsType(source, R.id.EditText_chloride, "field 'editTextChloride'", EditText.class);
+    target.textViewBicarbonate = Utils.findRequiredViewAsType(source, R.id.TextView_bicarbonate, "field 'textViewBicarbonate'", TextView.class);
+    target.editTextBicarbonate = Utils.findRequiredViewAsType(source, R.id.EditText_bicarbonate, "field 'editTextBicarbonate'", EditText.class);
+    target.textViewLipoProfile = Utils.findRequiredViewAsType(source, R.id.TextView_lipo_profile, "field 'textViewLipoProfile'", TextView.class);
+    target.textViewTotalCholesterol = Utils.findRequiredViewAsType(source, R.id.TextView_total_cholesterol, "field 'textViewTotalCholesterol'", TextView.class);
+    target.editTextTotalCholesterol = Utils.findRequiredViewAsType(source, R.id.EditText_total_cholesterol, "field 'editTextTotalCholesterol'", EditText.class);
+    target.textViewLdl = Utils.findRequiredViewAsType(source, R.id.TextView_ldl, "field 'textViewLdl'", TextView.class);
+    target.editTextLdl = Utils.findRequiredViewAsType(source, R.id.EditText_ldl, "field 'editTextLdl'", EditText.class);
+    target.textViewHdl = Utils.findRequiredViewAsType(source, R.id.TextView_hdl, "field 'textViewHdl'", TextView.class);
+    target.editTextHdl = Utils.findRequiredViewAsType(source, R.id.EditText_hdl, "field 'editTextHdl'", EditText.class);
+    target.textViewVldl = Utils.findRequiredViewAsType(source, R.id.TextView_vldl, "field 'textViewVldl'", TextView.class);
+    target.editTextVldl = Utils.findRequiredViewAsType(source, R.id.EditText_vldl, "field 'editTextVldl'", EditText.class);
+    target.textViewTriglycerides = Utils.findRequiredViewAsType(source, R.id.TextView_triglycerides, "field 'textViewTriglycerides'", TextView.class);
+    target.editTextTriglycerides = Utils.findRequiredViewAsType(source, R.id.EditText_triglycerides, "field 'editTextTriglycerides'", EditText.class);
+    target.textViewLiverFunctionTest = Utils.findRequiredViewAsType(source, R.id.TextView_liver_function_test, "field 'textViewLiverFunctionTest'", TextView.class);
+    target.textViewSerumBilirubinTotal = Utils.findRequiredViewAsType(source, R.id.TextView_serum_bilirubin_total, "field 'textViewSerumBilirubinTotal'", TextView.class);
+    target.editTextSerumBilirubinTotal = Utils.findRequiredViewAsType(source, R.id.EditText_serum_bilirubin_total, "field 'editTextSerumBilirubinTotal'", EditText.class);
+    target.textViewDirect = Utils.findRequiredViewAsType(source, R.id.TextView_direct, "field 'textViewDirect'", TextView.class);
+    target.editTextDirect = Utils.findRequiredViewAsType(source, R.id.EditText_direct, "field 'editTextDirect'", EditText.class);
+    target.textViewIndirect = Utils.findRequiredViewAsType(source, R.id.TextView_indirect, "field 'textViewIndirect'", TextView.class);
+    target.editTextIndirect = Utils.findRequiredViewAsType(source, R.id.EditText_indirect, "field 'editTextIndirect'", EditText.class);
+    target.textViewTotalProtein = Utils.findRequiredViewAsType(source, R.id.TextView_total_protein, "field 'textViewTotalProtein'", TextView.class);
+    target.editTextTotalProtein = Utils.findRequiredViewAsType(source, R.id.EditText_total_protein, "field 'editTextTotalProtein'", EditText.class);
+    target.textViewAlbumin = Utils.findRequiredViewAsType(source, R.id.TextView_albumin, "field 'textViewAlbumin'", TextView.class);
+    target.editTextAlbumin = Utils.findRequiredViewAsType(source, R.id.EditText_albumin, "field 'editTextAlbumin'", EditText.class);
+    target.textViewGlobulin = Utils.findRequiredViewAsType(source, R.id.textView_globulin, "field 'textViewGlobulin'", TextView.class);
+    target.editTextGlobulin = Utils.findRequiredViewAsType(source, R.id.editText_globulin, "field 'editTextGlobulin'", EditText.class);
+    target.textViewSgot = Utils.findRequiredViewAsType(source, R.id.textView_sgot, "field 'textViewSgot'", TextView.class);
+    target.editTextSgot = Utils.findRequiredViewAsType(source, R.id.editText_sgot, "field 'editTextSgot'", EditText.class);
+    target.textViewSgpt = Utils.findRequiredViewAsType(source, R.id.textView_sgpt, "field 'textViewSgpt'", TextView.class);
+    target.editTextSgpt = Utils.findRequiredViewAsType(source, R.id.editText_sgpt, "field 'editTextSgpt'", EditText.class);
+    target.textViewAlkalinePhosphatase = Utils.findRequiredViewAsType(source, R.id.textView_alkaline_phosphatase, "field 'textViewAlkalinePhosphatase'", TextView.class);
+    target.editTextAlkalinePhosphatase = Utils.findRequiredViewAsType(source, R.id.editText_alkaline_phosphatase, "field 'editTextAlkalinePhosphatase'", EditText.class);
+    target.textViewThyroidProfile = Utils.findRequiredViewAsType(source, R.id.TextView_thyroid_profile, "field 'textViewThyroidProfile'", TextView.class);
+    target.textViewFreeT3 = Utils.findRequiredViewAsType(source, R.id.TextView_free_t3, "field 'textViewFreeT3'", TextView.class);
+    target.editTextFreeT3 = Utils.findRequiredViewAsType(source, R.id.EditText_free_t3, "field 'editTextFreeT3'", EditText.class);
+    target.textViewFreeT4 = Utils.findRequiredViewAsType(source, R.id.TextView_free_t4, "field 'textViewFreeT4'", TextView.class);
+    target.editTextFreeT4 = Utils.findRequiredViewAsType(source, R.id.EditText_free_t4, "field 'editTextFreeT4'", EditText.class);
+    target.textViewTsh = Utils.findRequiredViewAsType(source, R.id.TextView_tsh, "field 'textViewTsh'", TextView.class);
+    target.editTextTsh = Utils.findRequiredViewAsType(source, R.id.EditText_tsh, "field 'editTextTsh'", EditText.class);
+  }
+
+  @Override
+  @CallSuper
+  public void unbind() {
+    CaseNotes.LOAD_CLINICAL target = this.target;
+    if (target == null) throw new IllegalStateException("Bindings already cleared.");
+    this.target = null;
+
+    target.clinical = null;
+    target.textViewHaemogram = null;
+    target.textViewHaemoglobinGDl = null;
+    target.editTextHaemoglobinGDl = null;
+    target.editTextWBC = null;
+    target.textViewMonocytes = null;
+    target.editTextMonocytes = null;
+    target.textViewBasophils = null;
+    target.editTextBasophils = null;
+    target.textViewRbc = null;
+    target.editTextRbc = null;
+    target.textViewEsr = null;
+    target.editTextEsr = null;
+    target.textViewPolymorphs = null;
+    target.editTextPolymorphs = null;
+    target.textViewLymphocytes = null;
+    target.editTextLymphocytes = null;
+    target.textViewRenalMarkers = null;
+    target.textViewEosinophils = null;
+    target.editTextEosinophils = null;
+    target.textViewUrea = null;
+    target.editTextUrea = null;
+    target.textViewCreatinine = null;
+    target.editTextCreatinine = null;
+    target.textViewUricAcid = null;
+    target.editTextUricAcid = null;
+    target.textViewElectrolytes = null;
+    target.textViewSodium = null;
+    target.editTextSodium = null;
+    target.textViewPotassium = null;
+    target.editTextPotassium = null;
+    target.textViewChloride = null;
+    target.editTextChloride = null;
+    target.textViewBicarbonate = null;
+    target.editTextBicarbonate = null;
+    target.textViewLipoProfile = null;
+    target.textViewTotalCholesterol = null;
+    target.editTextTotalCholesterol = null;
+    target.textViewLdl = null;
+    target.editTextLdl = null;
+    target.textViewHdl = null;
+    target.editTextHdl = null;
+    target.textViewVldl = null;
+    target.editTextVldl = null;
+    target.textViewTriglycerides = null;
+    target.editTextTriglycerides = null;
+    target.textViewLiverFunctionTest = null;
+    target.textViewSerumBilirubinTotal = null;
+    target.editTextSerumBilirubinTotal = null;
+    target.textViewDirect = null;
+    target.editTextDirect = null;
+    target.textViewIndirect = null;
+    target.editTextIndirect = null;
+    target.textViewTotalProtein = null;
+    target.editTextTotalProtein = null;
+    target.textViewAlbumin = null;
+    target.editTextAlbumin = null;
+    target.textViewGlobulin = null;
+    target.editTextGlobulin = null;
+    target.textViewSgot = null;
+    target.editTextSgot = null;
+    target.textViewSgpt = null;
+    target.editTextSgpt = null;
+    target.textViewAlkalinePhosphatase = null;
+    target.editTextAlkalinePhosphatase = null;
+    target.textViewThyroidProfile = null;
+    target.textViewFreeT3 = null;
+    target.editTextFreeT3 = null;
+    target.textViewFreeT4 = null;
+    target.editTextFreeT4 = null;
+    target.textViewTsh = null;
+    target.editTextTsh = null;
+  }
+}

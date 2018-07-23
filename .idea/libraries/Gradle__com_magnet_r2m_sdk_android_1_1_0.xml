@@ -1,0 +1,12 @@
+<component name="libraryTable">
+  <library name="Gradle: com.magnet:r2m-sdk-android-1.1.0">
+    <CLASSES>
+      <root url="jar://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/r2m-sdk-android-1.1.0.aar/2b8f3762bfd1821cd83be6ad66740287/jars/classes.jar!/" />
+      <root url="file://$USER_HOME$/.gradle/caches/transforms-1/files-1.1/r2m-sdk-android-1.1.0.aar/2b8f3762bfd1821cd83be6ad66740287/res" />
+    </CLASSES>
+    <JAVADOC />
+    <SOURCES>
+      <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.magnet/r2m-sdk-android/1.1.0/5be6f4822608b6baff25b510a9ac83b67221d4a5/r2m-sdk-android-1.1.0-sources.jar!/" />
+    </SOURCES>
+  </library>
+</component>

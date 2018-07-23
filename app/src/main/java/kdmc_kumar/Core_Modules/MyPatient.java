@@ -840,8 +840,16 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
 
         if (q) {
 
-            String Query1 = "select IsResultAvailable as ret_values from Medicaltest where Ptid='" + PATID + "' and (substr(Actdate,0,11)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "'  or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "')";
-            String IsResultAvailable = BaseConfig.GetValues(Query1);
+            String Query1 = "select IsResultAvailable as ret_values from Medicaltest where (Investigation_Count=Result_Count) and  Ptid='" + PATID + "' and (substr(Actdate,0,11)='" + BaseConfig.CompareWithDeviceDate() + "' or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDate() + "'  or substr(Actdate,0,11)='" + BaseConfig.Device_OnlyDateWithHypon() + "')";
+
+            boolean q1 = LoadReportsBooleanStatus(Query1);
+
+            if(q1)
+            {
+                return "2";
+            }
+
+            /*String IsResultAvailable = BaseConfig.GetValues(Query1);
 
             if (IsResultAvailable != null && IsResultAvailable.equalsIgnoreCase("1")) {
                 return "1";
@@ -849,11 +857,12 @@ public class MyPatient extends AppCompatActivity implements TextWatcher {
                 return "2";
             } else {
                 return "0";
-            }
+            }*/
 
         } else {
             return "0";
         }
+        return "0";
 
     }
 

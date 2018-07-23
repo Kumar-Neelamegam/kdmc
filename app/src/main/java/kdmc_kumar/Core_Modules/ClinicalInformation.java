@@ -71,7 +71,6 @@ import kdmc_kumar.Utilities_Others.CircleImageView;
 import kdmc_kumar.Utilities_Others.CustomIntent;
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
 import kdmc_kumar.Utilities_Others.KDMCRecyclerAdapter;
-import kdmc_kumar.Utilities_Others.Tools;
 import kdmc_kumar.Utilities_Others.Validation1;
 import kdmc_kumar.Utilities_Others.ViewAnimation;
 
@@ -1119,8 +1118,7 @@ public class ClinicalInformation extends AppCompatActivity {
                 String[] Pat = autocompletePatientname.getText().toString().split("-");
                 if (Pat.length == 2) {
 
-                    boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where name='" + Pat[0].trim() + '\'');
-                    if (q) {
+                    boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where Patid='" + Pat[1].trim() + '\'');   if (q) {
                         SAVELOCAL();
                     } else {
                         BaseConfig.showSimplePopUp(getString(R.string.not_pat_regist), getString(R.string.info), ClinicalInformation.this, R.drawable.ic_patienticon, R.color.orange_500);

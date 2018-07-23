@@ -1291,14 +1291,14 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
                         String[] Pat = autocompletePatientname.getText().toString().split("-");
                         if (Pat.length == 2) {
 
-                            boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where name='" + Pat[0].trim() + "'");
+                            boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where Patid='" + Pat[1].trim() + '\'');
                             if (q) {
                                 SAVELOCAL();
                             } else {
                                 BaseConfig.showSimplePopUp(getString(R.string.not_pat_regist), getString(R.string.info), context, R.drawable.ic_close_black_24dp, R.color.orange_300);
                             }
                         } else if (Pat.length == 1) {
-                            boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where name='" + Pat[0].trim() + "'");
+                            boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where Patid='" + Pat[1].trim() + '\'');
                             if (q) {
                                 SAVELOCAL();
                             } else {
@@ -1739,6 +1739,12 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
         }
     }
 
+
+    /**
+     *
+     */
+    int TOTAL_INVESTIGATION_COUNT=0;
+
     private void SUBMIT_FORM() {
 
         try {
@@ -1818,6 +1824,8 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
             values.put("Isupdate", 0);
             values.put("IsResultAvailable", 1);
             values.put("HID", BaseConfig.HID);
+            values.put("Investigation_Count", TOTAL_INVESTIGATION_COUNT);
+            values.put("Result_Count", 0);
             db.insert(BaseConfig.TABLE_MEDICAL_TEST, null, values);
 
             final String Update_Query = "update mtest set mtestnum =mtestnum +1";
@@ -1883,6 +1891,7 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
             db.insert(BaseConfig.TABLE_ANGIOGRAM, null, values);
 
             reportins = 1;
+            TOTAL_INVESTIGATION_COUNT+=1;
         }
         return reportins;
     }
@@ -1908,6 +1917,7 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
             db.insert(BaseConfig.TABLE_EEG, null, values);
 
             reportins = 1;
+            TOTAL_INVESTIGATION_COUNT+=1;
         }
         return reportins;
     }
@@ -1949,7 +1959,7 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
             db.insert(BaseConfig.TABLE_ECGTEST, null, values);
 
             reportins = 1;
-
+            TOTAL_INVESTIGATION_COUNT+=1;
         }
         return reportins;
     }
@@ -1989,6 +1999,7 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
 
             }
             reportins = 1;
+            TOTAL_INVESTIGATION_COUNT+=1;
         }
         return reportins;
     }
@@ -2031,6 +2042,7 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
                 db.insert(BaseConfig.TABLE_SCANTEST, null, values);
             }
             reportins = 1;
+            TOTAL_INVESTIGATION_COUNT+=1;
         }
         return reportins;
     }
@@ -2097,7 +2109,7 @@ public class Investigations extends AppCompatActivity implements TextWatcher {
 
             }
 
-
+            TOTAL_INVESTIGATION_COUNT+=1;
             final String Delete_Query = "Delete from TempTest";
             BaseConfig.SaveData(Delete_Query);
 

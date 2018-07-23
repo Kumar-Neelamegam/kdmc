@@ -146,36 +146,6 @@
             android:label="@string/title_activity_report__list_of_newpatient"
             android:screenOrientation="portrait"
             android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.CaseNotes_Charts_new.Chart_Bar_BloodSugar"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.CaseNotes_Charts_new.Chart_Bar_BloodPressure"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.CaseNotes_Charts_new.Chart_Bar_Weight"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.CaseNotes_Charts_new.Chart_Line_BloodPressure"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.CaseNotes_Charts_new.Chart_Line_Weight"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.CaseNotes_Charts_new.Chart_Line_BloodSugar"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme.NoActionBar"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
 
         <activity
             android:name="kdmc_kumar.Inpatient_Module.Inpatient_Charts.Chart_Bar_Inpatient"
@@ -334,10 +304,6 @@
         <activity
             android:name="kdmc_kumar.Notification.NotificationActivity"
             android:theme="@style/Theme.AppCompat.Light.Dialog"
-            android:windowSoftInputMode="stateHidden|adjustResize" />
-        <activity
-            android:name="kdmc_kumar.Doctor_Modules.PinPassword"
-            android:theme="@style/AppTheme.NoActionBar"
             android:windowSoftInputMode="stateHidden|adjustResize" />
         <activity
             android:name="kdmc_kumar.MyPatient_Module.ExtraReports.Profile_Blood_Report"

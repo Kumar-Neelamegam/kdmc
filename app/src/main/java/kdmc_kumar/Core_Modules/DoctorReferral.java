@@ -516,15 +516,13 @@ public class DoctorReferral extends AppCompatActivity implements TextWatcher {
                     String[] Pat = autocompletePatientname.getText().toString().split("-");
                    if (Pat.length == 2) {
 
-                        boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where name='" + Pat[0].trim() + "'");
-                        if (q) {
+                       boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where Patid='" + Pat[1].trim() + '\''); if (q) {
                             SaveLocal();
                         } else {
                             BaseConfig.showSimplePopUp(getString(R.string.not_pat_regist), getString(R.string.info), context, R.drawable.ic_patienticon, R.color.orange_400);
                         }
                     } else if (Pat.length == 1) {
-                        boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where name='" + Pat[0].trim() + "'");
-                        if (q) {
+                       boolean q = BaseConfig.LoadReportsBooleanStatus("select Id as dstatus1 from Patreg where Patid='" + Pat[1].trim() + '\'');  if (q) {
                             SaveLocal();
                         } else {
                             BaseConfig.showSimplePopUp(getString(R.string.not_pat_regist), getString(R.string.info), context, R.drawable.ic_patienticon, R.color.red_400);
