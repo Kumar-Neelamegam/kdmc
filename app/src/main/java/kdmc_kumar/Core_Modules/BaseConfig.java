@@ -2393,6 +2393,7 @@ public class BaseConfig {
         return dates;
     }
 
+
     public static String DeviceDate() {
         String date = "";
 
@@ -2404,6 +2405,16 @@ public class BaseConfig {
         return date;
     }
 
+    public static String getDeviceDate() {
+        String date = "";
+
+        //2017/04/09 19:51:10
+        String currentDateTimeString = DateFormat.getDateTimeInstance().format(new Date());
+        SimpleDateFormat dateformt = new SimpleDateFormat("yyyy-MM-dd", Locale.ENGLISH);
+        date = dateformt.format(Date.parse(currentDateTimeString));
+
+        return date;
+    }
     public static String Device_OnlyDate() {
         String date = "";
 

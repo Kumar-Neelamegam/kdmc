@@ -2,11 +2,13 @@ package kdmc_kumar.Adapters_GetterSetter.DashboardAdapter;
 
 import android.app.AlertDialog;
 import android.app.Dialog;
+import android.app.DownloadManager;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.content.ContentValues;
 import android.content.Intent;
 import android.database.Cursor;
+import android.database.CursorIndexOutOfBoundsException;
 import android.database.sqlite.SQLiteDatabase;
 import android.media.MediaPlayer;
 import android.net.Uri;
@@ -140,6 +142,7 @@ public class Dashboard_NavigationMenu extends AppCompatActivity {
 
             AUTO_REFRESH_CLOUD_COUNT();
 
+            setOperationNotificationBatch();
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -172,9 +175,8 @@ public class Dashboard_NavigationMenu extends AppCompatActivity {
         timerRunnable = new Runnable() {
             @Override
             public void run() {
-
                 new CheckPendingData().execute();
-
+                setOperationNotificationBatch();
                 timerHandler.postDelayed(this, 1000); //run every second
 
             }
@@ -289,6 +291,51 @@ public class Dashboard_NavigationMenu extends AppCompatActivity {
 
         System.gc();
         BaseConfig.ExitSweetDialog(Dashboard_NavigationMenu.this, Dashboard_NavigationMenu.class);
+
+    }
+
+    /**
+     * @Ponnusamy
+     * @since 24-07-2018
+     * @implNote Show Ooperation Notification set in BatchView
+     */
+    public final void setOperationNotificationBatch()
+    {
+        int notification_Count=0;
+        Cursor cursor=BaseConfig.GetDb().rawQuery("select operation_date from operation_details",null);
+
+        try {
+            if (cursor!=null) {
+                if (cursor.moveToFirst())
+                {
+                    do {
+
+                        String notification_date= cursor.getString(cursor.getColumnIndex("operation_date"));
+                        String date=notification_date.split("T")[0];
+                        String sdate=BaseConfig.getDeviceDate();
+
+                        if (sdate.equalsIgnoreCase(date)) {
+                            ++notification_Count;
+                        }
+
+                    }while (cursor.moveToNext());
+
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+        if(notification_Count==0)
+        {
+            dashboardToolbarOperationsNotificationbatch.setVisibility(View.GONE);
+            dashboardToolbarIcNotification.setVisibility(View.GONE);
+        }
+        else {
+            dashboardToolbarOperationsNotificationbatch.setVisibility(View.GONE);
+            dashboardToolbarIcNotification.setVisibility(View.GONE);
+            dashboardToolbarOperationsNotificationbatch.setNumber(notification_Count,true);
+        }
 
     }
 

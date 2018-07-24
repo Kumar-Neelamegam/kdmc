@@ -41,6 +41,7 @@ public class TemplateRecylerAdapter extends RecyclerView.Adapter<TemplateRecyler
         final CommonDataObjects.TemplateGetSet item = templateGetSets.get(position);
 
         holder.sno.setText(item.getSno());
+        holder.sno.setVisibility(View.INVISIBLE);
         //holder.template_name.setText("" + item.getName().split(":")[1]);
         holder.template_name.setText(item.getName());
 
