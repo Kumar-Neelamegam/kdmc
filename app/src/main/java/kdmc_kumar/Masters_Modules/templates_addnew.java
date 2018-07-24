@@ -689,10 +689,13 @@ public class templates_addnew extends AppCompatActivity implements View.OnClickL
         cancel_btn.setOnClickListener(new Button.OnClickListener() {
             public void onClick(View v) {
 
-                templates_addnew.this.finish();
+               /* templates_addnew.this.finish();
                 Intent intent = new Intent(v.getContext(), templates_list.class);
-                startActivity(intent);
-
+                startActivity(intent);*/
+                Intent intent = getIntent();
+                intent.putExtra("key", String.valueOf(templates_addnew.Data_Inserted));
+                setResult(RESULT_OK, intent);
+                finish();
             }
         });
 
@@ -1726,8 +1729,14 @@ public class templates_addnew extends AppCompatActivity implements View.OnClickL
     public void onBackPressed() {
         // Do Here what ever you want do on back press;
         BaseConfig.temp_flag = "";
-        this.finish();
-        startActivity(new Intent(this, Masters_New.class));
+      /*  this.finish();
+        startActivity(new Intent(this, Masters_New.class));*/
+
+        Intent intent = getIntent();
+        intent.putExtra("key", String.valueOf(templates_addnew.Data_Inserted));
+        setResult(RESULT_OK, intent);
+        finish();
+
         BaseConfig.temp_flag = "";
     }
 
