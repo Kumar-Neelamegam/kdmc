@@ -52,6 +52,8 @@ public class TemplateRecylerAdapter extends RecyclerView.Adapter<TemplateRecyler
             ((Activity)holder.card_view.getContext()).startActivity(lib);
         });
 
+
+
         holder.Delete.setOnClickListener(view -> {
 
 
@@ -68,11 +70,19 @@ public class TemplateRecylerAdapter extends RecyclerView.Adapter<TemplateRecyler
                     .setOnPossitiveListener(() -> {
 
                         try {
-                            SQLiteDatabase db = BaseConfig.GetDb();
-                            db.execSQL("delete from TemplateDtls where TemplateName='" + item.getName() + '\'');
-                            db.close();
+                            try {
+                                SQLiteDatabase db = BaseConfig.GetDb();
+                                db.execSQL("delete from TemplateDtls where TemplateName='" + item.getName() + '\'');
+                                db.close();
 
-                          //  SelectedGetPatientDetails();
+                                templateGetSets.remove(position);
+                                //notifyItemRemoved(position);
+                                notifyDataSetChanged();
+                            } catch (SQLException e) {
+                                e.printStackTrace();
+                            }
+
+                            //  SelectedGetPatientDetails();
 
                         } catch (SQLException e) {
                             e.printStackTrace();

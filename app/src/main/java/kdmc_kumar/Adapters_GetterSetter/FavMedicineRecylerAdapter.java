@@ -11,6 +11,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 
 import displ.mobydocmarathi.com.R;
+import kdmc_kumar.Core_Modules.BaseConfig;
 import kdmc_kumar.Utilities_Others.CustomKDMCDialog;
 
 
@@ -56,6 +57,7 @@ public class FavMedicineRecylerAdapter extends RecyclerView.Adapter<FavMedicineR
                     .setPossitiveButtonTitle("Yes, delete it")
                     .setNegativeButtonTitle("No")
                     .setOnPossitiveListener(() -> {
+                        BaseConfig.GetDb().execSQL("DELETE FROM NewMedicine WHERE id="+rowItem.Id+" ");
                         favmedicineItems.remove(position);
                         notifyDataSetChanged();
 
@@ -81,9 +83,7 @@ public class FavMedicineRecylerAdapter extends RecyclerView.Adapter<FavMedicineR
             super(itemView);
 
             Medicine = itemView.findViewById(R.id.desc);
-
             ParentView = itemView.findViewById(R.id.list_root);
-
 
         }
     }

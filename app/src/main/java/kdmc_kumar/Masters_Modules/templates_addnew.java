@@ -94,6 +94,9 @@ public class templates_addnew extends AppCompatActivity implements View.OnClickL
     List<String> list = new ArrayList<String>();
     List<String> advlist = new ArrayList<String>();
 
+    public static int Data_Inserted=100;
+
+
     // /////////////////////////////////////////////////////////////////////////////////////////////////////
 
     ///////////////////////////////////////////////////////////////////////////////////////////////
@@ -1668,7 +1671,12 @@ public class templates_addnew extends AppCompatActivity implements View.OnClickL
                     public void onClick(DialogInterface dialog, int which) {
                         // Do nothing but close the dialog
 
-                        templates_addnew.this.finish();
+                       // templates_addnew.this.finish();
+
+                        Intent intent = getIntent();
+                        intent.putExtra("key", String.valueOf(templates_addnew.Data_Inserted));
+                        setResult(RESULT_OK, intent);
+                        finish();
 
                     }
                 });

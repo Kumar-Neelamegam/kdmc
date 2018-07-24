@@ -1,5 +1,6 @@
 package kdmc_kumar.Masters_Modules;
 
+import android.annotation.SuppressLint;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.Bundle;
@@ -28,8 +29,10 @@ public class Fragment_Prescription_Templates extends Fragment {
     @BindView(R.id.recyler_View)
     RecyclerView recyclerView;
 
-    View root_view;
 
+    static RecyclerView recyclerView_new=null;
+    View root_view;
+    static TemplateRecylerAdapter templateRecylerAdapter;
     public Fragment_Prescription_Templates() {
     }
 
@@ -45,13 +48,14 @@ public class Fragment_Prescription_Templates extends Fragment {
 
         ButterKnife.bind(this, root_view);
 
+        recyclerView_new=recyclerView;
         GridLayoutManager gridLayoutManager = new GridLayoutManager(getActivity(), 2);
         gridLayoutManager.setSpanCount(1);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(gridLayoutManager);
 
 
-        TemplateRecylerAdapter templateRecylerAdapter = new TemplateRecylerAdapter(selectTemplateList());
+        templateRecylerAdapter = new TemplateRecylerAdapter(selectTemplateList());
         recyclerView.setLayoutManager(new GridLayoutManager(recyclerView.getContext(), 2));
         recyclerView.setAdapter(templateRecylerAdapter);
 
@@ -61,7 +65,7 @@ public class Fragment_Prescription_Templates extends Fragment {
     }
 
 
-    private  ArrayList<CommonDataObjects.TemplateGetSet>  selectTemplateList() {
+    private static ArrayList<CommonDataObjects.TemplateGetSet>  selectTemplateList() {
         ArrayList<CommonDataObjects.TemplateGetSet> templateGetSets = new ArrayList<>();
         SQLiteDatabase db = BaseConfig.GetDb();
         String pimg64 = "";
@@ -76,6 +80,7 @@ public class Fragment_Prescription_Templates extends Fragment {
                     templateGetSets.add(new CommonDataObjects.TemplateGetSet(c.getString(c.getColumnIndex("TemplateName")), c.getString(c.getColumnIndex("id"))));
 
 
+
                     ++i;
 
                 } while (c.moveToNext());
@@ -86,4 +91,11 @@ public class Fragment_Prescription_Templates extends Fragment {
     }
 
 
+    public static void checkNewDataNotify()
+    {
+        templateRecylerAdapter = new TemplateRecylerAdapter(selectTemplateList());
+        recyclerView_new.setLayoutManager(new GridLayoutManager(recyclerView_new.getContext(), 2));
+        recyclerView_new.setAdapter(templateRecylerAdapter);
+
+    }
 }

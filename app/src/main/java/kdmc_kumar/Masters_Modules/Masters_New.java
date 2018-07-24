@@ -218,7 +218,13 @@ public class Masters_New extends AppCompatActivity {
 
         fab1.setOnClickListener(v -> {
             toggleFabMode(v);
-            startActivity(new Intent(Masters_New.this, templates_addnew.class));
+
+            Intent intent = new Intent(Masters_New.this,
+                    templates_addnew.class);
+            startActivityForResult(intent , templates_addnew.Data_Inserted);
+
+
+            //startActivity(new Intent(Masters_New.this, templates_addnew.class));
             BaseConfig.temp_flag="true";
         });
 
@@ -237,6 +243,24 @@ public class Masters_New extends AppCompatActivity {
         });
 
 
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        try {
+            super.onActivityResult(requestCode, resultCode, data);
+
+            if (requestCode == templates_addnew.Data_Inserted && resultCode  == RESULT_OK) {
+
+                    Fragment_Prescription_Templates.checkNewDataNotify();
+
+
+            }
+        } catch (Exception ex) {
+           // Toast.makeText(Activity.this, ex.toString(),
+                   // Toast.LENGTH_SHORT).show();
+        }
     }
 
     public void addMedicineNamePopupDialog(Activity activity) {
@@ -348,7 +372,7 @@ public class Masters_New extends AppCompatActivity {
                 public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
 
 
-                    if (auto_test.getText().toString().length() > 0) {
+                     if (auto_test.getText().toString().length() > 0) {
                         String Query = "select distinct Testname as dvalue  from Testname where IsActive='1'";
                         BaseConfig.SelectedGetPatientDetailsFilterOthers(Query, activity, auto_test, charSequence.toString());
 
@@ -395,7 +419,7 @@ public class Masters_New extends AppCompatActivity {
             add.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if (checkValidation(auto_test)) {
+                    if (checkValidation(templatename)&&checkValidation(auto_test)&&checkValidation(auto_subtest)) {
                         String Get_TemplateName = templatename.getText().toString();
                         String Get_TestName = auto_test.getText().toString();
                         String Get_SubTestName = auto_subtest.getText().toString();
@@ -494,7 +518,16 @@ public class Masters_New extends AppCompatActivity {
 
         return ret;
     }
+    private boolean checkValidation(EditText medicinename) {
 
+        boolean ret = true;
+
+        if (!Validation1.hasText(medicinename))
+            ret = false;
+
+
+        return ret;
+    }
     private void toggleFabMode(View v) {
         rotate = ViewAnimation.rotateFab(v, !rotate);
         if (rotate) {
